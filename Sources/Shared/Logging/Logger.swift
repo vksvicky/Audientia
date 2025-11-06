@@ -7,7 +7,7 @@ import Foundation
 import os.log
 
 /// Unified logging system for Audientia using Apple's OSLog
-extension Logger {
+public extension Logger {
     private static var subsystem: String {
         Bundle.main.bundleIdentifier ?? "club.cycleruncode.audientia"
     }

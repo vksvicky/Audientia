@@ -5,10 +5,12 @@
 # Useful for testing changes before committing
 #
 # Usage:
-#   ./Scripts/run_pre_commit_checks.sh [files...]
+#   ./Scripts/pre_commit_checks.sh                    # Check staged files (or modified if none staged)
+#   ./Scripts/pre_commit_checks.sh <file>...          # Check specific files/directories
+#   ./Scripts/pre_commit_checks.sh --all              # Check all modified files (staged + unstaged)
+#   ./Scripts/pre_commit_checks.sh --staged           # Check only staged files
 #
-# If no files are specified, checks all staged files
-# If files are specified, checks those files (they don't need to be staged)
+# Note: Files don't need to be staged when passed as arguments
 
 set -e
 
@@ -34,19 +36,46 @@ fi
 
 # Determine which files to check
 if [ $# -eq 0 ]; then
-    # No arguments - check staged files
+    # No arguments - check staged files first, then modified files if none staged
     FILES_TO_CHECK=$(git diff --cached --name-only --diff-filter=ACM 2>/dev/null || echo "")
 
     if [ -z "$FILES_TO_CHECK" ]; then
-        echo -e "${YELLOW}⚠️  No staged files found.${NC}"
+        # No staged files - check modified (unstaged) files
+        FILES_TO_CHECK=$(git diff --name-only --diff-filter=ACM 2>/dev/null || echo "")
+        
+        if [ -z "$FILES_TO_CHECK" ]; then
+            echo -e "${YELLOW}⚠️  No staged or modified files found.${NC}"
         echo -e "${BLUE}ℹ️  Usage:${NC}"
-        echo -e "  ${BLUE}./Scripts/pre_commit_checks.sh${NC}              # Check staged files"
-        echo -e "  ${BLUE}./Scripts/pre_commit_checks.sh <file>...${NC}    # Check specific files"
+            echo -e "  ${BLUE}./Scripts/pre_commit_checks.sh${NC}              # Check staged files (or modified if none staged)"
+            echo -e "  ${BLUE}./Scripts/pre_commit_checks.sh <file>...${NC}    # Check specific files/directories"
+            echo -e "  ${BLUE}./Scripts/pre_commit_checks.sh --all${NC}         # Check all modified files (staged + unstaged)"
+            echo -e "  ${BLUE}./Scripts/pre_commit_checks.sh --staged${NC}    # Check only staged files"
         exit 0
+        else
+            echo -e "${BLUE}ℹ️  No staged files found. Checking modified (unstaged) files instead...${NC}"
+        fi
     fi
 else
     # Arguments provided - check those files
     FILES_TO_CHECK=""
+    
+    # Handle special flags
+    if [ "$1" = "--all" ]; then
+        # Check all modified files (staged + unstaged)
+        STAGED=$(git diff --cached --name-only --diff-filter=ACM 2>/dev/null || echo "")
+        UNSTAGED=$(git diff --name-only --diff-filter=ACM 2>/dev/null || echo "")
+        FILES_TO_CHECK="$STAGED $UNSTAGED"
+        echo -e "${BLUE}ℹ️  Checking all modified files (staged + unstaged)...${NC}"
+    elif [ "$1" = "--staged" ]; then
+        # Check only staged files
+        FILES_TO_CHECK=$(git diff --cached --name-only --diff-filter=ACM 2>/dev/null || echo "")
+        if [ -z "$FILES_TO_CHECK" ]; then
+            echo -e "${YELLOW}⚠️  No staged files found${NC}"
+            exit 0
+        fi
+        echo -e "${BLUE}ℹ️  Checking only staged files...${NC}"
+    else
+        # Check specific files/directories provided as arguments
     for arg in "$@"; do
         if [ -f "$arg" ]; then
             FILES_TO_CHECK="$FILES_TO_CHECK $arg"
@@ -57,6 +86,8 @@ else
             echo -e "${YELLOW}⚠️  Warning: $arg is not a valid file or directory${NC}"
         fi
     done
+    fi
+    
     FILES_TO_CHECK=$(echo $FILES_TO_CHECK | tr ' ' '\n' | sort -u | tr '\n' ' ')
 fi
 

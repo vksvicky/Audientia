@@ -4,11 +4,9 @@
 //
 //  Audio engine module
 //
+//  Copyright © 2025 CycleRunCode Club. All rights reserved.
 
 import Foundation
 
-public class AudioCore {
-    public static let shared = AudioCore()
-
-    private init() {}
-}
+/// AudioCore framework - Audio playback engine for Audientia
+/// This file serves as the module entry point

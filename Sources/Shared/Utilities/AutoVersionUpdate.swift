@@ -23,10 +23,18 @@ public func updateAppVersionFromBuild() {
         return version
     }
 
+    // First, try to read from Info.plist (most reliable - comes from project.yml)
+    if let infoDict = Bundle.main.infoDictionary,
+       let versionString = infoDict["CFBundleShortVersionString"] as? String,
+       let version = Version(from: versionString) {
+        versionManager.setAppVersion(version)
+        return
+    }
+
     // Try to find version file in common locations
     let possiblePaths = [
+        Bundle.main.bundlePath + "/Contents/.app_version",  // App bundle (most reliable)
         Bundle.main.bundlePath + "/../.app_version",  // Build directory
-        Bundle.main.bundlePath + "/Contents/.app_version",  // App bundle
         (Bundle.main.bundlePath as NSString).deletingLastPathComponent + "/.app_version"  // Parent directory
     ]
 

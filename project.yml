@@ -18,8 +18,14 @@ options:
 
 fileGroups:
   - group: Sources
+    excludes:
+      - "**/README.md"
   - group: Tests
+    excludes:
+      - "**/README.md"
   - group: Resources
+    excludes:
+      - "**/README.md"
   - group: Documentation
     path: Documentation
     createIntermediateGroups: true
@@ -39,6 +45,8 @@ targets:
     sources:
       - path: Sources/UI
         group: Sources
+        excludes:
+          - "**/README.md"
     dependencies:
       - target: Shared
       - target: AppKitBridge
@@ -49,21 +57,25 @@ targets:
     resources:
       - path: Resources/Assets.xcassets
         group: Resources
+        excludes:
+          - "**/README.md"
     settings:
+      ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+      ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOLS_EXTENSIONS: YES
       PRODUCT_BUNDLE_IDENTIFIER: club.cycleruncode.audientia
-      MARKETING_VERSION: "2025.01.0001"
-      CURRENT_PROJECT_VERSION: "1"
+      MARKETING_VERSION: "2025.11.0012"
+      CURRENT_PROJECT_VERSION: "12"
       SWIFT_VERSION: "5.9"
       MACOSX_DEPLOYMENT_TARGET: "15.0"
       SUPPORTED_PLATFORMS: macosx
-      CODE_SIGN_IDENTITY: ""
-      CODE_SIGNING_REQUIRED: NO
-      CODE_SIGNING_ALLOWED: NO
+      CODE_SIGN_IDENTITY: "-"
+      CODE_SIGNING_REQUIRED: YES
+      CODE_SIGNING_ALLOWED: YES
       DEVELOPMENT_TEAM: ""
       ENABLE_HARDENED_RUNTIME: false
       ENABLE_APP_SANDBOX: false
       DEAD_CODE_STRIPPING: YES
-      ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOLS_EXTENSIONS: YES
+      EXECUTABLE_NAME: $(PRODUCT_NAME)
     preBuildScripts:
       - name: Update App Version
         script: |
@@ -74,6 +86,8 @@ targets:
           VERSION_DIR="${TARGET_TEMP_DIR}/versions"
           mkdir -p "$VERSION_DIR"
           BUILD_NUM_FILE="${VERSION_DIR}/.build_number"
+          PROJECT_ROOT="${SRCROOT}"
+          PROJECT_YML="${PROJECT_ROOT}/project.yml"
 
           # Get next build number
           current_build=0
@@ -94,6 +108,17 @@ targets:
           echo "$version" > "${VERSION_DIR}/.app_version"
           # Also copy to build products for runtime access
           cp "${VERSION_DIR}/.app_version" "${BUILT_PRODUCTS_DIR}/.app_version" 2>/dev/null || true
+
+          # Update project.yml with new version
+          if [ -f "$PROJECT_YML" ]; then
+              # Update MARKETING_VERSION
+              sed -i '' "s/^      MARKETING_VERSION: \".*\"/      MARKETING_VERSION: \"$version\"/" "$PROJECT_YML"
+              # Update CURRENT_PROJECT_VERSION (use build number)
+              sed -i '' "s/^      CURRENT_PROJECT_VERSION: \".*\"/      CURRENT_PROJECT_VERSION: \"$next_build\"/" "$PROJECT_YML"
+              echo "Updated project.yml: MARKETING_VERSION=$version, CURRENT_PROJECT_VERSION=$next_build"
+          else
+              echo "Warning: project.yml not found at $PROJECT_YML"
+          fi
         shellPath: /bin/bash
         basedOnDependencyAnalysis: false
     # Note: load_versions.swift script disabled to prevent overwriting AutoVersionUpdate.swift
@@ -120,6 +145,8 @@ targets:
     sources:
       - path: Sources/AppKitBridge
         group: Sources
+        excludes:
+          - "**/README.md"
     dependencies:
       - target: Shared
     settings:
@@ -176,6 +203,8 @@ targets:
     sources:
       - path: Sources/AudioCore
         group: Sources
+        excludes:
+          - "**/README.md"
     dependencies:
       - target: Shared
     settings:
@@ -233,6 +262,8 @@ targets:
     sources:
       - path: Sources/MetadataEngine
         group: Sources
+        excludes:
+          - "**/README.md"
     dependencies:
       - target: Shared
     settings:
@@ -288,6 +319,8 @@ targets:
     sources:
       - path: Sources/DataLayer
         group: Sources
+        excludes:
+          - "**/README.md"
     dependencies:
       - target: Shared
     settings:
@@ -344,6 +377,8 @@ targets:
     sources:
       - path: Sources/PluginSystem
         group: Sources
+        excludes:
+          - "**/README.md"
     dependencies:
       - target: Shared
     settings:
@@ -400,6 +435,8 @@ targets:
     sources:
       - path: Sources/Shared
         group: Sources
+        excludes:
+          - "**/README.md"
     settings:
       PRODUCT_BUNDLE_IDENTIFIER: club.cycleruncode.Shared
       SWIFT_VERSION: "5.9"
@@ -468,6 +505,30 @@ targets:
       BUNDLE_LOADER: "$(TEST_HOST)"
       DEAD_CODE_STRIPPING: YES
 
+  AudioCoreTests:
+    type: bundle.unit-test
+    platform: macOS
+    deploymentTarget: "15.0"
+    sources:
+      - path: Tests/AudioCoreTests
+        group: Tests
+    dependencies:
+      - target: AudioCore
+      - target: Shared
+      - framework: XCTest.framework
+        embed: false
+    settings:
+      PRODUCT_BUNDLE_IDENTIFIER: club.cycleruncode.AudioCoreTests
+      SWIFT_VERSION: "5.9"
+      MACOSX_DEPLOYMENT_TARGET: "15.0"
+      GENERATE_INFOPLIST_FILE: YES
+      INFOPLIST_KEY_CFBundleName: AudioCoreTests
+      INFOPLIST_KEY_NSHumanReadableCopyright: "Copyright © 2025 CycleRunCode Club. All rights reserved."
+      ENABLE_TESTING_SEARCH_PATHS: YES
+      TEST_HOST: ""
+      BUNDLE_LOADER: "$(TEST_HOST)"
+      DEAD_CODE_STRIPPING: YES
+
 schemes:
   Audientia:
     build:
@@ -482,10 +543,14 @@ schemes:
         SharedTests: [test]
     run:
       config: Debug
+      executable: Audientia
     test:
       config: Debug
       targets:
         - name: SharedTests
+          parallelizable: true
+          randomExecutionOrdering: true
+        - name: AudioCoreTests
           parallelizable: true
           randomExecutionOrdering: true
 

@@ -11,7 +11,7 @@ import SwiftUI
 struct ModuleVersionConflictView: View {
     @ObservedObject var settings: AppSettings
     @State private var isExpanded = false
-
+    
     var body: some View {
         if !settings.moduleConflictWarnings.isEmpty {
             VStack(alignment: .leading, spacing: 8) {
@@ -29,26 +29,26 @@ struct ModuleVersionConflictView: View {
                         Image(systemName: isExpanded ? "chevron.up" : "chevron.down")
                     }
                 }
-
+                
                 if isExpanded {
                     ForEach(Array(settings.moduleConflictWarnings.values), id: \.id) { warning in
                         VStack(alignment: .leading, spacing: 4) {
                             Text(warning.moduleName)
                                 .font(.subheadline)
                                 .fontWeight(.semibold)
-
+                            
                             Text("Kept: \(warning.latestVersion)")
                                 .font(.caption)
                                 .foregroundColor(.green)
-
+                            
                             Text("Removed: \(warning.removedVersions.joined(separator: ", "))")
                                 .font(.caption)
                                 .foregroundColor(.red)
-
+                            
                             Text("Time: \(warning.timestamp, style: .time)")
                                 .font(.caption2)
                                 .foregroundColor(.secondary)
-
+                            
                             Button("Dismiss") {
                                 settings.clearConflictWarning(for: warning.moduleName)
                             }
@@ -83,7 +83,7 @@ struct ModuleVersionConflictView: View {
     )
     let previewSettings = AppSettings.shared
     previewSettings.moduleConflictWarnings = ["AudioCore": warning]
-
+    
     return ModuleVersionConflictView(settings: previewSettings)
         .padding()
 }
