@@ -34,7 +34,7 @@ import Foundation
 
 func updateVersions() {
     let versionManager = VersionManager.shared
-    
+
     // Update app version
 """
 
@@ -43,7 +43,7 @@ if let appVersion = readAppVersion() {
     if let version = Version(from: "\(appVersion)") {
         versionManager.setAppVersion(version)
     }
-    
+
     // Update module versions
 """
 } else {
@@ -51,7 +51,7 @@ if let appVersion = readAppVersion() {
     // App version not found, using current
     let appVersion = versionManager.generateCurrentVersion()
     versionManager.setAppVersion(appVersion)
-    
+
     // Update module versions
 """
 }
@@ -78,4 +78,3 @@ let outputFile = "\(projectRoot)/Shared/Utilities/AutoVersionUpdate.swift"
 try? swiftCode.write(toFile: outputFile, atomically: true, encoding: .utf8)
 
 print("Version update code generated at: \(outputFile)")
-

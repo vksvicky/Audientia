@@ -5,6 +5,7 @@ options:
     macOS: "15.0"
   developmentLanguage: en
   xcodeVersion: "16.0"
+  groupSortPosition: top
   settings:
     CODE_SIGN_IDENTITY: ""
     CODE_SIGNING_REQUIRED: NO
@@ -15,13 +16,29 @@ options:
     ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOLS_EXTENSIONS: YES
     STRINGCATALOG_GENERATE_SWIFT_CODE: YES
 
+fileGroups:
+  - group: Sources
+  - group: Tests
+  - group: Resources
+  - group: Documentation
+    path: Documentation
+    createIntermediateGroups: true
+  - group: Scripts
+    path: Scripts
+    createIntermediateGroups: true
+  - group: Configuration
+    path: Configuration
+    createIntermediateGroups: true
+  - README.md
+
 targets:
   Audientia:
     type: application
     platform: macOS
     deploymentTarget: "15.0"
     sources:
-      - path: UI
+      - path: Sources/UI
+        group: Sources
     dependencies:
       - target: Shared
       - target: AppKitBridge
@@ -30,8 +47,8 @@ targets:
       - target: DataLayer
       - target: PluginSystem
     resources:
-      - path: brand
-      - path: Audientia.iconset
+      - path: Resources/Assets.xcassets
+        group: Resources
     settings:
       PRODUCT_BUNDLE_IDENTIFIER: club.cycleruncode.audientia
       MARKETING_VERSION: "2025.01.0001"
@@ -46,6 +63,7 @@ targets:
       ENABLE_HARDENED_RUNTIME: false
       ENABLE_APP_SANDBOX: false
       DEAD_CODE_STRIPPING: YES
+      ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOLS_EXTENSIONS: YES
     preBuildScripts:
       - name: Update App Version
         script: |
@@ -56,7 +74,7 @@ targets:
           VERSION_DIR="${TARGET_TEMP_DIR}/versions"
           mkdir -p "$VERSION_DIR"
           BUILD_NUM_FILE="${VERSION_DIR}/.build_number"
-          
+
           # Get next build number
           current_build=0
           if [ -f "$BUILD_NUM_FILE" ]; then
@@ -66,11 +84,11 @@ targets:
                   current_build=$stored_build
               fi
           fi
-          
+
           next_build=$((current_build + 1))
           echo "$YEAR.$MONTH" > "$BUILD_NUM_FILE"
           echo "$next_build" >> "$BUILD_NUM_FILE"
-          
+
           version=$(printf "%04d.%02d.%04d" "$YEAR" "$MONTH" "$next_build")
           echo "Updating app version to: $version"
           echo "$version" > "${VERSION_DIR}/.app_version"
@@ -81,7 +99,7 @@ targets:
     # Note: load_versions.swift script disabled to prevent overwriting AutoVersionUpdate.swift
     # Version updates are handled by updateAppVersionFromBuild() and scanAndRegisterModules()
     info:
-      path: Info.plist
+      path: Configuration/Info.plist
       properties:
         CFBundleName: Audientia
         CFBundlePackageType: APPL
@@ -89,7 +107,6 @@ targets:
         CFBundleIdentifier: $(PRODUCT_BUNDLE_IDENTIFIER)
         CFBundleVersion: $(CURRENT_PROJECT_VERSION)
         CFBundleShortVersionString: $(MARKETING_VERSION)
-        CFBundleIconFile: Audientia
         LSMinimumSystemVersion: $(MACOSX_DEPLOYMENT_TARGET)
         NSHumanReadableCopyright: "Copyright © 2025 CycleRunCode Club. All rights reserved."
         NSAppSupportEmail: support@cycleruncode.club
@@ -101,7 +118,8 @@ targets:
     platform: macOS
     deploymentTarget: "15.0"
     sources:
-      - path: AppKitBridge
+      - path: Sources/AppKitBridge
+        group: Sources
     dependencies:
       - target: Shared
     settings:
@@ -112,6 +130,7 @@ targets:
       INFOPLIST_KEY_CFBundleName: AppKitBridge
       INFOPLIST_KEY_NSHumanReadableCopyright: "Copyright © 2025 CycleRunCode Club. All rights reserved."
       DEAD_CODE_STRIPPING: YES
+      CLANG_ENABLE_MODULE_VERIFIER: YES
     preBuildScripts:
       - name: Update Module Version
         script: |
@@ -123,7 +142,7 @@ targets:
           VERSION_DIR="${TARGET_TEMP_DIR}/versions"
           mkdir -p "$VERSION_DIR"
           MODULE_BUILD_NUM_FILE="${VERSION_DIR}/.build_number_${MODULE_NAME}"
-          
+
           # Get next build number
           current_build=0
           if [ -f "$MODULE_BUILD_NUM_FILE" ]; then
@@ -133,11 +152,11 @@ targets:
                   current_build=$stored_build
               fi
           fi
-          
+
           next_build=$((current_build + 1))
           echo "$YEAR.$MONTH" > "$MODULE_BUILD_NUM_FILE"
           echo "$next_build" >> "$MODULE_BUILD_NUM_FILE"
-          
+
           version=$(printf "%04d.%02d.%04d" "$YEAR" "$MONTH" "$next_build")
           full_version="${MODULE_NAME}-${version}"
           echo "Updating ${MODULE_NAME} version to: $full_version"
@@ -155,7 +174,8 @@ targets:
     platform: macOS
     deploymentTarget: "15.0"
     sources:
-      - path: AudioCore
+      - path: Sources/AudioCore
+        group: Sources
     dependencies:
       - target: Shared
     settings:
@@ -179,7 +199,7 @@ targets:
           VERSION_DIR="${TARGET_TEMP_DIR}/versions"
           mkdir -p "$VERSION_DIR"
           MODULE_BUILD_NUM_FILE="${VERSION_DIR}/.build_number_${MODULE_NAME}"
-          
+
           # Get next build number
           current_build=0
           if [ -f "$MODULE_BUILD_NUM_FILE" ]; then
@@ -189,11 +209,11 @@ targets:
                   current_build=$stored_build
               fi
           fi
-          
+
           next_build=$((current_build + 1))
           echo "$YEAR.$MONTH" > "$MODULE_BUILD_NUM_FILE"
           echo "$next_build" >> "$MODULE_BUILD_NUM_FILE"
-          
+
           version=$(printf "%04d.%02d.%04d" "$YEAR" "$MONTH" "$next_build")
           full_version="${MODULE_NAME}-${version}"
           echo "Updating ${MODULE_NAME} version to: $full_version"
@@ -211,7 +231,8 @@ targets:
     platform: macOS
     deploymentTarget: "15.0"
     sources:
-      - path: MetadataEngine
+      - path: Sources/MetadataEngine
+        group: Sources
     dependencies:
       - target: Shared
     settings:
@@ -233,7 +254,7 @@ targets:
           VERSION_DIR="${TARGET_TEMP_DIR}/versions"
           mkdir -p "$VERSION_DIR"
           MODULE_BUILD_NUM_FILE="${VERSION_DIR}/.build_number_${MODULE_NAME}"
-          
+
           # Get next build number
           current_build=0
           if [ -f "$MODULE_BUILD_NUM_FILE" ]; then
@@ -243,11 +264,11 @@ targets:
                   current_build=$stored_build
               fi
           fi
-          
+
           next_build=$((current_build + 1))
           echo "$YEAR.$MONTH" > "$MODULE_BUILD_NUM_FILE"
           echo "$next_build" >> "$MODULE_BUILD_NUM_FILE"
-          
+
           version=$(printf "%04d.%02d.%04d" "$YEAR" "$MONTH" "$next_build")
           full_version="${MODULE_NAME}-${version}"
           echo "Updating ${MODULE_NAME} version to: $full_version"
@@ -265,7 +286,8 @@ targets:
     platform: macOS
     deploymentTarget: "15.0"
     sources:
-      - path: DataLayer
+      - path: Sources/DataLayer
+        group: Sources
     dependencies:
       - target: Shared
     settings:
@@ -288,7 +310,7 @@ targets:
           VERSION_DIR="${TARGET_TEMP_DIR}/versions"
           mkdir -p "$VERSION_DIR"
           MODULE_BUILD_NUM_FILE="${VERSION_DIR}/.build_number_${MODULE_NAME}"
-          
+
           # Get next build number
           current_build=0
           if [ -f "$MODULE_BUILD_NUM_FILE" ]; then
@@ -298,11 +320,11 @@ targets:
                   current_build=$stored_build
               fi
           fi
-          
+
           next_build=$((current_build + 1))
           echo "$YEAR.$MONTH" > "$MODULE_BUILD_NUM_FILE"
           echo "$next_build" >> "$MODULE_BUILD_NUM_FILE"
-          
+
           version=$(printf "%04d.%02d.%04d" "$YEAR" "$MONTH" "$next_build")
           full_version="${MODULE_NAME}-${version}"
           echo "Updating ${MODULE_NAME} version to: $full_version"
@@ -320,7 +342,8 @@ targets:
     platform: macOS
     deploymentTarget: "15.0"
     sources:
-      - path: PluginSystem
+      - path: Sources/PluginSystem
+        group: Sources
     dependencies:
       - target: Shared
     settings:
@@ -343,7 +366,7 @@ targets:
           VERSION_DIR="${TARGET_TEMP_DIR}/versions"
           mkdir -p "$VERSION_DIR"
           MODULE_BUILD_NUM_FILE="${VERSION_DIR}/.build_number_${MODULE_NAME}"
-          
+
           # Get next build number
           current_build=0
           if [ -f "$MODULE_BUILD_NUM_FILE" ]; then
@@ -353,11 +376,11 @@ targets:
                   current_build=$stored_build
               fi
           fi
-          
+
           next_build=$((current_build + 1))
           echo "$YEAR.$MONTH" > "$MODULE_BUILD_NUM_FILE"
           echo "$next_build" >> "$MODULE_BUILD_NUM_FILE"
-          
+
           version=$(printf "%04d.%02d.%04d" "$YEAR" "$MONTH" "$next_build")
           full_version="${MODULE_NAME}-${version}"
           echo "Updating ${MODULE_NAME} version to: $full_version"
@@ -375,7 +398,8 @@ targets:
     platform: macOS
     deploymentTarget: "15.0"
     sources:
-      - path: Shared
+      - path: Sources/Shared
+        group: Sources
     settings:
       PRODUCT_BUNDLE_IDENTIFIER: club.cycleruncode.Shared
       SWIFT_VERSION: "5.9"
@@ -396,7 +420,7 @@ targets:
           VERSION_DIR="${TARGET_TEMP_DIR}/versions"
           mkdir -p "$VERSION_DIR"
           MODULE_BUILD_NUM_FILE="${VERSION_DIR}/.build_number_${MODULE_NAME}"
-          
+
           # Get next build number
           current_build=0
           if [ -f "$MODULE_BUILD_NUM_FILE" ]; then
@@ -406,11 +430,11 @@ targets:
                   current_build=$stored_build
               fi
           fi
-          
+
           next_build=$((current_build + 1))
           echo "$YEAR.$MONTH" > "$MODULE_BUILD_NUM_FILE"
           echo "$next_build" >> "$MODULE_BUILD_NUM_FILE"
-          
+
           version=$(printf "%04d.%02d.%04d" "$YEAR" "$MONTH" "$next_build")
           full_version="${MODULE_NAME}-${version}"
           echo "Updating ${MODULE_NAME} version to: $full_version"
@@ -423,6 +447,27 @@ targets:
     # Note: Shared framework is NOT renamed because other frameworks depend on it
     # The version is tracked in the version file for ModuleVersionManager to use
 
+  SharedTests:
+    type: bundle.unit-test
+    platform: macOS
+    deploymentTarget: "15.0"
+    sources:
+      - path: Tests/SharedTests
+        group: Tests
+    dependencies:
+      - target: Shared
+    settings:
+      PRODUCT_BUNDLE_IDENTIFIER: club.cycleruncode.SharedTests
+      SWIFT_VERSION: "5.9"
+      MACOSX_DEPLOYMENT_TARGET: "15.0"
+      GENERATE_INFOPLIST_FILE: YES
+      INFOPLIST_KEY_CFBundleName: SharedTests
+      INFOPLIST_KEY_NSHumanReadableCopyright: "Copyright © 2025 CycleRunCode Club. All rights reserved."
+      ENABLE_TESTING_SEARCH_PATHS: YES
+      TEST_HOST: ""
+      BUNDLE_LOADER: "$(TEST_HOST)"
+      DEAD_CODE_STRIPPING: YES
+
 schemes:
   Audientia:
     build:
@@ -434,8 +479,14 @@ schemes:
         DataLayer: all
         PluginSystem: all
         Shared: all
+        SharedTests: [test]
     run:
       config: Debug
     test:
       config: Debug
+      targets:
+        - name: SharedTests
+          parallelizable: true
+          randomExecutionOrdering: true
+
 

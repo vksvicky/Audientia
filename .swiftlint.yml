@@ -1,0 +1,154 @@
+# SwiftLint Configuration for Audientia
+# Based on best practices from Documentation/06-best-practices-and-clean-code.md
+
+# Disabled rules (if any)
+disabled_rules: []
+
+# Opt-in rules
+opt_in_rules:
+  - empty_count
+  - empty_string
+  - first_where
+  - force_unwrapping
+  - implicit_return
+  - operator_usage_whitespace
+  - overridden_super_call
+  - prohibited_super_call
+  - redundant_nil_coalescing
+  - single_test_class
+  - sorted_first_last
+  - sorted_imports
+  - static_operator
+  - strong_iboutlet
+  - toggle_bool
+  - unneeded_parentheses_in_closure_argument
+  - vertical_parameter_alignment_on_call
+  - yoda_condition
+
+# Included paths (relative to SwiftLint execution)
+included:
+  - Sources
+  - Tests
+
+# Excluded paths
+excluded:
+  - Pods
+  - .build
+  - DerivedData
+  - build
+  - Carthage
+  - .swiftpm
+
+# Line length
+line_length:
+  warning: 120
+  error: 150
+  ignores_function_declarations: true
+  ignores_comments: true
+  ignores_urls: true
+
+# File length
+file_length:
+  warning: 500
+  error: 1000
+  ignore_comment_only_lines: true
+
+# Function body length
+function_body_length:
+  warning: 50
+  error: 100
+
+# Function parameter count
+function_parameter_count:
+  warning: 5
+  error: 8
+
+# Type body length
+type_body_length:
+  warning: 300
+  error: 500
+
+# Cyclomatic complexity
+cyclomatic_complexity:
+  warning: 10
+  error: 20
+
+# Nesting
+nesting:
+  type_level: 2
+  function_level: 3
+
+# Force unwrapping
+force_unwrapping:
+  severity: warning
+
+# Force casting
+force_cast:
+  severity: warning
+
+# Force try
+force_try:
+  severity: warning
+
+# Trailing whitespace
+trailing_whitespace:
+  ignores_empty_lines: true
+  ignores_comments: true
+
+# Leading whitespace
+leading_whitespace:
+  severity: warning
+
+# Colon spacing
+colon:
+  flexible_right_spacing: false
+  apply_to_dictionaries: true
+
+# Comma spacing
+comma:
+  severity: warning
+
+# Operator spacing
+operator_usage_whitespace:
+  severity: warning
+
+# Return arrow whitespace
+return_arrow_whitespace:
+  severity: warning
+
+# Sorted imports
+sorted_imports:
+  severity: warning
+
+# Identifier name
+identifier_name:
+  min_length:
+    warning: 2
+    error: 1
+  max_length:
+    warning: 60
+    error: 80
+  excluded:
+    - id
+    - x
+    - y
+    - z
+    - i
+    - j
+    - k
+
+# Type name
+type_name:
+  min_length:
+    warning: 3
+    error: 2
+  max_length:
+    warning: 50
+    error: 60
+
+# Variable name (deprecated - using identifier_name instead)
+# variable_name is kept for backward compatibility but identifier_name takes precedence
+
+# Reporter
+reporter: "xcode"
+

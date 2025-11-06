@@ -3,900 +3,1192 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 77;
+	objectVersion = 90;
 	objects = {
 
 /* Begin PBXBuildFile section */
-		01C87C866104EE35451F33A0 /* DataLayer.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 967CEDCE0C0F130BCC2547FD /* DataLayer.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		03903AB4FB96C370BDF72AA1 /* ModuleVersionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2BFCA2ABB53CCD4F006DB63 /* ModuleVersionManager.swift */; };
-		0BB276130A452BD5FE692907 /* AppKitBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FABC2C457B4C0420D57EC98 /* AppKitBridge.swift */; };
-		13436333E69BA1EFC54D4C83 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 854D536E926441773C010ECD /* ContentView.swift */; };
-		20B6FD710641515B259338F2 /* AutoVersionUpdate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 495F1E409951FF6CD316256F /* AutoVersionUpdate.swift */; };
-		22C972B9F890FCB274F8EAAF /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 35D65CE0686B8F053AE8BE7C /* README.md */; };
-		281DE5E4D3A5B0AEB4862B30 /* DataLayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4FD0DBB3830D0FA2E596593 /* DataLayer.swift */; };
-		2D560808D6066CA56D9FD3BD /* MetadataEngine.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 9A4C5BEE3265B00B36646883 /* MetadataEngine.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		330B0E466697AECB9199EBBB /* Shared.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 06774C335950E7C8AFB02F02 /* Shared.framework */; };
-		36DE1E22AC6318A00D7FBEE7 /* AudientiaApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CD12CEA5AFB9CADCAE4D780 /* AudientiaApp.swift */; };
-		396737DE4DC87A8E29900523 /* Shared.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 06774C335950E7C8AFB02F02 /* Shared.framework */; };
-		3AA579D26131F543B897612E /* Shared.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 06774C335950E7C8AFB02F02 /* Shared.framework */; };
-		484D981006E0E27F87B7C147 /* MetadataEngine.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9A4C5BEE3265B00B36646883 /* MetadataEngine.framework */; };
-		64221702E27432E197C63CAA /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = B664D9E30F7EC5EAA3150EA9 /* README.md */; };
-		74CDB83BB655626458A990A2 /* AudioCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F3040189EB9AC8FE164A0AF7 /* AudioCore.framework */; };
-		7F95FCE05BE3BACC7ABC28E2 /* Shared.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 06774C335950E7C8AFB02F02 /* Shared.framework */; };
-		83F4B9211C524BC1C41A12B0 /* VersionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 100DC5F4B59ECB4A3E88D7DA /* VersionManager.swift */; };
-		85740EFFE71656B22B218FC3 /* ModuleVersionConflictView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B576156ACE71FEFE2A944189 /* ModuleVersionConflictView.swift */; };
-		85AA32DBB0F7E779314518AA /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = BEDE9FE7047D15441DEA50D6 /* README.md */; };
-		89271A5CF6391DD88FEA4C34 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = ECC0AC1B120D657B614635AD /* README.md */; };
-		90DE25ED47682FFCB546B656 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = B57487B1F91BFFB40181397C /* README.md */; };
-		932434CF8043A157070822B9 /* Shared.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 06774C335950E7C8AFB02F02 /* Shared.framework */; };
-		94C7851D5A4A0F68C272BABB /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = FA690E3D7859E61847661E01 /* README.md */; };
-		99DA93CFEB3130F8B6DA50F0 /* AppKitBridge.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = CAA083F1514490F5CEFD52BF /* AppKitBridge.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		9AAEB7D844FFCDD91B7461B7 /* PluginSystem.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E7CEDCFEA77C7164A82895D4 /* PluginSystem.framework */; };
-		9E70FD8F0ED3E73B0A33960E /* PluginSystem.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = E7CEDCFEA77C7164A82895D4 /* PluginSystem.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		9FEB90867A39BFFC44418E62 /* AppSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F9381F1B2FC969CA5A2B59D /* AppSettings.swift */; };
-		A21C6DFC27B4C7851E3E5A13 /* AudioCore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FC397E284D4F56F81AB8D5D /* AudioCore.swift */; };
-		B6F16F435903606BA886B06E /* Shared.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 06774C335950E7C8AFB02F02 /* Shared.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		B75690938178D2A55F4EBDD9 /* Shared.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 06774C335950E7C8AFB02F02 /* Shared.framework */; };
-		BB7468F218148180491107B6 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = BDC0AC16D33911EB21369D56 /* README.md */; };
-		CCAC0F0D70643AC0BACB2E51 /* DataLayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 967CEDCE0C0F130BCC2547FD /* DataLayer.framework */; };
-		CEAD040A104C04005BA0DFF2 /* AudioCore.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = F3040189EB9AC8FE164A0AF7 /* AudioCore.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		DD96C387BC79571BED3C7E42 /* PluginSystem.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD4F2E550F18A7C4BD379E76 /* PluginSystem.swift */; };
-		E8A0413BA9B2DCF7B1C91DCC /* MetadataEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C0F1ACEC5147C429BCC1211 /* MetadataEngine.swift */; };
-		FB4A9124496E91DE7BCFE024 /* AppKitBridge.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CAA083F1514490F5CEFD52BF /* AppKitBridge.framework */; };
+		3FA9FE7A7ED1E0E11A762DA5 /* MetadataEngine.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CED2D4430BA1E3E049474797 /* MetadataEngine.framework */; };
+		494CA1B7B9F0A556581FA522 /* AppKitBridge.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F562DA36ACAEFB3C6500B95A /* AppKitBridge.framework */; };
+		7AE63E1FA35CCEBB482E23FC /* PluginSystem.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 18F38166DD2A3099E8FE0858 /* PluginSystem.framework */; };
+		8936279BAA0C262362C00AF8 /* DataLayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9B1DDC925F9F1E5E4E088892 /* DataLayer.framework */; };
+		DC1E55CDE07C50ABCC852ABB /* AudioCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B56E76AE54B417BEB40A73B1 /* AudioCore.framework */; };
+		E1189D5441F4CD5791E82C97 /* Shared.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F0FB725E4BA59018898B62D0 /* Shared.framework */; };
+		E2BA0DF52EBD076E00DF20D9 /* TestFixtures.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2BA0DEF2EBD076E00DF20D9 /* TestFixtures.swift */; };
+		E2BA0DF62EBD076E00DF20D9 /* MockFactories.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2BA0DEE2EBD076E00DF20D9 /* MockFactories.swift */; };
+		E2BA0DF72EBD076E00DF20D9 /* TrackTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2BA0DEC2EBD076E00DF20D9 /* TrackTests.swift */; };
+		E2BA0DF82EBD076E00DF20D9 /* ArtistTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2BA0DEA2EBD076E00DF20D9 /* ArtistTests.swift */; };
+		E2BA0DF92EBD076E00DF20D9 /* PlaylistTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2BA0DEB2EBD076E00DF20D9 /* PlaylistTests.swift */; };
+		E2BA0DFA2EBD076E00DF20D9 /* AlbumTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2BA0DE92EBD076E00DF20D9 /* AlbumTests.swift */; };
+		E2BA0DFF2EBD078400DF20D9 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E2BA0DFB2EBD078400DF20D9 /* Assets.xcassets */; };
+		E2BA0E1F2EBD081100DF20D9 /* project.yml in Resources */ = {isa = PBXBuildFile; fileRef = E2BA0E1D2EBD081100DF20D9 /* project.yml */; };
+		E2BA0E202EBD081100DF20D9 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = E2BA0E1E2EBD081100DF20D9 /* README.md */; };
+		E2BA0E312EBD093600DF20D9 /* Track.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2BA0E282EBD093600DF20D9 /* Track.swift */; };
+		E2BA0E322EBD093600DF20D9 /* Album.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2BA0E242EBD093600DF20D9 /* Album.swift */; };
+		E2BA0E332EBD093600DF20D9 /* VersionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2BA0E2C2EBD093600DF20D9 /* VersionManager.swift */; };
+		E2BA0E342EBD093600DF20D9 /* AutoVersionUpdate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2BA0E2A2EBD093600DF20D9 /* AutoVersionUpdate.swift */; };
+		E2BA0E352EBD093600DF20D9 /* Playlist.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2BA0E272EBD093600DF20D9 /* Playlist.swift */; };
+		E2BA0E362EBD093600DF20D9 /* AppSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2BA0E252EBD093600DF20D9 /* AppSettings.swift */; };
+		E2BA0E372EBD093600DF20D9 /* Artist.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2BA0E262EBD093600DF20D9 /* Artist.swift */; };
+		E2BA0E382EBD093600DF20D9 /* ModuleVersionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2BA0E2B2EBD093600DF20D9 /* ModuleVersionManager.swift */; };
+		E2BA0E392EBD093600DF20D9 /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2BA0E222EBD093600DF20D9 /* Logger.swift */; };
+		E2BA0E3A2EBD093600DF20D9 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = E2BA0E2F2EBD093600DF20D9 /* README.md */; };
+		E2BA0E422EBD096F00DF20D9 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = E2BA0E402EBD096F00DF20D9 /* README.md */; };
+		E2BA0E432EBD096F00DF20D9 /* AppKitBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2BA0E3F2EBD096F00DF20D9 /* AppKitBridge.swift */; };
+		E2BA0E662EBD09C700DF20D9 /* AudioCore.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2BA0E632EBD09C700DF20D9 /* AudioCore.swift */; };
+		E2BA0E672EBD09C700DF20D9 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = E2BA0E642EBD09C700DF20D9 /* README.md */; };
+		E2BA0E6E2EBD09D200DF20D9 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = E2BA0E6C2EBD09D200DF20D9 /* README.md */; };
+		E2BA0E6F2EBD09D200DF20D9 /* DataLayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2BA0E6B2EBD09D200DF20D9 /* DataLayer.swift */; };
+		E2BA0E762EBD09DA00DF20D9 /* MetadataEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2BA0E732EBD09DA00DF20D9 /* MetadataEngine.swift */; };
+		E2BA0E772EBD09DA00DF20D9 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = E2BA0E742EBD09DA00DF20D9 /* README.md */; };
+		E2BA0E7F2EBD09E400DF20D9 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = E2BA0E7D2EBD09E400DF20D9 /* README.md */; };
+		E2BA0E802EBD09E400DF20D9 /* PluginSystem.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2BA0E7C2EBD09E400DF20D9 /* PluginSystem.swift */; };
+		E2BA0E8B2EBD0AC100DF20D9 /* ModuleVersionConflictView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2BA0E842EBD09F300DF20D9 /* ModuleVersionConflictView.swift */; };
+		E2BA0E8C2EBD0AC100DF20D9 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2BA0E882EBD09F300DF20D9 /* ContentView.swift */; };
+		E2BA0E8D2EBD0AC100DF20D9 /* AudientiaApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2BA0E872EBD09F300DF20D9 /* AudientiaApp.swift */; };
+		EBEC634EEFDF2588B01D3923 /* Platforms/MacOSX.platform/Developer/Library/Frameworks/XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0D3268B266637AA808DE765A /* Platforms/MacOSX.platform/Developer/Library/Frameworks/XCTest.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		1349D7302F2570B422FBEBA2 /* PBXContainerItemProxy */ = {
+		1E781E9E40331B14C0696AAE /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = AF348473424FB6AD275FC868 /* Project object */;
+			containerPortal = C2C3DCF2EF2BC8483228CBB5 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = C9315070ADDD2733ECF2C9B0;
+			remoteGlobalIDString = 8F690B7F5AD95FE4E5A4C80E;
 			remoteInfo = Shared;
 		};
-		23C052AB581ECA8E9D09A659 /* PBXContainerItemProxy */ = {
+		2DD05405463B2E568507A978 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = AF348473424FB6AD275FC868 /* Project object */;
+			containerPortal = C2C3DCF2EF2BC8483228CBB5 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = C9315070ADDD2733ECF2C9B0;
+			remoteGlobalIDString = 8F690B7F5AD95FE4E5A4C80E;
 			remoteInfo = Shared;
 		};
-		3BFBE62C377FF8AC941AE918 /* PBXContainerItemProxy */ = {
+		5002D5DEFF686A80D83C7F19 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = AF348473424FB6AD275FC868 /* Project object */;
+			containerPortal = C2C3DCF2EF2BC8483228CBB5 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = C9315070ADDD2733ECF2C9B0;
+			remoteGlobalIDString = 8F690B7F5AD95FE4E5A4C80E;
 			remoteInfo = Shared;
 		};
-		4910622D32C360E07590D9FF /* PBXContainerItemProxy */ = {
+		560691D5F36F36B449267E8D /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = AF348473424FB6AD275FC868 /* Project object */;
+			containerPortal = C2C3DCF2EF2BC8483228CBB5 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = 3F66AFB27086D6EDE602BBDC;
+			remoteGlobalIDString = 8F690B7F5AD95FE4E5A4C80E;
+			remoteInfo = Shared;
+		};
+		77E10681A82196189A2D3FDB /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = C2C3DCF2EF2BC8483228CBB5 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 1AAD8BCB3F8F53717E8EFFCF;
+			remoteInfo = PluginSystem;
+		};
+		816576A7549FD32DF9512FF9 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = C2C3DCF2EF2BC8483228CBB5 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 8F690B7F5AD95FE4E5A4C80E;
+			remoteInfo = Shared;
+		};
+		C25EC00423676E8EBDE7D14E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = C2C3DCF2EF2BC8483228CBB5 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 33715E2C16AF3CB3145F128E;
 			remoteInfo = MetadataEngine;
 		};
-		54FCE2BBA333BCA468FF75BD /* PBXContainerItemProxy */ = {
+		CC98E0F06435D123F8E37160 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = AF348473424FB6AD275FC868 /* Project object */;
+			containerPortal = C2C3DCF2EF2BC8483228CBB5 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = 6A56C40CB66C8E0C935B0696;
+			remoteGlobalIDString = 4E0DF1D8578E8858DB4F5A3D;
 			remoteInfo = AudioCore;
 		};
-		79D8FEC138355D35A98CDC4D /* PBXContainerItemProxy */ = {
+		D4DA7CEF2008370D9C7F6A90 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = AF348473424FB6AD275FC868 /* Project object */;
+			containerPortal = C2C3DCF2EF2BC8483228CBB5 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = 4B0F213D49F6FF73BFBC1908;
+			remoteGlobalIDString = 8F690B7F5AD95FE4E5A4C80E;
+			remoteInfo = Shared;
+		};
+		DDB142E3C1834675980FBC38 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = C2C3DCF2EF2BC8483228CBB5 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 8F690B7F5AD95FE4E5A4C80E;
+			remoteInfo = Shared;
+		};
+		E01A2CF4AA8620D209062C71 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = C2C3DCF2EF2BC8483228CBB5 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 230C4FDFB1206360A656A583;
 			remoteInfo = AppKitBridge;
 		};
-		96D663D5739BE2134C9D20F7 /* PBXContainerItemProxy */ = {
+		FD25E4662DF50FAC09547B14 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = AF348473424FB6AD275FC868 /* Project object */;
+			containerPortal = C2C3DCF2EF2BC8483228CBB5 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = C9315070ADDD2733ECF2C9B0;
-			remoteInfo = Shared;
-		};
-		97EB12186EBBB28A3E20FFFB /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = AF348473424FB6AD275FC868 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = C9315070ADDD2733ECF2C9B0;
-			remoteInfo = Shared;
-		};
-		B406C2BD746FE88728FA8037 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = AF348473424FB6AD275FC868 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 15ABA0849044C2D5313CF0D0;
+			remoteGlobalIDString = EB0306C92F4BF00DD2F84FB0;
 			remoteInfo = DataLayer;
-		};
-		B5F6393CE37C2F1E7771400A /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = AF348473424FB6AD275FC868 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = C9315070ADDD2733ECF2C9B0;
-			remoteInfo = Shared;
-		};
-		C2F98C50A8694575E87E2F71 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = AF348473424FB6AD275FC868 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 60DBDF79817EDE096FCDC555;
-			remoteInfo = PluginSystem;
 		};
 /* End PBXContainerItemProxy section */
 
-/* Begin PBXCopyFilesBuildPhase section */
-		6E0B5564A63E55CF5924A44D /* Embed Frameworks */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 10;
-			files = (
-				B6F16F435903606BA886B06E /* Shared.framework in Embed Frameworks */,
-				99DA93CFEB3130F8B6DA50F0 /* AppKitBridge.framework in Embed Frameworks */,
-				CEAD040A104C04005BA0DFF2 /* AudioCore.framework in Embed Frameworks */,
-				2D560808D6066CA56D9FD3BD /* MetadataEngine.framework in Embed Frameworks */,
-				01C87C866104EE35451F33A0 /* DataLayer.framework in Embed Frameworks */,
-				9E70FD8F0ED3E73B0A33960E /* PluginSystem.framework in Embed Frameworks */,
-			);
-			name = "Embed Frameworks";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-/* End PBXCopyFilesBuildPhase section */
-
 /* Begin PBXFileReference section */
-		06774C335950E7C8AFB02F02 /* Shared.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Shared.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		100DC5F4B59ECB4A3E88D7DA /* VersionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VersionManager.swift; sourceTree = "<group>"; };
-		35D65CE0686B8F053AE8BE7C /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
-		495F1E409951FF6CD316256F /* AutoVersionUpdate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoVersionUpdate.swift; sourceTree = "<group>"; };
-		6F9381F1B2FC969CA5A2B59D /* AppSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSettings.swift; sourceTree = "<group>"; };
-		7C0F1ACEC5147C429BCC1211 /* MetadataEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetadataEngine.swift; sourceTree = "<group>"; };
-		854D536E926441773C010ECD /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
-		8FABC2C457B4C0420D57EC98 /* AppKitBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppKitBridge.swift; sourceTree = "<group>"; };
-		8FC397E284D4F56F81AB8D5D /* AudioCore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioCore.swift; sourceTree = "<group>"; };
-		967CEDCE0C0F130BCC2547FD /* DataLayer.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = DataLayer.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		9A4C5BEE3265B00B36646883 /* MetadataEngine.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = MetadataEngine.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		9CD12CEA5AFB9CADCAE4D780 /* AudientiaApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudientiaApp.swift; sourceTree = "<group>"; };
-		B57487B1F91BFFB40181397C /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
-		B576156ACE71FEFE2A944189 /* ModuleVersionConflictView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModuleVersionConflictView.swift; sourceTree = "<group>"; };
-		B664D9E30F7EC5EAA3150EA9 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
-		BDC0AC16D33911EB21369D56 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
-		BEDE9FE7047D15441DEA50D6 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
-		CAA083F1514490F5CEFD52BF /* AppKitBridge.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = AppKitBridge.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		CD4F2E550F18A7C4BD379E76 /* PluginSystem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PluginSystem.swift; sourceTree = "<group>"; };
-		E4FD0DBB3830D0FA2E596593 /* DataLayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataLayer.swift; sourceTree = "<group>"; };
-		E7CEDCFEA77C7164A82895D4 /* PluginSystem.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = PluginSystem.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		ECC0AC1B120D657B614635AD /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
-		F15371429C811311AC9E8A32 /* Audientia.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Audientia.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		F2BFCA2ABB53CCD4F006DB63 /* ModuleVersionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModuleVersionManager.swift; sourceTree = "<group>"; };
-		F3040189EB9AC8FE164A0AF7 /* AudioCore.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = AudioCore.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		FA690E3D7859E61847661E01 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		0D3268B266637AA808DE765A /* Platforms/MacOSX.platform/Developer/Library/Frameworks/XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Platforms/MacOSX.platform/Developer/Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
+		18F38166DD2A3099E8FE0858 /* PluginSystem.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = PluginSystem.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		9B1DDC925F9F1E5E4E088892 /* DataLayer.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = DataLayer.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		B56E76AE54B417BEB40A73B1 /* AudioCore.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = AudioCore.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		BCC366B4B1252D3A95E57B4B /* SharedTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SharedTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		CED2D4430BA1E3E049474797 /* MetadataEngine.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = MetadataEngine.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		D067F44B91574AA9124948D5 /* Audientia.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Audientia.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		E2BA0DE92EBD076E00DF20D9 /* AlbumTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlbumTests.swift; sourceTree = "<group>"; };
+		E2BA0DEA2EBD076E00DF20D9 /* ArtistTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArtistTests.swift; sourceTree = "<group>"; };
+		E2BA0DEB2EBD076E00DF20D9 /* PlaylistTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaylistTests.swift; sourceTree = "<group>"; };
+		E2BA0DEC2EBD076E00DF20D9 /* TrackTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackTests.swift; sourceTree = "<group>"; };
+		E2BA0DEE2EBD076E00DF20D9 /* MockFactories.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockFactories.swift; sourceTree = "<group>"; };
+		E2BA0DEF2EBD076E00DF20D9 /* TestFixtures.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestFixtures.swift; sourceTree = "<group>"; };
+		E2BA0DF22EBD076E00DF20D9 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		E2BA0DFB2EBD078400DF20D9 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		E2BA0DFC2EBD078400DF20D9 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		E2BA0E002EBD078E00DF20D9 /* 01-vision-and-name.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = "01-vision-and-name.md"; sourceTree = "<group>"; };
+		E2BA0E012EBD078E00DF20D9 /* 02-language-evaluation-and-recommendation.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = "02-language-evaluation-and-recommendation.md"; sourceTree = "<group>"; };
+		E2BA0E022EBD078E00DF20D9 /* 03-feature-comparison.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = "03-feature-comparison.md"; sourceTree = "<group>"; };
+		E2BA0E032EBD078E00DF20D9 /* 04-architecture.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = "04-architecture.md"; sourceTree = "<group>"; };
+		E2BA0E042EBD078E00DF20D9 /* 05-roadmap-and-testing-strategy.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = "05-roadmap-and-testing-strategy.md"; sourceTree = "<group>"; };
+		E2BA0E052EBD078E00DF20D9 /* 06-best-practices-and-clean-code.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = "06-best-practices-and-clean-code.md"; sourceTree = "<group>"; };
+		E2BA0E062EBD078E00DF20D9 /* 07-logging-observability.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = "07-logging-observability.md"; sourceTree = "<group>"; };
+		E2BA0E072EBD078E00DF20D9 /* 08-ml-ai-features.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = "08-ml-ai-features.md"; sourceTree = "<group>"; };
+		E2BA0E082EBD078E00DF20D9 /* 09-branding-and-icon.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = "09-branding-and-icon.md"; sourceTree = "<group>"; };
+		E2BA0E092EBD078E00DF20D9 /* 10-integration-open-source-reuse.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = "10-integration-open-source-reuse.md"; sourceTree = "<group>"; };
+		E2BA0E0A2EBD078E00DF20D9 /* 11-versioning-system.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = "11-versioning-system.md"; sourceTree = "<group>"; };
+		E2BA0E0B2EBD078E00DF20D9 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		E2BA0E0D2EBD079D00DF20D9 /* create_blank_project.rb */ = {isa = PBXFileReference; lastKnownFileType = text.script.ruby; path = create_blank_project.rb; sourceTree = "<group>"; };
+		E2BA0E0E2EBD079D00DF20D9 /* load_versions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = load_versions.swift; sourceTree = "<group>"; };
+		E2BA0E0F2EBD079D00DF20D9 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		E2BA0E102EBD079D00DF20D9 /* update_version.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = update_version.sh; sourceTree = "<group>"; };
+		E2BA0E122EBD07A900DF20D9 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		E2BA0E142EBD07A900DF20D9 /* PROJECT_STATUS.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = PROJECT_STATUS.md; sourceTree = "<group>"; };
+		E2BA0E152EBD07A900DF20D9 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		E2BA0E162EBD07A900DF20D9 /* SETUP.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = SETUP.md; sourceTree = "<group>"; };
+		E2BA0E1D2EBD081100DF20D9 /* project.yml */ = {isa = PBXFileReference; lastKnownFileType = text.yaml; path = project.yml; sourceTree = "<group>"; };
+		E2BA0E1E2EBD081100DF20D9 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		E2BA0E222EBD093600DF20D9 /* Logger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Logger.swift; sourceTree = "<group>"; };
+		E2BA0E242EBD093600DF20D9 /* Album.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Album.swift; sourceTree = "<group>"; };
+		E2BA0E252EBD093600DF20D9 /* AppSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSettings.swift; sourceTree = "<group>"; };
+		E2BA0E262EBD093600DF20D9 /* Artist.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Artist.swift; sourceTree = "<group>"; };
+		E2BA0E272EBD093600DF20D9 /* Playlist.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Playlist.swift; sourceTree = "<group>"; };
+		E2BA0E282EBD093600DF20D9 /* Track.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Track.swift; sourceTree = "<group>"; };
+		E2BA0E2A2EBD093600DF20D9 /* AutoVersionUpdate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoVersionUpdate.swift; sourceTree = "<group>"; };
+		E2BA0E2B2EBD093600DF20D9 /* ModuleVersionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModuleVersionManager.swift; sourceTree = "<group>"; };
+		E2BA0E2C2EBD093600DF20D9 /* VersionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VersionManager.swift; sourceTree = "<group>"; };
+		E2BA0E2F2EBD093600DF20D9 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		E2BA0E3F2EBD096F00DF20D9 /* AppKitBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppKitBridge.swift; sourceTree = "<group>"; };
+		E2BA0E402EBD096F00DF20D9 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		E2BA0E632EBD09C700DF20D9 /* AudioCore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioCore.swift; sourceTree = "<group>"; };
+		E2BA0E642EBD09C700DF20D9 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		E2BA0E6B2EBD09D200DF20D9 /* DataLayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataLayer.swift; sourceTree = "<group>"; };
+		E2BA0E6C2EBD09D200DF20D9 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		E2BA0E732EBD09DA00DF20D9 /* MetadataEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetadataEngine.swift; sourceTree = "<group>"; };
+		E2BA0E742EBD09DA00DF20D9 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		E2BA0E7C2EBD09E400DF20D9 /* PluginSystem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PluginSystem.swift; sourceTree = "<group>"; };
+		E2BA0E7D2EBD09E400DF20D9 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		E2BA0E842EBD09F300DF20D9 /* ModuleVersionConflictView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModuleVersionConflictView.swift; sourceTree = "<group>"; };
+		E2BA0E872EBD09F300DF20D9 /* AudientiaApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudientiaApp.swift; sourceTree = "<group>"; };
+		E2BA0E882EBD09F300DF20D9 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		E2BA0E892EBD09F300DF20D9 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		E2BA0E8E2EBD0B6200DF20D9 /* Audientia.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = Audientia.xctestplan; sourceTree = "<group>"; };
+		F0FB725E4BA59018898B62D0 /* Shared.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Shared.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		F562DA36ACAEFB3C6500B95A /* AppKitBridge.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = AppKitBridge.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		0E52DDBDF7CF01AE30D75C38 /* Frameworks */ = {
+		03E82AD030BFE77D0B1FCA8D /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
 			files = (
-				7F95FCE05BE3BACC7ABC28E2 /* Shared.framework in Frameworks */,
 			);
-			runOnlyForDeploymentPostprocessing = 0;
 		};
-		4E11CECF343E52EDBCA8F881 /* Frameworks */ = {
+		10D1F1E91854514757E4558B /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
 			files = (
-				3AA579D26131F543B897612E /* Shared.framework in Frameworks */,
-				FB4A9124496E91DE7BCFE024 /* AppKitBridge.framework in Frameworks */,
-				74CDB83BB655626458A990A2 /* AudioCore.framework in Frameworks */,
-				484D981006E0E27F87B7C147 /* MetadataEngine.framework in Frameworks */,
-				CCAC0F0D70643AC0BACB2E51 /* DataLayer.framework in Frameworks */,
-				9AAEB7D844FFCDD91B7461B7 /* PluginSystem.framework in Frameworks */,
+				EBEC634EEFDF2588B01D3923 /* Platforms/MacOSX.platform/Developer/Library/Frameworks/XCTest.framework in Frameworks */,
 			);
-			runOnlyForDeploymentPostprocessing = 0;
 		};
-		5C8D187D52349AD23D5116DA /* Frameworks */ = {
+		51054654C9E3731DDD6F0C9E /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
 			files = (
-				B75690938178D2A55F4EBDD9 /* Shared.framework in Frameworks */,
 			);
-			runOnlyForDeploymentPostprocessing = 0;
 		};
-		5E98DA02BB3016DE07331089 /* Frameworks */ = {
+		62A7E6E337087A55C70D34D5 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
 			files = (
-				396737DE4DC87A8E29900523 /* Shared.framework in Frameworks */,
 			);
-			runOnlyForDeploymentPostprocessing = 0;
 		};
-		9D83AB8AC540028320B30DE7 /* Frameworks */ = {
+		89A73800997F70D4D189322F /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
 			files = (
-				932434CF8043A157070822B9 /* Shared.framework in Frameworks */,
 			);
-			runOnlyForDeploymentPostprocessing = 0;
 		};
-		F505512947C796F92FCCCB35 /* Frameworks */ = {
+		CE31C6CCB6856BA780C75B59 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
 			files = (
-				330B0E466697AECB9199EBBB /* Shared.framework in Frameworks */,
 			);
-			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E3D5022B2813FC04CD8A804C /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			files = (
+			);
+		};
+		ED36E4EC51957F96B9D44CCC /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			files = (
+				E1189D5441F4CD5791E82C97 /* Shared.framework in Frameworks */,
+				494CA1B7B9F0A556581FA522 /* AppKitBridge.framework in Frameworks */,
+				DC1E55CDE07C50ABCC852ABB /* AudioCore.framework in Frameworks */,
+				8936279BAA0C262362C00AF8 /* DataLayer.framework in Frameworks */,
+				3FA9FE7A7ED1E0E11A762DA5 /* MetadataEngine.framework in Frameworks */,
+				7AE63E1FA35CCEBB482E23FC /* PluginSystem.framework in Frameworks */,
+			);
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		1DD88DFBD9A60F6B1918B423 /* AudioCore */ = {
+		1D09847F19EDDC858AA5261C = {
 			isa = PBXGroup;
 			children = (
-				8FC397E284D4F56F81AB8D5D /* AudioCore.swift */,
-				BDC0AC16D33911EB21369D56 /* README.md */,
+				E2BA0E8E2EBD0B6200DF20D9 /* Audientia.xctestplan */,
+				E2BA0E1D2EBD081100DF20D9 /* project.yml */,
+				E2BA0E1E2EBD081100DF20D9 /* README.md */,
+				E2BA0E172EBD07A900DF20D9 /* Configuration */,
+				E2BA0E112EBD079D00DF20D9 /* Scripts */,
+				E2BA0E0C2EBD078E00DF20D9 /* Documentation */,
+				E2BA0DFD2EBD078400DF20D9 /* Resources */,
+				E2BA0DF32EBD076E00DF20D9 /* Tests */,
+				E2BA0DD02EBD075100DF20D9 /* Sources */,
+				4A0FFB915B2DF699BE924071 /* Products */,
+				985577845B2780D9AD06BB01 /* Frameworks */,
 			);
-			path = AudioCore;
 			sourceTree = "<group>";
 		};
-		25F6D1E008CCA16BDE6B7C26 /* PluginSystem */ = {
+		4A0FFB915B2DF699BE924071 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				CD4F2E550F18A7C4BD379E76 /* PluginSystem.swift */,
-				BEDE9FE7047D15441DEA50D6 /* README.md */,
-			);
-			path = PluginSystem;
-			sourceTree = "<group>";
-		};
-		2AAB58C983027C6DF1F9E9E8 /* MetadataEngine */ = {
-			isa = PBXGroup;
-			children = (
-				7C0F1ACEC5147C429BCC1211 /* MetadataEngine.swift */,
-				FA690E3D7859E61847661E01 /* README.md */,
-			);
-			path = MetadataEngine;
-			sourceTree = "<group>";
-		};
-		36689CB263B32AFD15C83CC6 /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				CAA083F1514490F5CEFD52BF /* AppKitBridge.framework */,
-				F15371429C811311AC9E8A32 /* Audientia.app */,
-				F3040189EB9AC8FE164A0AF7 /* AudioCore.framework */,
-				967CEDCE0C0F130BCC2547FD /* DataLayer.framework */,
-				9A4C5BEE3265B00B36646883 /* MetadataEngine.framework */,
-				E7CEDCFEA77C7164A82895D4 /* PluginSystem.framework */,
-				06774C335950E7C8AFB02F02 /* Shared.framework */,
+				D067F44B91574AA9124948D5 /* Audientia.app */,
+				F0FB725E4BA59018898B62D0 /* Shared.framework */,
+				F562DA36ACAEFB3C6500B95A /* AppKitBridge.framework */,
+				B56E76AE54B417BEB40A73B1 /* AudioCore.framework */,
+				9B1DDC925F9F1E5E4E088892 /* DataLayer.framework */,
+				CED2D4430BA1E3E049474797 /* MetadataEngine.framework */,
+				18F38166DD2A3099E8FE0858 /* PluginSystem.framework */,
+				BCC366B4B1252D3A95E57B4B /* SharedTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		6FD6BFF296EF78B0E5EA593A /* Models */ = {
+		985577845B2780D9AD06BB01 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				6F9381F1B2FC969CA5A2B59D /* AppSettings.swift */,
+				0D3268B266637AA808DE765A /* Platforms/MacOSX.platform/Developer/Library/Frameworks/XCTest.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		E2BA0DD02EBD075100DF20D9 /* Sources */ = {
+			isa = PBXGroup;
+			children = (
+				E2BA0E8A2EBD09F300DF20D9 /* UI */,
+				E2BA0E752EBD09DA00DF20D9 /* MetadataEngine */,
+				E2BA0E6D2EBD09D200DF20D9 /* DataLayer */,
+				E2BA0E652EBD09C700DF20D9 /* AudioCore */,
+				E2BA0E412EBD096F00DF20D9 /* AppKitBridge */,
+				E2BA0E302EBD093600DF20D9 /* Shared */,
+				E2BA0E7E2EBD09E400DF20D9 /* PluginSystem */,
+			);
+			path = Sources;
+			sourceTree = "<group>";
+		};
+		E2BA0DED2EBD076E00DF20D9 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				E2BA0DE92EBD076E00DF20D9 /* AlbumTests.swift */,
+				E2BA0DEA2EBD076E00DF20D9 /* ArtistTests.swift */,
+				E2BA0DEB2EBD076E00DF20D9 /* PlaylistTests.swift */,
+				E2BA0DEC2EBD076E00DF20D9 /* TrackTests.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
 		};
-		BB4816A99910CD0D78E6E52B = {
+		E2BA0DF02EBD076E00DF20D9 /* TestInfrastructure */ = {
 			isa = PBXGroup;
 			children = (
-				DD91CFE569055026A88E5703 /* AppKitBridge */,
-				1DD88DFBD9A60F6B1918B423 /* AudioCore */,
-				BD62D2CA8ABA50869DDFF4EC /* DataLayer */,
-				2AAB58C983027C6DF1F9E9E8 /* MetadataEngine */,
-				25F6D1E008CCA16BDE6B7C26 /* PluginSystem */,
-				CBEFC511A1393F9FFB7AB590 /* Shared */,
-				E46FEEEEB000F221BAAACEF2 /* UI */,
-				36689CB263B32AFD15C83CC6 /* Products */,
+				E2BA0DEE2EBD076E00DF20D9 /* MockFactories.swift */,
+				E2BA0DEF2EBD076E00DF20D9 /* TestFixtures.swift */,
 			);
+			path = TestInfrastructure;
 			sourceTree = "<group>";
 		};
-		BD62D2CA8ABA50869DDFF4EC /* DataLayer */ = {
+		E2BA0DF12EBD076E00DF20D9 /* SharedTests */ = {
 			isa = PBXGroup;
 			children = (
-				E4FD0DBB3830D0FA2E596593 /* DataLayer.swift */,
-				ECC0AC1B120D657B614635AD /* README.md */,
+				E2BA0DED2EBD076E00DF20D9 /* Models */,
+				E2BA0DF02EBD076E00DF20D9 /* TestInfrastructure */,
 			);
-			path = DataLayer;
+			path = SharedTests;
 			sourceTree = "<group>";
 		};
-		C8E09B1082E58D9C6AF22AC9 /* Settings */ = {
+		E2BA0DF32EBD076E00DF20D9 /* Tests */ = {
 			isa = PBXGroup;
 			children = (
-				B576156ACE71FEFE2A944189 /* ModuleVersionConflictView.swift */,
+				E2BA0DF12EBD076E00DF20D9 /* SharedTests */,
+				E2BA0DF22EBD076E00DF20D9 /* README.md */,
 			);
-			path = Settings;
+			path = Tests;
 			sourceTree = "<group>";
 		};
-		CBEFC511A1393F9FFB7AB590 /* Shared */ = {
+		E2BA0DFD2EBD078400DF20D9 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				B664D9E30F7EC5EAA3150EA9 /* README.md */,
-				6FD6BFF296EF78B0E5EA593A /* Models */,
-				F3E7A601FF2C6B3F6E3D38E9 /* Utilities */,
+				E2BA0DFB2EBD078400DF20D9 /* Assets.xcassets */,
+				E2BA0DFC2EBD078400DF20D9 /* README.md */,
 			);
-			path = Shared;
+			path = Resources;
 			sourceTree = "<group>";
 		};
-		DD91CFE569055026A88E5703 /* AppKitBridge */ = {
+		E2BA0E0C2EBD078E00DF20D9 /* Documentation */ = {
 			isa = PBXGroup;
 			children = (
-				8FABC2C457B4C0420D57EC98 /* AppKitBridge.swift */,
-				35D65CE0686B8F053AE8BE7C /* README.md */,
+				E2BA0E002EBD078E00DF20D9 /* 01-vision-and-name.md */,
+				E2BA0E012EBD078E00DF20D9 /* 02-language-evaluation-and-recommendation.md */,
+				E2BA0E022EBD078E00DF20D9 /* 03-feature-comparison.md */,
+				E2BA0E032EBD078E00DF20D9 /* 04-architecture.md */,
+				E2BA0E042EBD078E00DF20D9 /* 05-roadmap-and-testing-strategy.md */,
+				E2BA0E052EBD078E00DF20D9 /* 06-best-practices-and-clean-code.md */,
+				E2BA0E062EBD078E00DF20D9 /* 07-logging-observability.md */,
+				E2BA0E072EBD078E00DF20D9 /* 08-ml-ai-features.md */,
+				E2BA0E082EBD078E00DF20D9 /* 09-branding-and-icon.md */,
+				E2BA0E092EBD078E00DF20D9 /* 10-integration-open-source-reuse.md */,
+				E2BA0E0A2EBD078E00DF20D9 /* 11-versioning-system.md */,
+				E2BA0E0B2EBD078E00DF20D9 /* README.md */,
 			);
-			path = AppKitBridge;
+			path = Documentation;
 			sourceTree = "<group>";
 		};
-		E46FEEEEB000F221BAAACEF2 /* UI */ = {
+		E2BA0E112EBD079D00DF20D9 /* Scripts */ = {
 			isa = PBXGroup;
 			children = (
-				9CD12CEA5AFB9CADCAE4D780 /* AudientiaApp.swift */,
-				854D536E926441773C010ECD /* ContentView.swift */,
-				B57487B1F91BFFB40181397C /* README.md */,
-				C8E09B1082E58D9C6AF22AC9 /* Settings */,
+				E2BA0E0D2EBD079D00DF20D9 /* create_blank_project.rb */,
+				E2BA0E0E2EBD079D00DF20D9 /* load_versions.swift */,
+				E2BA0E0F2EBD079D00DF20D9 /* README.md */,
+				E2BA0E102EBD079D00DF20D9 /* update_version.sh */,
 			);
-			path = UI;
+			path = Scripts;
 			sourceTree = "<group>";
 		};
-		F3E7A601FF2C6B3F6E3D38E9 /* Utilities */ = {
+		E2BA0E172EBD07A900DF20D9 /* Configuration */ = {
 			isa = PBXGroup;
 			children = (
-				495F1E409951FF6CD316256F /* AutoVersionUpdate.swift */,
-				F2BFCA2ABB53CCD4F006DB63 /* ModuleVersionManager.swift */,
-				100DC5F4B59ECB4A3E88D7DA /* VersionManager.swift */,
+				E2BA0E122EBD07A900DF20D9 /* Info.plist */,
+				E2BA0E142EBD07A900DF20D9 /* PROJECT_STATUS.md */,
+				E2BA0E152EBD07A900DF20D9 /* README.md */,
+				E2BA0E162EBD07A900DF20D9 /* SETUP.md */,
+			);
+			path = Configuration;
+			sourceTree = "<group>";
+		};
+		E2BA0E212EBD093600DF20D9 /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Extensions;
+			sourceTree = "<group>";
+		};
+		E2BA0E232EBD093600DF20D9 /* Logging */ = {
+			isa = PBXGroup;
+			children = (
+				E2BA0E222EBD093600DF20D9 /* Logger.swift */,
+			);
+			path = Logging;
+			sourceTree = "<group>";
+		};
+		E2BA0E292EBD093600DF20D9 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				E2BA0E242EBD093600DF20D9 /* Album.swift */,
+				E2BA0E252EBD093600DF20D9 /* AppSettings.swift */,
+				E2BA0E262EBD093600DF20D9 /* Artist.swift */,
+				E2BA0E272EBD093600DF20D9 /* Playlist.swift */,
+				E2BA0E282EBD093600DF20D9 /* Track.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		E2BA0E2D2EBD093600DF20D9 /* Utilities */ = {
+			isa = PBXGroup;
+			children = (
+				E2BA0E2A2EBD093600DF20D9 /* AutoVersionUpdate.swift */,
+				E2BA0E2B2EBD093600DF20D9 /* ModuleVersionManager.swift */,
+				E2BA0E2C2EBD093600DF20D9 /* VersionManager.swift */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
 		};
+		E2BA0E2E2EBD093600DF20D9 /* ViewModels */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = ViewModels;
+			sourceTree = "<group>";
+		};
+		E2BA0E302EBD093600DF20D9 /* Shared */ = {
+			isa = PBXGroup;
+			children = (
+				E2BA0E212EBD093600DF20D9 /* Extensions */,
+				E2BA0E232EBD093600DF20D9 /* Logging */,
+				E2BA0E292EBD093600DF20D9 /* Models */,
+				E2BA0E2D2EBD093600DF20D9 /* Utilities */,
+				E2BA0E2E2EBD093600DF20D9 /* ViewModels */,
+				E2BA0E2F2EBD093600DF20D9 /* README.md */,
+			);
+			path = Shared;
+			sourceTree = "<group>";
+		};
+		E2BA0E3B2EBD096F00DF20D9 /* DragAndDrop */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = DragAndDrop;
+			sourceTree = "<group>";
+		};
+		E2BA0E3C2EBD096F00DF20D9 /* FileDialogs */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = FileDialogs;
+			sourceTree = "<group>";
+		};
+		E2BA0E3D2EBD096F00DF20D9 /* MenuIntegration */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = MenuIntegration;
+			sourceTree = "<group>";
+		};
+		E2BA0E3E2EBD096F00DF20D9 /* SystemMediaControls */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = SystemMediaControls;
+			sourceTree = "<group>";
+		};
+		E2BA0E412EBD096F00DF20D9 /* AppKitBridge */ = {
+			isa = PBXGroup;
+			children = (
+				E2BA0E3B2EBD096F00DF20D9 /* DragAndDrop */,
+				E2BA0E3C2EBD096F00DF20D9 /* FileDialogs */,
+				E2BA0E3D2EBD096F00DF20D9 /* MenuIntegration */,
+				E2BA0E3E2EBD096F00DF20D9 /* SystemMediaControls */,
+				E2BA0E3F2EBD096F00DF20D9 /* AppKitBridge.swift */,
+				E2BA0E402EBD096F00DF20D9 /* README.md */,
+			);
+			path = AppKitBridge;
+			sourceTree = "<group>";
+		};
+		E2BA0E5F2EBD09C700DF20D9 /* Bridge */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Bridge;
+			sourceTree = "<group>";
+		};
+		E2BA0E602EBD09C700DF20D9 /* Decoder */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Decoder;
+			sourceTree = "<group>";
+		};
+		E2BA0E612EBD09C700DF20D9 /* DSP */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = DSP;
+			sourceTree = "<group>";
+		};
+		E2BA0E622EBD09C700DF20D9 /* Engine */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Engine;
+			sourceTree = "<group>";
+		};
+		E2BA0E652EBD09C700DF20D9 /* AudioCore */ = {
+			isa = PBXGroup;
+			children = (
+				E2BA0E5F2EBD09C700DF20D9 /* Bridge */,
+				E2BA0E602EBD09C700DF20D9 /* Decoder */,
+				E2BA0E612EBD09C700DF20D9 /* DSP */,
+				E2BA0E622EBD09C700DF20D9 /* Engine */,
+				E2BA0E632EBD09C700DF20D9 /* AudioCore.swift */,
+				E2BA0E642EBD09C700DF20D9 /* README.md */,
+			);
+			path = AudioCore;
+			sourceTree = "<group>";
+		};
+		E2BA0E682EBD09D200DF20D9 /* CoreData */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = CoreData;
+			sourceTree = "<group>";
+		};
+		E2BA0E692EBD09D200DF20D9 /* Migrations */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Migrations;
+			sourceTree = "<group>";
+		};
+		E2BA0E6A2EBD09D200DF20D9 /* SQLite */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = SQLite;
+			sourceTree = "<group>";
+		};
+		E2BA0E6D2EBD09D200DF20D9 /* DataLayer */ = {
+			isa = PBXGroup;
+			children = (
+				E2BA0E682EBD09D200DF20D9 /* CoreData */,
+				E2BA0E692EBD09D200DF20D9 /* Migrations */,
+				E2BA0E6A2EBD09D200DF20D9 /* SQLite */,
+				E2BA0E6B2EBD09D200DF20D9 /* DataLayer.swift */,
+				E2BA0E6C2EBD09D200DF20D9 /* README.md */,
+			);
+			path = DataLayer;
+			sourceTree = "<group>";
+		};
+		E2BA0E702EBD09DA00DF20D9 /* Artwork */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Artwork;
+			sourceTree = "<group>";
+		};
+		E2BA0E712EBD09DA00DF20D9 /* Parsers */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Parsers;
+			sourceTree = "<group>";
+		};
+		E2BA0E722EBD09DA00DF20D9 /* Writers */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Writers;
+			sourceTree = "<group>";
+		};
+		E2BA0E752EBD09DA00DF20D9 /* MetadataEngine */ = {
+			isa = PBXGroup;
+			children = (
+				E2BA0E702EBD09DA00DF20D9 /* Artwork */,
+				E2BA0E712EBD09DA00DF20D9 /* Parsers */,
+				E2BA0E722EBD09DA00DF20D9 /* Writers */,
+				E2BA0E732EBD09DA00DF20D9 /* MetadataEngine.swift */,
+				E2BA0E742EBD09DA00DF20D9 /* README.md */,
+			);
+			path = MetadataEngine;
+			sourceTree = "<group>";
+		};
+		E2BA0E782EBD09E400DF20D9 /* API */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = API;
+			sourceTree = "<group>";
+		};
+		E2BA0E792EBD09E400DF20D9 /* Examples */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Examples;
+			sourceTree = "<group>";
+		};
+		E2BA0E7A2EBD09E400DF20D9 /* Runtime */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Runtime;
+			sourceTree = "<group>";
+		};
+		E2BA0E7B2EBD09E400DF20D9 /* Sandbox */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Sandbox;
+			sourceTree = "<group>";
+		};
+		E2BA0E7E2EBD09E400DF20D9 /* PluginSystem */ = {
+			isa = PBXGroup;
+			children = (
+				E2BA0E782EBD09E400DF20D9 /* API */,
+				E2BA0E792EBD09E400DF20D9 /* Examples */,
+				E2BA0E7A2EBD09E400DF20D9 /* Runtime */,
+				E2BA0E7B2EBD09E400DF20D9 /* Sandbox */,
+				E2BA0E7C2EBD09E400DF20D9 /* PluginSystem.swift */,
+				E2BA0E7D2EBD09E400DF20D9 /* README.md */,
+			);
+			path = PluginSystem;
+			sourceTree = "<group>";
+		};
+		E2BA0E812EBD09F300DF20D9 /* Library */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Library;
+			sourceTree = "<group>";
+		};
+		E2BA0E822EBD09F300DF20D9 /* NowPlaying */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = NowPlaying;
+			sourceTree = "<group>";
+		};
+		E2BA0E832EBD09F300DF20D9 /* Playlists */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Playlists;
+			sourceTree = "<group>";
+		};
+		E2BA0E852EBD09F300DF20D9 /* Settings */ = {
+			isa = PBXGroup;
+			children = (
+				E2BA0E842EBD09F300DF20D9 /* ModuleVersionConflictView.swift */,
+			);
+			path = Settings;
+			sourceTree = "<group>";
+		};
+		E2BA0E862EBD09F300DF20D9 /* Visualizer */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Visualizer;
+			sourceTree = "<group>";
+		};
+		E2BA0E8A2EBD09F300DF20D9 /* UI */ = {
+			isa = PBXGroup;
+			children = (
+				E2BA0E812EBD09F300DF20D9 /* Library */,
+				E2BA0E822EBD09F300DF20D9 /* NowPlaying */,
+				E2BA0E832EBD09F300DF20D9 /* Playlists */,
+				E2BA0E852EBD09F300DF20D9 /* Settings */,
+				E2BA0E862EBD09F300DF20D9 /* Visualizer */,
+				E2BA0E872EBD09F300DF20D9 /* AudientiaApp.swift */,
+				E2BA0E882EBD09F300DF20D9 /* ContentView.swift */,
+				E2BA0E892EBD09F300DF20D9 /* README.md */,
+			);
+			path = UI;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
+/* Begin PBXHeadersBuildPhase section */
+		5524D012C38AD681F98F6080 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			files = (
+			);
+		};
+		688875EEFA5A8E404BC04A83 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			files = (
+			);
+		};
+		71BFDE763959573C08412427 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			files = (
+			);
+		};
+		787F6929B335BD90587DEF3A /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			files = (
+			);
+		};
+		97198D730FD62E4B8079ED8A /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			files = (
+			);
+		};
+		E3BB88C4B52DC5F1ADAFF067 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			files = (
+			);
+		};
+/* End PBXHeadersBuildPhase section */
+
 /* Begin PBXNativeTarget section */
-		15ABA0849044C2D5313CF0D0 /* DataLayer */ = {
+		1AAD8BCB3F8F53717E8EFFCF /* PluginSystem */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = F356777C57FBB4E985E14FF7 /* Build configuration list for PBXNativeTarget "DataLayer" */;
+			buildConfigurationList = C2398F8D6BF9E5D12D65BBFD /* Build configuration list for PBXNativeTarget "PluginSystem" */;
 			buildPhases = (
-				C7323FA8AD4B6BB44F970A01 /* Update Module Version */,
-				F19B78CA9A66783897BD1B12 /* Sources */,
-				39DB647086BF08C2603B8765 /* Resources */,
-				F505512947C796F92FCCCB35 /* Frameworks */,
+				E3BB88C4B52DC5F1ADAFF067 /* Headers */,
+				A5CEFB99AD5C56110338D5C3 /* Sources */,
+				E3D5022B2813FC04CD8A804C /* Frameworks */,
+				F496CA3E0EBED81FF0924CBB /* Resources */,
 			);
 			buildRules = (
 			);
 			dependencies = (
-				7686985E86AFCEA9DF9E3D7E /* PBXTargetDependency */,
-			);
-			name = DataLayer;
-			packageProductDependencies = (
-			);
-			productName = DataLayer;
-			productReference = 967CEDCE0C0F130BCC2547FD /* DataLayer.framework */;
-			productType = "com.apple.product-type.framework";
-		};
-		3F66AFB27086D6EDE602BBDC /* MetadataEngine */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 4C7286C163FE5F6C428826EC /* Build configuration list for PBXNativeTarget "MetadataEngine" */;
-			buildPhases = (
-				92837328DF1CF19F1A1DDAA8 /* Update Module Version */,
-				9C1DD48B8EDA0D2CCF1169ED /* Sources */,
-				BC079B302D07207CC3662771 /* Resources */,
-				9D83AB8AC540028320B30DE7 /* Frameworks */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				41A098231BDB0699CB6FBF7F /* PBXTargetDependency */,
-			);
-			name = MetadataEngine;
-			packageProductDependencies = (
-			);
-			productName = MetadataEngine;
-			productReference = 9A4C5BEE3265B00B36646883 /* MetadataEngine.framework */;
-			productType = "com.apple.product-type.framework";
-		};
-		4B0F213D49F6FF73BFBC1908 /* AppKitBridge */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = A3E3A0A0ABC0036E628E05AD /* Build configuration list for PBXNativeTarget "AppKitBridge" */;
-			buildPhases = (
-				3D672BF9A78339F452D946C7 /* Update Module Version */,
-				30FC45BCCC060B324DD705E8 /* Sources */,
-				BD86C5718184F3E4CFA86C19 /* Resources */,
-				0E52DDBDF7CF01AE30D75C38 /* Frameworks */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				CEEB98BE739CEFC8C86E7D76 /* PBXTargetDependency */,
-			);
-			name = AppKitBridge;
-			packageProductDependencies = (
-			);
-			productName = AppKitBridge;
-			productReference = CAA083F1514490F5CEFD52BF /* AppKitBridge.framework */;
-			productType = "com.apple.product-type.framework";
-		};
-		60DBDF79817EDE096FCDC555 /* PluginSystem */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 4AE908B39BA58CEE415C567A /* Build configuration list for PBXNativeTarget "PluginSystem" */;
-			buildPhases = (
-				219A9235EF625CC053A04013 /* Update Module Version */,
-				A1C3E869D63B10CB592DCE20 /* Sources */,
-				8E2893BD4E56997E517F5CF2 /* Resources */,
-				5E98DA02BB3016DE07331089 /* Frameworks */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				F2911300676412ABE97EE556 /* PBXTargetDependency */,
+				4D39E4F66D2EE850A6AA1109 /* PBXTargetDependency */,
 			);
 			name = PluginSystem;
-			packageProductDependencies = (
-			);
 			productName = PluginSystem;
-			productReference = E7CEDCFEA77C7164A82895D4 /* PluginSystem.framework */;
+			productReference = 18F38166DD2A3099E8FE0858 /* PluginSystem.framework */;
 			productType = "com.apple.product-type.framework";
 		};
-		6A56C40CB66C8E0C935B0696 /* AudioCore */ = {
+		230C4FDFB1206360A656A583 /* AppKitBridge */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 3E03BDEF09169DEB50986EFD /* Build configuration list for PBXNativeTarget "AudioCore" */;
+			buildConfigurationList = D20025DA7DD3BB3C82D311AF /* Build configuration list for PBXNativeTarget "AppKitBridge" */;
 			buildPhases = (
-				0B4F631D4A9194CA40F5CC2A /* Update Module Version */,
-				8EFB091D1BE3854D378C3704 /* Sources */,
-				454703BD49C308E9BE497817 /* Resources */,
-				5C8D187D52349AD23D5116DA /* Frameworks */,
+				5524D012C38AD681F98F6080 /* Headers */,
+				B2AAF630772BF283580DE9A6 /* Sources */,
+				89A73800997F70D4D189322F /* Frameworks */,
+				EEB1A24490595F2D366FA894 /* Resources */,
 			);
 			buildRules = (
 			);
 			dependencies = (
-				CE0AEAD1F19B26D2E272840A /* PBXTargetDependency */,
+				E0B3A62DB9D95E8FE98A206F /* PBXTargetDependency */,
+			);
+			name = AppKitBridge;
+			productName = AppKitBridge;
+			productReference = F562DA36ACAEFB3C6500B95A /* AppKitBridge.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+		33715E2C16AF3CB3145F128E /* MetadataEngine */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 660F564E27E6677AFC7387E8 /* Build configuration list for PBXNativeTarget "MetadataEngine" */;
+			buildPhases = (
+				688875EEFA5A8E404BC04A83 /* Headers */,
+				B8097366C7F94C5D5FCF7EED /* Sources */,
+				03E82AD030BFE77D0B1FCA8D /* Frameworks */,
+				7513310099FB790F1782D76F /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				7E90B0BEEA5FC3E5708317E6 /* PBXTargetDependency */,
+			);
+			name = MetadataEngine;
+			productName = MetadataEngine;
+			productReference = CED2D4430BA1E3E049474797 /* MetadataEngine.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+		4E0DF1D8578E8858DB4F5A3D /* AudioCore */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = C5732A8E38EF6A3D5D5D421F /* Build configuration list for PBXNativeTarget "AudioCore" */;
+			buildPhases = (
+				97198D730FD62E4B8079ED8A /* Headers */,
+				7E2F0EDE3A7E183816F78AAB /* Sources */,
+				CE31C6CCB6856BA780C75B59 /* Frameworks */,
+				AA6ED24A23162D468C98112A /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				019C881BE02659524440EF53 /* PBXTargetDependency */,
 			);
 			name = AudioCore;
-			packageProductDependencies = (
-			);
 			productName = AudioCore;
-			productReference = F3040189EB9AC8FE164A0AF7 /* AudioCore.framework */;
+			productReference = B56E76AE54B417BEB40A73B1 /* AudioCore.framework */;
 			productType = "com.apple.product-type.framework";
 		};
-		AA6203CF5D9AD46AA19567F8 /* Audientia */ = {
+		8F690B7F5AD95FE4E5A4C80E /* Shared */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 5DE8CC2BEDA8F5AA8CF67C2D /* Build configuration list for PBXNativeTarget "Audientia" */;
+			buildConfigurationList = 6D024C2BE72B4D00B07096A9 /* Build configuration list for PBXNativeTarget "Shared" */;
 			buildPhases = (
-				B8C1E9D2845E7F67D2A0C393 /* Update App Version */,
-				AE78EBBF805AD389AE1DFCBA /* Sources */,
-				D35AF21AA94AD2263EE2583C /* Resources */,
-				4E11CECF343E52EDBCA8F881 /* Frameworks */,
-				6E0B5564A63E55CF5924A44D /* Embed Frameworks */,
+				787F6929B335BD90587DEF3A /* Headers */,
+				555BC12CACF0E427026ABD28 /* Sources */,
+				51054654C9E3731DDD6F0C9E /* Frameworks */,
+				816B80F8488ED57D04392460 /* Resources */,
 			);
 			buildRules = (
-			);
-			dependencies = (
-				F8A5FCBCB6F11862D9DCBEA5 /* PBXTargetDependency */,
-				60EFCD37954CB1C44745D017 /* PBXTargetDependency */,
-				822840305CBEF4537D6A5E4E /* PBXTargetDependency */,
-				99A57D39A82CF1CC95AF95B7 /* PBXTargetDependency */,
-				A0AA5BECC346DC3B4CC6D60E /* PBXTargetDependency */,
-				B5ABC2D521668FEAEC30DB61 /* PBXTargetDependency */,
-			);
-			name = Audientia;
-			packageProductDependencies = (
-			);
-			productName = Audientia;
-			productReference = F15371429C811311AC9E8A32 /* Audientia.app */;
-			productType = "com.apple.product-type.application";
-		};
-		C9315070ADDD2733ECF2C9B0 /* Shared */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 0BD5B19A829D05D7EC918265 /* Build configuration list for PBXNativeTarget "Shared" */;
-			buildPhases = (
-				65EF8D4B197E59083654682C /* Update Module Version */,
-				E41BA80796FE6D9D9F6CFEA2 /* Sources */,
-				DBC89B0BEAEB6EA68AA4A597 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
 			);
 			name = Shared;
-			packageProductDependencies = (
-			);
 			productName = Shared;
-			productReference = 06774C335950E7C8AFB02F02 /* Shared.framework */;
+			productReference = F0FB725E4BA59018898B62D0 /* Shared.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+		BA9DB7C0D07A396094697921 /* Audientia */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 8C29BB966C841C8BC43A1B71 /* Build configuration list for PBXNativeTarget "Audientia" */;
+			buildPhases = (
+				A3E1A0E1695F0E33CEC909D9 /* Sources */,
+				ED36E4EC51957F96B9D44CCC /* Frameworks */,
+				169FC2B972D5089AFE2B76AC /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				85FE9DC8D67AB11BDC04A904 /* PBXTargetDependency */,
+				3A7C4A44E6BD00AC48B99AF3 /* PBXTargetDependency */,
+				20BA2A28469D68DA53E681DF /* PBXTargetDependency */,
+				E5AD3B84FAFFD64DD297547E /* PBXTargetDependency */,
+				D08B204800FC7F0DF004C4B9 /* PBXTargetDependency */,
+				40DA26283D78AC4E6FA39BD7 /* PBXTargetDependency */,
+			);
+			name = Audientia;
+			productName = Audientia;
+			productReference = D067F44B91574AA9124948D5 /* Audientia.app */;
+			productType = "com.apple.product-type.application";
+		};
+		CBD6638495A240EA670067B2 /* SharedTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 17C82C4B2E0359A6BC6BF301 /* Build configuration list for PBXNativeTarget "SharedTests" */;
+			buildPhases = (
+				99800421886D4423B9487958 /* Sources */,
+				10D1F1E91854514757E4558B /* Frameworks */,
+				502FB8460B5894E52B61628B /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				15F1E92634841C826D4F9A10 /* PBXTargetDependency */,
+			);
+			name = SharedTests;
+			productName = SharedTests;
+			productReference = BCC366B4B1252D3A95E57B4B /* SharedTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		EB0306C92F4BF00DD2F84FB0 /* DataLayer */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 16C4F25F24F7F3D5CF6010D0 /* Build configuration list for PBXNativeTarget "DataLayer" */;
+			buildPhases = (
+				71BFDE763959573C08412427 /* Headers */,
+				54E7B8D12F7FA3EEA93DAB00 /* Sources */,
+				62A7E6E337087A55C70D34D5 /* Frameworks */,
+				720B31C0F3F8742EC34BA4C3 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				AAEF055B88CC7DF500F33C07 /* PBXTargetDependency */,
+			);
+			name = DataLayer;
+			productName = DataLayer;
+			productReference = 9B1DDC925F9F1E5E4E088892 /* DataLayer.framework */;
 			productType = "com.apple.product-type.framework";
 		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
-		AF348473424FB6AD275FC868 /* Project object */ = {
+		C2C3DCF2EF2BC8483228CBB5 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				BuildIndependentTargetsInParallel = YES;
+				LastSwiftUpdateCheck = 1600;
 				LastUpgradeCheck = 1600;
-				TargetAttributes = {
-					AA6203CF5D9AD46AA19567F8 = {
-						DevelopmentTeam = "";
-					};
-				};
 			};
-			buildConfigurationList = B2E271C267504F6544D5430E /* Build configuration list for PBXProject "Audientia" */;
-			compatibilityVersion = "Xcode 14.0";
+			buildConfigurationList = B356237CCD497EEF557B43F0 /* Build configuration list for PBXProject "Audientia" */;
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
-				Base,
 				en,
+				Base,
 			);
-			mainGroup = BB4816A99910CD0D78E6E52B;
-			minimizedProjectReferenceProxies = 1;
-			preferredProjectObjectVersion = 77;
+			mainGroup = 1D09847F19EDDC858AA5261C;
+			preferredProjectObjectVersion = 90;
+			productRefGroup = 4A0FFB915B2DF699BE924071 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				4B0F213D49F6FF73BFBC1908 /* AppKitBridge */,
-				AA6203CF5D9AD46AA19567F8 /* Audientia */,
-				6A56C40CB66C8E0C935B0696 /* AudioCore */,
-				15ABA0849044C2D5313CF0D0 /* DataLayer */,
-				3F66AFB27086D6EDE602BBDC /* MetadataEngine */,
-				60DBDF79817EDE096FCDC555 /* PluginSystem */,
-				C9315070ADDD2733ECF2C9B0 /* Shared */,
+				BA9DB7C0D07A396094697921 /* Audientia */,
+				8F690B7F5AD95FE4E5A4C80E /* Shared */,
+				230C4FDFB1206360A656A583 /* AppKitBridge */,
+				4E0DF1D8578E8858DB4F5A3D /* AudioCore */,
+				EB0306C92F4BF00DD2F84FB0 /* DataLayer */,
+				33715E2C16AF3CB3145F128E /* MetadataEngine */,
+				1AAD8BCB3F8F53717E8EFFCF /* PluginSystem */,
+				CBD6638495A240EA670067B2 /* SharedTests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		39DB647086BF08C2603B8765 /* Resources */ = {
+		169FC2B972D5089AFE2B76AC /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
 			files = (
-				89271A5CF6391DD88FEA4C34 /* README.md in Resources */,
+				E2BA0DFF2EBD078400DF20D9 /* Assets.xcassets in Resources */,
+				E2BA0E1F2EBD081100DF20D9 /* project.yml in Resources */,
+				E2BA0E202EBD081100DF20D9 /* README.md in Resources */,
 			);
-			runOnlyForDeploymentPostprocessing = 0;
 		};
-		454703BD49C308E9BE497817 /* Resources */ = {
+		502FB8460B5894E52B61628B /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
 			files = (
-				BB7468F218148180491107B6 /* README.md in Resources */,
 			);
-			runOnlyForDeploymentPostprocessing = 0;
 		};
-		8E2893BD4E56997E517F5CF2 /* Resources */ = {
+		720B31C0F3F8742EC34BA4C3 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
 			files = (
-				85AA32DBB0F7E779314518AA /* README.md in Resources */,
+				E2BA0E6E2EBD09D200DF20D9 /* README.md in Resources */,
 			);
-			runOnlyForDeploymentPostprocessing = 0;
 		};
-		BC079B302D07207CC3662771 /* Resources */ = {
+		7513310099FB790F1782D76F /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
 			files = (
-				94C7851D5A4A0F68C272BABB /* README.md in Resources */,
+				E2BA0E772EBD09DA00DF20D9 /* README.md in Resources */,
 			);
-			runOnlyForDeploymentPostprocessing = 0;
 		};
-		BD86C5718184F3E4CFA86C19 /* Resources */ = {
+		816B80F8488ED57D04392460 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
 			files = (
-				22C972B9F890FCB274F8EAAF /* README.md in Resources */,
+				E2BA0E3A2EBD093600DF20D9 /* README.md in Resources */,
 			);
-			runOnlyForDeploymentPostprocessing = 0;
 		};
-		D35AF21AA94AD2263EE2583C /* Resources */ = {
+		AA6ED24A23162D468C98112A /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
 			files = (
-				90DE25ED47682FFCB546B656 /* README.md in Resources */,
+				E2BA0E672EBD09C700DF20D9 /* README.md in Resources */,
 			);
-			runOnlyForDeploymentPostprocessing = 0;
 		};
-		DBC89B0BEAEB6EA68AA4A597 /* Resources */ = {
+		EEB1A24490595F2D366FA894 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
 			files = (
-				64221702E27432E197C63CAA /* README.md in Resources */,
+				E2BA0E422EBD096F00DF20D9 /* README.md in Resources */,
 			);
-			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F496CA3E0EBED81FF0924CBB /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			files = (
+				E2BA0E7F2EBD09E400DF20D9 /* README.md in Resources */,
+			);
 		};
 /* End PBXResourcesBuildPhase section */
 
-/* Begin PBXShellScriptBuildPhase section */
-		0B4F631D4A9194CA40F5CC2A /* Update Module Version */ = {
-			isa = PBXShellScriptBuildPhase;
-			alwaysOutOfDate = 1;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-			);
-			name = "Update Module Version";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "set -e\nMODULE_NAME=\"AudioCore\"\nYEAR=$(date +%Y)\nMONTH=$(date +%m)\n# Use temp directory to avoid sandbox issues\nVERSION_DIR=\"${TARGET_TEMP_DIR}/versions\"\nmkdir -p \"$VERSION_DIR\"\nMODULE_BUILD_NUM_FILE=\"${VERSION_DIR}/.build_number_${MODULE_NAME}\"\n\n# Get next build number\ncurrent_build=0\nif [ -f \"$MODULE_BUILD_NUM_FILE\" ]; then\n    stored_date=$(head -n 1 \"$MODULE_BUILD_NUM_FILE\" 2>/dev/null || echo \"\")\n    stored_build=$(tail -n 1 \"$MODULE_BUILD_NUM_FILE\" 2>/dev/null || echo \"0\")\n    if [ \"$stored_date\" = \"$YEAR.$MONTH\" ]; then\n        current_build=$stored_build\n    fi\nfi\n\nnext_build=$((current_build + 1))\necho \"$YEAR.$MONTH\" > \"$MODULE_BUILD_NUM_FILE\"\necho \"$next_build\" >> \"$MODULE_BUILD_NUM_FILE\"\n\nversion=$(printf \"%04d.%02d.%04d\" \"$YEAR\" \"$MONTH\" \"$next_build\")\nfull_version=\"${MODULE_NAME}-${version}\"\necho \"Updating ${MODULE_NAME} version to: $full_version\"\necho \"$version\" > \"${VERSION_DIR}/.${MODULE_NAME}_version\"\necho \"$full_version\" > \"${VERSION_DIR}/.${MODULE_NAME}_full_version\"\n# Also copy to build products for runtime access\ncp \"${VERSION_DIR}/.${MODULE_NAME}_version\" \"${BUILT_PRODUCTS_DIR}/.${MODULE_NAME}_version\" 2>/dev/null || true\n";
-		};
-		219A9235EF625CC053A04013 /* Update Module Version */ = {
-			isa = PBXShellScriptBuildPhase;
-			alwaysOutOfDate = 1;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-			);
-			name = "Update Module Version";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "set -e\nMODULE_NAME=\"PluginSystem\"\nYEAR=$(date +%Y)\nMONTH=$(date +%m)\n# Use temp directory to avoid sandbox issues\nVERSION_DIR=\"${TARGET_TEMP_DIR}/versions\"\nmkdir -p \"$VERSION_DIR\"\nMODULE_BUILD_NUM_FILE=\"${VERSION_DIR}/.build_number_${MODULE_NAME}\"\n\n# Get next build number\ncurrent_build=0\nif [ -f \"$MODULE_BUILD_NUM_FILE\" ]; then\n    stored_date=$(head -n 1 \"$MODULE_BUILD_NUM_FILE\" 2>/dev/null || echo \"\")\n    stored_build=$(tail -n 1 \"$MODULE_BUILD_NUM_FILE\" 2>/dev/null || echo \"0\")\n    if [ \"$stored_date\" = \"$YEAR.$MONTH\" ]; then\n        current_build=$stored_build\n    fi\nfi\n\nnext_build=$((current_build + 1))\necho \"$YEAR.$MONTH\" > \"$MODULE_BUILD_NUM_FILE\"\necho \"$next_build\" >> \"$MODULE_BUILD_NUM_FILE\"\n\nversion=$(printf \"%04d.%02d.%04d\" \"$YEAR\" \"$MONTH\" \"$next_build\")\nfull_version=\"${MODULE_NAME}-${version}\"\necho \"Updating ${MODULE_NAME} version to: $full_version\"\necho \"$version\" > \"${VERSION_DIR}/.${MODULE_NAME}_version\"\necho \"$full_version\" > \"${VERSION_DIR}/.${MODULE_NAME}_full_version\"\n# Also copy to build products for runtime access\ncp \"${VERSION_DIR}/.${MODULE_NAME}_version\" \"${BUILT_PRODUCTS_DIR}/.${MODULE_NAME}_version\" 2>/dev/null || true\n";
-		};
-		3D672BF9A78339F452D946C7 /* Update Module Version */ = {
-			isa = PBXShellScriptBuildPhase;
-			alwaysOutOfDate = 1;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-			);
-			name = "Update Module Version";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "set -e\nMODULE_NAME=\"AppKitBridge\"\nYEAR=$(date +%Y)\nMONTH=$(date +%m)\n# Use temp directory to avoid sandbox issues\nVERSION_DIR=\"${TARGET_TEMP_DIR}/versions\"\nmkdir -p \"$VERSION_DIR\"\nMODULE_BUILD_NUM_FILE=\"${VERSION_DIR}/.build_number_${MODULE_NAME}\"\n\n# Get next build number\ncurrent_build=0\nif [ -f \"$MODULE_BUILD_NUM_FILE\" ]; then\n    stored_date=$(head -n 1 \"$MODULE_BUILD_NUM_FILE\" 2>/dev/null || echo \"\")\n    stored_build=$(tail -n 1 \"$MODULE_BUILD_NUM_FILE\" 2>/dev/null || echo \"0\")\n    if [ \"$stored_date\" = \"$YEAR.$MONTH\" ]; then\n        current_build=$stored_build\n    fi\nfi\n\nnext_build=$((current_build + 1))\necho \"$YEAR.$MONTH\" > \"$MODULE_BUILD_NUM_FILE\"\necho \"$next_build\" >> \"$MODULE_BUILD_NUM_FILE\"\n\nversion=$(printf \"%04d.%02d.%04d\" \"$YEAR\" \"$MONTH\" \"$next_build\")\nfull_version=\"${MODULE_NAME}-${version}\"\necho \"Updating ${MODULE_NAME} version to: $full_version\"\necho \"$version\" > \"${VERSION_DIR}/.${MODULE_NAME}_version\"\necho \"$full_version\" > \"${VERSION_DIR}/.${MODULE_NAME}_full_version\"\n# Also copy to build products for runtime access\ncp \"${VERSION_DIR}/.${MODULE_NAME}_version\" \"${BUILT_PRODUCTS_DIR}/.${MODULE_NAME}_version\" 2>/dev/null || true\n";
-		};
-		65EF8D4B197E59083654682C /* Update Module Version */ = {
-			isa = PBXShellScriptBuildPhase;
-			alwaysOutOfDate = 1;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-			);
-			name = "Update Module Version";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "set -e\nMODULE_NAME=\"Shared\"\nYEAR=$(date +%Y)\nMONTH=$(date +%m)\n# Use temp directory for version files to avoid sandbox issues\nVERSION_DIR=\"${TARGET_TEMP_DIR}/versions\"\nmkdir -p \"$VERSION_DIR\"\nMODULE_BUILD_NUM_FILE=\"${VERSION_DIR}/.build_number_${MODULE_NAME}\"\n\n# Get next build number\ncurrent_build=0\nif [ -f \"$MODULE_BUILD_NUM_FILE\" ]; then\n    stored_date=$(head -n 1 \"$MODULE_BUILD_NUM_FILE\" 2>/dev/null || echo \"\")\n    stored_build=$(tail -n 1 \"$MODULE_BUILD_NUM_FILE\" 2>/dev/null || echo \"0\")\n    if [ \"$stored_date\" = \"$YEAR.$MONTH\" ]; then\n        current_build=$stored_build\n    fi\nfi\n\nnext_build=$((current_build + 1))\necho \"$YEAR.$MONTH\" > \"$MODULE_BUILD_NUM_FILE\"\necho \"$next_build\" >> \"$MODULE_BUILD_NUM_FILE\"\n\nversion=$(printf \"%04d.%02d.%04d\" \"$YEAR\" \"$MONTH\" \"$next_build\")\nfull_version=\"${MODULE_NAME}-${version}\"\necho \"Updating ${MODULE_NAME} version to: $full_version\"\necho \"$version\" > \"${VERSION_DIR}/.${MODULE_NAME}_version\"\necho \"$full_version\" > \"${VERSION_DIR}/.${MODULE_NAME}_full_version\"\n# Also copy to build products for runtime access\ncp \"${VERSION_DIR}/.${MODULE_NAME}_version\" \"${BUILT_PRODUCTS_DIR}/.${MODULE_NAME}_version\" 2>/dev/null || true\n";
-		};
-		92837328DF1CF19F1A1DDAA8 /* Update Module Version */ = {
-			isa = PBXShellScriptBuildPhase;
-			alwaysOutOfDate = 1;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-			);
-			name = "Update Module Version";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "set -e\nMODULE_NAME=\"MetadataEngine\"\nYEAR=$(date +%Y)\nMONTH=$(date +%m)\n# Use temp directory to avoid sandbox issues\nVERSION_DIR=\"${TARGET_TEMP_DIR}/versions\"\nmkdir -p \"$VERSION_DIR\"\nMODULE_BUILD_NUM_FILE=\"${VERSION_DIR}/.build_number_${MODULE_NAME}\"\n\n# Get next build number\ncurrent_build=0\nif [ -f \"$MODULE_BUILD_NUM_FILE\" ]; then\n    stored_date=$(head -n 1 \"$MODULE_BUILD_NUM_FILE\" 2>/dev/null || echo \"\")\n    stored_build=$(tail -n 1 \"$MODULE_BUILD_NUM_FILE\" 2>/dev/null || echo \"0\")\n    if [ \"$stored_date\" = \"$YEAR.$MONTH\" ]; then\n        current_build=$stored_build\n    fi\nfi\n\nnext_build=$((current_build + 1))\necho \"$YEAR.$MONTH\" > \"$MODULE_BUILD_NUM_FILE\"\necho \"$next_build\" >> \"$MODULE_BUILD_NUM_FILE\"\n\nversion=$(printf \"%04d.%02d.%04d\" \"$YEAR\" \"$MONTH\" \"$next_build\")\nfull_version=\"${MODULE_NAME}-${version}\"\necho \"Updating ${MODULE_NAME} version to: $full_version\"\necho \"$version\" > \"${VERSION_DIR}/.${MODULE_NAME}_version\"\necho \"$full_version\" > \"${VERSION_DIR}/.${MODULE_NAME}_full_version\"\n# Also copy to build products for runtime access\ncp \"${VERSION_DIR}/.${MODULE_NAME}_version\" \"${BUILT_PRODUCTS_DIR}/.${MODULE_NAME}_version\" 2>/dev/null || true\n";
-		};
-		B8C1E9D2845E7F67D2A0C393 /* Update App Version */ = {
-			isa = PBXShellScriptBuildPhase;
-			alwaysOutOfDate = 1;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-			);
-			name = "Update App Version";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "set -e\nYEAR=$(date +%Y)\nMONTH=$(date +%m)\n# Use temp directory to avoid sandbox issues\nVERSION_DIR=\"${TARGET_TEMP_DIR}/versions\"\nmkdir -p \"$VERSION_DIR\"\nBUILD_NUM_FILE=\"${VERSION_DIR}/.build_number\"\n\n# Get next build number\ncurrent_build=0\nif [ -f \"$BUILD_NUM_FILE\" ]; then\n    stored_date=$(head -n 1 \"$BUILD_NUM_FILE\" 2>/dev/null || echo \"\")\n    stored_build=$(tail -n 1 \"$BUILD_NUM_FILE\" 2>/dev/null || echo \"0\")\n    if [ \"$stored_date\" = \"$YEAR.$MONTH\" ]; then\n        current_build=$stored_build\n    fi\nfi\n\nnext_build=$((current_build + 1))\necho \"$YEAR.$MONTH\" > \"$BUILD_NUM_FILE\"\necho \"$next_build\" >> \"$BUILD_NUM_FILE\"\n\nversion=$(printf \"%04d.%02d.%04d\" \"$YEAR\" \"$MONTH\" \"$next_build\")\necho \"Updating app version to: $version\"\necho \"$version\" > \"${VERSION_DIR}/.app_version\"\n# Also copy to build products for runtime access\ncp \"${VERSION_DIR}/.app_version\" \"${BUILT_PRODUCTS_DIR}/.app_version\" 2>/dev/null || true\n";
-		};
-		C7323FA8AD4B6BB44F970A01 /* Update Module Version */ = {
-			isa = PBXShellScriptBuildPhase;
-			alwaysOutOfDate = 1;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-			);
-			name = "Update Module Version";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "set -e\nMODULE_NAME=\"DataLayer\"\nYEAR=$(date +%Y)\nMONTH=$(date +%m)\n# Use temp directory to avoid sandbox issues\nVERSION_DIR=\"${TARGET_TEMP_DIR}/versions\"\nmkdir -p \"$VERSION_DIR\"\nMODULE_BUILD_NUM_FILE=\"${VERSION_DIR}/.build_number_${MODULE_NAME}\"\n\n# Get next build number\ncurrent_build=0\nif [ -f \"$MODULE_BUILD_NUM_FILE\" ]; then\n    stored_date=$(head -n 1 \"$MODULE_BUILD_NUM_FILE\" 2>/dev/null || echo \"\")\n    stored_build=$(tail -n 1 \"$MODULE_BUILD_NUM_FILE\" 2>/dev/null || echo \"0\")\n    if [ \"$stored_date\" = \"$YEAR.$MONTH\" ]; then\n        current_build=$stored_build\n    fi\nfi\n\nnext_build=$((current_build + 1))\necho \"$YEAR.$MONTH\" > \"$MODULE_BUILD_NUM_FILE\"\necho \"$next_build\" >> \"$MODULE_BUILD_NUM_FILE\"\n\nversion=$(printf \"%04d.%02d.%04d\" \"$YEAR\" \"$MONTH\" \"$next_build\")\nfull_version=\"${MODULE_NAME}-${version}\"\necho \"Updating ${MODULE_NAME} version to: $full_version\"\necho \"$version\" > \"${VERSION_DIR}/.${MODULE_NAME}_version\"\necho \"$full_version\" > \"${VERSION_DIR}/.${MODULE_NAME}_full_version\"\n# Also copy to build products for runtime access\ncp \"${VERSION_DIR}/.${MODULE_NAME}_version\" \"${BUILT_PRODUCTS_DIR}/.${MODULE_NAME}_version\" 2>/dev/null || true\n";
-		};
-/* End PBXShellScriptBuildPhase section */
-
 /* Begin PBXSourcesBuildPhase section */
-		30FC45BCCC060B324DD705E8 /* Sources */ = {
+		54E7B8D12F7FA3EEA93DAB00 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
 			files = (
-				0BB276130A452BD5FE692907 /* AppKitBridge.swift in Sources */,
+				E2BA0E6F2EBD09D200DF20D9 /* DataLayer.swift in Sources */,
 			);
-			runOnlyForDeploymentPostprocessing = 0;
 		};
-		8EFB091D1BE3854D378C3704 /* Sources */ = {
+		555BC12CACF0E427026ABD28 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
 			files = (
-				A21C6DFC27B4C7851E3E5A13 /* AudioCore.swift in Sources */,
+				E2BA0E312EBD093600DF20D9 /* Track.swift in Sources */,
+				E2BA0E322EBD093600DF20D9 /* Album.swift in Sources */,
+				E2BA0E332EBD093600DF20D9 /* VersionManager.swift in Sources */,
+				E2BA0E342EBD093600DF20D9 /* AutoVersionUpdate.swift in Sources */,
+				E2BA0E352EBD093600DF20D9 /* Playlist.swift in Sources */,
+				E2BA0E362EBD093600DF20D9 /* AppSettings.swift in Sources */,
+				E2BA0E372EBD093600DF20D9 /* Artist.swift in Sources */,
+				E2BA0E382EBD093600DF20D9 /* ModuleVersionManager.swift in Sources */,
+				E2BA0E392EBD093600DF20D9 /* Logger.swift in Sources */,
 			);
-			runOnlyForDeploymentPostprocessing = 0;
 		};
-		9C1DD48B8EDA0D2CCF1169ED /* Sources */ = {
+		7E2F0EDE3A7E183816F78AAB /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
 			files = (
-				E8A0413BA9B2DCF7B1C91DCC /* MetadataEngine.swift in Sources */,
+				E2BA0E662EBD09C700DF20D9 /* AudioCore.swift in Sources */,
 			);
-			runOnlyForDeploymentPostprocessing = 0;
 		};
-		A1C3E869D63B10CB592DCE20 /* Sources */ = {
+		99800421886D4423B9487958 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
 			files = (
-				DD96C387BC79571BED3C7E42 /* PluginSystem.swift in Sources */,
+				E2BA0DF52EBD076E00DF20D9 /* TestFixtures.swift in Sources */,
+				E2BA0DF62EBD076E00DF20D9 /* MockFactories.swift in Sources */,
+				E2BA0DF72EBD076E00DF20D9 /* TrackTests.swift in Sources */,
+				E2BA0DF82EBD076E00DF20D9 /* ArtistTests.swift in Sources */,
+				E2BA0DF92EBD076E00DF20D9 /* PlaylistTests.swift in Sources */,
+				E2BA0DFA2EBD076E00DF20D9 /* AlbumTests.swift in Sources */,
 			);
-			runOnlyForDeploymentPostprocessing = 0;
 		};
-		AE78EBBF805AD389AE1DFCBA /* Sources */ = {
+		A3E1A0E1695F0E33CEC909D9 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
 			files = (
-				36DE1E22AC6318A00D7FBEE7 /* AudientiaApp.swift in Sources */,
-				13436333E69BA1EFC54D4C83 /* ContentView.swift in Sources */,
-				85740EFFE71656B22B218FC3 /* ModuleVersionConflictView.swift in Sources */,
+				E2BA0E8B2EBD0AC100DF20D9 /* ModuleVersionConflictView.swift in Sources */,
+				E2BA0E8C2EBD0AC100DF20D9 /* ContentView.swift in Sources */,
+				E2BA0E8D2EBD0AC100DF20D9 /* AudientiaApp.swift in Sources */,
 			);
-			runOnlyForDeploymentPostprocessing = 0;
 		};
-		E41BA80796FE6D9D9F6CFEA2 /* Sources */ = {
+		A5CEFB99AD5C56110338D5C3 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
 			files = (
-				9FEB90867A39BFFC44418E62 /* AppSettings.swift in Sources */,
-				20B6FD710641515B259338F2 /* AutoVersionUpdate.swift in Sources */,
-				03903AB4FB96C370BDF72AA1 /* ModuleVersionManager.swift in Sources */,
-				83F4B9211C524BC1C41A12B0 /* VersionManager.swift in Sources */,
+				E2BA0E802EBD09E400DF20D9 /* PluginSystem.swift in Sources */,
 			);
-			runOnlyForDeploymentPostprocessing = 0;
 		};
-		F19B78CA9A66783897BD1B12 /* Sources */ = {
+		B2AAF630772BF283580DE9A6 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
 			files = (
-				281DE5E4D3A5B0AEB4862B30 /* DataLayer.swift in Sources */,
+				E2BA0E432EBD096F00DF20D9 /* AppKitBridge.swift in Sources */,
 			);
-			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B8097366C7F94C5D5FCF7EED /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			files = (
+				E2BA0E762EBD09DA00DF20D9 /* MetadataEngine.swift in Sources */,
+			);
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		41A098231BDB0699CB6FBF7F /* PBXTargetDependency */ = {
+		019C881BE02659524440EF53 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = C9315070ADDD2733ECF2C9B0 /* Shared */;
-			targetProxy = 23C052AB581ECA8E9D09A659 /* PBXContainerItemProxy */;
+			name = Shared;
+			target = 8F690B7F5AD95FE4E5A4C80E /* Shared */;
+			targetProxy = 2DD05405463B2E568507A978 /* PBXContainerItemProxy */;
 		};
-		60EFCD37954CB1C44745D017 /* PBXTargetDependency */ = {
+		15F1E92634841C826D4F9A10 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 4B0F213D49F6FF73BFBC1908 /* AppKitBridge */;
-			targetProxy = 79D8FEC138355D35A98CDC4D /* PBXContainerItemProxy */;
+			name = Shared;
+			target = 8F690B7F5AD95FE4E5A4C80E /* Shared */;
+			targetProxy = 560691D5F36F36B449267E8D /* PBXContainerItemProxy */;
 		};
-		7686985E86AFCEA9DF9E3D7E /* PBXTargetDependency */ = {
+		20BA2A28469D68DA53E681DF /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = C9315070ADDD2733ECF2C9B0 /* Shared */;
-			targetProxy = 97EB12186EBBB28A3E20FFFB /* PBXContainerItemProxy */;
+			name = AudioCore;
+			target = 4E0DF1D8578E8858DB4F5A3D /* AudioCore */;
+			targetProxy = CC98E0F06435D123F8E37160 /* PBXContainerItemProxy */;
 		};
-		822840305CBEF4537D6A5E4E /* PBXTargetDependency */ = {
+		3A7C4A44E6BD00AC48B99AF3 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 6A56C40CB66C8E0C935B0696 /* AudioCore */;
-			targetProxy = 54FCE2BBA333BCA468FF75BD /* PBXContainerItemProxy */;
+			name = AppKitBridge;
+			target = 230C4FDFB1206360A656A583 /* AppKitBridge */;
+			targetProxy = E01A2CF4AA8620D209062C71 /* PBXContainerItemProxy */;
 		};
-		99A57D39A82CF1CC95AF95B7 /* PBXTargetDependency */ = {
+		40DA26283D78AC4E6FA39BD7 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 3F66AFB27086D6EDE602BBDC /* MetadataEngine */;
-			targetProxy = 4910622D32C360E07590D9FF /* PBXContainerItemProxy */;
+			name = PluginSystem;
+			target = 1AAD8BCB3F8F53717E8EFFCF /* PluginSystem */;
+			targetProxy = 77E10681A82196189A2D3FDB /* PBXContainerItemProxy */;
 		};
-		A0AA5BECC346DC3B4CC6D60E /* PBXTargetDependency */ = {
+		4D39E4F66D2EE850A6AA1109 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 15ABA0849044C2D5313CF0D0 /* DataLayer */;
-			targetProxy = B406C2BD746FE88728FA8037 /* PBXContainerItemProxy */;
+			name = Shared;
+			target = 8F690B7F5AD95FE4E5A4C80E /* Shared */;
+			targetProxy = 816576A7549FD32DF9512FF9 /* PBXContainerItemProxy */;
 		};
-		B5ABC2D521668FEAEC30DB61 /* PBXTargetDependency */ = {
+		7E90B0BEEA5FC3E5708317E6 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 60DBDF79817EDE096FCDC555 /* PluginSystem */;
-			targetProxy = C2F98C50A8694575E87E2F71 /* PBXContainerItemProxy */;
+			name = Shared;
+			target = 8F690B7F5AD95FE4E5A4C80E /* Shared */;
+			targetProxy = 5002D5DEFF686A80D83C7F19 /* PBXContainerItemProxy */;
 		};
-		CE0AEAD1F19B26D2E272840A /* PBXTargetDependency */ = {
+		85FE9DC8D67AB11BDC04A904 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = C9315070ADDD2733ECF2C9B0 /* Shared */;
-			targetProxy = 3BFBE62C377FF8AC941AE918 /* PBXContainerItemProxy */;
+			name = Shared;
+			target = 8F690B7F5AD95FE4E5A4C80E /* Shared */;
+			targetProxy = DDB142E3C1834675980FBC38 /* PBXContainerItemProxy */;
 		};
-		CEEB98BE739CEFC8C86E7D76 /* PBXTargetDependency */ = {
+		AAEF055B88CC7DF500F33C07 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = C9315070ADDD2733ECF2C9B0 /* Shared */;
-			targetProxy = 1349D7302F2570B422FBEBA2 /* PBXContainerItemProxy */;
+			name = Shared;
+			target = 8F690B7F5AD95FE4E5A4C80E /* Shared */;
+			targetProxy = 1E781E9E40331B14C0696AAE /* PBXContainerItemProxy */;
 		};
-		F2911300676412ABE97EE556 /* PBXTargetDependency */ = {
+		D08B204800FC7F0DF004C4B9 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = C9315070ADDD2733ECF2C9B0 /* Shared */;
-			targetProxy = B5F6393CE37C2F1E7771400A /* PBXContainerItemProxy */;
+			name = MetadataEngine;
+			target = 33715E2C16AF3CB3145F128E /* MetadataEngine */;
+			targetProxy = C25EC00423676E8EBDE7D14E /* PBXContainerItemProxy */;
 		};
-		F8A5FCBCB6F11862D9DCBEA5 /* PBXTargetDependency */ = {
+		E0B3A62DB9D95E8FE98A206F /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = C9315070ADDD2733ECF2C9B0 /* Shared */;
-			targetProxy = 96D663D5739BE2134C9D20F7 /* PBXContainerItemProxy */;
+			name = Shared;
+			target = 8F690B7F5AD95FE4E5A4C80E /* Shared */;
+			targetProxy = D4DA7CEF2008370D9C7F6A90 /* PBXContainerItemProxy */;
+		};
+		E5AD3B84FAFFD64DD297547E /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = DataLayer;
+			target = EB0306C92F4BF00DD2F84FB0 /* DataLayer */;
+			targetProxy = FD25E4662DF50FAC09547B14 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
-		06F8E71290E0B73C0D1A0F58 /* Debug */ = {
+		0BF869B0880C4EB73192A9BE /* Debug configuration for PBXProject "Audientia" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOLS_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGNING_ALLOWED = NO;
+				CODE_SIGNING_REQUIRED = NO;
+				CODE_SIGN_IDENTITY = "";
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 15.0;
+				MARKETING_VERSION = 2025.01.0001;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = club.cycleruncode.audientia;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.9;
+			};
+			name = Debug;
+		};
+		0FD3DA7642C40F8C46359A9E /* Debug configuration for PBXNativeTarget "PluginSystem" */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGNING_REQUIRED = NO;
 				CODE_SIGN_IDENTITY = "";
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = YES;
-				DEVELOPMENT_TEAM = "";
-				ENABLE_APP_SANDBOX = NO;
-				ENABLE_HARDENED_RUNTIME = NO;
-				INFOPLIST_FILE = Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/../Frameworks",
-				);
-				MACOSX_DEPLOYMENT_TARGET = 15.0;
-				MARKETING_VERSION = 2025.01.0001;
-				PRODUCT_BUNDLE_IDENTIFIER = club.cycleruncode.audientia;
-				SDKROOT = macosx;
-				SUPPORTED_PLATFORMS = macosx;
-				SWIFT_VERSION = 5.9;
-			};
-			name = Debug;
-		};
-		1FC93A9E0D26CE7CE83158B1 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CLANG_ENABLE_MODULE_VERIFIER = YES;
-				CODE_SIGN_IDENTITY = "";
-				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1;
-				DEAD_CODE_STRIPPING = YES;
-				DEFINES_MODULE = YES;
+				DEFINES_MODULE = NO;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
@@ -907,24 +1199,31 @@
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
+					"@loader_path/Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 15.0;
+				MODULEMAP_FILE = "";
 				PRODUCT_BUNDLE_IDENTIFIER = club.cycleruncode.PluginSystem;
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
+				SWIFT_INSTALL_OBJC_HEADER = NO;
 				SWIFT_VERSION = 5.9;
 				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
 			};
-			name = Release;
+			name = Debug;
 		};
-		2547A4524446121518313DB0 /* Debug */ = {
+		1FE1C52A07316057C829FCEE /* Release configuration for PBXNativeTarget "AppKitBridge" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGNING_REQUIRED = NO;
 				CODE_SIGN_IDENTITY = "";
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = YES;
-				DEFINES_MODULE = YES;
+				DEFINES_MODULE = NO;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
@@ -935,25 +1234,162 @@
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
+					"@loader_path/Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 15.0;
+				MODULEMAP_FILE = "";
 				PRODUCT_BUNDLE_IDENTIFIER = club.cycleruncode.AppKitBridge;
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
+				SWIFT_INSTALL_OBJC_HEADER = NO;
 				SWIFT_VERSION = 5.9;
 				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
 			};
-			name = Debug;
+			name = Release;
 		};
-		35B2F4F4B924B758B5402020 /* Debug */ = {
+		27E804AA3951B5A2A4AA8B8D /* Debug configuration for PBXNativeTarget "Shared" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CLANG_ENABLE_MODULE_VERIFIER = YES;
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGNING_REQUIRED = NO;
 				CODE_SIGN_IDENTITY = "";
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = YES;
-				DEFINES_MODULE = YES;
+				DEFINES_MODULE = NO;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleName = Shared;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2025 CycleRunCode Club. All rights reserved.";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 15.0;
+				MODULEMAP_FILE = "";
+				PRODUCT_BUNDLE_IDENTIFIER = club.cycleruncode.Shared;
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+				SWIFT_INSTALL_OBJC_HEADER = NO;
+				SWIFT_VERSION = 5.9;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Debug;
+		};
+		37B3DFC57C62B0252C1FF110 /* Debug configuration for PBXNativeTarget "AppKitBridge" */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGNING_REQUIRED = NO;
+				CODE_SIGN_IDENTITY = "";
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
+				DEFINES_MODULE = NO;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleName = AppKitBridge;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2025 CycleRunCode Club. All rights reserved.";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 15.0;
+				MODULEMAP_FILE = "";
+				PRODUCT_BUNDLE_IDENTIFIER = club.cycleruncode.AppKitBridge;
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+				SWIFT_INSTALL_OBJC_HEADER = NO;
+				SWIFT_VERSION = 5.9;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Debug;
+		};
+		38634AD6A031C4FEA9EC0AAC /* Debug configuration for PBXNativeTarget "AudioCore" */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGNING_REQUIRED = NO;
+				CODE_SIGN_IDENTITY = "";
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
+				DEFINES_MODULE = NO;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleName = AudioCore;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2025 CycleRunCode Club. All rights reserved.";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 15.0;
+				MODULEMAP_FILE = "";
+				PRODUCT_BUNDLE_IDENTIFIER = club.cycleruncode.AudioCore;
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+				SWIFT_INSTALL_OBJC_HEADER = NO;
+				SWIFT_VERSION = 5.9;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Debug;
+		};
+		3A0B38EA4410247D51D3CD56 /* Debug configuration for PBXNativeTarget "Audientia" */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGNING_ALLOWED = NO;
+				CODE_SIGNING_REQUIRED = NO;
+				CODE_SIGN_IDENTITY = "";
+				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = "";
+				ENABLE_APP_SANDBOX = NO;
+				ENABLE_HARDENED_RUNTIME = NO;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = Configuration/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 15.0;
+				PRODUCT_BUNDLE_IDENTIFIER = club.cycleruncode.audientia;
+				SDKROOT = macosx;
+				SUPPORTED_PLATFORMS = macosx;
+				SWIFT_VERSION = 5.9;
+			};
+			name = Debug;
+		};
+		42CA668C42A40FD36BF6C3B5 /* Release configuration for PBXNativeTarget "PluginSystem" */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGNING_REQUIRED = NO;
+				CODE_SIGN_IDENTITY = "";
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
+				DEFINES_MODULE = NO;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
@@ -964,25 +1400,31 @@
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
+					"@loader_path/Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 15.0;
+				MODULEMAP_FILE = "";
 				PRODUCT_BUNDLE_IDENTIFIER = club.cycleruncode.PluginSystem;
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
+				SWIFT_INSTALL_OBJC_HEADER = NO;
 				SWIFT_VERSION = 5.9;
 				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
 			};
-			name = Debug;
+			name = Release;
 		};
-		42C6D78CF99A33225F5E1BF8 /* Release */ = {
+		71B2117639CD624E3865311D /* Release configuration for PBXNativeTarget "DataLayer" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CLANG_ENABLE_MODULE_VERIFIER = YES;
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGNING_REQUIRED = NO;
 				CODE_SIGN_IDENTITY = "";
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = YES;
-				DEFINES_MODULE = YES;
+				DEFINES_MODULE = NO;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
@@ -993,25 +1435,57 @@
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
+					"@loader_path/Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 15.0;
+				MODULEMAP_FILE = "";
 				PRODUCT_BUNDLE_IDENTIFIER = club.cycleruncode.DataLayer;
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
+				SWIFT_INSTALL_OBJC_HEADER = NO;
 				SWIFT_VERSION = 5.9;
 				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
 			};
 			name = Release;
 		};
-		51CE06C73120C332B2762DE8 /* Release */ = {
+		833C673BBD5132B895C17E9D /* Release configuration for PBXNativeTarget "Audientia" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CLANG_ENABLE_MODULE_VERIFIER = YES;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGNING_ALLOWED = NO;
+				CODE_SIGNING_REQUIRED = NO;
+				CODE_SIGN_IDENTITY = "";
+				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = "";
+				ENABLE_APP_SANDBOX = NO;
+				ENABLE_HARDENED_RUNTIME = NO;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = Configuration/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 15.0;
+				PRODUCT_BUNDLE_IDENTIFIER = club.cycleruncode.audientia;
+				SDKROOT = macosx;
+				SUPPORTED_PLATFORMS = macosx;
+				SWIFT_VERSION = 5.9;
+			};
+			name = Release;
+		};
+		8B463EA3349A0B75E22915B8 /* Release configuration for PBXNativeTarget "Shared" */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGNING_REQUIRED = NO;
 				CODE_SIGN_IDENTITY = "";
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = YES;
-				DEFINES_MODULE = YES;
+				DEFINES_MODULE = NO;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
@@ -1022,53 +1496,31 @@
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
+					"@loader_path/Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 15.0;
+				MODULEMAP_FILE = "";
 				PRODUCT_BUNDLE_IDENTIFIER = club.cycleruncode.Shared;
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
+				SWIFT_INSTALL_OBJC_HEADER = NO;
 				SWIFT_VERSION = 5.9;
 				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
 			};
 			name = Release;
 		};
-		6E8D422D53DF000D920BC456 /* Debug */ = {
+		C48C04D59C13C2169FD9B98E /* Debug configuration for PBXNativeTarget "MetadataEngine" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CLANG_ENABLE_MODULE_VERIFIER = YES;
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGNING_REQUIRED = NO;
 				CODE_SIGN_IDENTITY = "";
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = YES;
-				DEFINES_MODULE = YES;
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
-				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_CFBundleName = DataLayer;
-				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2025 CycleRunCode Club. All rights reserved.";
-				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/../Frameworks",
-				);
-				MACOSX_DEPLOYMENT_TARGET = 15.0;
-				PRODUCT_BUNDLE_IDENTIFIER = club.cycleruncode.DataLayer;
-				SDKROOT = macosx;
-				SKIP_INSTALL = YES;
-				SWIFT_VERSION = 5.9;
-				VERSIONING_SYSTEM = "apple-generic";
-			};
-			name = Debug;
-		};
-		75C7F051874D51CCD80FC25E /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CODE_SIGN_IDENTITY = "";
-				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1;
-				DEAD_CODE_STRIPPING = YES;
-				DEFINES_MODULE = YES;
+				DEFINES_MODULE = NO;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
@@ -1079,24 +1531,66 @@
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
+					"@loader_path/Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 15.0;
+				MODULEMAP_FILE = "";
 				PRODUCT_BUNDLE_IDENTIFIER = club.cycleruncode.MetadataEngine;
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
+				SWIFT_INSTALL_OBJC_HEADER = NO;
 				SWIFT_VERSION = 5.9;
 				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
 			};
-			name = Release;
+			name = Debug;
 		};
-		8C80CED1AF389EA1DF8651A5 /* Debug */ = {
+		C69881D0E7151BDCB7F5EB01 /* Release configuration for PBXNativeTarget "AudioCore" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGNING_REQUIRED = NO;
 				CODE_SIGN_IDENTITY = "";
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = YES;
-				DEFINES_MODULE = YES;
+				DEFINES_MODULE = NO;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleName = AudioCore;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2025 CycleRunCode Club. All rights reserved.";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 15.0;
+				MODULEMAP_FILE = "";
+				PRODUCT_BUNDLE_IDENTIFIER = club.cycleruncode.AudioCore;
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+				SWIFT_INSTALL_OBJC_HEADER = NO;
+				SWIFT_VERSION = 5.9;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Release;
+		};
+		D566975F79E909381F8D132D /* Release configuration for PBXNativeTarget "MetadataEngine" */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGNING_REQUIRED = NO;
+				CODE_SIGN_IDENTITY = "";
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
+				DEFINES_MODULE = NO;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
@@ -1107,20 +1601,26 @@
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
+					"@loader_path/Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 15.0;
+				MODULEMAP_FILE = "";
 				PRODUCT_BUNDLE_IDENTIFIER = club.cycleruncode.MetadataEngine;
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
+				SWIFT_INSTALL_OBJC_HEADER = NO;
 				SWIFT_VERSION = 5.9;
 				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
 			};
-			name = Debug;
+			name = Release;
 		};
-		9506E72BAD0162EB800B51F7 /* Debug */ = {
+		DABC0504F3F01E4CE02FA7A2 /* Release configuration for PBXProject "Audientia" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOLS_EXTENSIONS = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
@@ -1150,159 +1650,12 @@
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGNING_ALLOWED = NO;
+				CODE_SIGNING_REQUIRED = NO;
+				CODE_SIGN_IDENTITY = "";
 				COPY_PHASE_STRIP = NO;
-				DEBUG_INFORMATION_FORMAT = dwarf;
-				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				ENABLE_TESTABILITY = YES;
-				GCC_C_LANGUAGE_STANDARD = gnu11;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_NO_COMMON_BLOCKS = YES;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"$(inherited)",
-					"DEBUG=1",
-				);
-				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
-				GCC_WARN_UNDECLARED_SELECTOR = YES;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
-				GCC_WARN_UNUSED_FUNCTION = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 15.0;
-				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
-				MTL_FAST_MATH = YES;
-				ONLY_ACTIVE_ARCH = YES;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = macosx;
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
-				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				SWIFT_VERSION = 5.0;
-			};
-			name = Debug;
-		};
-		9968482B7AA2FF1178731F40 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CLANG_CXX_LANGUAGE_STANDARD = "c++17";
-				CLANG_ENABLE_MODULE_VERIFIER = YES;
-				CODE_SIGN_IDENTITY = "";
-				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = YES;
-				DEFINES_MODULE = YES;
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
-				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_CFBundleName = AudioCore;
-				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2025 CycleRunCode Club. All rights reserved.";
-				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/../Frameworks",
-				);
-				MACOSX_DEPLOYMENT_TARGET = 15.0;
-				PRODUCT_BUNDLE_IDENTIFIER = club.cycleruncode.AudioCore;
-				SDKROOT = macosx;
-				SKIP_INSTALL = YES;
-				SWIFT_VERSION = 5.9;
-				VERSIONING_SYSTEM = "apple-generic";
-			};
-			name = Debug;
-		};
-		A52778614B8E19C68835055A /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CLANG_ENABLE_MODULE_VERIFIER = YES;
-				CODE_SIGN_IDENTITY = "";
-				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1;
-				DEAD_CODE_STRIPPING = YES;
-				DEFINES_MODULE = YES;
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
-				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_CFBundleName = Shared;
-				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2025 CycleRunCode Club. All rights reserved.";
-				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/../Frameworks",
-				);
-				MACOSX_DEPLOYMENT_TARGET = 15.0;
-				PRODUCT_BUNDLE_IDENTIFIER = club.cycleruncode.Shared;
-				SDKROOT = macosx;
-				SKIP_INSTALL = YES;
-				SWIFT_VERSION = 5.9;
-				VERSIONING_SYSTEM = "apple-generic";
-			};
-			name = Debug;
-		};
-		B95BAFB07BC330B0C33361BA /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CLANG_CXX_LANGUAGE_STANDARD = "c++17";
-				CLANG_ENABLE_MODULE_VERIFIER = YES;
-				CODE_SIGN_IDENTITY = "";
-				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1;
-				DEAD_CODE_STRIPPING = YES;
-				DEFINES_MODULE = YES;
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
-				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_CFBundleName = AudioCore;
-				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2025 CycleRunCode Club. All rights reserved.";
-				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/../Frameworks",
-				);
-				MACOSX_DEPLOYMENT_TARGET = 15.0;
-				PRODUCT_BUNDLE_IDENTIFIER = club.cycleruncode.AudioCore;
-				SDKROOT = macosx;
-				SKIP_INSTALL = YES;
-				SWIFT_VERSION = 5.9;
-				VERSIONING_SYSTEM = "apple-generic";
-			};
-			name = Release;
-		};
-		E8DEA99C608F5CEA976FC059 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
-				CLANG_CXX_LIBRARY = "libc++";
-				CLANG_ENABLE_MODULES = YES;
-				CLANG_ENABLE_OBJC_ARC = YES;
-				CLANG_ENABLE_OBJC_WEAK = YES;
-				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
-				CLANG_WARN_BOOL_CONVERSION = YES;
-				CLANG_WARN_COMMA = YES;
-				CLANG_WARN_CONSTANT_CONVERSION = YES;
-				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
-				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_EMPTY_BODY = YES;
-				CLANG_WARN_ENUM_CONVERSION = YES;
-				CLANG_WARN_INFINITE_RECURSION = YES;
-				CLANG_WARN_INT_CONVERSION = YES;
-				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
-				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
-				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
-				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
-				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
-				CLANG_WARN_STRICT_PROTOTYPES = YES;
-				CLANG_WARN_SUSPICIOUS_MOVE = YES;
-				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CLANG_WARN_UNREACHABLE_CODE = YES;
-				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -1315,147 +1668,158 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 15.0;
+				MARKETING_VERSION = 2025.01.0001;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = club.cycleruncode.audientia;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = macosx;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
-				SWIFT_VERSION = 5.0;
-			};
-			name = Release;
-		};
-		EBE20A5B24189A3BF85BFD34 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CODE_SIGN_IDENTITY = "";
-				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1;
-				DEAD_CODE_STRIPPING = YES;
-				DEFINES_MODULE = YES;
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
-				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_CFBundleName = AppKitBridge;
-				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2025 CycleRunCode Club. All rights reserved.";
-				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/../Frameworks",
-				);
-				MACOSX_DEPLOYMENT_TARGET = 15.0;
-				PRODUCT_BUNDLE_IDENTIFIER = club.cycleruncode.AppKitBridge;
-				SDKROOT = macosx;
-				SKIP_INSTALL = YES;
 				SWIFT_VERSION = 5.9;
-				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Release;
 		};
-		F578F6C31C1EBB5958D112DE /* Release */ = {
+		E358458AB65AD7C84E361426 /* Debug configuration for PBXNativeTarget "DataLayer" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGNING_ALLOWED = NO;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGNING_REQUIRED = NO;
 				CODE_SIGN_IDENTITY = "";
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = YES;
-				DEVELOPMENT_TEAM = "";
-				ENABLE_APP_SANDBOX = NO;
-				ENABLE_HARDENED_RUNTIME = NO;
-				INFOPLIST_FILE = Info.plist;
+				DEFINES_MODULE = NO;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleName = DataLayer;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2025 CycleRunCode Club. All rights reserved.";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
+					"@loader_path/Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 15.0;
-				MARKETING_VERSION = 2025.01.0001;
-				PRODUCT_BUNDLE_IDENTIFIER = club.cycleruncode.audientia;
+				MODULEMAP_FILE = "";
+				PRODUCT_BUNDLE_IDENTIFIER = club.cycleruncode.DataLayer;
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SDKROOT = macosx;
-				SUPPORTED_PLATFORMS = macosx;
+				SKIP_INSTALL = YES;
+				SWIFT_INSTALL_OBJC_HEADER = NO;
 				SWIFT_VERSION = 5.9;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Debug;
+		};
+		FAEE61C64076C6BCCDC63BB1 /* Debug configuration for PBXNativeTarget "SharedTests" */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "";
+				CODE_SIGNING_REQUIRED = NO;
+				CODE_SIGN_IDENTITY = "";
+				DEAD_CODE_STRIPPING = YES;
+				MACOSX_DEPLOYMENT_TARGET = 15.0;
+				PRODUCT_BUNDLE_IDENTIFIER = club.cycleruncode.SharedTests;
+				SDKROOT = macosx;
+				SWIFT_VERSION = 5.9;
+				TEST_HOST = "";
+			};
+			name = Debug;
+		};
+		FC1C25ADA7251E3A2F59F041 /* Release configuration for PBXNativeTarget "SharedTests" */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "";
+				CODE_SIGNING_REQUIRED = NO;
+				CODE_SIGN_IDENTITY = "";
+				DEAD_CODE_STRIPPING = YES;
+				MACOSX_DEPLOYMENT_TARGET = 15.0;
+				PRODUCT_BUNDLE_IDENTIFIER = club.cycleruncode.SharedTests;
+				SDKROOT = macosx;
+				SWIFT_VERSION = 5.9;
+				TEST_HOST = "";
 			};
 			name = Release;
 		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		0BD5B19A829D05D7EC918265 /* Build configuration list for PBXNativeTarget "Shared" */ = {
+		16C4F25F24F7F3D5CF6010D0 /* Build configuration list for PBXNativeTarget "DataLayer" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				A52778614B8E19C68835055A /* Debug */,
-				51CE06C73120C332B2762DE8 /* Release */,
+				71B2117639CD624E3865311D /* Release configuration for PBXNativeTarget "DataLayer" */,
+				E358458AB65AD7C84E361426 /* Debug configuration for PBXNativeTarget "DataLayer" */,
 			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Debug;
+			defaultConfigurationName = Release;
 		};
-		3E03BDEF09169DEB50986EFD /* Build configuration list for PBXNativeTarget "AudioCore" */ = {
+		17C82C4B2E0359A6BC6BF301 /* Build configuration list for PBXNativeTarget "SharedTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				9968482B7AA2FF1178731F40 /* Debug */,
-				B95BAFB07BC330B0C33361BA /* Release */,
+				FC1C25ADA7251E3A2F59F041 /* Release configuration for PBXNativeTarget "SharedTests" */,
+				FAEE61C64076C6BCCDC63BB1 /* Debug configuration for PBXNativeTarget "SharedTests" */,
 			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Debug;
+			defaultConfigurationName = Release;
 		};
-		4AE908B39BA58CEE415C567A /* Build configuration list for PBXNativeTarget "PluginSystem" */ = {
+		660F564E27E6677AFC7387E8 /* Build configuration list for PBXNativeTarget "MetadataEngine" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				35B2F4F4B924B758B5402020 /* Debug */,
-				1FC93A9E0D26CE7CE83158B1 /* Release */,
+				D566975F79E909381F8D132D /* Release configuration for PBXNativeTarget "MetadataEngine" */,
+				C48C04D59C13C2169FD9B98E /* Debug configuration for PBXNativeTarget "MetadataEngine" */,
 			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Debug;
+			defaultConfigurationName = Release;
 		};
-		4C7286C163FE5F6C428826EC /* Build configuration list for PBXNativeTarget "MetadataEngine" */ = {
+		6D024C2BE72B4D00B07096A9 /* Build configuration list for PBXNativeTarget "Shared" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				8C80CED1AF389EA1DF8651A5 /* Debug */,
-				75C7F051874D51CCD80FC25E /* Release */,
+				8B463EA3349A0B75E22915B8 /* Release configuration for PBXNativeTarget "Shared" */,
+				27E804AA3951B5A2A4AA8B8D /* Debug configuration for PBXNativeTarget "Shared" */,
 			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Debug;
+			defaultConfigurationName = Release;
 		};
-		5DE8CC2BEDA8F5AA8CF67C2D /* Build configuration list for PBXNativeTarget "Audientia" */ = {
+		8C29BB966C841C8BC43A1B71 /* Build configuration list for PBXNativeTarget "Audientia" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				06F8E71290E0B73C0D1A0F58 /* Debug */,
-				F578F6C31C1EBB5958D112DE /* Release */,
+				833C673BBD5132B895C17E9D /* Release configuration for PBXNativeTarget "Audientia" */,
+				3A0B38EA4410247D51D3CD56 /* Debug configuration for PBXNativeTarget "Audientia" */,
 			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Debug;
+			defaultConfigurationName = Release;
 		};
-		A3E3A0A0ABC0036E628E05AD /* Build configuration list for PBXNativeTarget "AppKitBridge" */ = {
+		B356237CCD497EEF557B43F0 /* Build configuration list for PBXProject "Audientia" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				2547A4524446121518313DB0 /* Debug */,
-				EBE20A5B24189A3BF85BFD34 /* Release */,
+				0BF869B0880C4EB73192A9BE /* Debug configuration for PBXProject "Audientia" */,
+				DABC0504F3F01E4CE02FA7A2 /* Release configuration for PBXProject "Audientia" */,
 			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Debug;
+			defaultConfigurationName = Release;
 		};
-		B2E271C267504F6544D5430E /* Build configuration list for PBXProject "Audientia" */ = {
+		C2398F8D6BF9E5D12D65BBFD /* Build configuration list for PBXNativeTarget "PluginSystem" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				9506E72BAD0162EB800B51F7 /* Debug */,
-				E8DEA99C608F5CEA976FC059 /* Release */,
+				42CA668C42A40FD36BF6C3B5 /* Release configuration for PBXNativeTarget "PluginSystem" */,
+				0FD3DA7642C40F8C46359A9E /* Debug configuration for PBXNativeTarget "PluginSystem" */,
 			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Debug;
+			defaultConfigurationName = Release;
 		};
-		F356777C57FBB4E985E14FF7 /* Build configuration list for PBXNativeTarget "DataLayer" */ = {
+		C5732A8E38EF6A3D5D5D421F /* Build configuration list for PBXNativeTarget "AudioCore" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				6E8D422D53DF000D920BC456 /* Debug */,
-				42C6D78CF99A33225F5E1BF8 /* Release */,
+				C69881D0E7151BDCB7F5EB01 /* Release configuration for PBXNativeTarget "AudioCore" */,
+				38634AD6A031C4FEA9EC0AAC /* Debug configuration for PBXNativeTarget "AudioCore" */,
 			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Debug;
+			defaultConfigurationName = Release;
+		};
+		D20025DA7DD3BB3C82D311AF /* Build configuration list for PBXNativeTarget "AppKitBridge" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1FE1C52A07316057C829FCEE /* Release configuration for PBXNativeTarget "AppKitBridge" */,
+				37B3DFC57C62B0252C1FF110 /* Debug configuration for PBXNativeTarget "AppKitBridge" */,
+			);
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
-	rootObject = AF348473424FB6AD275FC868 /* Project object */;
+	rootObject = C2C3DCF2EF2BC8483228CBB5 /* Project object */;
 }

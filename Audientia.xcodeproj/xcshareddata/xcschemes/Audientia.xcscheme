@@ -1,175 +1,35 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<Scheme
-   LastUpgradeVersion = "1600"
-   version = "1.7">
-   <BuildAction
-      parallelizeBuildables = "YES"
-      buildImplicitDependencies = "YES"
-      runPostActionsOnFailure = "NO">
-      <BuildActionEntries>
-         <BuildActionEntry
-            buildForTesting = "YES"
-            buildForRunning = "YES"
-            buildForProfiling = "YES"
-            buildForArchiving = "YES"
-            buildForAnalyzing = "YES">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "4B0F213D49F6FF73BFBC1908"
-               BuildableName = "AppKitBridge.framework"
-               BlueprintName = "AppKitBridge"
-               ReferencedContainer = "container:Audientia.xcodeproj">
-            </BuildableReference>
-         </BuildActionEntry>
-         <BuildActionEntry
-            buildForTesting = "YES"
-            buildForRunning = "YES"
-            buildForProfiling = "YES"
-            buildForArchiving = "YES"
-            buildForAnalyzing = "YES">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "AA6203CF5D9AD46AA19567F8"
-               BuildableName = "Audientia.app"
-               BlueprintName = "Audientia"
-               ReferencedContainer = "container:Audientia.xcodeproj">
-            </BuildableReference>
-         </BuildActionEntry>
-         <BuildActionEntry
-            buildForTesting = "YES"
-            buildForRunning = "YES"
-            buildForProfiling = "YES"
-            buildForArchiving = "YES"
-            buildForAnalyzing = "YES">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "6A56C40CB66C8E0C935B0696"
-               BuildableName = "AudioCore.framework"
-               BlueprintName = "AudioCore"
-               ReferencedContainer = "container:Audientia.xcodeproj">
-            </BuildableReference>
-         </BuildActionEntry>
-         <BuildActionEntry
-            buildForTesting = "YES"
-            buildForRunning = "YES"
-            buildForProfiling = "YES"
-            buildForArchiving = "YES"
-            buildForAnalyzing = "YES">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "15ABA0849044C2D5313CF0D0"
-               BuildableName = "DataLayer.framework"
-               BlueprintName = "DataLayer"
-               ReferencedContainer = "container:Audientia.xcodeproj">
-            </BuildableReference>
-         </BuildActionEntry>
-         <BuildActionEntry
-            buildForTesting = "YES"
-            buildForRunning = "YES"
-            buildForProfiling = "YES"
-            buildForArchiving = "YES"
-            buildForAnalyzing = "YES">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "3F66AFB27086D6EDE602BBDC"
-               BuildableName = "MetadataEngine.framework"
-               BlueprintName = "MetadataEngine"
-               ReferencedContainer = "container:Audientia.xcodeproj">
-            </BuildableReference>
-         </BuildActionEntry>
-         <BuildActionEntry
-            buildForTesting = "YES"
-            buildForRunning = "YES"
-            buildForProfiling = "YES"
-            buildForArchiving = "YES"
-            buildForAnalyzing = "YES">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "60DBDF79817EDE096FCDC555"
-               BuildableName = "PluginSystem.framework"
-               BlueprintName = "PluginSystem"
-               ReferencedContainer = "container:Audientia.xcodeproj">
-            </BuildableReference>
-         </BuildActionEntry>
-         <BuildActionEntry
-            buildForTesting = "YES"
-            buildForRunning = "YES"
-            buildForProfiling = "YES"
-            buildForArchiving = "YES"
-            buildForAnalyzing = "YES">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "C9315070ADDD2733ECF2C9B0"
-               BuildableName = "Shared.framework"
-               BlueprintName = "Shared"
-               ReferencedContainer = "container:Audientia.xcodeproj">
-            </BuildableReference>
-         </BuildActionEntry>
-      </BuildActionEntries>
-   </BuildAction>
-   <TestAction
-      buildConfiguration = "Debug"
-      selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
-      selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
-      shouldUseLaunchSchemeArgsEnv = "YES"
-      onlyGenerateCoverageForSpecifiedTargets = "NO">
-      <MacroExpansion>
-         <BuildableReference
-            BuildableIdentifier = "primary"
-            BlueprintIdentifier = "4B0F213D49F6FF73BFBC1908"
-            BuildableName = "AppKitBridge.framework"
-            BlueprintName = "AppKitBridge"
-            ReferencedContainer = "container:Audientia.xcodeproj">
-         </BuildableReference>
-      </MacroExpansion>
-      <Testables>
-      </Testables>
-      <CommandLineArguments>
-      </CommandLineArguments>
-   </TestAction>
-   <LaunchAction
-      buildConfiguration = "Debug"
-      selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
-      selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
-      launchStyle = "0"
-      useCustomWorkingDirectory = "NO"
-      ignoresPersistentStateOnLaunch = "NO"
-      debugDocumentVersioning = "YES"
-      debugServiceExtension = "internal"
-      allowLocationSimulation = "YES">
-      <MacroExpansion>
-         <BuildableReference
-            BuildableIdentifier = "primary"
-            BlueprintIdentifier = "4B0F213D49F6FF73BFBC1908"
-            BuildableName = "AppKitBridge.framework"
-            BlueprintName = "AppKitBridge"
-            ReferencedContainer = "container:Audientia.xcodeproj">
-         </BuildableReference>
-      </MacroExpansion>
-      <CommandLineArguments>
-      </CommandLineArguments>
-   </LaunchAction>
-   <ProfileAction
-      buildConfiguration = "Release"
-      shouldUseLaunchSchemeArgsEnv = "YES"
-      savedToolIdentifier = ""
-      useCustomWorkingDirectory = "NO"
-      debugDocumentVersioning = "YES">
-      <MacroExpansion>
-         <BuildableReference
-            BuildableIdentifier = "primary"
-            BlueprintIdentifier = "4B0F213D49F6FF73BFBC1908"
-            BuildableName = "AppKitBridge.framework"
-            BlueprintName = "AppKitBridge"
-            ReferencedContainer = "container:Audientia.xcodeproj">
-         </BuildableReference>
-      </MacroExpansion>
-   </ProfileAction>
-   <AnalyzeAction
-      buildConfiguration = "Debug">
-   </AnalyzeAction>
-   <ArchiveAction
-      buildConfiguration = "Release"
-      revealArchiveInOrganizer = "YES">
-   </ArchiveAction>
+<?xml version='1.0' encoding='UTF-8'?>
+<Scheme LastUpgradeVersion='2610' version='1.7'>
+  <BuildAction parallelizeBuildables='YES' buildImplicitDependencies='YES' buildArchitectures='Automatic'>
+    <BuildActionEntries>
+      <BuildActionEntry buildForTesting='YES' buildForRunning='YES' buildForProfiling='YES' buildForArchiving='YES' buildForAnalyzing='YES'>
+        <BuildableReference BuildableIdentifier='primary' BlueprintIdentifier='BA9DB7C0D07A396094697921' BuildableName='Audientia.app' BlueprintName='Audientia' ReferencedContainer='container:Audientia.xcodeproj'> </BuildableReference>
+      </BuildActionEntry>
+      <BuildActionEntry buildForTesting='YES' buildForRunning='NO' buildForProfiling='NO' buildForArchiving='NO' buildForAnalyzing='YES'>
+        <BuildableReference BuildableIdentifier='primary' BlueprintIdentifier='CBD6638495A240EA670067B2' BuildableName='SharedTests.xctest' BlueprintName='SharedTests' ReferencedContainer='container:Audientia.xcodeproj'/>
+      </BuildActionEntry>
+    </BuildActionEntries>
+  </BuildAction>
+  <TestAction buildConfiguration='Debug' selectedDebuggerIdentifier='Xcode.DebuggerFoundation.Debugger.LLDB' selectedLauncherIdentifier='Xcode.DebuggerFoundation.Launcher.LLDB' shouldUseLaunchSchemeArgsEnv='YES'>
+    <TestPlans>
+      <TestPlanReference reference='container:Audientia.xctestplan' default='YES'> </TestPlanReference>
+    </TestPlans>
+    <Testables>
+      <TestableReference skipped='NO'>
+        <BuildableReference BuildableIdentifier='primary' BlueprintIdentifier='CBD6638495A240EA670067B2' BuildableName='SharedTests.xctest' BlueprintName='SharedTests' ReferencedContainer='container:Audientia.xcodeproj'/>
+      </TestableReference>
+    </Testables>
+  </TestAction>
+  <LaunchAction buildConfiguration='Debug' selectedDebuggerIdentifier='Xcode.DebuggerFoundation.Debugger.LLDB' selectedLauncherIdentifier='Xcode.DebuggerFoundation.Launcher.LLDB' launchStyle='0' useCustomWorkingDirectory='NO' ignoresPersistentStateOnLaunch='NO' debugDocumentVersioning='YES' debugServiceExtension='internal' allowLocationSimulation='YES'>
+    <BuildableProductRunnable runnableDebuggingMode='0'>
+      <BuildableReference BuildableIdentifier='primary' BlueprintIdentifier='BA9DB7C0D07A396094697921' BuildableName='Audientia.app' BlueprintName='Audientia' ReferencedContainer='container:Audientia.xcodeproj'> </BuildableReference>
+    </BuildableProductRunnable>
+  </LaunchAction>
+  <ProfileAction buildConfiguration='Release' shouldUseLaunchSchemeArgsEnv='YES' savedToolIdentifier='' useCustomWorkingDirectory='NO' debugDocumentVersioning='YES'>
+    <BuildableProductRunnable runnableDebuggingMode='0'>
+      <BuildableReference BuildableIdentifier='primary' BlueprintIdentifier='BA9DB7C0D07A396094697921' BuildableName='Audientia.app' BlueprintName='Audientia' ReferencedContainer='container:Audientia.xcodeproj'> </BuildableReference>
+    </BuildableProductRunnable>
+  </ProfileAction>
+  <AnalyzeAction buildConfiguration='Debug'> </AnalyzeAction>
+  <ArchiveAction buildConfiguration='Release' revealArchiveInOrganizer='YES'> </ArchiveAction>
 </Scheme>

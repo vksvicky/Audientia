@@ -1,0 +1,30 @@
+{
+  "configurations" : [
+    {
+      "id" : "1AF84926-A7F9-4633-9E64-B55FAF880BA2",
+      "name" : "Test Scheme Action",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "codeCoverage" : false,
+    "performanceAntipatternCheckerEnabled" : true,
+    "targetForVariableExpansion" : {
+      "containerPath" : "container:Audientia.xcodeproj",
+      "identifier" : "BA9DB7C0D07A396094697921",
+      "name" : "Audientia"
+    }
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:Audientia.xcodeproj",
+        "identifier" : "CBD6638495A240EA670067B2",
+        "name" : "SharedTests"
+      }
+    }
+  ],
+  "version" : 1
+}
