@@ -143,7 +143,8 @@ fi
 # Restore original staging if we modified it
 if [ "$RESTORE_STAGED" = "true" ]; then
     echo ""
-    echo -e "${BLUE}ℹ️  Restoring original staging...${NC}"
+    echo -e "${BLUE}ℹ️  Restoring original staging (unstaging temporarily staged files)...${NC}"
+    echo -e "${BLUE}   Note: Your changes are NOT lost - they're just unstaged now.${NC}"
     git reset HEAD $FILES_TO_STAGE 2>/dev/null || true
 fi
 
