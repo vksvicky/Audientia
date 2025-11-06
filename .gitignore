@@ -2,6 +2,14 @@
 #
 # gitignore contributors: remember to update Global/Xcode.gitignore, Objective-C.gitignore & Swift.gitignore
 
+## Generated project (regenerate from project.yml)
+*.xcodeproj/*
+!*.xcodeproj/project.pbxproj
+!*.xcodeproj/xcshareddata/
+*.xcworkspace/*
+!*.xcworkspace/contents.xcworkspacedata
+!*.xcworkspace/xcshareddata/
+
 ## User settings
 xcuserdata/
 
@@ -29,6 +37,7 @@ DerivedData/
 *.ipa
 *.dSYM.zip
 *.dSYM
+*.icns
 
 ## Playgrounds
 timeline.xctimeline
@@ -277,4 +286,11 @@ ffmpeg.exe
 *.swp
 *.swo
 .#*
+
+# Version management (auto-generated during build)
+.app_version
+.*_version
+.*_full_version
+.build_number
+.build_number_*
 

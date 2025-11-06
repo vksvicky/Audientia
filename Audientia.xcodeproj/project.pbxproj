@@ -1,0 +1,1461 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		01C87C866104EE35451F33A0 /* DataLayer.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 967CEDCE0C0F130BCC2547FD /* DataLayer.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		03903AB4FB96C370BDF72AA1 /* ModuleVersionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2BFCA2ABB53CCD4F006DB63 /* ModuleVersionManager.swift */; };
+		0BB276130A452BD5FE692907 /* AppKitBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FABC2C457B4C0420D57EC98 /* AppKitBridge.swift */; };
+		13436333E69BA1EFC54D4C83 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 854D536E926441773C010ECD /* ContentView.swift */; };
+		20B6FD710641515B259338F2 /* AutoVersionUpdate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 495F1E409951FF6CD316256F /* AutoVersionUpdate.swift */; };
+		22C972B9F890FCB274F8EAAF /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 35D65CE0686B8F053AE8BE7C /* README.md */; };
+		281DE5E4D3A5B0AEB4862B30 /* DataLayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4FD0DBB3830D0FA2E596593 /* DataLayer.swift */; };
+		2D560808D6066CA56D9FD3BD /* MetadataEngine.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 9A4C5BEE3265B00B36646883 /* MetadataEngine.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		330B0E466697AECB9199EBBB /* Shared.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 06774C335950E7C8AFB02F02 /* Shared.framework */; };
+		36DE1E22AC6318A00D7FBEE7 /* AudientiaApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CD12CEA5AFB9CADCAE4D780 /* AudientiaApp.swift */; };
+		396737DE4DC87A8E29900523 /* Shared.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 06774C335950E7C8AFB02F02 /* Shared.framework */; };
+		3AA579D26131F543B897612E /* Shared.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 06774C335950E7C8AFB02F02 /* Shared.framework */; };
+		484D981006E0E27F87B7C147 /* MetadataEngine.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9A4C5BEE3265B00B36646883 /* MetadataEngine.framework */; };
+		64221702E27432E197C63CAA /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = B664D9E30F7EC5EAA3150EA9 /* README.md */; };
+		74CDB83BB655626458A990A2 /* AudioCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F3040189EB9AC8FE164A0AF7 /* AudioCore.framework */; };
+		7F95FCE05BE3BACC7ABC28E2 /* Shared.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 06774C335950E7C8AFB02F02 /* Shared.framework */; };
+		83F4B9211C524BC1C41A12B0 /* VersionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 100DC5F4B59ECB4A3E88D7DA /* VersionManager.swift */; };
+		85740EFFE71656B22B218FC3 /* ModuleVersionConflictView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B576156ACE71FEFE2A944189 /* ModuleVersionConflictView.swift */; };
+		85AA32DBB0F7E779314518AA /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = BEDE9FE7047D15441DEA50D6 /* README.md */; };
+		89271A5CF6391DD88FEA4C34 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = ECC0AC1B120D657B614635AD /* README.md */; };
+		90DE25ED47682FFCB546B656 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = B57487B1F91BFFB40181397C /* README.md */; };
+		932434CF8043A157070822B9 /* Shared.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 06774C335950E7C8AFB02F02 /* Shared.framework */; };
+		94C7851D5A4A0F68C272BABB /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = FA690E3D7859E61847661E01 /* README.md */; };
+		99DA93CFEB3130F8B6DA50F0 /* AppKitBridge.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = CAA083F1514490F5CEFD52BF /* AppKitBridge.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		9AAEB7D844FFCDD91B7461B7 /* PluginSystem.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E7CEDCFEA77C7164A82895D4 /* PluginSystem.framework */; };
+		9E70FD8F0ED3E73B0A33960E /* PluginSystem.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = E7CEDCFEA77C7164A82895D4 /* PluginSystem.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		9FEB90867A39BFFC44418E62 /* AppSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F9381F1B2FC969CA5A2B59D /* AppSettings.swift */; };
+		A21C6DFC27B4C7851E3E5A13 /* AudioCore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FC397E284D4F56F81AB8D5D /* AudioCore.swift */; };
+		B6F16F435903606BA886B06E /* Shared.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 06774C335950E7C8AFB02F02 /* Shared.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		B75690938178D2A55F4EBDD9 /* Shared.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 06774C335950E7C8AFB02F02 /* Shared.framework */; };
+		BB7468F218148180491107B6 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = BDC0AC16D33911EB21369D56 /* README.md */; };
+		CCAC0F0D70643AC0BACB2E51 /* DataLayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 967CEDCE0C0F130BCC2547FD /* DataLayer.framework */; };
+		CEAD040A104C04005BA0DFF2 /* AudioCore.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = F3040189EB9AC8FE164A0AF7 /* AudioCore.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		DD96C387BC79571BED3C7E42 /* PluginSystem.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD4F2E550F18A7C4BD379E76 /* PluginSystem.swift */; };
+		E8A0413BA9B2DCF7B1C91DCC /* MetadataEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C0F1ACEC5147C429BCC1211 /* MetadataEngine.swift */; };
+		FB4A9124496E91DE7BCFE024 /* AppKitBridge.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CAA083F1514490F5CEFD52BF /* AppKitBridge.framework */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		1349D7302F2570B422FBEBA2 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = AF348473424FB6AD275FC868 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = C9315070ADDD2733ECF2C9B0;
+			remoteInfo = Shared;
+		};
+		23C052AB581ECA8E9D09A659 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = AF348473424FB6AD275FC868 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = C9315070ADDD2733ECF2C9B0;
+			remoteInfo = Shared;
+		};
+		3BFBE62C377FF8AC941AE918 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = AF348473424FB6AD275FC868 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = C9315070ADDD2733ECF2C9B0;
+			remoteInfo = Shared;
+		};
+		4910622D32C360E07590D9FF /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = AF348473424FB6AD275FC868 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 3F66AFB27086D6EDE602BBDC;
+			remoteInfo = MetadataEngine;
+		};
+		54FCE2BBA333BCA468FF75BD /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = AF348473424FB6AD275FC868 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 6A56C40CB66C8E0C935B0696;
+			remoteInfo = AudioCore;
+		};
+		79D8FEC138355D35A98CDC4D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = AF348473424FB6AD275FC868 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 4B0F213D49F6FF73BFBC1908;
+			remoteInfo = AppKitBridge;
+		};
+		96D663D5739BE2134C9D20F7 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = AF348473424FB6AD275FC868 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = C9315070ADDD2733ECF2C9B0;
+			remoteInfo = Shared;
+		};
+		97EB12186EBBB28A3E20FFFB /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = AF348473424FB6AD275FC868 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = C9315070ADDD2733ECF2C9B0;
+			remoteInfo = Shared;
+		};
+		B406C2BD746FE88728FA8037 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = AF348473424FB6AD275FC868 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 15ABA0849044C2D5313CF0D0;
+			remoteInfo = DataLayer;
+		};
+		B5F6393CE37C2F1E7771400A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = AF348473424FB6AD275FC868 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = C9315070ADDD2733ECF2C9B0;
+			remoteInfo = Shared;
+		};
+		C2F98C50A8694575E87E2F71 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = AF348473424FB6AD275FC868 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 60DBDF79817EDE096FCDC555;
+			remoteInfo = PluginSystem;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		6E0B5564A63E55CF5924A44D /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				B6F16F435903606BA886B06E /* Shared.framework in Embed Frameworks */,
+				99DA93CFEB3130F8B6DA50F0 /* AppKitBridge.framework in Embed Frameworks */,
+				CEAD040A104C04005BA0DFF2 /* AudioCore.framework in Embed Frameworks */,
+				2D560808D6066CA56D9FD3BD /* MetadataEngine.framework in Embed Frameworks */,
+				01C87C866104EE35451F33A0 /* DataLayer.framework in Embed Frameworks */,
+				9E70FD8F0ED3E73B0A33960E /* PluginSystem.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		06774C335950E7C8AFB02F02 /* Shared.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Shared.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		100DC5F4B59ECB4A3E88D7DA /* VersionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VersionManager.swift; sourceTree = "<group>"; };
+		35D65CE0686B8F053AE8BE7C /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		495F1E409951FF6CD316256F /* AutoVersionUpdate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoVersionUpdate.swift; sourceTree = "<group>"; };
+		6F9381F1B2FC969CA5A2B59D /* AppSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSettings.swift; sourceTree = "<group>"; };
+		7C0F1ACEC5147C429BCC1211 /* MetadataEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetadataEngine.swift; sourceTree = "<group>"; };
+		854D536E926441773C010ECD /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		8FABC2C457B4C0420D57EC98 /* AppKitBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppKitBridge.swift; sourceTree = "<group>"; };
+		8FC397E284D4F56F81AB8D5D /* AudioCore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioCore.swift; sourceTree = "<group>"; };
+		967CEDCE0C0F130BCC2547FD /* DataLayer.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = DataLayer.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		9A4C5BEE3265B00B36646883 /* MetadataEngine.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = MetadataEngine.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		9CD12CEA5AFB9CADCAE4D780 /* AudientiaApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudientiaApp.swift; sourceTree = "<group>"; };
+		B57487B1F91BFFB40181397C /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		B576156ACE71FEFE2A944189 /* ModuleVersionConflictView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModuleVersionConflictView.swift; sourceTree = "<group>"; };
+		B664D9E30F7EC5EAA3150EA9 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		BDC0AC16D33911EB21369D56 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		BEDE9FE7047D15441DEA50D6 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		CAA083F1514490F5CEFD52BF /* AppKitBridge.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = AppKitBridge.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		CD4F2E550F18A7C4BD379E76 /* PluginSystem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PluginSystem.swift; sourceTree = "<group>"; };
+		E4FD0DBB3830D0FA2E596593 /* DataLayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataLayer.swift; sourceTree = "<group>"; };
+		E7CEDCFEA77C7164A82895D4 /* PluginSystem.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = PluginSystem.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		ECC0AC1B120D657B614635AD /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		F15371429C811311AC9E8A32 /* Audientia.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Audientia.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		F2BFCA2ABB53CCD4F006DB63 /* ModuleVersionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModuleVersionManager.swift; sourceTree = "<group>"; };
+		F3040189EB9AC8FE164A0AF7 /* AudioCore.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = AudioCore.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		FA690E3D7859E61847661E01 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		0E52DDBDF7CF01AE30D75C38 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				7F95FCE05BE3BACC7ABC28E2 /* Shared.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		4E11CECF343E52EDBCA8F881 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				3AA579D26131F543B897612E /* Shared.framework in Frameworks */,
+				FB4A9124496E91DE7BCFE024 /* AppKitBridge.framework in Frameworks */,
+				74CDB83BB655626458A990A2 /* AudioCore.framework in Frameworks */,
+				484D981006E0E27F87B7C147 /* MetadataEngine.framework in Frameworks */,
+				CCAC0F0D70643AC0BACB2E51 /* DataLayer.framework in Frameworks */,
+				9AAEB7D844FFCDD91B7461B7 /* PluginSystem.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		5C8D187D52349AD23D5116DA /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B75690938178D2A55F4EBDD9 /* Shared.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		5E98DA02BB3016DE07331089 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				396737DE4DC87A8E29900523 /* Shared.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		9D83AB8AC540028320B30DE7 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				932434CF8043A157070822B9 /* Shared.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F505512947C796F92FCCCB35 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				330B0E466697AECB9199EBBB /* Shared.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		1DD88DFBD9A60F6B1918B423 /* AudioCore */ = {
+			isa = PBXGroup;
+			children = (
+				8FC397E284D4F56F81AB8D5D /* AudioCore.swift */,
+				BDC0AC16D33911EB21369D56 /* README.md */,
+			);
+			path = AudioCore;
+			sourceTree = "<group>";
+		};
+		25F6D1E008CCA16BDE6B7C26 /* PluginSystem */ = {
+			isa = PBXGroup;
+			children = (
+				CD4F2E550F18A7C4BD379E76 /* PluginSystem.swift */,
+				BEDE9FE7047D15441DEA50D6 /* README.md */,
+			);
+			path = PluginSystem;
+			sourceTree = "<group>";
+		};
+		2AAB58C983027C6DF1F9E9E8 /* MetadataEngine */ = {
+			isa = PBXGroup;
+			children = (
+				7C0F1ACEC5147C429BCC1211 /* MetadataEngine.swift */,
+				FA690E3D7859E61847661E01 /* README.md */,
+			);
+			path = MetadataEngine;
+			sourceTree = "<group>";
+		};
+		36689CB263B32AFD15C83CC6 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				CAA083F1514490F5CEFD52BF /* AppKitBridge.framework */,
+				F15371429C811311AC9E8A32 /* Audientia.app */,
+				F3040189EB9AC8FE164A0AF7 /* AudioCore.framework */,
+				967CEDCE0C0F130BCC2547FD /* DataLayer.framework */,
+				9A4C5BEE3265B00B36646883 /* MetadataEngine.framework */,
+				E7CEDCFEA77C7164A82895D4 /* PluginSystem.framework */,
+				06774C335950E7C8AFB02F02 /* Shared.framework */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		6FD6BFF296EF78B0E5EA593A /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				6F9381F1B2FC969CA5A2B59D /* AppSettings.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		BB4816A99910CD0D78E6E52B = {
+			isa = PBXGroup;
+			children = (
+				DD91CFE569055026A88E5703 /* AppKitBridge */,
+				1DD88DFBD9A60F6B1918B423 /* AudioCore */,
+				BD62D2CA8ABA50869DDFF4EC /* DataLayer */,
+				2AAB58C983027C6DF1F9E9E8 /* MetadataEngine */,
+				25F6D1E008CCA16BDE6B7C26 /* PluginSystem */,
+				CBEFC511A1393F9FFB7AB590 /* Shared */,
+				E46FEEEEB000F221BAAACEF2 /* UI */,
+				36689CB263B32AFD15C83CC6 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		BD62D2CA8ABA50869DDFF4EC /* DataLayer */ = {
+			isa = PBXGroup;
+			children = (
+				E4FD0DBB3830D0FA2E596593 /* DataLayer.swift */,
+				ECC0AC1B120D657B614635AD /* README.md */,
+			);
+			path = DataLayer;
+			sourceTree = "<group>";
+		};
+		C8E09B1082E58D9C6AF22AC9 /* Settings */ = {
+			isa = PBXGroup;
+			children = (
+				B576156ACE71FEFE2A944189 /* ModuleVersionConflictView.swift */,
+			);
+			path = Settings;
+			sourceTree = "<group>";
+		};
+		CBEFC511A1393F9FFB7AB590 /* Shared */ = {
+			isa = PBXGroup;
+			children = (
+				B664D9E30F7EC5EAA3150EA9 /* README.md */,
+				6FD6BFF296EF78B0E5EA593A /* Models */,
+				F3E7A601FF2C6B3F6E3D38E9 /* Utilities */,
+			);
+			path = Shared;
+			sourceTree = "<group>";
+		};
+		DD91CFE569055026A88E5703 /* AppKitBridge */ = {
+			isa = PBXGroup;
+			children = (
+				8FABC2C457B4C0420D57EC98 /* AppKitBridge.swift */,
+				35D65CE0686B8F053AE8BE7C /* README.md */,
+			);
+			path = AppKitBridge;
+			sourceTree = "<group>";
+		};
+		E46FEEEEB000F221BAAACEF2 /* UI */ = {
+			isa = PBXGroup;
+			children = (
+				9CD12CEA5AFB9CADCAE4D780 /* AudientiaApp.swift */,
+				854D536E926441773C010ECD /* ContentView.swift */,
+				B57487B1F91BFFB40181397C /* README.md */,
+				C8E09B1082E58D9C6AF22AC9 /* Settings */,
+			);
+			path = UI;
+			sourceTree = "<group>";
+		};
+		F3E7A601FF2C6B3F6E3D38E9 /* Utilities */ = {
+			isa = PBXGroup;
+			children = (
+				495F1E409951FF6CD316256F /* AutoVersionUpdate.swift */,
+				F2BFCA2ABB53CCD4F006DB63 /* ModuleVersionManager.swift */,
+				100DC5F4B59ECB4A3E88D7DA /* VersionManager.swift */,
+			);
+			path = Utilities;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		15ABA0849044C2D5313CF0D0 /* DataLayer */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = F356777C57FBB4E985E14FF7 /* Build configuration list for PBXNativeTarget "DataLayer" */;
+			buildPhases = (
+				C7323FA8AD4B6BB44F970A01 /* Update Module Version */,
+				F19B78CA9A66783897BD1B12 /* Sources */,
+				39DB647086BF08C2603B8765 /* Resources */,
+				F505512947C796F92FCCCB35 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				7686985E86AFCEA9DF9E3D7E /* PBXTargetDependency */,
+			);
+			name = DataLayer;
+			packageProductDependencies = (
+			);
+			productName = DataLayer;
+			productReference = 967CEDCE0C0F130BCC2547FD /* DataLayer.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+		3F66AFB27086D6EDE602BBDC /* MetadataEngine */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 4C7286C163FE5F6C428826EC /* Build configuration list for PBXNativeTarget "MetadataEngine" */;
+			buildPhases = (
+				92837328DF1CF19F1A1DDAA8 /* Update Module Version */,
+				9C1DD48B8EDA0D2CCF1169ED /* Sources */,
+				BC079B302D07207CC3662771 /* Resources */,
+				9D83AB8AC540028320B30DE7 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				41A098231BDB0699CB6FBF7F /* PBXTargetDependency */,
+			);
+			name = MetadataEngine;
+			packageProductDependencies = (
+			);
+			productName = MetadataEngine;
+			productReference = 9A4C5BEE3265B00B36646883 /* MetadataEngine.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+		4B0F213D49F6FF73BFBC1908 /* AppKitBridge */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A3E3A0A0ABC0036E628E05AD /* Build configuration list for PBXNativeTarget "AppKitBridge" */;
+			buildPhases = (
+				3D672BF9A78339F452D946C7 /* Update Module Version */,
+				30FC45BCCC060B324DD705E8 /* Sources */,
+				BD86C5718184F3E4CFA86C19 /* Resources */,
+				0E52DDBDF7CF01AE30D75C38 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				CEEB98BE739CEFC8C86E7D76 /* PBXTargetDependency */,
+			);
+			name = AppKitBridge;
+			packageProductDependencies = (
+			);
+			productName = AppKitBridge;
+			productReference = CAA083F1514490F5CEFD52BF /* AppKitBridge.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+		60DBDF79817EDE096FCDC555 /* PluginSystem */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 4AE908B39BA58CEE415C567A /* Build configuration list for PBXNativeTarget "PluginSystem" */;
+			buildPhases = (
+				219A9235EF625CC053A04013 /* Update Module Version */,
+				A1C3E869D63B10CB592DCE20 /* Sources */,
+				8E2893BD4E56997E517F5CF2 /* Resources */,
+				5E98DA02BB3016DE07331089 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				F2911300676412ABE97EE556 /* PBXTargetDependency */,
+			);
+			name = PluginSystem;
+			packageProductDependencies = (
+			);
+			productName = PluginSystem;
+			productReference = E7CEDCFEA77C7164A82895D4 /* PluginSystem.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+		6A56C40CB66C8E0C935B0696 /* AudioCore */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 3E03BDEF09169DEB50986EFD /* Build configuration list for PBXNativeTarget "AudioCore" */;
+			buildPhases = (
+				0B4F631D4A9194CA40F5CC2A /* Update Module Version */,
+				8EFB091D1BE3854D378C3704 /* Sources */,
+				454703BD49C308E9BE497817 /* Resources */,
+				5C8D187D52349AD23D5116DA /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				CE0AEAD1F19B26D2E272840A /* PBXTargetDependency */,
+			);
+			name = AudioCore;
+			packageProductDependencies = (
+			);
+			productName = AudioCore;
+			productReference = F3040189EB9AC8FE164A0AF7 /* AudioCore.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+		AA6203CF5D9AD46AA19567F8 /* Audientia */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 5DE8CC2BEDA8F5AA8CF67C2D /* Build configuration list for PBXNativeTarget "Audientia" */;
+			buildPhases = (
+				B8C1E9D2845E7F67D2A0C393 /* Update App Version */,
+				AE78EBBF805AD389AE1DFCBA /* Sources */,
+				D35AF21AA94AD2263EE2583C /* Resources */,
+				4E11CECF343E52EDBCA8F881 /* Frameworks */,
+				6E0B5564A63E55CF5924A44D /* Embed Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				F8A5FCBCB6F11862D9DCBEA5 /* PBXTargetDependency */,
+				60EFCD37954CB1C44745D017 /* PBXTargetDependency */,
+				822840305CBEF4537D6A5E4E /* PBXTargetDependency */,
+				99A57D39A82CF1CC95AF95B7 /* PBXTargetDependency */,
+				A0AA5BECC346DC3B4CC6D60E /* PBXTargetDependency */,
+				B5ABC2D521668FEAEC30DB61 /* PBXTargetDependency */,
+			);
+			name = Audientia;
+			packageProductDependencies = (
+			);
+			productName = Audientia;
+			productReference = F15371429C811311AC9E8A32 /* Audientia.app */;
+			productType = "com.apple.product-type.application";
+		};
+		C9315070ADDD2733ECF2C9B0 /* Shared */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 0BD5B19A829D05D7EC918265 /* Build configuration list for PBXNativeTarget "Shared" */;
+			buildPhases = (
+				65EF8D4B197E59083654682C /* Update Module Version */,
+				E41BA80796FE6D9D9F6CFEA2 /* Sources */,
+				DBC89B0BEAEB6EA68AA4A597 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = Shared;
+			packageProductDependencies = (
+			);
+			productName = Shared;
+			productReference = 06774C335950E7C8AFB02F02 /* Shared.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		AF348473424FB6AD275FC868 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1600;
+				TargetAttributes = {
+					AA6203CF5D9AD46AA19567F8 = {
+						DevelopmentTeam = "";
+					};
+				};
+			};
+			buildConfigurationList = B2E271C267504F6544D5430E /* Build configuration list for PBXProject "Audientia" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				en,
+			);
+			mainGroup = BB4816A99910CD0D78E6E52B;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				4B0F213D49F6FF73BFBC1908 /* AppKitBridge */,
+				AA6203CF5D9AD46AA19567F8 /* Audientia */,
+				6A56C40CB66C8E0C935B0696 /* AudioCore */,
+				15ABA0849044C2D5313CF0D0 /* DataLayer */,
+				3F66AFB27086D6EDE602BBDC /* MetadataEngine */,
+				60DBDF79817EDE096FCDC555 /* PluginSystem */,
+				C9315070ADDD2733ECF2C9B0 /* Shared */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		39DB647086BF08C2603B8765 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				89271A5CF6391DD88FEA4C34 /* README.md in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		454703BD49C308E9BE497817 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BB7468F218148180491107B6 /* README.md in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8E2893BD4E56997E517F5CF2 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				85AA32DBB0F7E779314518AA /* README.md in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		BC079B302D07207CC3662771 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				94C7851D5A4A0F68C272BABB /* README.md in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		BD86C5718184F3E4CFA86C19 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				22C972B9F890FCB274F8EAAF /* README.md in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D35AF21AA94AD2263EE2583C /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				90DE25ED47682FFCB546B656 /* README.md in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		DBC89B0BEAEB6EA68AA4A597 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				64221702E27432E197C63CAA /* README.md in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		0B4F631D4A9194CA40F5CC2A /* Update Module Version */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Update Module Version";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "set -e\nMODULE_NAME=\"AudioCore\"\nYEAR=$(date +%Y)\nMONTH=$(date +%m)\n# Use temp directory to avoid sandbox issues\nVERSION_DIR=\"${TARGET_TEMP_DIR}/versions\"\nmkdir -p \"$VERSION_DIR\"\nMODULE_BUILD_NUM_FILE=\"${VERSION_DIR}/.build_number_${MODULE_NAME}\"\n\n# Get next build number\ncurrent_build=0\nif [ -f \"$MODULE_BUILD_NUM_FILE\" ]; then\n    stored_date=$(head -n 1 \"$MODULE_BUILD_NUM_FILE\" 2>/dev/null || echo \"\")\n    stored_build=$(tail -n 1 \"$MODULE_BUILD_NUM_FILE\" 2>/dev/null || echo \"0\")\n    if [ \"$stored_date\" = \"$YEAR.$MONTH\" ]; then\n        current_build=$stored_build\n    fi\nfi\n\nnext_build=$((current_build + 1))\necho \"$YEAR.$MONTH\" > \"$MODULE_BUILD_NUM_FILE\"\necho \"$next_build\" >> \"$MODULE_BUILD_NUM_FILE\"\n\nversion=$(printf \"%04d.%02d.%04d\" \"$YEAR\" \"$MONTH\" \"$next_build\")\nfull_version=\"${MODULE_NAME}-${version}\"\necho \"Updating ${MODULE_NAME} version to: $full_version\"\necho \"$version\" > \"${VERSION_DIR}/.${MODULE_NAME}_version\"\necho \"$full_version\" > \"${VERSION_DIR}/.${MODULE_NAME}_full_version\"\n# Also copy to build products for runtime access\ncp \"${VERSION_DIR}/.${MODULE_NAME}_version\" \"${BUILT_PRODUCTS_DIR}/.${MODULE_NAME}_version\" 2>/dev/null || true\n";
+		};
+		219A9235EF625CC053A04013 /* Update Module Version */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Update Module Version";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "set -e\nMODULE_NAME=\"PluginSystem\"\nYEAR=$(date +%Y)\nMONTH=$(date +%m)\n# Use temp directory to avoid sandbox issues\nVERSION_DIR=\"${TARGET_TEMP_DIR}/versions\"\nmkdir -p \"$VERSION_DIR\"\nMODULE_BUILD_NUM_FILE=\"${VERSION_DIR}/.build_number_${MODULE_NAME}\"\n\n# Get next build number\ncurrent_build=0\nif [ -f \"$MODULE_BUILD_NUM_FILE\" ]; then\n    stored_date=$(head -n 1 \"$MODULE_BUILD_NUM_FILE\" 2>/dev/null || echo \"\")\n    stored_build=$(tail -n 1 \"$MODULE_BUILD_NUM_FILE\" 2>/dev/null || echo \"0\")\n    if [ \"$stored_date\" = \"$YEAR.$MONTH\" ]; then\n        current_build=$stored_build\n    fi\nfi\n\nnext_build=$((current_build + 1))\necho \"$YEAR.$MONTH\" > \"$MODULE_BUILD_NUM_FILE\"\necho \"$next_build\" >> \"$MODULE_BUILD_NUM_FILE\"\n\nversion=$(printf \"%04d.%02d.%04d\" \"$YEAR\" \"$MONTH\" \"$next_build\")\nfull_version=\"${MODULE_NAME}-${version}\"\necho \"Updating ${MODULE_NAME} version to: $full_version\"\necho \"$version\" > \"${VERSION_DIR}/.${MODULE_NAME}_version\"\necho \"$full_version\" > \"${VERSION_DIR}/.${MODULE_NAME}_full_version\"\n# Also copy to build products for runtime access\ncp \"${VERSION_DIR}/.${MODULE_NAME}_version\" \"${BUILT_PRODUCTS_DIR}/.${MODULE_NAME}_version\" 2>/dev/null || true\n";
+		};
+		3D672BF9A78339F452D946C7 /* Update Module Version */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Update Module Version";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "set -e\nMODULE_NAME=\"AppKitBridge\"\nYEAR=$(date +%Y)\nMONTH=$(date +%m)\n# Use temp directory to avoid sandbox issues\nVERSION_DIR=\"${TARGET_TEMP_DIR}/versions\"\nmkdir -p \"$VERSION_DIR\"\nMODULE_BUILD_NUM_FILE=\"${VERSION_DIR}/.build_number_${MODULE_NAME}\"\n\n# Get next build number\ncurrent_build=0\nif [ -f \"$MODULE_BUILD_NUM_FILE\" ]; then\n    stored_date=$(head -n 1 \"$MODULE_BUILD_NUM_FILE\" 2>/dev/null || echo \"\")\n    stored_build=$(tail -n 1 \"$MODULE_BUILD_NUM_FILE\" 2>/dev/null || echo \"0\")\n    if [ \"$stored_date\" = \"$YEAR.$MONTH\" ]; then\n        current_build=$stored_build\n    fi\nfi\n\nnext_build=$((current_build + 1))\necho \"$YEAR.$MONTH\" > \"$MODULE_BUILD_NUM_FILE\"\necho \"$next_build\" >> \"$MODULE_BUILD_NUM_FILE\"\n\nversion=$(printf \"%04d.%02d.%04d\" \"$YEAR\" \"$MONTH\" \"$next_build\")\nfull_version=\"${MODULE_NAME}-${version}\"\necho \"Updating ${MODULE_NAME} version to: $full_version\"\necho \"$version\" > \"${VERSION_DIR}/.${MODULE_NAME}_version\"\necho \"$full_version\" > \"${VERSION_DIR}/.${MODULE_NAME}_full_version\"\n# Also copy to build products for runtime access\ncp \"${VERSION_DIR}/.${MODULE_NAME}_version\" \"${BUILT_PRODUCTS_DIR}/.${MODULE_NAME}_version\" 2>/dev/null || true\n";
+		};
+		65EF8D4B197E59083654682C /* Update Module Version */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Update Module Version";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "set -e\nMODULE_NAME=\"Shared\"\nYEAR=$(date +%Y)\nMONTH=$(date +%m)\n# Use temp directory for version files to avoid sandbox issues\nVERSION_DIR=\"${TARGET_TEMP_DIR}/versions\"\nmkdir -p \"$VERSION_DIR\"\nMODULE_BUILD_NUM_FILE=\"${VERSION_DIR}/.build_number_${MODULE_NAME}\"\n\n# Get next build number\ncurrent_build=0\nif [ -f \"$MODULE_BUILD_NUM_FILE\" ]; then\n    stored_date=$(head -n 1 \"$MODULE_BUILD_NUM_FILE\" 2>/dev/null || echo \"\")\n    stored_build=$(tail -n 1 \"$MODULE_BUILD_NUM_FILE\" 2>/dev/null || echo \"0\")\n    if [ \"$stored_date\" = \"$YEAR.$MONTH\" ]; then\n        current_build=$stored_build\n    fi\nfi\n\nnext_build=$((current_build + 1))\necho \"$YEAR.$MONTH\" > \"$MODULE_BUILD_NUM_FILE\"\necho \"$next_build\" >> \"$MODULE_BUILD_NUM_FILE\"\n\nversion=$(printf \"%04d.%02d.%04d\" \"$YEAR\" \"$MONTH\" \"$next_build\")\nfull_version=\"${MODULE_NAME}-${version}\"\necho \"Updating ${MODULE_NAME} version to: $full_version\"\necho \"$version\" > \"${VERSION_DIR}/.${MODULE_NAME}_version\"\necho \"$full_version\" > \"${VERSION_DIR}/.${MODULE_NAME}_full_version\"\n# Also copy to build products for runtime access\ncp \"${VERSION_DIR}/.${MODULE_NAME}_version\" \"${BUILT_PRODUCTS_DIR}/.${MODULE_NAME}_version\" 2>/dev/null || true\n";
+		};
+		92837328DF1CF19F1A1DDAA8 /* Update Module Version */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Update Module Version";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "set -e\nMODULE_NAME=\"MetadataEngine\"\nYEAR=$(date +%Y)\nMONTH=$(date +%m)\n# Use temp directory to avoid sandbox issues\nVERSION_DIR=\"${TARGET_TEMP_DIR}/versions\"\nmkdir -p \"$VERSION_DIR\"\nMODULE_BUILD_NUM_FILE=\"${VERSION_DIR}/.build_number_${MODULE_NAME}\"\n\n# Get next build number\ncurrent_build=0\nif [ -f \"$MODULE_BUILD_NUM_FILE\" ]; then\n    stored_date=$(head -n 1 \"$MODULE_BUILD_NUM_FILE\" 2>/dev/null || echo \"\")\n    stored_build=$(tail -n 1 \"$MODULE_BUILD_NUM_FILE\" 2>/dev/null || echo \"0\")\n    if [ \"$stored_date\" = \"$YEAR.$MONTH\" ]; then\n        current_build=$stored_build\n    fi\nfi\n\nnext_build=$((current_build + 1))\necho \"$YEAR.$MONTH\" > \"$MODULE_BUILD_NUM_FILE\"\necho \"$next_build\" >> \"$MODULE_BUILD_NUM_FILE\"\n\nversion=$(printf \"%04d.%02d.%04d\" \"$YEAR\" \"$MONTH\" \"$next_build\")\nfull_version=\"${MODULE_NAME}-${version}\"\necho \"Updating ${MODULE_NAME} version to: $full_version\"\necho \"$version\" > \"${VERSION_DIR}/.${MODULE_NAME}_version\"\necho \"$full_version\" > \"${VERSION_DIR}/.${MODULE_NAME}_full_version\"\n# Also copy to build products for runtime access\ncp \"${VERSION_DIR}/.${MODULE_NAME}_version\" \"${BUILT_PRODUCTS_DIR}/.${MODULE_NAME}_version\" 2>/dev/null || true\n";
+		};
+		B8C1E9D2845E7F67D2A0C393 /* Update App Version */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Update App Version";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "set -e\nYEAR=$(date +%Y)\nMONTH=$(date +%m)\n# Use temp directory to avoid sandbox issues\nVERSION_DIR=\"${TARGET_TEMP_DIR}/versions\"\nmkdir -p \"$VERSION_DIR\"\nBUILD_NUM_FILE=\"${VERSION_DIR}/.build_number\"\n\n# Get next build number\ncurrent_build=0\nif [ -f \"$BUILD_NUM_FILE\" ]; then\n    stored_date=$(head -n 1 \"$BUILD_NUM_FILE\" 2>/dev/null || echo \"\")\n    stored_build=$(tail -n 1 \"$BUILD_NUM_FILE\" 2>/dev/null || echo \"0\")\n    if [ \"$stored_date\" = \"$YEAR.$MONTH\" ]; then\n        current_build=$stored_build\n    fi\nfi\n\nnext_build=$((current_build + 1))\necho \"$YEAR.$MONTH\" > \"$BUILD_NUM_FILE\"\necho \"$next_build\" >> \"$BUILD_NUM_FILE\"\n\nversion=$(printf \"%04d.%02d.%04d\" \"$YEAR\" \"$MONTH\" \"$next_build\")\necho \"Updating app version to: $version\"\necho \"$version\" > \"${VERSION_DIR}/.app_version\"\n# Also copy to build products for runtime access\ncp \"${VERSION_DIR}/.app_version\" \"${BUILT_PRODUCTS_DIR}/.app_version\" 2>/dev/null || true\n";
+		};
+		C7323FA8AD4B6BB44F970A01 /* Update Module Version */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Update Module Version";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "set -e\nMODULE_NAME=\"DataLayer\"\nYEAR=$(date +%Y)\nMONTH=$(date +%m)\n# Use temp directory to avoid sandbox issues\nVERSION_DIR=\"${TARGET_TEMP_DIR}/versions\"\nmkdir -p \"$VERSION_DIR\"\nMODULE_BUILD_NUM_FILE=\"${VERSION_DIR}/.build_number_${MODULE_NAME}\"\n\n# Get next build number\ncurrent_build=0\nif [ -f \"$MODULE_BUILD_NUM_FILE\" ]; then\n    stored_date=$(head -n 1 \"$MODULE_BUILD_NUM_FILE\" 2>/dev/null || echo \"\")\n    stored_build=$(tail -n 1 \"$MODULE_BUILD_NUM_FILE\" 2>/dev/null || echo \"0\")\n    if [ \"$stored_date\" = \"$YEAR.$MONTH\" ]; then\n        current_build=$stored_build\n    fi\nfi\n\nnext_build=$((current_build + 1))\necho \"$YEAR.$MONTH\" > \"$MODULE_BUILD_NUM_FILE\"\necho \"$next_build\" >> \"$MODULE_BUILD_NUM_FILE\"\n\nversion=$(printf \"%04d.%02d.%04d\" \"$YEAR\" \"$MONTH\" \"$next_build\")\nfull_version=\"${MODULE_NAME}-${version}\"\necho \"Updating ${MODULE_NAME} version to: $full_version\"\necho \"$version\" > \"${VERSION_DIR}/.${MODULE_NAME}_version\"\necho \"$full_version\" > \"${VERSION_DIR}/.${MODULE_NAME}_full_version\"\n# Also copy to build products for runtime access\ncp \"${VERSION_DIR}/.${MODULE_NAME}_version\" \"${BUILT_PRODUCTS_DIR}/.${MODULE_NAME}_version\" 2>/dev/null || true\n";
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		30FC45BCCC060B324DD705E8 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				0BB276130A452BD5FE692907 /* AppKitBridge.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8EFB091D1BE3854D378C3704 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A21C6DFC27B4C7851E3E5A13 /* AudioCore.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		9C1DD48B8EDA0D2CCF1169ED /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E8A0413BA9B2DCF7B1C91DCC /* MetadataEngine.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A1C3E869D63B10CB592DCE20 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				DD96C387BC79571BED3C7E42 /* PluginSystem.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		AE78EBBF805AD389AE1DFCBA /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				36DE1E22AC6318A00D7FBEE7 /* AudientiaApp.swift in Sources */,
+				13436333E69BA1EFC54D4C83 /* ContentView.swift in Sources */,
+				85740EFFE71656B22B218FC3 /* ModuleVersionConflictView.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E41BA80796FE6D9D9F6CFEA2 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				9FEB90867A39BFFC44418E62 /* AppSettings.swift in Sources */,
+				20B6FD710641515B259338F2 /* AutoVersionUpdate.swift in Sources */,
+				03903AB4FB96C370BDF72AA1 /* ModuleVersionManager.swift in Sources */,
+				83F4B9211C524BC1C41A12B0 /* VersionManager.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F19B78CA9A66783897BD1B12 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				281DE5E4D3A5B0AEB4862B30 /* DataLayer.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		41A098231BDB0699CB6FBF7F /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = C9315070ADDD2733ECF2C9B0 /* Shared */;
+			targetProxy = 23C052AB581ECA8E9D09A659 /* PBXContainerItemProxy */;
+		};
+		60EFCD37954CB1C44745D017 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 4B0F213D49F6FF73BFBC1908 /* AppKitBridge */;
+			targetProxy = 79D8FEC138355D35A98CDC4D /* PBXContainerItemProxy */;
+		};
+		7686985E86AFCEA9DF9E3D7E /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = C9315070ADDD2733ECF2C9B0 /* Shared */;
+			targetProxy = 97EB12186EBBB28A3E20FFFB /* PBXContainerItemProxy */;
+		};
+		822840305CBEF4537D6A5E4E /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 6A56C40CB66C8E0C935B0696 /* AudioCore */;
+			targetProxy = 54FCE2BBA333BCA468FF75BD /* PBXContainerItemProxy */;
+		};
+		99A57D39A82CF1CC95AF95B7 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 3F66AFB27086D6EDE602BBDC /* MetadataEngine */;
+			targetProxy = 4910622D32C360E07590D9FF /* PBXContainerItemProxy */;
+		};
+		A0AA5BECC346DC3B4CC6D60E /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 15ABA0849044C2D5313CF0D0 /* DataLayer */;
+			targetProxy = B406C2BD746FE88728FA8037 /* PBXContainerItemProxy */;
+		};
+		B5ABC2D521668FEAEC30DB61 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 60DBDF79817EDE096FCDC555 /* PluginSystem */;
+			targetProxy = C2F98C50A8694575E87E2F71 /* PBXContainerItemProxy */;
+		};
+		CE0AEAD1F19B26D2E272840A /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = C9315070ADDD2733ECF2C9B0 /* Shared */;
+			targetProxy = 3BFBE62C377FF8AC941AE918 /* PBXContainerItemProxy */;
+		};
+		CEEB98BE739CEFC8C86E7D76 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = C9315070ADDD2733ECF2C9B0 /* Shared */;
+			targetProxy = 1349D7302F2570B422FBEBA2 /* PBXContainerItemProxy */;
+		};
+		F2911300676412ABE97EE556 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = C9315070ADDD2733ECF2C9B0 /* Shared */;
+			targetProxy = B5F6393CE37C2F1E7771400A /* PBXContainerItemProxy */;
+		};
+		F8A5FCBCB6F11862D9DCBEA5 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = C9315070ADDD2733ECF2C9B0 /* Shared */;
+			targetProxy = 96D663D5739BE2134C9D20F7 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		06F8E71290E0B73C0D1A0F58 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGNING_ALLOWED = NO;
+				CODE_SIGNING_REQUIRED = NO;
+				CODE_SIGN_IDENTITY = "";
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
+				DEVELOPMENT_TEAM = "";
+				ENABLE_APP_SANDBOX = NO;
+				ENABLE_HARDENED_RUNTIME = NO;
+				INFOPLIST_FILE = Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 15.0;
+				MARKETING_VERSION = 2025.01.0001;
+				PRODUCT_BUNDLE_IDENTIFIER = club.cycleruncode.audientia;
+				SDKROOT = macosx;
+				SUPPORTED_PLATFORMS = macosx;
+				SWIFT_VERSION = 5.9;
+			};
+			name = Debug;
+		};
+		1FC93A9E0D26CE7CE83158B1 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_MODULE_VERIFIER = YES;
+				CODE_SIGN_IDENTITY = "";
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleName = PluginSystem;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2025 CycleRunCode Club. All rights reserved.";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 15.0;
+				PRODUCT_BUNDLE_IDENTIFIER = club.cycleruncode.PluginSystem;
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.9;
+				VERSIONING_SYSTEM = "apple-generic";
+			};
+			name = Release;
+		};
+		2547A4524446121518313DB0 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "";
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleName = AppKitBridge;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2025 CycleRunCode Club. All rights reserved.";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 15.0;
+				PRODUCT_BUNDLE_IDENTIFIER = club.cycleruncode.AppKitBridge;
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.9;
+				VERSIONING_SYSTEM = "apple-generic";
+			};
+			name = Debug;
+		};
+		35B2F4F4B924B758B5402020 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_MODULE_VERIFIER = YES;
+				CODE_SIGN_IDENTITY = "";
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleName = PluginSystem;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2025 CycleRunCode Club. All rights reserved.";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 15.0;
+				PRODUCT_BUNDLE_IDENTIFIER = club.cycleruncode.PluginSystem;
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.9;
+				VERSIONING_SYSTEM = "apple-generic";
+			};
+			name = Debug;
+		};
+		42C6D78CF99A33225F5E1BF8 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_MODULE_VERIFIER = YES;
+				CODE_SIGN_IDENTITY = "";
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleName = DataLayer;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2025 CycleRunCode Club. All rights reserved.";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 15.0;
+				PRODUCT_BUNDLE_IDENTIFIER = club.cycleruncode.DataLayer;
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.9;
+				VERSIONING_SYSTEM = "apple-generic";
+			};
+			name = Release;
+		};
+		51CE06C73120C332B2762DE8 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_MODULE_VERIFIER = YES;
+				CODE_SIGN_IDENTITY = "";
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleName = Shared;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2025 CycleRunCode Club. All rights reserved.";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 15.0;
+				PRODUCT_BUNDLE_IDENTIFIER = club.cycleruncode.Shared;
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.9;
+				VERSIONING_SYSTEM = "apple-generic";
+			};
+			name = Release;
+		};
+		6E8D422D53DF000D920BC456 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_MODULE_VERIFIER = YES;
+				CODE_SIGN_IDENTITY = "";
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleName = DataLayer;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2025 CycleRunCode Club. All rights reserved.";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 15.0;
+				PRODUCT_BUNDLE_IDENTIFIER = club.cycleruncode.DataLayer;
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.9;
+				VERSIONING_SYSTEM = "apple-generic";
+			};
+			name = Debug;
+		};
+		75C7F051874D51CCD80FC25E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "";
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleName = MetadataEngine;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2025 CycleRunCode Club. All rights reserved.";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 15.0;
+				PRODUCT_BUNDLE_IDENTIFIER = club.cycleruncode.MetadataEngine;
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.9;
+				VERSIONING_SYSTEM = "apple-generic";
+			};
+			name = Release;
+		};
+		8C80CED1AF389EA1DF8651A5 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "";
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleName = MetadataEngine;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2025 CycleRunCode Club. All rights reserved.";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 15.0;
+				PRODUCT_BUNDLE_IDENTIFIER = club.cycleruncode.MetadataEngine;
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.9;
+				VERSIONING_SYSTEM = "apple-generic";
+			};
+			name = Debug;
+		};
+		9506E72BAD0162EB800B51F7 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 15.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		9968482B7AA2FF1178731F40 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "c++17";
+				CLANG_ENABLE_MODULE_VERIFIER = YES;
+				CODE_SIGN_IDENTITY = "";
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleName = AudioCore;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2025 CycleRunCode Club. All rights reserved.";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 15.0;
+				PRODUCT_BUNDLE_IDENTIFIER = club.cycleruncode.AudioCore;
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.9;
+				VERSIONING_SYSTEM = "apple-generic";
+			};
+			name = Debug;
+		};
+		A52778614B8E19C68835055A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_MODULE_VERIFIER = YES;
+				CODE_SIGN_IDENTITY = "";
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleName = Shared;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2025 CycleRunCode Club. All rights reserved.";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 15.0;
+				PRODUCT_BUNDLE_IDENTIFIER = club.cycleruncode.Shared;
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.9;
+				VERSIONING_SYSTEM = "apple-generic";
+			};
+			name = Debug;
+		};
+		B95BAFB07BC330B0C33361BA /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "c++17";
+				CLANG_ENABLE_MODULE_VERIFIER = YES;
+				CODE_SIGN_IDENTITY = "";
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleName = AudioCore;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2025 CycleRunCode Club. All rights reserved.";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 15.0;
+				PRODUCT_BUNDLE_IDENTIFIER = club.cycleruncode.AudioCore;
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.9;
+				VERSIONING_SYSTEM = "apple-generic";
+			};
+			name = Release;
+		};
+		E8DEA99C608F5CEA976FC059 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 15.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		EBE20A5B24189A3BF85BFD34 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "";
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleName = AppKitBridge;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2025 CycleRunCode Club. All rights reserved.";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 15.0;
+				PRODUCT_BUNDLE_IDENTIFIER = club.cycleruncode.AppKitBridge;
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.9;
+				VERSIONING_SYSTEM = "apple-generic";
+			};
+			name = Release;
+		};
+		F578F6C31C1EBB5958D112DE /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGNING_ALLOWED = NO;
+				CODE_SIGNING_REQUIRED = NO;
+				CODE_SIGN_IDENTITY = "";
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
+				DEVELOPMENT_TEAM = "";
+				ENABLE_APP_SANDBOX = NO;
+				ENABLE_HARDENED_RUNTIME = NO;
+				INFOPLIST_FILE = Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 15.0;
+				MARKETING_VERSION = 2025.01.0001;
+				PRODUCT_BUNDLE_IDENTIFIER = club.cycleruncode.audientia;
+				SDKROOT = macosx;
+				SUPPORTED_PLATFORMS = macosx;
+				SWIFT_VERSION = 5.9;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		0BD5B19A829D05D7EC918265 /* Build configuration list for PBXNativeTarget "Shared" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A52778614B8E19C68835055A /* Debug */,
+				51CE06C73120C332B2762DE8 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		3E03BDEF09169DEB50986EFD /* Build configuration list for PBXNativeTarget "AudioCore" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				9968482B7AA2FF1178731F40 /* Debug */,
+				B95BAFB07BC330B0C33361BA /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		4AE908B39BA58CEE415C567A /* Build configuration list for PBXNativeTarget "PluginSystem" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				35B2F4F4B924B758B5402020 /* Debug */,
+				1FC93A9E0D26CE7CE83158B1 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		4C7286C163FE5F6C428826EC /* Build configuration list for PBXNativeTarget "MetadataEngine" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				8C80CED1AF389EA1DF8651A5 /* Debug */,
+				75C7F051874D51CCD80FC25E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		5DE8CC2BEDA8F5AA8CF67C2D /* Build configuration list for PBXNativeTarget "Audientia" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				06F8E71290E0B73C0D1A0F58 /* Debug */,
+				F578F6C31C1EBB5958D112DE /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		A3E3A0A0ABC0036E628E05AD /* Build configuration list for PBXNativeTarget "AppKitBridge" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				2547A4524446121518313DB0 /* Debug */,
+				EBE20A5B24189A3BF85BFD34 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		B2E271C267504F6544D5430E /* Build configuration list for PBXProject "Audientia" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				9506E72BAD0162EB800B51F7 /* Debug */,
+				E8DEA99C608F5CEA976FC059 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		F356777C57FBB4E985E14FF7 /* Build configuration list for PBXNativeTarget "DataLayer" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				6E8D422D53DF000D920BC456 /* Debug */,
+				42C6D78CF99A33225F5E1BF8 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = AF348473424FB6AD275FC868 /* Project object */;
+}

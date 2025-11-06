@@ -1,0 +1,4 @@
+# XcodeGen configuration
+# This file tells XcodeGen to use project.yml
+file: project.yml
+

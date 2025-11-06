@@ -1,0 +1,441 @@
+name: Audientia
+options:
+  bundleIdPrefix: club.cycleruncode
+  deploymentTarget:
+    macOS: "15.0"
+  developmentLanguage: en
+  xcodeVersion: "16.0"
+  settings:
+    CODE_SIGN_IDENTITY: ""
+    CODE_SIGNING_REQUIRED: NO
+    CODE_SIGNING_ALLOWED: NO
+    ENABLE_HARDENED_RUNTIME: NO
+    DEAD_CODE_STRIPPING: YES
+    ENABLE_USER_SCRIPT_SANDBOXING: YES
+    ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOLS_EXTENSIONS: YES
+    STRINGCATALOG_GENERATE_SWIFT_CODE: YES
+
+targets:
+  Audientia:
+    type: application
+    platform: macOS
+    deploymentTarget: "15.0"
+    sources:
+      - path: UI
+    dependencies:
+      - target: Shared
+      - target: AppKitBridge
+      - target: AudioCore
+      - target: MetadataEngine
+      - target: DataLayer
+      - target: PluginSystem
+    resources:
+      - path: brand
+      - path: Audientia.iconset
+    settings:
+      PRODUCT_BUNDLE_IDENTIFIER: club.cycleruncode.audientia
+      MARKETING_VERSION: "2025.01.0001"
+      CURRENT_PROJECT_VERSION: "1"
+      SWIFT_VERSION: "5.9"
+      MACOSX_DEPLOYMENT_TARGET: "15.0"
+      SUPPORTED_PLATFORMS: macosx
+      CODE_SIGN_IDENTITY: ""
+      CODE_SIGNING_REQUIRED: NO
+      CODE_SIGNING_ALLOWED: NO
+      DEVELOPMENT_TEAM: ""
+      ENABLE_HARDENED_RUNTIME: false
+      ENABLE_APP_SANDBOX: false
+      DEAD_CODE_STRIPPING: YES
+    preBuildScripts:
+      - name: Update App Version
+        script: |
+          set -e
+          YEAR=$(date +%Y)
+          MONTH=$(date +%m)
+          # Use temp directory to avoid sandbox issues
+          VERSION_DIR="${TARGET_TEMP_DIR}/versions"
+          mkdir -p "$VERSION_DIR"
+          BUILD_NUM_FILE="${VERSION_DIR}/.build_number"
+          
+          # Get next build number
+          current_build=0
+          if [ -f "$BUILD_NUM_FILE" ]; then
+              stored_date=$(head -n 1 "$BUILD_NUM_FILE" 2>/dev/null || echo "")
+              stored_build=$(tail -n 1 "$BUILD_NUM_FILE" 2>/dev/null || echo "0")
+              if [ "$stored_date" = "$YEAR.$MONTH" ]; then
+                  current_build=$stored_build
+              fi
+          fi
+          
+          next_build=$((current_build + 1))
+          echo "$YEAR.$MONTH" > "$BUILD_NUM_FILE"
+          echo "$next_build" >> "$BUILD_NUM_FILE"
+          
+          version=$(printf "%04d.%02d.%04d" "$YEAR" "$MONTH" "$next_build")
+          echo "Updating app version to: $version"
+          echo "$version" > "${VERSION_DIR}/.app_version"
+          # Also copy to build products for runtime access
+          cp "${VERSION_DIR}/.app_version" "${BUILT_PRODUCTS_DIR}/.app_version" 2>/dev/null || true
+        shellPath: /bin/bash
+        basedOnDependencyAnalysis: false
+    # Note: load_versions.swift script disabled to prevent overwriting AutoVersionUpdate.swift
+    # Version updates are handled by updateAppVersionFromBuild() and scanAndRegisterModules()
+    info:
+      path: Info.plist
+      properties:
+        CFBundleName: Audientia
+        CFBundlePackageType: APPL
+        CFBundleExecutable: $(EXECUTABLE_NAME)
+        CFBundleIdentifier: $(PRODUCT_BUNDLE_IDENTIFIER)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleIconFile: Audientia
+        LSMinimumSystemVersion: $(MACOSX_DEPLOYMENT_TARGET)
+        NSHumanReadableCopyright: "Copyright © 2025 CycleRunCode Club. All rights reserved."
+        NSAppSupportEmail: support@cycleruncode.club
+        NSPrincipalClass: NSApplication
+        NSHighResolutionCapable: true
+
+  AppKitBridge:
+    type: framework
+    platform: macOS
+    deploymentTarget: "15.0"
+    sources:
+      - path: AppKitBridge
+    dependencies:
+      - target: Shared
+    settings:
+      PRODUCT_BUNDLE_IDENTIFIER: club.cycleruncode.AppKitBridge
+      SWIFT_VERSION: "5.9"
+      MACOSX_DEPLOYMENT_TARGET: "15.0"
+      GENERATE_INFOPLIST_FILE: YES
+      INFOPLIST_KEY_CFBundleName: AppKitBridge
+      INFOPLIST_KEY_NSHumanReadableCopyright: "Copyright © 2025 CycleRunCode Club. All rights reserved."
+      DEAD_CODE_STRIPPING: YES
+    preBuildScripts:
+      - name: Update Module Version
+        script: |
+          set -e
+          MODULE_NAME="AppKitBridge"
+          YEAR=$(date +%Y)
+          MONTH=$(date +%m)
+          # Use temp directory to avoid sandbox issues
+          VERSION_DIR="${TARGET_TEMP_DIR}/versions"
+          mkdir -p "$VERSION_DIR"
+          MODULE_BUILD_NUM_FILE="${VERSION_DIR}/.build_number_${MODULE_NAME}"
+          
+          # Get next build number
+          current_build=0
+          if [ -f "$MODULE_BUILD_NUM_FILE" ]; then
+              stored_date=$(head -n 1 "$MODULE_BUILD_NUM_FILE" 2>/dev/null || echo "")
+              stored_build=$(tail -n 1 "$MODULE_BUILD_NUM_FILE" 2>/dev/null || echo "0")
+              if [ "$stored_date" = "$YEAR.$MONTH" ]; then
+                  current_build=$stored_build
+              fi
+          fi
+          
+          next_build=$((current_build + 1))
+          echo "$YEAR.$MONTH" > "$MODULE_BUILD_NUM_FILE"
+          echo "$next_build" >> "$MODULE_BUILD_NUM_FILE"
+          
+          version=$(printf "%04d.%02d.%04d" "$YEAR" "$MONTH" "$next_build")
+          full_version="${MODULE_NAME}-${version}"
+          echo "Updating ${MODULE_NAME} version to: $full_version"
+          echo "$version" > "${VERSION_DIR}/.${MODULE_NAME}_version"
+          echo "$full_version" > "${VERSION_DIR}/.${MODULE_NAME}_full_version"
+          # Also copy to build products for runtime access
+          cp "${VERSION_DIR}/.${MODULE_NAME}_version" "${BUILT_PRODUCTS_DIR}/.${MODULE_NAME}_version" 2>/dev/null || true
+        shellPath: /bin/bash
+        basedOnDependencyAnalysis: false
+    # Note: Framework renaming removed to avoid build issues
+    # Version is tracked in version files for ModuleVersionManager
+
+  AudioCore:
+    type: framework
+    platform: macOS
+    deploymentTarget: "15.0"
+    sources:
+      - path: AudioCore
+    dependencies:
+      - target: Shared
+    settings:
+      PRODUCT_BUNDLE_IDENTIFIER: club.cycleruncode.AudioCore
+      SWIFT_VERSION: "5.9"
+      MACOSX_DEPLOYMENT_TARGET: "15.0"
+      CLANG_CXX_LANGUAGE_STANDARD: c++17
+      GENERATE_INFOPLIST_FILE: YES
+      INFOPLIST_KEY_CFBundleName: AudioCore
+      INFOPLIST_KEY_NSHumanReadableCopyright: "Copyright © 2025 CycleRunCode Club. All rights reserved."
+      DEAD_CODE_STRIPPING: YES
+      CLANG_ENABLE_MODULE_VERIFIER: YES
+    preBuildScripts:
+      - name: Update Module Version
+        script: |
+          set -e
+          MODULE_NAME="AudioCore"
+          YEAR=$(date +%Y)
+          MONTH=$(date +%m)
+          # Use temp directory to avoid sandbox issues
+          VERSION_DIR="${TARGET_TEMP_DIR}/versions"
+          mkdir -p "$VERSION_DIR"
+          MODULE_BUILD_NUM_FILE="${VERSION_DIR}/.build_number_${MODULE_NAME}"
+          
+          # Get next build number
+          current_build=0
+          if [ -f "$MODULE_BUILD_NUM_FILE" ]; then
+              stored_date=$(head -n 1 "$MODULE_BUILD_NUM_FILE" 2>/dev/null || echo "")
+              stored_build=$(tail -n 1 "$MODULE_BUILD_NUM_FILE" 2>/dev/null || echo "0")
+              if [ "$stored_date" = "$YEAR.$MONTH" ]; then
+                  current_build=$stored_build
+              fi
+          fi
+          
+          next_build=$((current_build + 1))
+          echo "$YEAR.$MONTH" > "$MODULE_BUILD_NUM_FILE"
+          echo "$next_build" >> "$MODULE_BUILD_NUM_FILE"
+          
+          version=$(printf "%04d.%02d.%04d" "$YEAR" "$MONTH" "$next_build")
+          full_version="${MODULE_NAME}-${version}"
+          echo "Updating ${MODULE_NAME} version to: $full_version"
+          echo "$version" > "${VERSION_DIR}/.${MODULE_NAME}_version"
+          echo "$full_version" > "${VERSION_DIR}/.${MODULE_NAME}_full_version"
+          # Also copy to build products for runtime access
+          cp "${VERSION_DIR}/.${MODULE_NAME}_version" "${BUILT_PRODUCTS_DIR}/.${MODULE_NAME}_version" 2>/dev/null || true
+        shellPath: /bin/bash
+        basedOnDependencyAnalysis: false
+    # Note: Framework renaming removed to avoid build issues
+    # Version is tracked in version files for ModuleVersionManager
+
+  MetadataEngine:
+    type: framework
+    platform: macOS
+    deploymentTarget: "15.0"
+    sources:
+      - path: MetadataEngine
+    dependencies:
+      - target: Shared
+    settings:
+      PRODUCT_BUNDLE_IDENTIFIER: club.cycleruncode.MetadataEngine
+      SWIFT_VERSION: "5.9"
+      MACOSX_DEPLOYMENT_TARGET: "15.0"
+      GENERATE_INFOPLIST_FILE: YES
+      INFOPLIST_KEY_CFBundleName: MetadataEngine
+      INFOPLIST_KEY_NSHumanReadableCopyright: "Copyright © 2025 CycleRunCode Club. All rights reserved."
+      DEAD_CODE_STRIPPING: YES
+    preBuildScripts:
+      - name: Update Module Version
+        script: |
+          set -e
+          MODULE_NAME="MetadataEngine"
+          YEAR=$(date +%Y)
+          MONTH=$(date +%m)
+          # Use temp directory to avoid sandbox issues
+          VERSION_DIR="${TARGET_TEMP_DIR}/versions"
+          mkdir -p "$VERSION_DIR"
+          MODULE_BUILD_NUM_FILE="${VERSION_DIR}/.build_number_${MODULE_NAME}"
+          
+          # Get next build number
+          current_build=0
+          if [ -f "$MODULE_BUILD_NUM_FILE" ]; then
+              stored_date=$(head -n 1 "$MODULE_BUILD_NUM_FILE" 2>/dev/null || echo "")
+              stored_build=$(tail -n 1 "$MODULE_BUILD_NUM_FILE" 2>/dev/null || echo "0")
+              if [ "$stored_date" = "$YEAR.$MONTH" ]; then
+                  current_build=$stored_build
+              fi
+          fi
+          
+          next_build=$((current_build + 1))
+          echo "$YEAR.$MONTH" > "$MODULE_BUILD_NUM_FILE"
+          echo "$next_build" >> "$MODULE_BUILD_NUM_FILE"
+          
+          version=$(printf "%04d.%02d.%04d" "$YEAR" "$MONTH" "$next_build")
+          full_version="${MODULE_NAME}-${version}"
+          echo "Updating ${MODULE_NAME} version to: $full_version"
+          echo "$version" > "${VERSION_DIR}/.${MODULE_NAME}_version"
+          echo "$full_version" > "${VERSION_DIR}/.${MODULE_NAME}_full_version"
+          # Also copy to build products for runtime access
+          cp "${VERSION_DIR}/.${MODULE_NAME}_version" "${BUILT_PRODUCTS_DIR}/.${MODULE_NAME}_version" 2>/dev/null || true
+        shellPath: /bin/bash
+        basedOnDependencyAnalysis: false
+    # Note: Framework renaming removed to avoid build issues
+    # Version is tracked in version files for ModuleVersionManager
+
+  DataLayer:
+    type: framework
+    platform: macOS
+    deploymentTarget: "15.0"
+    sources:
+      - path: DataLayer
+    dependencies:
+      - target: Shared
+    settings:
+      PRODUCT_BUNDLE_IDENTIFIER: club.cycleruncode.DataLayer
+      SWIFT_VERSION: "5.9"
+      MACOSX_DEPLOYMENT_TARGET: "15.0"
+      GENERATE_INFOPLIST_FILE: YES
+      INFOPLIST_KEY_CFBundleName: DataLayer
+      INFOPLIST_KEY_NSHumanReadableCopyright: "Copyright © 2025 CycleRunCode Club. All rights reserved."
+      DEAD_CODE_STRIPPING: YES
+      CLANG_ENABLE_MODULE_VERIFIER: YES
+    preBuildScripts:
+      - name: Update Module Version
+        script: |
+          set -e
+          MODULE_NAME="DataLayer"
+          YEAR=$(date +%Y)
+          MONTH=$(date +%m)
+          # Use temp directory to avoid sandbox issues
+          VERSION_DIR="${TARGET_TEMP_DIR}/versions"
+          mkdir -p "$VERSION_DIR"
+          MODULE_BUILD_NUM_FILE="${VERSION_DIR}/.build_number_${MODULE_NAME}"
+          
+          # Get next build number
+          current_build=0
+          if [ -f "$MODULE_BUILD_NUM_FILE" ]; then
+              stored_date=$(head -n 1 "$MODULE_BUILD_NUM_FILE" 2>/dev/null || echo "")
+              stored_build=$(tail -n 1 "$MODULE_BUILD_NUM_FILE" 2>/dev/null || echo "0")
+              if [ "$stored_date" = "$YEAR.$MONTH" ]; then
+                  current_build=$stored_build
+              fi
+          fi
+          
+          next_build=$((current_build + 1))
+          echo "$YEAR.$MONTH" > "$MODULE_BUILD_NUM_FILE"
+          echo "$next_build" >> "$MODULE_BUILD_NUM_FILE"
+          
+          version=$(printf "%04d.%02d.%04d" "$YEAR" "$MONTH" "$next_build")
+          full_version="${MODULE_NAME}-${version}"
+          echo "Updating ${MODULE_NAME} version to: $full_version"
+          echo "$version" > "${VERSION_DIR}/.${MODULE_NAME}_version"
+          echo "$full_version" > "${VERSION_DIR}/.${MODULE_NAME}_full_version"
+          # Also copy to build products for runtime access
+          cp "${VERSION_DIR}/.${MODULE_NAME}_version" "${BUILT_PRODUCTS_DIR}/.${MODULE_NAME}_version" 2>/dev/null || true
+        shellPath: /bin/bash
+        basedOnDependencyAnalysis: false
+    # Note: Framework renaming removed to avoid build issues
+    # Version is tracked in version files for ModuleVersionManager
+
+  PluginSystem:
+    type: framework
+    platform: macOS
+    deploymentTarget: "15.0"
+    sources:
+      - path: PluginSystem
+    dependencies:
+      - target: Shared
+    settings:
+      PRODUCT_BUNDLE_IDENTIFIER: club.cycleruncode.PluginSystem
+      SWIFT_VERSION: "5.9"
+      MACOSX_DEPLOYMENT_TARGET: "15.0"
+      GENERATE_INFOPLIST_FILE: YES
+      INFOPLIST_KEY_CFBundleName: PluginSystem
+      INFOPLIST_KEY_NSHumanReadableCopyright: "Copyright © 2025 CycleRunCode Club. All rights reserved."
+      DEAD_CODE_STRIPPING: YES
+      CLANG_ENABLE_MODULE_VERIFIER: YES
+    preBuildScripts:
+      - name: Update Module Version
+        script: |
+          set -e
+          MODULE_NAME="PluginSystem"
+          YEAR=$(date +%Y)
+          MONTH=$(date +%m)
+          # Use temp directory to avoid sandbox issues
+          VERSION_DIR="${TARGET_TEMP_DIR}/versions"
+          mkdir -p "$VERSION_DIR"
+          MODULE_BUILD_NUM_FILE="${VERSION_DIR}/.build_number_${MODULE_NAME}"
+          
+          # Get next build number
+          current_build=0
+          if [ -f "$MODULE_BUILD_NUM_FILE" ]; then
+              stored_date=$(head -n 1 "$MODULE_BUILD_NUM_FILE" 2>/dev/null || echo "")
+              stored_build=$(tail -n 1 "$MODULE_BUILD_NUM_FILE" 2>/dev/null || echo "0")
+              if [ "$stored_date" = "$YEAR.$MONTH" ]; then
+                  current_build=$stored_build
+              fi
+          fi
+          
+          next_build=$((current_build + 1))
+          echo "$YEAR.$MONTH" > "$MODULE_BUILD_NUM_FILE"
+          echo "$next_build" >> "$MODULE_BUILD_NUM_FILE"
+          
+          version=$(printf "%04d.%02d.%04d" "$YEAR" "$MONTH" "$next_build")
+          full_version="${MODULE_NAME}-${version}"
+          echo "Updating ${MODULE_NAME} version to: $full_version"
+          echo "$version" > "${VERSION_DIR}/.${MODULE_NAME}_version"
+          echo "$full_version" > "${VERSION_DIR}/.${MODULE_NAME}_full_version"
+          # Also copy to build products for runtime access
+          cp "${VERSION_DIR}/.${MODULE_NAME}_version" "${BUILT_PRODUCTS_DIR}/.${MODULE_NAME}_version" 2>/dev/null || true
+        shellPath: /bin/bash
+        basedOnDependencyAnalysis: false
+    # Note: Framework renaming removed to avoid build issues
+    # Version is tracked in version files for ModuleVersionManager
+
+  Shared:
+    type: framework
+    platform: macOS
+    deploymentTarget: "15.0"
+    sources:
+      - path: Shared
+    settings:
+      PRODUCT_BUNDLE_IDENTIFIER: club.cycleruncode.Shared
+      SWIFT_VERSION: "5.9"
+      MACOSX_DEPLOYMENT_TARGET: "15.0"
+      GENERATE_INFOPLIST_FILE: YES
+      INFOPLIST_KEY_CFBundleName: Shared
+      INFOPLIST_KEY_NSHumanReadableCopyright: "Copyright © 2025 CycleRunCode Club. All rights reserved."
+      DEAD_CODE_STRIPPING: YES
+      CLANG_ENABLE_MODULE_VERIFIER: YES
+    preBuildScripts:
+      - name: Update Module Version
+        script: |
+          set -e
+          MODULE_NAME="Shared"
+          YEAR=$(date +%Y)
+          MONTH=$(date +%m)
+          # Use temp directory for version files to avoid sandbox issues
+          VERSION_DIR="${TARGET_TEMP_DIR}/versions"
+          mkdir -p "$VERSION_DIR"
+          MODULE_BUILD_NUM_FILE="${VERSION_DIR}/.build_number_${MODULE_NAME}"
+          
+          # Get next build number
+          current_build=0
+          if [ -f "$MODULE_BUILD_NUM_FILE" ]; then
+              stored_date=$(head -n 1 "$MODULE_BUILD_NUM_FILE" 2>/dev/null || echo "")
+              stored_build=$(tail -n 1 "$MODULE_BUILD_NUM_FILE" 2>/dev/null || echo "0")
+              if [ "$stored_date" = "$YEAR.$MONTH" ]; then
+                  current_build=$stored_build
+              fi
+          fi
+          
+          next_build=$((current_build + 1))
+          echo "$YEAR.$MONTH" > "$MODULE_BUILD_NUM_FILE"
+          echo "$next_build" >> "$MODULE_BUILD_NUM_FILE"
+          
+          version=$(printf "%04d.%02d.%04d" "$YEAR" "$MONTH" "$next_build")
+          full_version="${MODULE_NAME}-${version}"
+          echo "Updating ${MODULE_NAME} version to: $full_version"
+          echo "$version" > "${VERSION_DIR}/.${MODULE_NAME}_version"
+          echo "$full_version" > "${VERSION_DIR}/.${MODULE_NAME}_full_version"
+          # Also copy to build products for runtime access
+          cp "${VERSION_DIR}/.${MODULE_NAME}_version" "${BUILT_PRODUCTS_DIR}/.${MODULE_NAME}_version" 2>/dev/null || true
+        shellPath: /bin/bash
+        basedOnDependencyAnalysis: false
+    # Note: Shared framework is NOT renamed because other frameworks depend on it
+    # The version is tracked in the version file for ModuleVersionManager to use
+
+schemes:
+  Audientia:
+    build:
+      targets:
+        Audientia: all
+        AppKitBridge: all
+        AudioCore: all
+        MetadataEngine: all
+        DataLayer: all
+        PluginSystem: all
+        Shared: all
+    run:
+      config: Debug
+    test:
+      config: Debug
+
