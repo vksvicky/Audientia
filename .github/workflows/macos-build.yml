@@ -1,0 +1,81 @@
+name: macOS Build
+
+on:
+  push:
+    branches: [ main, develop, 'feature*' ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  build:
+    name: Build on macOS
+    runs-on: macos-15
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Xcode
+      uses: maxim-lobanov/setup-xcode@v1
+      with:
+        xcode-version: latest-stable
+        
+    - name: Select Xcode
+      run: sudo xcode-select -s /Applications/Xcode.app/Contents/Developer
+      
+    - name: Cache Swift packages
+      uses: actions/cache@v4
+      with:
+        path: .build
+        key: ${{ runner.os }}-swift-${{ hashFiles('**/*.swift') }}
+        restore-keys: |
+          ${{ runner.os }}-swift-
+          
+    - name: Install XcodeGen
+      run: |
+        if ! command -v xcodegen &> /dev/null; then
+          brew install xcodegen
+        fi
+        
+    - name: Generate Xcode project
+      run: xcodegen generate
+      
+    - name: Build project
+      run: |
+        xcodebuild clean build \
+          -project Audientia.xcodeproj \
+          -scheme Audientia \
+          -configuration Debug \
+          -destination 'platform=macOS' \
+          CODE_SIGN_IDENTITY="" \
+          CODE_SIGNING_REQUIRED=NO \
+          CODE_SIGNING_ALLOWED=NO
+          
+    - name: Run unit tests
+      run: |
+        xcodebuild test \
+          -project Audientia.xcodeproj \
+          -scheme Audientia \
+          -configuration Debug \
+          -destination 'platform=macOS' \
+          CODE_SIGN_IDENTITY="" \
+          CODE_SIGNING_REQUIRED=NO \
+          CODE_SIGNING_ALLOWED=NO
+          
+    - name: Run SwiftLint
+      run: |
+        if ! command -v swiftlint &> /dev/null; then
+          brew install swiftlint
+        fi
+        swiftlint lint --strict
+        
+    - name: Verify build success
+      run: |
+        if [ -d "build/Debug/Audientia.app" ]; then
+          echo "✅ Build successful - app bundle created"
+          echo "Build artifacts are not packaged or uploaded (build-only pipeline)"
+        else
+          echo "❌ Build failed - app bundle not found"
+          exit 1
+        fi
+
