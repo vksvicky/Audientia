@@ -150,6 +150,7 @@ final class MockAudioOutput: AudioOutputProtocol {
 /// Conforms to FileSystemProtocol from AudioCore module
 final class MockFileSystem: FileSystemProtocol {
     var existingFiles: Set<String> = []
+    var fileSizes: [String: Int64] = [:]
     var shouldFail = false
     
     func fileExists(atPath path: String) -> Bool {
@@ -160,18 +161,21 @@ final class MockFileSystem: FileSystemProtocol {
     }
     
     /// Add a file path to the mock file system
-    func addFile(_ path: String) {
+    func addFile(_ path: String, size: Int64 = 1_000_000) {
         existingFiles.insert(path)
+        fileSizes[path] = size
     }
     
     /// Remove a file path from the mock file system
     func removeFile(_ path: String) {
         existingFiles.remove(path)
+        fileSizes.removeValue(forKey: path)
     }
     
     /// Clear all files
     func clear() {
         existingFiles.removeAll()
+        fileSizes.removeAll()
     }
 }
 
@@ -182,9 +186,38 @@ final class MockFormatDecodingCoordinator: FormatDecodingCoordinating {
     var decodeCalls: [String] = []
     var result: DecodedAudioFormat?
     var error: Error?
+    var shouldFail = false
+    var failureReason: String = "Decode failed"
+    
+    /// Supported extensions for validation (matches real decoders)
+    var supportedExtensions: Set<String> = [
+        // AVFoundation supported
+        "mp3", "aac", "m4a", "wav", "aiff", "caf", "mp4",
+        // FFmpeg supported
+        "flac", "ogg", "opus", "alac", "ape"
+    ]
+    
+    /// Whether to validate extensions (default: false for backward compatibility)
+    var validateExtensions = false
     
     func decodeFormat(for filePath: String) async throws -> DecodedAudioFormat {
         decodeCalls.append(filePath)
+        
+        // If extension validation is enabled, check if extension is supported
+        if validateExtensions {
+            let fileExtension = URL(fileURLWithPath: filePath).pathExtension.lowercased()
+            if fileExtension.isEmpty {
+                throw FormatDecoderError.unsupportedFormat("")
+            }
+            if !supportedExtensions.contains(fileExtension) {
+                throw FormatDecoderError.unsupportedFormat(fileExtension)
+            }
+        }
+        
+        if shouldFail {
+            throw FormatDecoderError.decoderFailed(decoder: "Mock", reason: failureReason)
+        }
+        
         if let error {
             throw error
         }
