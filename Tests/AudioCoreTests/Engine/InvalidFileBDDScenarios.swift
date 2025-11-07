@@ -23,7 +23,8 @@ final class InvalidFileBDDScenarios: XCTestCase {
     func testUserTriesToPlayEmptyFile() async throws {
         // Given - User has an empty audio file
         guard let emptyFile = TestFixtures.invalidEmptyFile(format: "mp3") else {
-            throw XCTSkip("Empty file fixture not available")
+            XCTFail("Empty file fixture not available. Run: Scripts/generate_audio_test_fixtures.sh")
+            return
         }
         
         let track = MockFactory.makeTrack(filePath: emptyFile.path)
@@ -53,7 +54,8 @@ final class InvalidFileBDDScenarios: XCTestCase {
     func testUserTriesToPlayCorruptFile() async throws {
         // Given - User has a corrupt audio file (corrupted payload)
         guard let corruptFile = TestFixtures.corruptPayloadFile(format: "mp3") else {
-            throw XCTSkip("Corrupt file fixture not available")
+            XCTFail("Corrupt file fixture not available. Run: Scripts/generate_audio_test_fixtures.sh")
+            return
         }
         
         let track = MockFactory.makeTrack(filePath: corruptFile.path)
@@ -91,7 +93,8 @@ final class InvalidFileBDDScenarios: XCTestCase {
     func testUserTriesToPlayFileWithInvalidHeader() async throws {
         // Given - User has a file with invalid header
         guard let invalidHeaderFile = TestFixtures.invalidHeaderFile(format: "mp3") else {
-            throw XCTSkip("Invalid header file fixture not available")
+            XCTFail("Invalid header file fixture not available. Run: Scripts/generate_audio_test_fixtures.sh")
+            return
         }
         
         let track = MockFactory.makeTrack(filePath: invalidHeaderFile.path)
@@ -121,7 +124,8 @@ final class InvalidFileBDDScenarios: XCTestCase {
     func testUserTriesToPlayTruncatedFile() async throws {
         // Given - User has a truncated audio file
         guard let truncatedFile = TestFixtures.truncatedFile(format: "mp3") else {
-            throw XCTSkip("Truncated file fixture not available")
+            XCTFail("Truncated file fixture not available. Run: Scripts/generate_audio_test_fixtures.sh")
+            return
         }
         
         let track = MockFactory.makeTrack(filePath: truncatedFile.path)
@@ -157,7 +161,8 @@ final class InvalidFileBDDScenarios: XCTestCase {
     func testUserTriesToPlayFileWithCorruptedMagicBytes() async throws {
         // Given - User has a file with corrupted magic bytes
         guard let corruptMagicFile = TestFixtures.corruptMagicFile(format: "mp3") else {
-            throw XCTSkip("Corrupt magic file fixture not available")
+            XCTFail("Corrupt magic file fixture not available. Run: Scripts/generate_audio_test_fixtures.sh")
+            return
         }
         
         let track = MockFactory.makeTrack(filePath: corruptMagicFile.path)
@@ -187,7 +192,8 @@ final class InvalidFileBDDScenarios: XCTestCase {
     func testUserTriesToPlayFileWithPartialCorruption() async throws {
         // Given - User has a file with corruption in the middle
         guard let corruptMiddleFile = TestFixtures.corruptMiddleFile(format: "mp3") else {
-            throw XCTSkip("Corrupt middle file fixture not available")
+            XCTFail("Corrupt middle file fixture not available. Run: Scripts/generate_audio_test_fixtures.sh")
+            return
         }
         
         let track = MockFactory.makeTrack(filePath: corruptMiddleFile.path)
@@ -217,7 +223,8 @@ final class InvalidFileBDDScenarios: XCTestCase {
     func testUserTriesToPlayFileWithNoAudioData() async throws {
         // Given - User has a file with header but no audio data
         guard let noAudioDataFile = TestFixtures.noAudioDataFile(format: "mp3") else {
-            throw XCTSkip("No audio data file fixture not available")
+            XCTFail("No audio data file fixture not available. Run: Scripts/generate_audio_test_fixtures.sh")
+            return
         }
         
         let track = MockFactory.makeTrack(filePath: noAudioDataFile.path)

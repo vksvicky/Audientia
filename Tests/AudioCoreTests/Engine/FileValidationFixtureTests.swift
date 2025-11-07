@@ -33,11 +33,17 @@ final class FileValidationFixtureTests: XCTestCase {
     /// BDD: Given a valid audio file fixture, when I load it, then it should be recognized and decoded successfully
     func testValidFilesAreRecognized() async throws {
         // Given - Valid audio file fixtures for each format
+        var testedFormats = 0
+        var failedFormats: [String] = []
+        
         for format in testFormats {
             guard let validFile = TestFixtures.defaultValidFile(format: format) else {
-                throw XCTSkip("Valid \(format) fixture not found - run Scripts/generate_audio_test_fixtures.sh")
+                // Skip formats without fixtures, but track them
+                failedFormats.append(format)
+                continue
             }
             
+            testedFormats += 1
             let track = MockFactory.makeTrack(filePath: validFile.path)
             let engine = AudioEngineTestHelpers.createMockEngine(withTracks: [track])
             
@@ -54,6 +60,14 @@ final class FileValidationFixtureTests: XCTestCase {
                 }
                 // Other errors (like decode failure) are acceptable for this test
             }
+        }
+        
+        // Fail only if we couldn't test any formats
+        if testedFormats == 0 {
+            XCTFail("No valid file fixtures found for any format. Missing fixtures for: \(failedFormats.joined(separator: ", ")). Run: Scripts/generate_audio_test_fixtures.sh")
+        } else if !failedFormats.isEmpty {
+            // Log warning about missing fixtures but don't fail the test
+            print("⚠️  Warning: Missing fixtures for formats: \(failedFormats.joined(separator: ", ")). Run: Scripts/generate_audio_test_fixtures.sh")
         }
     }
     
@@ -336,9 +350,10 @@ final class FileValidationFixtureTests: XCTestCase {
         let format = "mp3"
         let invalidFiles = TestFixtures.allInvalidFiles(for: format)
         
-        // Skip test if fixtures are not available (e.g., in CI before generation)
+        // Ensure fixtures are available
         guard !invalidFiles.isEmpty else {
-            XCTSkip("Test fixtures not available for \(format). Run Scripts/generate_audio_test_fixtures.sh to generate them.")
+            XCTFail("Test fixtures not available for \(format). Run: Scripts/generate_audio_test_fixtures.sh")
+            return
         }
         
         // When & Then - Each invalid file should fail
