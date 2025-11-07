@@ -290,12 +290,20 @@ final class PlaybackEdgeCaseTests: XCTestCase {
         
         // When - Play through VBR tracks
         try await engine.play()
-        try await Task.sleep(nanoseconds: 1_500_000_000) // 1.5 seconds
+        XCTAssertEqual(engine.currentTrack?.id, track1.id, "Should start with first track")
+        
+        // Wait for first track to complete with polling (more robust in CI)
+        var attempts = 0
+        let maxAttempts = 30 // 3 seconds max wait
+        while engine.currentTrack?.id == track1.id && attempts < maxAttempts {
+            try await Task.sleep(nanoseconds: 100_000_000) // 100ms
+            attempts += 1
+        }
         
         // Then - Second track should start automatically (gapless)
         XCTAssertEqual(
             engine.currentTrack?.id, track2.id,
-            "Second VBR track should start automatically"
+            "Second VBR track should start automatically after first completes"
         )
         XCTAssertEqual(engine.state, .playing, "Should be playing second track")
     }

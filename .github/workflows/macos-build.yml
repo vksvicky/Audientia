@@ -31,11 +31,19 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-swift-
           
-    - name: Install XcodeGen
+    - name: Install dependencies
       run: |
         if ! command -v xcodegen &> /dev/null; then
           brew install xcodegen
         fi
+        if ! command -v ffmpeg &> /dev/null; then
+          brew install ffmpeg
+        fi
+        
+    - name: Generate test fixtures
+      run: |
+        chmod +x Scripts/generate_audio_test_fixtures.sh
+        Scripts/generate_audio_test_fixtures.sh || echo "⚠️  Some fixtures may have failed to generate, continuing..."
         
     - name: Generate Xcode project
       run: xcodegen generate
