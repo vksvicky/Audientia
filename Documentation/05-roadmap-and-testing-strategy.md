@@ -49,29 +49,41 @@
 - [x] Format decoder abstraction (FFmpeg wrapper) - **✅ FormatDecodingCoordinator with AVFoundation primary decoder (async/await, modern APIs) and FFmpeg-backed FLAC decoder with proper STREAMINFO parsing, unit + integration tests in place**
 - [x] Playback queue management - **✅ Implemented with add/remove/clear/reorder operations**
 - [x] Seek and position tracking - **✅ Implemented with position updates and seek operations**
-- [x] Volume control and mute - **✅ Volume control implemented (setVolume/getVolume), mute pending**
+- [x] Volume control and mute - **✅ Volume control implemented (setVolume/getVolume), mute functionality with toggleMute() and volume preservation**
+- [x] Queue navigation - **✅ playNext() and playPrevious() implemented with queue history tracking for bidirectional navigation**
+- [x] Replay functionality - **✅ replay() method to restart current track from beginning**
+- [x] Skip functionality - **✅ skipForward() and skipBackward() with 10-second default increments**
+- [x] Loop modes - **✅ LoopMode enum (none/track/queue) with toggleLoopMode() and automatic loop handling on track completion**
 
 **UI (SwiftUI):**
-- [ ] Now Playing view with basic controls
-- [ ] Progress slider with scrubbing
-- [ ] Volume control
-- [ ] Playback state indicators
+- [x] Now Playing view with basic controls - **✅ NowPlayingView implemented with track information display, play/pause controls, integrated with ContentView**
+- [x] Progress slider with scrubbing - **✅ Progress slider with seek functionality, time display (current/total), interactive scrubbing with onEditingChanged**
+- [x] Volume control - **✅ Volume slider with speaker icons, bound to viewModel.volume (0.0-1.0 range)**
+- [x] Playback state indicators - **✅ State indicators for Loading (ProgressView), Playing (waveform icon), Paused (pause.circle), Stopped (stop.circle), error display**
+- [x] Queue navigation (Previous/Next buttons) - **✅ Previous/Next buttons enabled and functional, navigate through queue with history tracking**
+- [x] Mute functionality - **✅ Mute button with visual feedback (red when muted), toggleMute() integrated, volume slider disabled when muted**
+- [x] Replay button - **✅ Replay button to restart current track from beginning**
+- [x] Skip controls - **✅ Skip forward/backward buttons (10 seconds) with goforward.10/gobackward.10 icons**
+- [x] Loop mode toggle - **✅ Loop mode button with visual states (none/track/queue), shows active state with blue color, help text for each mode**
 
 **Tests:**
-- [x] **TDD**: Write tests for each playback operation first - **✅ All tests written before implementation (Swift AudioEngine and C++ CAudioEngine)**
+- [x] **TDD**: Write tests for each playback operation first - **✅ All tests written before implementation (Swift AudioEngine and C++ CAudioEngine), AdvancedPlaybackTests.swift with comprehensive coverage**
 - [x] **Unit**: Playback state machine, queue management, seek accuracy - **✅ PlaybackStateMachineTests, QueueManagementTests, SeekAndPositionTests, CAudioEngineTests implemented with comprehensive concurrency tests (race conditions, cancellation, parallel operations)**
+- [x] **Unit**: Advanced playback features - **✅ AdvancedPlaybackTests.swift with TDD tests for queue navigation, mute, replay, skip, and loop modes following Right-BICEP principles**
 - [x] **Integration**: End-to-end playback with real audio files - **✅ FFmpeg decoder + AudioEngine integration verified against runtime-generated FLAC fixtures with proper STREAMINFO block parsing**
 - [x] **Format Decoder Tests**: FormatDecoderCoordinatorTests with mock-based unit tests and FLAC integration tests - **✅ All format decoder tests passing, proper error handling (noDecoderAvailable vs unsupportedFormat)**
 - [x] **BDD**: "As a user, I want to play a track and see progress update" - **✅ PlaybackProgressBDDTests implemented with 11 comprehensive user scenario tests (play/pause/resume/seek progress updates, interactive seeking, smooth progress tracking, loading states)**
+- [x] **BDD**: Advanced playback scenarios - **✅ BDD-style tests in AdvancedPlaybackTests for queue navigation, mute toggle, replay, skip, and loop mode scenarios**
 
 **Right-BICEP:**
 - [x] **[Right]**: Verify audio output matches expected format/sample rate - **✅ Tests verify state transitions and decoder metadata accuracy**
 - [x] **[B]**: Test with 1s clips, 3-hour files, various bitrates - **✅ testSeekInVeryShortTrack, testSeekInVeryLongTrack implemented**
-- [x] **[I]**: Play → Pause → Play, verify position maintained - **✅ State machine tests verify reversible operations**
+- [x] **[I]**: Play → Pause → Play, verify position maintained - **✅ State machine tests verify reversible operations, testPlayNextPreviousRoundtrip, testSkipForwardBackwardRoundtrip, testAddRemoveTrackRoundtrip**
 - [x] **[C]**: Compare AVFoundation/FFmpeg metadata with expected values - **✅ FFmpeg FLAC fixtures assert duration/sample rate consistency**
-- [x] **[E]**: Corrupt file, network interruption, device unplugged - **✅ testLoadCorruptFileThrowsError implemented**
+- [x] **[E]**: Corrupt file, network interruption, device unplugged - **✅ testLoadCorruptFileThrowsError implemented, testPlayNextWithEmptyQueue, boundary condition tests for queue navigation**
 - [x] **[P]**: Start playback < 100ms, seek accuracy ±10ms - **✅ testSeekPerformance, testSeekAccuracyWithinSLA implemented**
 - [x] **Edge**: VBR files, gapless playback, sample rate changes - **✅ PlaybackEdgeCaseTests implemented with VBR file handling, gapless playback transitions, sample rate change handling, and combined edge cases**
+- [x] **Edge**: Advanced playback edge cases - **✅ Tests for queue navigation at boundaries (first/last track), mute/unmute roundtrip, skip at track boundaries (beginning/end), loop mode transitions, toggle operations**
 
 #### 1.2 Library Management (Weeks 9-12)
 

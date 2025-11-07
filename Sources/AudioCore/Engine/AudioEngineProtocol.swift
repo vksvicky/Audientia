@@ -44,4 +44,61 @@ public protocol AudioEngineProtocol {
     /// - Parameter position: Position in seconds
     /// - Throws: AudioEngineError if seek fails
     func seek(to position: TimeInterval) async throws
+    
+    // MARK: - Queue Navigation
+    
+    /// Play next track in queue
+    /// - Throws: AudioEngineError if no next track available
+    func playNext() async throws
+    
+    /// Play previous track in queue
+    /// - Throws: AudioEngineError if no previous track available
+    func playPrevious() async throws
+    
+    // MARK: - Volume Control
+    
+    /// Current volume (0.0 to 1.0)
+    var volume: Float { get set }
+    
+    /// Is currently muted
+    var isMuted: Bool { get }
+    
+    /// Set volume level
+    /// - Parameter volume: Volume level (0.0 to 1.0)
+    func setVolume(_ volume: Float)
+    
+    /// Set muted state
+    /// - Parameter muted: Whether to mute
+    func setMuted(_ muted: Bool)
+    
+    /// Toggle mute state
+    func toggleMute()
+    
+    // MARK: - Advanced Playback
+    
+    /// Replay current track from beginning
+    /// - Throws: AudioEngineError if no track loaded
+    func replay() async throws
+    
+    /// Skip forward by specified seconds
+    /// - Parameter seconds: Number of seconds to skip forward
+    /// - Throws: AudioEngineError if seek fails
+    func skipForward(seconds: TimeInterval) async throws
+    
+    /// Skip backward by specified seconds
+    /// - Parameter seconds: Number of seconds to skip backward
+    /// - Throws: AudioEngineError if seek fails
+    func skipBackward(seconds: TimeInterval) async throws
+    
+    // MARK: - Loop Control
+    
+    /// Current loop mode
+    var loopMode: LoopMode { get set }
+    
+    /// Set loop mode
+    /// - Parameter mode: Loop mode to set
+    func setLoopMode(_ mode: LoopMode)
+    
+    /// Toggle loop mode (none -> track -> queue -> none)
+    func toggleLoopMode()
 }

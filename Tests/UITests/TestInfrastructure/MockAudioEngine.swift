@@ -22,16 +22,22 @@ final class MockAudioEngine: AudioEngineProtocol {
     
     // MARK: - Additional Mock Properties
     
-    var volume: Float = 1.0
+    public var volume: Float = 1.0
+    public var isMuted: Bool = false
+    public var loopMode: LoopMode = .none
     
     var playCalled = false
     var pauseCalled = false
     var stopCalled = false
     var seekCalled = false
     var loadTrackCalled = false
+    var playNextCalled = false
+    var playPreviousCalled = false
+    var replayCalled = false
     
     var shouldFailPlay = false
     var shouldFailLoad = false
+    var previousVolume: Float = 1.0
     
     // MARK: - AudioEngineProtocol Methods
     
@@ -67,5 +73,86 @@ final class MockAudioEngine: AudioEngineProtocol {
         currentTrack = track
         duration = track.duration
         state = PlaybackState.stopped
+    }
+    
+    // MARK: - Queue Navigation
+    
+    public func playNext() async throws {
+        playNextCalled = true
+        if queue.isEmpty {
+            throw AudioEngineError.queueEmpty
+        }
+        let nextTrack = queue.removeFirst()
+        try await loadTrack(nextTrack)
+        try await play()
+    }
+    
+    public func playPrevious() async throws {
+        playPreviousCalled = true
+        throw AudioEngineError.queueEmpty // Simplified for now
+    }
+    
+    // MARK: - Volume Control
+    
+    public func setVolume(_ volume: Float) {
+        self.volume = max(0.0, min(1.0, volume))
+    }
+    
+    public func setMuted(_ muted: Bool) {
+        if muted {
+            previousVolume = volume
+            volume = 0.0
+        } else {
+            volume = previousVolume
+        }
+        isMuted = muted
+    }
+    
+    public func toggleMute() {
+        isMuted.toggle()
+        if isMuted {
+            previousVolume = volume
+            volume = 0.0
+        } else {
+            volume = previousVolume
+        }
+    }
+    
+    // MARK: - Advanced Playback
+    
+    public func replay() async throws {
+        replayCalled = true
+        guard currentTrack != nil else {
+            throw AudioEngineError.noTrackLoaded
+        }
+        currentPosition = 0.0
+        if state == .paused {
+            state = .playing
+        }
+    }
+    
+    public func skipForward(seconds: TimeInterval) async throws {
+        currentPosition = min(currentPosition + seconds, duration)
+    }
+    
+    public func skipBackward(seconds: TimeInterval) async throws {
+        currentPosition = max(currentPosition - seconds, 0.0)
+    }
+    
+    // MARK: - Loop Control
+    
+    public func setLoopMode(_ mode: LoopMode) {
+        loopMode = mode
+    }
+    
+    public func toggleLoopMode() {
+        switch loopMode {
+        case .none:
+            loopMode = .track
+        case .track:
+            loopMode = .queue
+        case .queue:
+            loopMode = .none
+        }
     }
 }

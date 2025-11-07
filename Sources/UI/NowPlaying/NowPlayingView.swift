@@ -44,6 +44,9 @@ public struct NowPlayingView: View {
             // Playback Controls
             playbackControlsView
             
+            // Advanced Controls (Replay, Skip, Loop)
+            advancedControlsView
+            
             // Volume Control
             volumeControlView
             
@@ -148,8 +151,7 @@ public struct NowPlayingView: View {
                 Image(systemName: "backward.fill")
                     .font(.title2)
             }
-            // swiftlint:disable:next todo
-            .disabled(true) // TODO: Enable when queue navigation is implemented
+            .disabled(viewModel.currentTrack == nil)
             
             // Play/Pause button
             Button {
@@ -184,8 +186,7 @@ public struct NowPlayingView: View {
                 Image(systemName: "forward.fill")
                     .font(.title2)
             }
-            // swiftlint:disable:next todo
-            .disabled(true) // TODO: Enable when queue navigation is implemented
+            .disabled(viewModel.currentTrack == nil)
         }
     }
     
@@ -193,19 +194,116 @@ public struct NowPlayingView: View {
     
     private var volumeControlView: some View {
         HStack(spacing: 12) {
-            Image(systemName: "speaker.fill")
-                .foregroundColor(.secondary)
+            // Mute button
+            Button {
+                viewModel.toggleMute()
+            } label: {
+                Image(systemName: viewModel.isMuted ? "speaker.slash.fill" : "speaker.fill")
+                    .foregroundColor(viewModel.isMuted ? .red : .secondary)
+            }
+            .buttonStyle(.plain)
             
             Slider(
                 value: $viewModel.volume,
                 in: 0.0...1.0
             )
+            .disabled(viewModel.isMuted)
             .onChange(of: viewModel.volume) { _, newValue in
                 Logger.userInterface.debug("Volume changed to \(newValue, privacy: .public)")
             }
             
             Image(systemName: "speaker.wave.3.fill")
                 .foregroundColor(.secondary)
+        }
+    }
+    
+    // MARK: - Advanced Controls View
+    
+    private var advancedControlsView: some View {
+        HStack(spacing: 20) {
+            // Replay button
+            Button {
+                Task {
+                    do {
+                        try await viewModel.replay()
+                    } catch {
+                        Logger.userInterface.error("Replay failed: \(error.localizedDescription, privacy: .public)")
+                    }
+                }
+            } label: {
+                Image(systemName: "arrow.counterclockwise")
+                    .font(.title3)
+            }
+            .disabled(viewModel.currentTrack == nil)
+            .help("Replay current track")
+            
+            // Skip backward button
+            Button {
+                Task {
+                    do {
+                        try await viewModel.skipBackward()
+                    } catch {
+                        Logger.userInterface.error(
+                            "Skip backward failed: \(error.localizedDescription, privacy: .public)"
+                        )
+                    }
+                }
+            } label: {
+                Image(systemName: "gobackward.10")
+                    .font(.title3)
+            }
+            .disabled(viewModel.currentTrack == nil)
+            .help("Skip backward 10 seconds")
+            
+            // Skip forward button
+            Button {
+                Task {
+                    do {
+                        try await viewModel.skipForward()
+                    } catch {
+                        Logger.userInterface.error(
+                            "Skip forward failed: \(error.localizedDescription, privacy: .public)"
+                        )
+                    }
+                }
+            } label: {
+                Image(systemName: "goforward.10")
+                    .font(.title3)
+            }
+            .disabled(viewModel.currentTrack == nil)
+            .help("Skip forward 10 seconds")
+            
+            // Loop mode button
+            Button {
+                viewModel.toggleLoopMode()
+            } label: {
+                Group {
+                    switch viewModel.loopMode {
+                    case .none:
+                        Image(systemName: "repeat")
+                            .foregroundColor(.secondary)
+                    case .track:
+                        Image(systemName: "repeat.1")
+                            .foregroundColor(.blue)
+                    case .queue:
+                        Image(systemName: "repeat")
+                            .foregroundColor(.blue)
+                    }
+                }
+                .font(.title3)
+            }
+            .help(loopModeHelpText)
+        }
+    }
+    
+    private var loopModeHelpText: String {
+        switch viewModel.loopMode {
+        case .none:
+            return "Loop: Off"
+        case .track:
+            return "Loop: Track"
+        case .queue:
+            return "Loop: Queue"
         }
     }
     

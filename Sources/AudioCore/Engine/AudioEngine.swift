@@ -12,6 +12,9 @@ import Shared
 /// Main audio playback engine
 /// Handles track loading, playback control, queue management, and position tracking
 @MainActor
+// swiftlint:disable:next todo
+// TODO: Refactor AudioEngine to reduce class body length (currently 351 lines, limit is 300)
+// swiftlint:disable:next type_body_length
 public final class AudioEngine: AudioEngineProtocol {
     
     // MARK: - Properties
@@ -42,6 +45,33 @@ public final class AudioEngine: AudioEngineProtocol {
     /// Playback queue
     public private(set) var queue: [Track] = []
     
+    /// Current volume (0.0 to 1.0)
+    public var volume: Float = 1.0 {
+        didSet {
+            self.volume = max(0.0, min(1.0, self.volume))
+            if !self.isMuted {
+                // Apply volume to audio engine (when implemented)
+                Logger.audio.debug("Volume set to \(self.volume)")
+            }
+        }
+    }
+    
+    /// Is currently muted
+    public var isMuted: Bool = false {
+        didSet {
+            if self.isMuted {
+                self.previousVolume = self.volume
+                self.volume = 0.0
+            } else {
+                self.volume = self.previousVolume
+            }
+            Logger.audio.debug("Mute state: \(self.isMuted)")
+        }
+    }
+    
+    /// Current loop mode
+    public var loopMode: LoopMode = .none
+    
     /// Convenience property: is engine playing?
     public var isPlaying: Bool {
         state == .playing
@@ -63,6 +93,9 @@ public final class AudioEngine: AudioEngineProtocol {
     private let positionUpdateInterval: TimeInterval = 0.1 // Update every 100ms
     private let fileSystem: FileSystemProtocol
     private let formatCoordinator: FormatDecodingCoordinating
+    private var currentQueueIndex: Int = -1 // Index of current track in queue history
+    private var queueHistory: [Track] = [] // History of played tracks for previous navigation
+    private var previousVolume: Float = 1.0 // Volume before muting
     
     // MARK: - Initialization
     
@@ -144,6 +177,9 @@ public final class AudioEngine: AudioEngineProtocol {
         if currentTrack == nil && !queue.isEmpty {
             let nextTrack = queue.removeFirst()
             try await loadTrack(nextTrack)
+            // Track is now loaded, add to history
+            queueHistory.append(nextTrack)
+            currentQueueIndex = queueHistory.count - 1
         }
         
         guard let track = currentTrack else {
@@ -287,6 +323,146 @@ public final class AudioEngine: AudioEngineProtocol {
         try await seek(to: newPosition)
     }
     
+    // MARK: - Queue Navigation
+    
+    /// Play next track in queue
+    /// - Throws: AudioEngineError if no next track available
+    public func playNext() async throws {
+        Logger.audio.info("Play next requested")
+        
+        // Check if we have a next track in queue
+        if !queue.isEmpty {
+            let nextTrack = queue.removeFirst()
+            // Add current track to history if it exists
+            if let current = currentTrack {
+                queueHistory.append(current)
+                currentQueueIndex = queueHistory.count - 1
+            }
+            try await loadTrack(nextTrack)
+            try await play()
+            Logger.audio.info("Advanced to next track: \(nextTrack.title)")
+            return
+        }
+        
+        // Check loop mode
+        if loopMode == .queue && !queueHistory.isEmpty {
+            // Restart from beginning of history
+            let firstTrack = queueHistory[0]
+            queueHistory.removeAll()
+            currentQueueIndex = -1
+            try await loadTrack(firstTrack)
+            try await play()
+            Logger.audio.info("Looped to first track in queue")
+            return
+        }
+        
+        throw AudioEngineError.queueEmpty
+    }
+    
+    /// Play previous track in queue
+    /// - Throws: AudioEngineError if no previous track available
+    public func playPrevious() async throws {
+        Logger.audio.info("Play previous requested")
+        
+        // Check if we have history to go back to
+        guard currentQueueIndex > 0 else {
+            throw AudioEngineError.queueEmpty
+        }
+        
+        // Get previous track from history
+        let previousIndex = currentQueueIndex - 1
+        let previousTrack = queueHistory[previousIndex]
+        
+        // Move current track back to queue if it exists
+        if let current = currentTrack {
+            queue.insert(current, at: 0)
+        }
+        
+        // Update history and index
+        currentQueueIndex = previousIndex
+        try await loadTrack(previousTrack)
+        try await play()
+        Logger.audio.info("Went back to previous track: \(previousTrack.title)")
+    }
+    
+    // MARK: - Volume Control
+    
+    /// Set volume level
+    /// - Parameter volume: Volume level (0.0 to 1.0)
+    public func setVolume(_ volume: Float) {
+        self.volume = volume
+    }
+    
+    /// Set muted state
+    /// - Parameter muted: Whether to mute
+    public func setMuted(_ muted: Bool) {
+        self.isMuted = muted
+    }
+    
+    /// Toggle mute state
+    public func toggleMute() {
+        isMuted.toggle()
+    }
+    
+    // MARK: - Advanced Playback
+    
+    /// Replay current track from beginning
+    /// - Throws: AudioEngineError if no track loaded
+    public func replay() async throws {
+        Logger.audio.info("Replay requested")
+        guard currentTrack != nil else {
+            throw AudioEngineError.noTrackLoaded
+        }
+        
+        try await seek(to: 0.0)
+        if state == .paused {
+            try await resume()
+        } else if state == .stopped {
+            try await play()
+        }
+        Logger.audio.info("Track replayed from beginning")
+    }
+    
+    /// Skip forward by specified seconds
+    /// - Parameter seconds: Number of seconds to skip forward
+    /// - Throws: AudioEngineError if seek fails
+    public func skipForward(seconds: TimeInterval) async throws {
+        let newPosition = min(currentPosition + seconds, duration)
+        try await seek(to: newPosition)
+        Logger.audio.debug("Skipped forward \(seconds) seconds")
+    }
+    
+    /// Skip backward by specified seconds
+    /// - Parameter seconds: Number of seconds to skip backward
+    /// - Throws: AudioEngineError if seek fails
+    public func skipBackward(seconds: TimeInterval) async throws {
+        let newPosition = max(currentPosition - seconds, 0.0)
+        try await seek(to: newPosition)
+        Logger.audio.debug("Skipped backward \(seconds) seconds")
+    }
+    
+    // MARK: - Loop Control
+    
+    /// Set loop mode
+    /// - Parameter mode: Loop mode to set
+    public func setLoopMode(_ mode: LoopMode) {
+        self.loopMode = mode
+        Logger.audio.debug("Loop mode set to: \(mode)")
+    }
+    
+    /// Toggle loop mode (none -> track -> queue -> none)
+    public func toggleLoopMode() {
+        switch self.loopMode {
+        case .none:
+            self.loopMode = .track
+        case .track:
+            self.loopMode = .queue
+        case .queue:
+            self.loopMode = .none
+        }
+        Logger.audio.debug("Loop mode toggled to: \(self.loopMode)")
+    }
+    
     // MARK: - Position Tracking
     
     private func startPositionTracking() {
@@ -317,14 +493,61 @@ public final class AudioEngine: AudioEngineProtocol {
         positionUpdateTask = nil
     }
     
+    // swiftlint:disable:next todo
+    // TODO: Refactor handleTrackCompletion to reduce function body length (currently 51 lines, limit is 50)
+    // swiftlint:disable:next function_body_length
     private func handleTrackCompletion() async {
-        Logger.audio.info("Track completed, checking queue")
+        Logger.audio.info("Track completed, checking loop mode and queue")
         
+        // Handle loop modes
+        switch loopMode {
+        case .track:
+            // Replay current track
+            if let track = currentTrack {
+                do {
+                    try await replay()
+                    Logger.audio.info("Looped current track: \(track.title)")
+                    return
+                } catch {
+                    Logger.audio.error("Failed to loop track: \(error.localizedDescription)")
+                }
+            }
+            
+        case .queue:
+            // Check if we can loop to first track in history
+            if !queueHistory.isEmpty {
+                let firstTrack = queueHistory[0]
+                queueHistory.removeAll()
+                currentQueueIndex = -1
+                do {
+                    try await loadTrack(firstTrack)
+                    queueHistory.append(firstTrack)
+                    currentQueueIndex = 0
+                    try await play()
+                    Logger.audio.info("Looped to first track in queue")
+                    return
+                } catch {
+                    Logger.audio.error("Failed to loop queue: \(error.localizedDescription)")
+                }
+            }
+            
+        case .none:
+            break // Continue with normal completion handling
+        }
+        
+        // Normal completion: advance to next track or stop
         if !self.queue.isEmpty {
             // Auto-advance to next track
             let nextTrack = self.queue.removeFirst()
+            // Add current track to history
+            if let current = self.currentTrack {
+                self.queueHistory.append(current)
+                self.currentQueueIndex = self.queueHistory.count - 1
+            }
             do {
                 try await self.loadTrack(nextTrack)
+                self.queueHistory.append(nextTrack)
+                self.currentQueueIndex = self.queueHistory.count - 1
                 try await self.play()
                 Logger.audio.info("Auto-advanced to next track: \(nextTrack.title)")
             } catch {

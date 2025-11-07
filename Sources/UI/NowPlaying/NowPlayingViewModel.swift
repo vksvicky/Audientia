@@ -212,24 +212,110 @@ public final class NowPlayingViewModel: ObservableObject {
     /// - Parameter volume: Volume level (0.0 to 1.0)
     private func setVolume(_ volume: Float) async {
         let clampedVolume = max(0.0, min(1.0, volume))
+        audioEngine.setVolume(clampedVolume)
+        updateState()
         Logger.userInterface.debug("Volume changed to \(clampedVolume, privacy: .public)")
-        // Note: AudioEngine doesn't have volume control yet, will be added
-        // audioEngine.volume = clampedVolume
     }
     
     /// Play next track in queue
     public func playNext() async throws {
         Logger.userInterface.info("Play next requested")
-        // swiftlint:disable:next todo
-        // TODO: Implement queue navigation
-        throw AudioEngineError.queueEmpty
+        lastError = nil
+        
+        do {
+            try await audioEngine.playNext()
+            updateState()
+            Logger.userInterface.info("Advanced to next track")
+        } catch {
+            lastError = error
+            Logger.userInterface.error("Play next failed: \(error.localizedDescription, privacy: .public)")
+            throw error
+        }
     }
     
     /// Play previous track in queue
     public func playPrevious() async throws {
         Logger.userInterface.info("Play previous requested")
-        // swiftlint:disable:next todo
-        // TODO: Implement queue navigation
-        throw AudioEngineError.queueEmpty
+        lastError = nil
+        
+        do {
+            try await audioEngine.playPrevious()
+            updateState()
+            Logger.userInterface.info("Went back to previous track")
+        } catch {
+            lastError = error
+            Logger.userInterface.error("Play previous failed: \(error.localizedDescription, privacy: .public)")
+            throw error
+        }
+    }
+    
+    /// Replay current track from beginning
+    public func replay() async throws {
+        Logger.userInterface.info("Replay requested")
+        lastError = nil
+        
+        do {
+            try await audioEngine.replay()
+            updateState()
+            Logger.userInterface.info("Track replayed")
+        } catch {
+            lastError = error
+            Logger.userInterface.error("Replay failed: \(error.localizedDescription, privacy: .public)")
+            throw error
+        }
+    }
+    
+    /// Skip forward by specified seconds
+    /// - Parameter seconds: Number of seconds to skip forward (default: 10)
+    public func skipForward(seconds: TimeInterval = 10.0) async throws {
+        Logger.userInterface.info("Skip forward requested")
+        lastError = nil
+        
+        do {
+            try await audioEngine.skipForward(seconds: seconds)
+            updateState()
+        } catch {
+            lastError = error
+            Logger.userInterface.error("Skip forward failed: \(error.localizedDescription, privacy: .public)")
+        }
+    }
+    
+    /// Skip backward by specified seconds
+    /// - Parameter seconds: Number of seconds to skip backward (default: 10)
+    public func skipBackward(seconds: TimeInterval = 10.0) async throws {
+        Logger.userInterface.info("Skip backward requested")
+        lastError = nil
+        
+        do {
+            try await audioEngine.skipBackward(seconds: seconds)
+            updateState()
+        } catch {
+            lastError = error
+            Logger.userInterface.error("Skip backward failed: \(error.localizedDescription, privacy: .public)")
+        }
+    }
+    
+    /// Toggle mute state
+    public func toggleMute() {
+        audioEngine.toggleMute()
+        updateState()
+        Logger.userInterface.info("Mute toggled: \(self.audioEngine.isMuted, privacy: .public)")
+    }
+    
+    /// Toggle loop mode
+    public func toggleLoopMode() {
+        audioEngine.toggleLoopMode()
+        updateState()
+        Logger.userInterface.info("Loop mode toggled: \(self.audioEngine.loopMode, privacy: .public)")
+    }
+    
+    /// Current loop mode
+    public var loopMode: LoopMode {
+        audioEngine.loopMode
+    }
+    
+    /// Is currently muted
+    public var isMuted: Bool {
+        audioEngine.isMuted
     }
 }

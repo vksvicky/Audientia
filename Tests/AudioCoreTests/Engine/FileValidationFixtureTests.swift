@@ -15,6 +15,8 @@ import XCTest
 /// Tests for file validation using real generated test fixtures
 /// Implements BDD scenarios for invalid/corrupt file handling
 @MainActor
+// swiftlint:disable:next todo
+// TODO: Refactor FileValidationFixtureTests to reduce class body length
 // swiftlint:disable:next type_body_length
 final class FileValidationFixtureTests: XCTestCase {
     
