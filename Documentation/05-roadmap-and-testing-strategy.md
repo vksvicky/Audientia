@@ -62,7 +62,7 @@
 - [x] **Unit**: Playback state machine, queue management, seek accuracy - **✅ PlaybackStateMachineTests, QueueManagementTests, SeekAndPositionTests, CAudioEngineTests implemented with comprehensive concurrency tests (race conditions, cancellation, parallel operations)**
 - [x] **Integration**: End-to-end playback with real audio files - **✅ FFmpeg decoder + AudioEngine integration verified against runtime-generated FLAC fixtures with proper STREAMINFO block parsing**
 - [x] **Format Decoder Tests**: FormatDecoderCoordinatorTests with mock-based unit tests and FLAC integration tests - **✅ All format decoder tests passing, proper error handling (noDecoderAvailable vs unsupportedFormat)**
-- [x] **BDD**: "As a user, I want to play a track and see progress update" - **✅ PlaybackProgressBDDTests implemented with comprehensive user scenario tests (play/pause/resume/seek progress updates)**
+- [x] **BDD**: "As a user, I want to play a track and see progress update" - **✅ PlaybackProgressBDDTests implemented with 11 comprehensive user scenario tests (play/pause/resume/seek progress updates, interactive seeking, smooth progress tracking, loading states)**
 
 **Right-BICEP:**
 - [x] **[Right]**: Verify audio output matches expected format/sample rate - **✅ Tests verify state transitions and decoder metadata accuracy**
