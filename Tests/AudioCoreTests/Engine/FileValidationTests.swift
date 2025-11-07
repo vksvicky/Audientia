@@ -27,8 +27,6 @@ final class FileValidationTests: XCTestCase {
             "flac", "ogg", "opus", "alac", "ape"
         ]
         
-        let coordinator = DefaultFormatDecodingCoordinator()
-        
         for ext in supportedExtensions {
             // When - Create a mock file with supported extension
             let filePath = "/tmp/test.\(ext)"
@@ -434,7 +432,7 @@ final class FileValidationTests: XCTestCase {
                 try await engine.loadTrack(track)
                 // If load succeeds, extension was recognized
             } catch let error as FormatDecoderError {
-                if case .unsupportedFormat(let ext) = error {
+                if case .unsupportedFormat = error {
                     XCTFail("Extension .\(expectedExt) should be recognized for \(filePath)")
                 }
                 // Other errors (like decode failure) are acceptable

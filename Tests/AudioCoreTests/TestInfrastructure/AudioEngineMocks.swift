@@ -161,9 +161,26 @@ final class MockFileSystem: FileSystemProtocol {
     }
     
     /// Add a file path to the mock file system
-    func addFile(_ path: String, size: Int64 = 1_000_000) {
+    /// - Parameters:
+    ///   - path: File path to add
+    ///   - size: File size in bytes (default: 1MB). If nil, attempts to get real file size
+    func addFile(_ path: String, size: Int64? = nil) {
         existingFiles.insert(path)
-        fileSizes[path] = size
+        
+        // If size not provided, try to get real file size
+        if let size = size {
+            fileSizes[path] = size
+        } else {
+            // Try to get actual file size from real file system
+            if FileManager.default.fileExists(atPath: path),
+               let attributes = try? FileManager.default.attributesOfItem(atPath: path),
+               let realSize = attributes[.size] as? Int64 {
+                fileSizes[path] = realSize
+            } else {
+                // Default size if file doesn't exist or can't get size
+                fileSizes[path] = 1_000_000
+            }
+        }
     }
     
     /// Remove a file path from the mock file system

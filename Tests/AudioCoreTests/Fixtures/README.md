@@ -283,25 +283,118 @@ Tests/AudioCoreTests/Fixtures/Audio/
 
 ## Quick Start
 
-### Generate Sample Files with FFmpeg
+### Option 1: Automated Script (Recommended)
+
+Run the automated script to generate all valid, invalid, and error files:
+
+```bash
+./Scripts/generate_test_fixtures.sh
+```
+
+This script generates:
+- ✅ **Valid files**: `sample.{ext}` for each format
+- ❌ **Invalid (empty)**: `invalid_empty.{ext}`
+- ❌ **Invalid (header)**: `invalid_header.{ext}`
+- ❌ **Truncated**: `truncated.{ext}`
+- ❌ **Zero-size**: `zero_size.{ext}`
+
+### Option 2: Manual Generation
+
+#### Generate Valid Sample Files
 
 ```bash
 # Create fixtures directory structure
 mkdir -p Tests/AudioCoreTests/Fixtures/Audio/{mp3,flac,aac,wav,m4a,ogg,opus,alac,ape,aiff,caf,mp4}
 
-# Generate MP3 (1 second, 44.1kHz, stereo, 128kbps)
-ffmpeg -f lavfi -i "sine=frequency=440:duration=1" -ar 44100 -ac 2 -b:a 128k Tests/AudioCoreTests/Fixtures/Audio/mp3/sample.mp3
+# MP3 (1 second, 44.1kHz, stereo, 128kbps)
+ffmpeg -f lavfi -i "sine=frequency=440:duration=1" -ar 44100 -ac 2 -b:a 128k -y Tests/AudioCoreTests/Fixtures/Audio/mp3/sample.mp3
 
-# Generate FLAC (1 second, 44.1kHz, stereo, 16-bit)
-ffmpeg -f lavfi -i "sine=frequency=440:duration=1" -ar 44100 -ac 2 -sample_fmt s16 Tests/AudioCoreTests/Fixtures/Audio/flac/sample.flac
+# FLAC (1 second, 44.1kHz, stereo, 16-bit)
+ffmpeg -f lavfi -i "sine=frequency=440:duration=1" -ar 44100 -ac 2 -sample_fmt s16 -y Tests/AudioCoreTests/Fixtures/Audio/flac/sample.flac
 
-# Generate WAV (1 second, 44.1kHz, stereo, 16-bit)
-ffmpeg -f lavfi -i "sine=frequency=440:duration=1" -ar 44100 -ac 2 -sample_fmt s16 Tests/AudioCoreTests/Fixtures/Audio/wav/sample.wav
+# WAV (1 second, 44.1kHz, stereo, 16-bit)
+ffmpeg -f lavfi -i "sine=frequency=440:duration=1" -ar 44100 -ac 2 -sample_fmt s16 -y Tests/AudioCoreTests/Fixtures/Audio/wav/sample.wav
 
-# Generate AAC/M4A (1 second, 44.1kHz, stereo)
-ffmpeg -f lavfi -i "sine=frequency=440:duration=1" -ar 44100 -ac 2 -c:a aac -b:a 128k Tests/AudioCoreTests/Fixtures/Audio/aac/sample.aac
-ffmpeg -f lavfi -i "sine=frequency=440:duration=1" -ar 44100 -ac 2 -c:a aac -b:a 128k Tests/AudioCoreTests/Fixtures/Audio/m4a/sample.m4a
+# AAC (1 second, 44.1kHz, stereo, 128kbps)
+ffmpeg -f lavfi -i "sine=frequency=440:duration=1" -ar 44100 -ac 2 -c:a aac -b:a 128k -y Tests/AudioCoreTests/Fixtures/Audio/aac/sample.aac
+
+# M4A (1 second, 44.1kHz, stereo, 128kbps)
+ffmpeg -f lavfi -i "sine=frequency=440:duration=1" -ar 44100 -ac 2 -c:a aac -b:a 128k -y Tests/AudioCoreTests/Fixtures/Audio/m4a/sample.m4a
+
+# MP4 (1 second, 44.1kHz, stereo, 128kbps)
+ffmpeg -f lavfi -i "sine=frequency=440:duration=1" -ar 44100 -ac 2 -c:a aac -b:a 128k -y Tests/AudioCoreTests/Fixtures/Audio/mp4/sample.mp4
+
+# OGG (1 second, 44.1kHz, stereo)
+ffmpeg -f lavfi -i "sine=frequency=440:duration=1" -ar 44100 -ac 2 -c:a libvorbis -y Tests/AudioCoreTests/Fixtures/Audio/ogg/sample.ogg
+
+# Opus (1 second, 44.1kHz, stereo)
+ffmpeg -f lavfi -i "sine=frequency=440:duration=1" -ar 44100 -ac 2 -c:a libopus -y Tests/AudioCoreTests/Fixtures/Audio/opus/sample.opus
+
+# ALAC (1 second, 44.1kHz, stereo)
+ffmpeg -f lavfi -i "sine=frequency=440:duration=1" -ar 44100 -ac 2 -c:a alac -y Tests/AudioCoreTests/Fixtures/Audio/alac/sample.alac
+
+# AIFF (1 second, 44.1kHz, stereo, 16-bit)
+ffmpeg -f lavfi -i "sine=frequency=440:duration=1" -ar 44100 -ac 2 -sample_fmt s16 -y Tests/AudioCoreTests/Fixtures/Audio/aiff/sample.aiff
+
+# CAF (1 second, 44.1kHz, stereo, 16-bit)
+ffmpeg -f lavfi -i "sine=frequency=440:duration=1" -ar 44100 -ac 2 -sample_fmt s16 -y Tests/AudioCoreTests/Fixtures/Audio/caf/sample.caf
+
+# APE (1 second, 44.1kHz, stereo) - requires monkey's audio codec
+ffmpeg -f lavfi -i "sine=frequency=440:duration=1" -ar 44100 -ac 2 -c:a ape -y Tests/AudioCoreTests/Fixtures/Audio/ape/sample.ape
 ```
+
+#### Generate Invalid/Error Sample Files
+
+For each format, generate invalid files to test error handling:
+
+```bash
+# For each format (replace {format} and {ext} with actual values)
+FORMAT_DIR="Tests/AudioCoreTests/Fixtures/Audio/{format}"
+
+# 1. Empty file (zero bytes)
+touch "${FORMAT_DIR}/invalid_empty.{ext}"
+
+# 2. Wrong header (garbage data)
+echo "INVALID_HEADER_DATA_12345" > "${FORMAT_DIR}/invalid_header.{ext}"
+
+# 3. Truncated file (first 100 bytes of valid file)
+head -c 100 "${FORMAT_DIR}/sample.{ext}" > "${FORMAT_DIR}/truncated.{ext}"
+
+# 4. Zero-size file (explicitly empty)
+: > "${FORMAT_DIR}/zero_size.{ext}"
+```
+
+**Example for MP3:**
+```bash
+# Empty MP3
+touch Tests/AudioCoreTests/Fixtures/Audio/mp3/invalid_empty.mp3
+
+# Wrong header MP3
+echo "INVALID_HEADER_DATA_12345" > Tests/AudioCoreTests/Fixtures/Audio/mp3/invalid_header.mp3
+
+# Truncated MP3 (first 100 bytes)
+head -c 100 Tests/AudioCoreTests/Fixtures/Audio/mp3/sample.mp3 > Tests/AudioCoreTests/Fixtures/Audio/mp3/truncated.mp3
+
+# Zero-size MP3
+: > Tests/AudioCoreTests/Fixtures/Audio/mp3/zero_size.mp3
+```
+
+**Example for FLAC:**
+```bash
+# Empty FLAC
+touch Tests/AudioCoreTests/Fixtures/Audio/flac/invalid_empty.flac
+
+# Wrong header FLAC
+echo "INVALID_HEADER_DATA_12345" > Tests/AudioCoreTests/Fixtures/Audio/flac/invalid_header.flac
+
+# Truncated FLAC (first 100 bytes)
+head -c 100 Tests/AudioCoreTests/Fixtures/Audio/flac/sample.flac > Tests/AudioCoreTests/Fixtures/Audio/flac/truncated.flac
+
+# Zero-size FLAC
+: > Tests/AudioCoreTests/Fixtures/Audio/flac/zero_size.flac
+```
+
+**Repeat for all formats:** `aac`, `wav`, `m4a`, `ogg`, `opus`, `alac`, `ape`, `aiff`, `caf`, `mp4`
 
 ### Using Test Fixtures in Tests
 
