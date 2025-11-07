@@ -62,7 +62,7 @@
 - [x] **Unit**: Playback state machine, queue management, seek accuracy - **✅ PlaybackStateMachineTests, QueueManagementTests, SeekAndPositionTests, CAudioEngineTests implemented with comprehensive concurrency tests (race conditions, cancellation, parallel operations)**
 - [x] **Integration**: End-to-end playback with real audio files - **✅ FFmpeg decoder + AudioEngine integration verified against runtime-generated FLAC fixtures with proper STREAMINFO block parsing**
 - [x] **Format Decoder Tests**: FormatDecoderCoordinatorTests with mock-based unit tests and FLAC integration tests - **✅ All format decoder tests passing, proper error handling (noDecoderAvailable vs unsupportedFormat)**
-- [ ] **BDD**: "As a user, I want to play a track and see progress update" - **BDD-style tests implemented, UI integration pending**
+- [x] **BDD**: "As a user, I want to play a track and see progress update" - **✅ PlaybackProgressBDDTests implemented with comprehensive user scenario tests (play/pause/resume/seek progress updates)**
 
 **Right-BICEP:**
 - [x] **[Right]**: Verify audio output matches expected format/sample rate - **✅ Tests verify state transitions and decoder metadata accuracy**
@@ -71,7 +71,7 @@
 - [x] **[C]**: Compare AVFoundation/FFmpeg metadata with expected values - **✅ FFmpeg FLAC fixtures assert duration/sample rate consistency**
 - [x] **[E]**: Corrupt file, network interruption, device unplugged - **✅ testLoadCorruptFileThrowsError implemented**
 - [x] **[P]**: Start playback < 100ms, seek accuracy ±10ms - **✅ testSeekPerformance, testSeekAccuracyWithinSLA implemented**
-- [ ] **Edge**: VBR files, gapless playback, sample rate changes - **Pending expanded real file coverage**
+- [x] **Edge**: VBR files, gapless playback, sample rate changes - **✅ PlaybackEdgeCaseTests implemented with VBR file handling, gapless playback transitions, sample rate change handling, and combined edge cases**
 
 #### 1.2 Library Management (Weeks 9-12)
 
