@@ -74,8 +74,15 @@ public final class CAudioEngine {
     /// Load an audio file for playback
     /// - Parameter filePath: Path to the audio file
     /// - Returns: true if file loaded successfully
-    public func loadFile(_ filePath: String) -> Bool {
-        let success = cppEngine.loadFile(filePath)
+    /// - Note: This operation may perform blocking I/O, so it's async to avoid blocking the main thread
+    public func loadFile(_ filePath: String) async -> Bool {
+        // Run blocking I/O operation off the main actor
+        // Note: AVAudioPlayer initialization can block, so we run it in a detached task
+        let success = await Task.detached {
+            self.cppEngine.loadFile(filePath)
+        }.value
+        
+        // Update state on main actor
         if success {
             duration = cppEngine.getDuration()
             currentPosition = 0.0
@@ -89,7 +96,7 @@ public final class CAudioEngine {
     /// Start playback
     /// - Returns: true if playback started successfully
     @discardableResult
-    public func play() -> Bool {
+    public func play() async -> Bool {
         let success = cppEngine.play()
         if success {
             state = .playing
@@ -114,7 +121,7 @@ public final class CAudioEngine {
     /// - Parameter position: Position in seconds
     /// - Returns: true if seek successful
     @discardableResult
-    public func seek(to position: TimeInterval) -> Bool {
+    public func seek(to position: TimeInterval) async -> Bool {
         let success = cppEngine.seekTo(position)
         if success {
             currentPosition = position
@@ -156,7 +163,8 @@ public final class CAudioEngine {
 // MARK: - C++ Bridge
 
 /// C++ bridge wrapper using C interface
-private final class CAudioEngineWrapper {
+/// Nonisolated since it's just a thin wrapper around C functions
+private nonisolated final class CAudioEngineWrapper {
     private let cppEngine: CAudioEngineRef
     
     init() {

@@ -45,7 +45,7 @@
 #### 1.1 Audio Playback Engine (Weeks 5-8)
 
 **Backend (AudioCore):**
-- [x] C++ playback engine with CoreAudio integration - **✅ CAudioEngine (C++) with AVFoundation bridge implemented, Swift wrapper complete**
+- [x] C++ playback engine with CoreAudio integration - **✅ CAudioEngine (C++) with AVFoundation bridge implemented, Swift wrapper complete with async/await (loadFile, play, seek) for non-blocking I/O**
 - [x] Format decoder abstraction (FFmpeg wrapper) - **✅ FormatDecodingCoordinator with AVFoundation primary decoder (async/await, modern APIs) and FFmpeg-backed FLAC decoder with proper STREAMINFO parsing, unit + integration tests in place**
 - [x] Playback queue management - **✅ Implemented with add/remove/clear/reorder operations**
 - [x] Seek and position tracking - **✅ Implemented with position updates and seek operations**
@@ -59,7 +59,7 @@
 
 **Tests:**
 - [x] **TDD**: Write tests for each playback operation first - **✅ All tests written before implementation (Swift AudioEngine and C++ CAudioEngine)**
-- [x] **Unit**: Playback state machine, queue management, seek accuracy - **✅ PlaybackStateMachineTests, QueueManagementTests, SeekAndPositionTests, CAudioEngineTests implemented**
+- [x] **Unit**: Playback state machine, queue management, seek accuracy - **✅ PlaybackStateMachineTests, QueueManagementTests, SeekAndPositionTests, CAudioEngineTests implemented with comprehensive concurrency tests (race conditions, cancellation, parallel operations)**
 - [x] **Integration**: End-to-end playback with real audio files - **✅ FFmpeg decoder + AudioEngine integration verified against runtime-generated FLAC fixtures with proper STREAMINFO block parsing**
 - [x] **Format Decoder Tests**: FormatDecoderCoordinatorTests with mock-based unit tests and FLAC integration tests - **✅ All format decoder tests passing, proper error handling (noDecoderAvailable vs unsupportedFormat)**
 - [ ] **BDD**: "As a user, I want to play a track and see progress update" - **BDD-style tests implemented, UI integration pending**
@@ -469,7 +469,7 @@
    - [x] Response times, throughput, memory usage, CPU usage - **✅ testSeekPerformance implemented**
 
 7. **Edge Cases**:
-   - [x] Unicode, special characters, very large/small values, race conditions - **✅ Boundary tests for very short/long tracks, position edge cases**
+   - [x] Unicode, special characters, very large/small values, race conditions - **✅ Boundary tests for very short/long tracks, position edge cases, comprehensive concurrency tests for race conditions and cancellation**
 
 ---
 
@@ -494,6 +494,7 @@
 - [ ] **Quick/Nimble**: BDD-style testing - **Using XCTest with BDD-style naming, Quick/Nimble pending**
 - [x] **Mocking**: Protocol-based mocks, OCMock for Objective-C bridges - **✅ MockFileSystem, AudioEngineMocks, MockFactories, MockFormatDecodingCoordinator implemented**
 - [x] **Modern APIs**: Async/await migration for AVFoundation format decoding - **✅ All deprecated APIs replaced with macOS 13+ async load() methods with fallback support**
+- [x] **Swift Concurrency**: Full async/await migration - **✅ CAudioEngine (loadFile, play, seek), AudioEngine, FormatDecoderCoordinator all use async/await, blocking I/O isolated in Task.detached**
 
 ### C++
 - **Google Test**: Unit testing framework
