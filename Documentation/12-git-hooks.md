@@ -2,7 +2,7 @@
 
 ## Overview
 
-Audientia uses git hooks to enforce best practices and clean code principles as outlined in [Best Practices and Clean Code Guidelines](./06-best-practices-and-clean-code.md).
+Audientia uses git hooks to enforce best practices and clean code principles as outlined in [`06-best-practices-and-clean-code.md`](06-best-practices-and-clean-code.md).
 
 ## Pre-commit Hook
 
@@ -16,8 +16,9 @@ The pre-commit hook automatically runs before each commit and performs comprehen
 4. **Line Length Enforcement** - Enforces max line lengths (120 chars Swift, 100 others)
 5. **Debug Code Detection** - Warns about print statements in production code
 6. **TODO/FIXME Tracking** - Warns about TODO/FIXME comments in production code
-7. **File Extension Validation** - Ensures files have proper extensions
-8. **Language-Specific Checks**:
+7. **Audio File Detection** - Prevents committing audio files (all supported formats are git-ignored)
+8. **File Extension Validation** - Ensures files have proper extensions
+9. **Language-Specific Checks**:
    - **Swift**: SwiftLint and SwiftFormat
    - **Rust**: rustfmt and clippy
    - **C++**: clang-format
@@ -250,14 +251,14 @@ Both should pass for code to be merged.
 
 ### Related Documentation
 
-- [Best Practices and Clean Code Guidelines](./06-best-practices-and-clean-code.md)
-- [Testing Strategy](./05-roadmap-and-testing-strategy.md)
-- [Logging and Observability](./07-logging-observability.md)
+- [`06-best-practices-and-clean-code.md`](06-best-practices-and-clean-code.md) - Best Practices and Clean Code Guidelines
+- [`05-roadmap-and-testing-strategy.md`](05-roadmap-and-testing-strategy.md) - Testing Strategy
+- [`07-logging-observability.md`](07-logging-observability.md) - Logging and Observability
 
 ### Support
 
 For issues or questions:
 - Check `.git/hooks/README.md` for detailed hook documentation
 - Review hook output for specific error messages
-- See [Best Practices](./06-best-practices-and-clean-code.md) for coding standards
+- See [`06-best-practices-and-clean-code.md`](06-best-practices-and-clean-code.md) for coding standards
 
