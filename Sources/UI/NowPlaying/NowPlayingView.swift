@@ -1,0 +1,264 @@
+// NowPlayingView.swift
+// Audientia - Now Playing View
+//
+// Copyright © 2025 CycleRunCode Club. All rights reserved.
+
+import AudioCore
+import os.log
+import Shared
+import SwiftUI
+
+/// Main Now Playing view with playback controls
+/// BDD: As a user, I want to see the currently playing track and control playback
+@MainActor
+public struct NowPlayingView: View {
+    
+    // MARK: - Properties
+    
+    @StateObject private var viewModel: NowPlayingViewModel
+    @State private var isSeeking = false
+    @State private var seekPosition: TimeInterval = 0.0
+    
+    // MARK: - Initialization
+    
+    /// Initialize with AudioEngine
+    /// - Parameter audioEngine: The audio engine to control (optional, creates default if not provided)
+    public init(audioEngine: (any AudioEngineProtocol)? = nil) {
+        if let audioEngine = audioEngine {
+            _viewModel = StateObject(wrappedValue: NowPlayingViewModel(audioEngine: audioEngine))
+        } else {
+            _viewModel = StateObject(wrappedValue: NowPlayingViewModel())
+        }
+    }
+    
+    // MARK: - Body
+    
+    public var body: some View {
+        VStack(spacing: 20) {
+            // Track Information
+            trackInformationView
+            
+            // Progress Slider
+            progressSliderView
+            
+            // Playback Controls
+            playbackControlsView
+            
+            // Volume Control
+            volumeControlView
+            
+            // Playback State Indicator
+            playbackStateIndicatorView
+        }
+        .padding()
+        .frame(minWidth: 400, minHeight: 300)
+        .onAppear {
+            Logger.userInterface.info("NowPlayingView appeared")
+        }
+        .onDisappear {
+            Logger.userInterface.debug("NowPlayingView disappeared")
+        }
+    }
+    
+    // MARK: - Track Information View
+    
+    private var trackInformationView: some View {
+        VStack(spacing: 8) {
+            if let track = viewModel.currentTrack {
+                Text(track.title)
+                    .font(.title2)
+                    .fontWeight(.semibold)
+                    .lineLimit(1)
+                
+                Text(track.artist)
+                    .font(.body)
+                    .foregroundColor(.secondary)
+                    .lineLimit(1)
+                
+                Text(track.album)
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+                    .lineLimit(1)
+            } else {
+                Text("No track loaded")
+                    .font(.title3)
+                    .foregroundColor(.secondary)
+            }
+        }
+        .frame(maxWidth: .infinity)
+    }
+    
+    // MARK: - Progress Slider View
+    
+    private var progressSliderView: some View {
+        VStack(spacing: 4) {
+            Slider(
+                value: isSeeking ? $seekPosition : Binding(
+                    get: { viewModel.currentPosition },
+                    set: { _ in }
+                ),
+                in: 0...max(viewModel.duration, 1.0),
+                onEditingChanged: { editing in
+                    isSeeking = editing
+                    if editing {
+                        seekPosition = viewModel.currentPosition
+                        Logger.userInterface.debug(
+                            "Seek started at \(viewModel.currentPosition, privacy: .public) seconds"
+                        )
+                    } else {
+                        Task {
+                            await viewModel.seek(to: seekPosition)
+                            Logger.userInterface.info("Seek completed to \(seekPosition, privacy: .public) seconds")
+                        }
+                    }
+                }
+            )
+            .disabled(viewModel.duration <= 0)
+            
+            HStack {
+                Text(formatTime(viewModel.currentPosition))
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+                
+                Spacer()
+                
+                Text(formatTime(viewModel.duration))
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+            }
+        }
+    }
+    
+    // MARK: - Playback Controls View
+    
+    private var playbackControlsView: some View {
+        HStack(spacing: 20) {
+            // Previous button
+            Button {
+                Task {
+                    do {
+                        try await viewModel.playPrevious()
+                    } catch {
+                        Logger.userInterface.error(
+                            "Play previous failed: \(error.localizedDescription, privacy: .public)"
+                        )
+                    }
+                }
+            } label: {
+                Image(systemName: "backward.fill")
+                    .font(.title2)
+            }
+            // swiftlint:disable:next todo
+            .disabled(true) // TODO: Enable when queue navigation is implemented
+            
+            // Play/Pause button
+            Button {
+                Task {
+                    if viewModel.isPlaying {
+                        await viewModel.pause()
+                    } else {
+                        do {
+                            try await viewModel.play()
+                        } catch {
+                            Logger.userInterface.error("Play failed: \(error.localizedDescription, privacy: .public)")
+                        }
+                    }
+                }
+            } label: {
+                Image(systemName: viewModel.isPlaying ? "pause.fill" : "play.fill")
+                    .font(.title)
+                    .frame(width: 50, height: 50)
+            }
+            .disabled(viewModel.currentTrack == nil)
+            
+            // Next button
+            Button {
+                Task {
+                    do {
+                        try await viewModel.playNext()
+                    } catch {
+                        Logger.userInterface.error("Play next failed: \(error.localizedDescription, privacy: .public)")
+                    }
+                }
+            } label: {
+                Image(systemName: "forward.fill")
+                    .font(.title2)
+            }
+            // swiftlint:disable:next todo
+            .disabled(true) // TODO: Enable when queue navigation is implemented
+        }
+    }
+    
+    // MARK: - Volume Control View
+    
+    private var volumeControlView: some View {
+        HStack(spacing: 12) {
+            Image(systemName: "speaker.fill")
+                .foregroundColor(.secondary)
+            
+            Slider(
+                value: $viewModel.volume,
+                in: 0.0...1.0
+            )
+            .onChange(of: viewModel.volume) { _, newValue in
+                Logger.userInterface.debug("Volume changed to \(newValue, privacy: .public)")
+            }
+            
+            Image(systemName: "speaker.wave.3.fill")
+                .foregroundColor(.secondary)
+        }
+    }
+    
+    // MARK: - Playback State Indicator View
+    
+    private var playbackStateIndicatorView: some View {
+        HStack(spacing: 8) {
+            if viewModel.isLoading {
+                ProgressView()
+                    .scaleEffect(0.8)
+                Text("Loading...")
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+            } else if viewModel.isPlaying {
+                Image(systemName: "waveform")
+                    .foregroundColor(.green)
+                Text("Playing")
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+            } else if viewModel.isPaused {
+                Image(systemName: "pause.circle")
+                    .foregroundColor(.orange)
+                Text("Paused")
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+            } else {
+                Image(systemName: "stop.circle")
+                    .foregroundColor(.gray)
+                Text("Stopped")
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+            }
+            
+            if let error = viewModel.lastError {
+                Spacer()
+                Text("Error: \(error.localizedDescription)")
+                    .font(.caption)
+                    .foregroundColor(.red)
+            }
+        }
+    }
+    
+    // MARK: - Helper Methods
+    
+    private func formatTime(_ time: TimeInterval) -> String {
+        let minutes = Int(time) / 60
+        let seconds = Int(time) % 60
+        return String(format: "%d:%02d", minutes, seconds)
+    }
+}
+
+// MARK: - Preview
+
+#Preview {
+    NowPlayingView()
+}
