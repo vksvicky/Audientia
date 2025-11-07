@@ -90,8 +90,13 @@ final class PlaybackEdgeCaseTests: XCTestCase {
         try await engine.play()
         XCTAssertEqual(engine.currentTrack?.id, track1.id, "Should be playing first track")
         
-        // Wait for first track to complete
-        try await Task.sleep(nanoseconds: 1_500_000_000) // 1.5 seconds
+        // Wait for first track to complete with polling (more robust in CI)
+        var attempts = 0
+        let maxAttempts = 30 // 3 seconds max wait
+        while engine.currentTrack?.id == track1.id && attempts < maxAttempts {
+            try await Task.sleep(nanoseconds: 100_000_000) // 100ms
+            attempts += 1
+        }
         
         // Then - Second track should start automatically (gapless transition)
         // Note: In real implementation, there should be no audible gap
