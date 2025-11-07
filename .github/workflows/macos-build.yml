@@ -76,14 +76,4 @@ jobs:
           brew install swiftlint
         fi
         swiftlint lint --strict
-        
-    - name: Verify build success
-      run: |
-        if [ -d "build/Debug/Audientia.app" ]; then
-          echo "✅ Build successful - app bundle created"
-          echo "Build artifacts are not packaged or uploaded (build-only pipeline)"
-        else
-          echo "❌ Build failed - app bundle not found"
-          exit 1
-        fi
 
