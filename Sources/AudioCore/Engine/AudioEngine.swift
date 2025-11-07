@@ -116,7 +116,7 @@ public final class AudioEngine {
         
         // Attempt to decode format metadata (non-fatal on failure)
         do {
-            let format = try formatCoordinator.decodeFormat(for: track.filePath)
+            let format = try await formatCoordinator.decodeFormat(for: track.filePath)
             detectedFormat = format
             lastFormatDetectionError = nil
             Logger.audio.info("Detected format: codec=\(format.codec) sampleRate=\(format.sampleRate)Hz")

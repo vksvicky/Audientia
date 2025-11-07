@@ -38,7 +38,7 @@ final class FormatDecoderCoordinatorTests: XCTestCase {
             return supportedExtensions.contains(fileExtension)
         }
 
-        func decode(filePath: String) throws -> DecodedAudioFormat {
+        func decode(filePath: String) async throws -> DecodedAudioFormat {
             decodeCallCount += 1
             switch behaviour {
             case let .success(format):
@@ -69,7 +69,7 @@ final class FormatDecoderCoordinatorTests: XCTestCase {
     // MARK: - Tests
 
     /// Given multiple decoders, when the first supports the file, then it should be selected
-    func testSelectsFirstSupportingDecoder() throws {
+    func testSelectsFirstSupportingDecoder() async throws {
         // Given
         let primary = MockFormatDecoder(
             name: "Primary",
@@ -84,7 +84,7 @@ final class FormatDecoderCoordinatorTests: XCTestCase {
         let coordinator = makeCoordinator(decoders: [primary, secondary])
 
         // When
-        let format = try coordinator.decodeFormat(for: sampleMP3Path)
+        let format = try await coordinator.decodeFormat(for: sampleMP3Path)
 
         // Then (Right-BICEP: Right, Performance - call counts kept minimal)
         XCTAssertEqual(format, defaultFormat, "Should return the format produced by the first decoder")
@@ -93,7 +93,7 @@ final class FormatDecoderCoordinatorTests: XCTestCase {
     }
 
     /// Given the first decoder supports but fails, when decoding, then fall back to the next decoder
-    func testFallsBackWhenPrimaryDecoderFails() throws {
+    func testFallsBackWhenPrimaryDecoderFails() async throws {
         // Given
         let failingFormatError = FormatDecoderError.decoderFailed(decoder: "Primary", reason: "Mock failure")
         let primary = MockFormatDecoder(
@@ -116,7 +116,7 @@ final class FormatDecoderCoordinatorTests: XCTestCase {
         let coordinator = makeCoordinator(decoders: [primary, secondary])
 
         // When
-        let format = try coordinator.decodeFormat(for: sampleMP3Path)
+        let format = try await coordinator.decodeFormat(for: sampleMP3Path)
 
         // Then (Right-BICEP: Error handling, Cross-check via fallback)
         XCTAssertEqual(format, expectedFormat, "Fallback decoder should provide the format")
@@ -125,7 +125,7 @@ final class FormatDecoderCoordinatorTests: XCTestCase {
     }
 
     /// Given no decoder can handle the file, when decoding, then throw .noDecoderAvailable
-    func testThrowsWhenNoDecoderCanHandleFile() {
+    func testThrowsWhenNoDecoderCanHandleFile() async {
         // Given
         let primary = MockFormatDecoder(
             name: "Primary",
@@ -140,7 +140,10 @@ final class FormatDecoderCoordinatorTests: XCTestCase {
         let coordinator = makeCoordinator(decoders: [primary, secondary])
 
         // When
-        XCTAssertThrowsError(try coordinator.decodeFormat(for: sampleFLACPath)) { error in
+        do {
+            _ = try await coordinator.decodeFormat(for: sampleFLACPath)
+            XCTFail("Expected to throw noDecoderAvailable")
+        } catch {
             // Then (Right-BICEP: Error path)
             guard case FormatDecoderError.noDecoderAvailable(let attempted, _) = error else {
                 XCTFail("Expected noDecoderAvailable error, got \(error)")
@@ -155,4 +158,28 @@ final class FormatDecoderCoordinatorTests: XCTestCase {
 
 private enum TestError: Error {
     case unexpected
+}
+
+extension FormatDecoderCoordinatorTests {
+    /// BDD: Given a FLAC file, when decoded via FFmpeg decoder, then format metadata should match STREAMINFO
+    func testFFmpegDecoderParsesFlacStreamInfo() async throws {
+        // Given
+        let sampleURL = try TestFixtures.createTemporaryFLACSample(
+            sampleRate: 44_100,
+            channels: 2,
+            bitsPerSample: 16,
+            durationSeconds: 1.0
+        )
+        defer { TestFixtures.removeTemporaryFile(at: sampleURL) }
+        let decoder = FFmpegFormatDecoder()
+
+        // When
+        let format = try await decoder.decode(filePath: sampleURL.path)
+
+        // Then (Right-BICEP: Right result + Boundary)
+        XCTAssertEqual(format.codec, "FLAC")
+        XCTAssertEqual(format.sampleRate, 44_100)
+        XCTAssertEqual(format.channelCount, 2)
+        XCTAssertEqual(format.duration, 1.0, accuracy: 0.0001)
+    }
 }

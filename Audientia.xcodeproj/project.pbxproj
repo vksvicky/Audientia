@@ -30,8 +30,10 @@
 		416EBD2790ABE6E6BE74AC53 /* Shared.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 06774C335950E7C8AFB02F02 /* Shared.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		484D981006E0E27F87B7C147 /* MetadataEngine.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9A4C5BEE3265B00B36646883 /* MetadataEngine.framework */; };
 		485C612E9F2706E1A7BD7E89 /* Playlist.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87D0C44E4BB7793E98DB64CF /* Playlist.swift */; };
+		5045992A90D0884373C8F433 /* FormatDecoderCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52F5F1552096FFF40910B428 /* FormatDecoderCoordinator.swift */; };
 		537A24B3CDD7435FC246FDE1 /* AudioCore.swift in Sources */ = {isa = PBXBuildFile; fileRef = F532148C8B820C00BB919E26 /* AudioCore.swift */; };
 		57012C3A8BCFB41DE3E0611C /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09EE5151C8F58737FF6B7A2E /* Logger.swift */; };
+		579984E04F610ED6D38297FD /* FormatDecoderCoordinatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 039922EB5EAC698991DD35CE /* FormatDecoderCoordinatorTests.swift */; };
 		59FEF3935D7F4FC9B300B822 /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 44C5D554AFCD90973860C6BF /* XCTest.framework */; };
 		627A747C85731416F911FA8D /* AudientiaApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0265676E976BE252F0A55080 /* AudientiaApp.swift */; };
 		687E0A51F675ECB0B67A5DD4 /* Track.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30D5FA5D3B3596A729BA7A2B /* Track.swift */; };
@@ -49,6 +51,7 @@
 		9D2A925E8ABBA755543508BD /* VersionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A30DC82121EB4A7AD4B6F593 /* VersionManager.swift */; };
 		9E70FD8F0ED3E73B0A33960E /* PluginSystem.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = E7CEDCFEA77C7164A82895D4 /* PluginSystem.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		A547C75B279EEA6881562994 /* PlaybackStateMachineTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DA211F35333F5C44D7036F3 /* PlaybackStateMachineTests.swift */; };
+		B1F37B0FE1DE89861E2738C4 /* AudioEngineFormatDetectionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 634AF75D49C2B9FA39AB1494 /* AudioEngineFormatDetectionTests.swift */; };
 		B6F16F435903606BA886B06E /* Shared.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 06774C335950E7C8AFB02F02 /* Shared.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		B75690938178D2A55F4EBDD9 /* Shared.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 06774C335950E7C8AFB02F02 /* Shared.framework */; };
 		BBAC3580D3F2D7E44EE219D9 /* AppSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9EC3390D08239B8510C84F8 /* AppSettings.swift */; };
@@ -221,6 +224,7 @@
 
 /* Begin PBXFileReference section */
 		0265676E976BE252F0A55080 /* AudientiaApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudientiaApp.swift; sourceTree = "<group>"; };
+		039922EB5EAC698991DD35CE /* FormatDecoderCoordinatorTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = FormatDecoderCoordinatorTests.swift; path = FormatDecoderCoordinatorTests.swift; sourceTree = "<group>"; };
 		06774C335950E7C8AFB02F02 /* Shared.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Shared.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		09EE5151C8F58737FF6B7A2E /* Logger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Logger.swift; sourceTree = "<group>"; };
 		0ACC0A9AAAEEB5A6C4AD3A1C /* TrackTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackTests.swift; sourceTree = "<group>"; };
@@ -233,9 +237,11 @@
 		3D45CF0E6A5E94FA3C34E6E9 /* AudioEngineError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioEngineError.swift; sourceTree = "<group>"; };
 		44C5D554AFCD90973860C6BF /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = XCTest.framework; sourceTree = "<group>"; };
 		494AA9ECB3EAC4CCE08EA7CF /* PlaybackState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaybackState.swift; sourceTree = "<group>"; };
+		52F5F1552096FFF40910B428 /* FormatDecoderCoordinator.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = FormatDecoderCoordinator.swift; path = FormatDecoderCoordinator.swift; sourceTree = "<group>"; };
 		5774CE249AA77FDC57048765 /* AudioEngineMocks.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioEngineMocks.swift; sourceTree = "<group>"; };
 		595646096456ABC6D381E0FC /* AudioEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioEngine.swift; sourceTree = "<group>"; };
 		60EBF01776637F01EF402C81 /* AudioCore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioCore.swift; sourceTree = "<group>"; };
+		634AF75D49C2B9FA39AB1494 /* AudioEngineFormatDetectionTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = AudioEngineFormatDetectionTests.swift; path = AudioEngineFormatDetectionTests.swift; sourceTree = "<group>"; };
 		697713E962D8432B6FF4FCA4 /* SeekAndPositionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeekAndPositionTests.swift; sourceTree = "<group>"; };
 		77D93F7F47798A4591DFE5F9 /* AudioCoreTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AudioCoreTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		791D586E0E5A75F9A8EB1339 /* MetadataEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetadataEngine.swift; sourceTree = "<group>"; };
@@ -438,6 +444,7 @@
 				E2743B142EBD5A6600194D39 /* CAudioEngine.swift */,
 				E2743B152EBD5A6600194D39 /* CAudioEngineBridge.h */,
 				E2743B162EBD5A6600194D39 /* CAudioEngineBridge.cpp */,
+				52F5F1552096FFF40910B428 /* FormatDecoderCoordinator.swift */,
 			);
 			path = Engine;
 			sourceTree = "<group>";
@@ -570,6 +577,8 @@
 				2A4E84FDE1615D908C7761BA /* QueueManagementTests.swift */,
 				697713E962D8432B6FF4FCA4 /* SeekAndPositionTests.swift */,
 				E2743B102EBD5A4B00194D39 /* CAudioEngineTests.swift */,
+				634AF75D49C2B9FA39AB1494 /* AudioEngineFormatDetectionTests.swift */,
+				039922EB5EAC698991DD35CE /* FormatDecoderCoordinatorTests.swift */,
 			);
 			path = Engine;
 			sourceTree = "<group>";
@@ -1002,6 +1011,8 @@
 				A547C75B279EEA6881562994 /* PlaybackStateMachineTests.swift in Sources */,
 				1A42C20ED2DED600C1081C9D /* QueueManagementTests.swift in Sources */,
 				0653A13F1018A87FC9F06EDF /* SeekAndPositionTests.swift in Sources */,
+				B1F37B0FE1DE89861E2738C4 /* AudioEngineFormatDetectionTests.swift in Sources */,
+				579984E04F610ED6D38297FD /* FormatDecoderCoordinatorTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1039,6 +1050,7 @@
 				E2743B172EBD5A6600194D39 /* CAudioEngine.swift in Sources */,
 				E2743B182EBD5A6600194D39 /* CAudioEngineBridge.cpp in Sources */,
 				E2743B192EBD5A6600194D39 /* CAudioEngine.mm in Sources */,
+				5045992A90D0884373C8F433 /* FormatDecoderCoordinator.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

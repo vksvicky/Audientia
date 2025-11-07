@@ -183,7 +183,7 @@ final class MockFormatDecodingCoordinator: FormatDecodingCoordinating {
     var result: DecodedAudioFormat?
     var error: Error?
     
-    func decodeFormat(for filePath: String) throws -> DecodedAudioFormat {
+    func decodeFormat(for filePath: String) async throws -> DecodedAudioFormat {
         decodeCalls.append(filePath)
         if let error {
             throw error
