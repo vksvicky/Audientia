@@ -58,4 +58,4 @@ fileDialog.showOpenPanel { urls in
 
 🚧 **In Development** - Framework structure created, implementation pending.
 
-See `Documentation/05-roadmap-and-testing-strategy.md` for roadmap.
+See [`../../Documentation/05-roadmap-and-testing-strategy.md`](../../Documentation/05-roadmap-and-testing-strategy.md) for roadmap.

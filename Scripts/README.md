@@ -32,6 +32,23 @@ Post-generation script that runs after `xcodegen generate` to sync the project s
 xcodegen generate && Scripts/post_generate.sh
 ```
 
+### `generate_audio_test_fixtures.sh`
+Generates audio test fixture files for all supported formats (19 formats with multiple sample rates).
+
+**What it generates:**
+- Valid audio files: `valid_{sample_rate}.{ext}` (e.g., `valid_44.1k.mp3`, `valid_96k.flac`)
+- Invalid files: `invalid_empty.{ext}`, `invalid_header.{ext}`, `invalid_truncated.{ext}`, etc.
+- Corrupt files: `corrupt_payload.{ext}`, `corrupt_magic.{ext}`, `corrupt_middle.{ext}`
+
+**Usage:**
+```bash
+Scripts/generate_audio_test_fixtures.sh
+```
+
+**Note**: Generated audio fixture files are ignored by git (see `.gitignore`). Run this script to regenerate fixtures when needed. Requires `ffmpeg` to be installed.
+
+See [`../Tests/AudioCoreTests/Fixtures/README.md`](../Tests/AudioCoreTests/Fixtures/README.md) for detailed format specifications.
+
 ## Workflow
 
 When regenerating the Xcode project:

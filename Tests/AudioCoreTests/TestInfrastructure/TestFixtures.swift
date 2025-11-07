@@ -72,64 +72,184 @@ enum TestFixtures {
         return FileManager.default.fileExists(atPath: fileURL.path) ? fileURL : nil
     }
     
-    /// Get path to a valid MP3 file
+    /// Get path to a valid audio file with specific sample rate
+    /// - Parameters:
+    ///   - format: Audio format (mp3, flac, aac, etc.)
+    ///   - sampleRate: Sample rate in Hz (e.g., 44100, 48000, 96000)
+    /// - Returns: URL to the test file, or nil if not found
+    static func validFile(format: String, sampleRate: Int) -> URL? {
+        let sampleRateLabel = sampleRateToLabel(sampleRate)
+        let filename = "valid_\(sampleRateLabel).\(format)"
+        return audioFile(filename: filename, format: format)
+    }
+    
+    /// Get path to the default valid file for a format (first available, typically 44.1kHz)
+    /// - Parameter format: Audio format (mp3, flac, aac, etc.)
+    /// - Returns: URL to the test file, or nil if not found
+    static func defaultValidFile(format: String) -> URL? {
+        // Try common sample rates in order of preference
+        let commonRates = [44100, 48000, 96000, 88200, 192000, 176400]
+        for rate in commonRates {
+            if let file = validFile(format: format, sampleRate: rate) {
+                return file
+            }
+        }
+        // Fallback: try any valid file
+        let formatDir = fixturesDirectory
+            .appendingPathComponent("Audio")
+            .appendingPathComponent(format)
+        
+        guard let files = try? FileManager.default.contentsOfDirectory(at: formatDir, includingPropertiesForKeys: nil) else {
+            return nil
+        }
+        
+        // Find first valid_*.{format} file
+        for file in files {
+            let filename = file.lastPathComponent
+            if filename.hasPrefix("valid_") && filename.hasSuffix(".\(format)") {
+                return file
+            }
+        }
+        
+        return nil
+    }
+    
+    /// Convert sample rate to label format (e.g., 44100 -> "44.1k", 48000 -> "48k")
+    private static func sampleRateToLabel(_ rate: Int) -> String {
+        if rate >= 1_000_000 {
+            // MHz rates (DSD)
+            let mhz = rate / 1_000_000
+            let remainder = rate % 1_000_000
+            let khz = remainder / 1_000
+            if khz > 0 {
+                let khzDecimal = khz * 10 / 1000
+                if khzDecimal > 0 {
+                    return "\(mhz).\(khzDecimal)MHz"
+                }
+                return "\(mhz)MHz"
+            }
+            return "\(mhz)MHz"
+        } else if rate >= 1_000 {
+            // kHz rates
+            let khz = rate / 1_000
+            let hz = rate % 1_000
+            if hz > 0 {
+                let decimal = hz / 100
+                if decimal > 0 && decimal < 10 {
+                    return "\(khz).\(decimal)k"
+                } else {
+                    let decimalTenths = hz / 10
+                    if decimalTenths < 100 {
+                        return "\(khz).\(decimalTenths)k"
+                    }
+                }
+            }
+            return "\(khz)k"
+        } else {
+            return "\(rate)Hz"
+        }
+    }
+    
+    /// Get path to a valid MP3 file (default: 44.1kHz)
     static func sampleMP3() -> URL? {
-        audioFile(filename: "valid.mp3", format: "mp3")
+        defaultValidFile(format: "mp3")
     }
     
-    /// Get path to a valid FLAC file
+    /// Get path to a valid FLAC file (default: 44.1kHz)
     static func sampleFLAC() -> URL? {
-        audioFile(filename: "valid.flac", format: "flac")
+        defaultValidFile(format: "flac")
     }
     
-    /// Get path to a valid AAC file
+    /// Get path to a valid AAC file (default: 44.1kHz)
     static func sampleAAC() -> URL? {
-        audioFile(filename: "valid.aac", format: "aac")
+        defaultValidFile(format: "aac")
     }
     
-    /// Get path to a valid WAV file
+    /// Get path to a valid WAV file (default: 44.1kHz)
     static func sampleWAV() -> URL? {
-        audioFile(filename: "valid.wav", format: "wav")
+        defaultValidFile(format: "wav")
     }
     
-    /// Get path to a valid M4A file
+    /// Get path to a valid M4A file (default: 44.1kHz)
     static func sampleM4A() -> URL? {
-        audioFile(filename: "valid.m4a", format: "m4a")
+        defaultValidFile(format: "m4a")
     }
     
-    /// Get path to a valid OGG file
+    /// Get path to a valid OGG file (default: 44.1kHz)
     static func sampleOGG() -> URL? {
-        audioFile(filename: "valid.ogg", format: "ogg")
+        defaultValidFile(format: "ogg")
     }
     
-    /// Get path to a valid Opus file
+    /// Get path to a valid Opus file (default: 48kHz)
     static func sampleOpus() -> URL? {
-        audioFile(filename: "valid.opus", format: "opus")
+        defaultValidFile(format: "opus")
     }
     
-    /// Get path to a valid ALAC file
+    /// Get path to a valid ALAC file (default: 44.1kHz)
     static func sampleALAC() -> URL? {
-        audioFile(filename: "valid.alac", format: "alac")
+        defaultValidFile(format: "alac")
     }
     
-    /// Get path to a valid APE file
+    /// Get path to a valid APE file (default: 44.1kHz)
     static func sampleAPE() -> URL? {
-        audioFile(filename: "valid.ape", format: "ape")
+        defaultValidFile(format: "ape")
     }
     
-    /// Get path to a valid AIFF file
+    /// Get path to a valid AIFF file (default: 44.1kHz)
     static func sampleAIFF() -> URL? {
-        audioFile(filename: "valid.aiff", format: "aiff")
+        defaultValidFile(format: "aiff")
     }
     
-    /// Get path to a valid CAF file
+    /// Get path to a valid CAF file (default: 44.1kHz)
     static func sampleCAF() -> URL? {
-        audioFile(filename: "valid.caf", format: "caf")
+        defaultValidFile(format: "caf")
     }
     
-    /// Get path to a valid MP4 file
+    /// Get path to a valid MP4 file (default: 44.1kHz)
     static func sampleMP4() -> URL? {
-        audioFile(filename: "valid.mp4", format: "mp4")
+        defaultValidFile(format: "mp4")
+    }
+    
+    // MARK: - New Format Support
+    
+    /// Get path to a valid WMA file
+    static func sampleWMA() -> URL? {
+        defaultValidFile(format: "wma")
+    }
+    
+    /// Get path to a valid WebM file
+    static func sampleWebM() -> URL? {
+        defaultValidFile(format: "webm")
+    }
+    
+    /// Get path to a valid FLV file
+    static func sampleFLV() -> URL? {
+        defaultValidFile(format: "flv")
+    }
+    
+    /// Get path to a valid AC3 file
+    static func sampleAC3() -> URL? {
+        defaultValidFile(format: "ac3")
+    }
+    
+    /// Get path to a valid DTS file
+    static func sampleDTS() -> URL? {
+        defaultValidFile(format: "dts")
+    }
+    
+    /// Get path to a valid DSF file
+    static func sampleDSF() -> URL? {
+        defaultValidFile(format: "dsf")
+    }
+    
+    /// Get path to a valid DFF file
+    static func sampleDFF() -> URL? {
+        defaultValidFile(format: "dff")
+    }
+    
+    /// Get path to a valid WavPack file
+    static func sampleWV() -> URL? {
+        defaultValidFile(format: "wv")
     }
     
     /// Check if a test file exists

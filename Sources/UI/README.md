@@ -105,4 +105,4 @@ UI components should be tested with:
 - ViewModel unit tests
 - Integration tests for user flows
 
-See `Documentation/05-roadmap-and-testing-strategy.md` for testing guidelines.
+See [`../../Documentation/05-roadmap-and-testing-strategy.md`](../../Documentation/05-roadmap-and-testing-strategy.md) for testing guidelines.

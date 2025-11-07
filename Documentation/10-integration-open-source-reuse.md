@@ -70,10 +70,44 @@ Audientia leverages existing open-source projects to accelerate development whil
 ### Audio Processing
 
 #### FFmpeg
-- **Purpose**: Format decoding for exotic formats
-- **Integration**: C++ wrapper, optional dependency
-- **License**: LGPL-2.1 (dynamic linking)
-- **Usage**: Fallback decoder when CoreAudio doesn't support format
+- **Purpose**: Format decoding for extended format support
+- **Version**: FFmpeg 6.0+ (recommended: 8.0+)
+- **Required Codecs**: FLAC, OGG (libvorbis), Opus (libopus), ALAC, APE, WebM, FLV, AC3, DTS, WavPack
+- **Integration**: C++ wrapper, dynamically linked library
+- **Deployment**: Bundled with application (no user installation required)
+- **License**: LGPL-2.1 (compliance via dynamic linking)
+- **Usage**: Fallback decoder when AVFoundation doesn't support format
+- **Bundling Strategy**: 
+  - FFmpeg libraries included in app bundle at `Contents/Frameworks/`
+  - Required libraries: `libavcodec`, `libavformat`, `libavutil`, `libswresample`
+  - Optional libraries: `libswscale` (if video support added)
+  - Code signing: All libraries must be signed with app's code signature
+  - Distribution: Libraries included in `.dmg` and App Store builds
+
+**FFmpeg Build Requirements**:
+- Minimum version: 6.0
+- Recommended version: 8.0+
+- Required configure flags:
+  - `--enable-shared` (for dynamic linking)
+  - `--enable-libvorbis` (OGG support)
+  - `--enable-libopus` (Opus support)
+  - `--enable-libmp3lame` (MP3 encoding, optional)
+  - `--enable-libwavpack` (WavPack support)
+  - `--enable-libfdk-aac` (optional, for AAC encoding)
+- Architecture: Universal binary (x86_64 + arm64) or arm64-only for Apple Silicon
+
+**Integration Approach**:
+1. **Build Phase**: FFmpeg built as universal framework or dylibs
+2. **Bundling**: Libraries copied to app bundle during build
+3. **Runtime Loading**: Dynamically loaded via `dlopen()` or linked at build time
+4. **Fallback**: If FFmpeg unavailable, app falls back to AVFoundation-only formats
+5. **Error Handling**: Graceful degradation when format not supported
+
+**License Compliance**:
+- Dynamic linking ensures LGPL-2.1 compliance
+- License notice included in `LICENSES/FFmpeg-LICENSE.txt`
+- Attribution in About dialog
+- Source code availability: Link to FFmpeg source repository
 
 #### JUCE (Optional)
 - **Purpose**: Cross-platform audio framework
@@ -297,6 +331,12 @@ context.setObject(apiObject, forKeyedSubscript: "audientia" as NSString)
 - **LICENSES/**: Directory with all license files
 - **CREDITS.md**: List of all OSS projects and libraries used
 - **About Dialog**: Show attributions in app
+
+### FFmpeg Integration Documentation
+- **[`13-ffmpeg-integration.md`](13-ffmpeg-integration.md)**: Complete guide to FFmpeg integration, bundling, and deployment
+- **Build Instructions**: How to build and bundle FFmpeg libraries
+- **Runtime Loading**: How FFmpeg is loaded and used at runtime
+- **Troubleshooting**: Common issues and solutions
 
 ### Integration Documentation
 - **API Docs**: Document how to integrate with Audientia

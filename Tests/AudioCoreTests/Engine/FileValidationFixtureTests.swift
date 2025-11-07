@@ -21,7 +21,10 @@ final class FileValidationFixtureTests: XCTestCase {
     // MARK: - Test Configuration
     
     /// Supported formats for testing
-    let testFormats = ["mp3", "flac", "aac", "wav", "m4a", "ogg", "opus", "alac", "aiff", "caf", "mp4"]
+    let testFormats = [
+        "mp3", "flac", "aac", "wav", "m4a", "ogg", "opus", "alac", "ape",
+        "aiff", "caf", "mp4", "wma", "webm", "flv", "ac3", "dts", "dsf", "dff", "wv"
+    ]
     
     // MARK: - Valid File Validation
     
@@ -29,9 +32,8 @@ final class FileValidationFixtureTests: XCTestCase {
     func testValidFilesAreRecognized() async throws {
         // Given - Valid audio file fixtures for each format
         for format in testFormats {
-            guard let validFile = TestFixtures.audioFile(filename: "valid.\(format)", format: format) else {
-                XCTFail("Valid \(format) fixture not found")
-                continue
+            guard let validFile = TestFixtures.defaultValidFile(format: format) else {
+                throw XCTSkip("Valid \(format) fixture not found - run Scripts/generate_audio_test_fixtures.sh")
             }
             
             let track = MockFactory.makeTrack(filePath: validFile.path)

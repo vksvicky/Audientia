@@ -128,7 +128,7 @@ public final class DefaultFormatDecodingCoordinator: FormatDecodingCoordinating 
 struct AVFoundationFormatDecoder: FormatDecoder {
     let name = "AVFoundation"
     let supportedExtensions: Set<String> = [
-        "aac", "aiff", "caf", "m4a", "mp3", "mp4", "wav"
+        "aac", "aiff", "caf", "m4a", "mp3", "mp4", "wav", "wma"
     ]
 
     func canDecode(filePath: String) -> Bool {
@@ -237,7 +237,7 @@ private extension AVFoundationFormatDecoder {
 struct FFmpegFormatDecoder: FormatDecoder {
     let name = "FFmpeg"
     let supportedExtensions: Set<String> = [
-        "flac", "ogg", "opus", "alac", "ape"
+        "flac", "ogg", "opus", "alac", "ape", "webm", "flv", "ac3", "dts", "wv"
     ]
 
     func canDecode(filePath: String) -> Bool {

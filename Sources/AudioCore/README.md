@@ -38,7 +38,12 @@ AudioCore/
 ## Dependencies
 
 - `Shared` - Common models and utilities
-- FFmpeg (external library)
+- **FFmpeg** - Bundled audio format decoder library
+  - Version: 6.0+ (8.0+ recommended)
+  - Integration: Dynamically linked, bundled in app
+  - Formats: FLAC, OGG, Opus, ALAC, APE, WebM, FLV, AC3, DTS, WavPack
+  - See [`../../Documentation/10-integration-open-source-reuse.md`](../../Documentation/10-integration-open-source-reuse.md) for details
+  - See [`../../Documentation/13-ffmpeg-integration.md`](../../Documentation/13-ffmpeg-integration.md) for integration guide
 
 ## Architecture
 
@@ -68,7 +73,7 @@ try await audioEngine.play()
 
 🚧 **In Development** - Framework structure created, implementation pending.
 
-See `Documentation/05-roadmap-and-testing-strategy.md` for roadmap.
+See [`../../Documentation/05-roadmap-and-testing-strategy.md`](../../Documentation/05-roadmap-and-testing-strategy.md) for roadmap.
 
 ## Testing
 
@@ -78,4 +83,4 @@ Audio engine tests should cover:
 - Seek accuracy
 - Performance characteristics
 
-See `Documentation/05-roadmap-and-testing-strategy.md` for Right-BICEP testing guidelines.
+See [`../../Documentation/05-roadmap-and-testing-strategy.md`](../../Documentation/05-roadmap-and-testing-strategy.md) for Right-BICEP testing guidelines.

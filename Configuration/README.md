@@ -86,7 +86,7 @@ Scripts/post_generate.sh
 
 ## See Also
 
-- `../Scripts/README.md` - Build scripts documentation
-- `../Documentation/11-versioning-system.md` - Version management details
-- `../SETUP.md` - Setup instructions
+- [`../Scripts/README.md`](../Scripts/README.md) - Build scripts documentation
+- [`../Documentation/11-versioning-system.md`](../Documentation/11-versioning-system.md) - Version management details
+- [`../SETUP.md`](../SETUP.md) - Setup instructions (if exists)
 

@@ -2,69 +2,216 @@
 
 This directory contains sample audio files for integration testing.
 
+**Important**: Audio fixture files in the `Audio/` directory are auto-generated and are ignored by git. To generate these files, run:
+
+```bash
+Scripts/generate_audio_test_fixtures.sh
+```
+
+See [`../../Scripts/generate_audio_test_fixtures.sh`](../../Scripts/generate_audio_test_fixtures.sh) for the generation script.
+
 ## Structure
 
 ```
 Fixtures/
 ├── Audio/
 │   ├── mp3/
-│   │   └── sample.mp3
+│   │   ├── valid_44.1k.mp3
+│   │   ├── invalid_empty.mp3
+│   │   ├── invalid_header.mp3
+│   │   └── ...
 │   ├── flac/
-│   │   └── sample.flac
+│   │   ├── valid_44.1k.flac
+│   │   ├── valid_48k.flac
+│   │   ├── valid_88.2k.flac
+│   │   ├── valid_96k.flac
+│   │   ├── valid_176.4k.flac
+│   │   ├── valid_192k.flac
+│   │   └── ...
 │   ├── aac/
-│   │   └── sample.aac
+│   │   ├── valid_44.1k.aac
+│   │   ├── valid_48k.aac
+│   │   └── ...
 │   ├── wav/
-│   │   └── sample.wav
+│   │   ├── valid_44.1k.wav
+│   │   ├── valid_48k.wav
+│   │   └── ...
 │   ├── m4a/
-│   │   └── sample.m4a
+│   │   ├── valid_44.1k.m4a
+│   │   ├── valid_48k.m4a
+│   │   └── ...
 │   ├── ogg/
-│   │   └── sample.ogg
+│   │   ├── valid_44.1k.ogg
+│   │   ├── valid_48k.ogg
+│   │   └── ...
 │   ├── opus/
-│   │   └── sample.opus
+│   │   ├── valid_8k.opus
+│   │   ├── valid_16k.opus
+│   │   ├── valid_24k.opus
+│   │   ├── valid_32k.opus
+│   │   ├── valid_44.1k.opus
+│   │   ├── valid_48k.opus
+│   │   └── ...
 │   ├── alac/
-│   │   └── sample.alac
+│   │   ├── valid_44.1k.alac
+│   │   ├── valid_48k.alac
+│   │   └── ...
 │   ├── ape/
-│   │   └── sample.ape
+│   │   ├── valid_44.1k.ape
+│   │   ├── valid_48k.ape
+│   │   └── ...
 │   ├── aiff/
-│   │   └── sample.aiff
+│   │   ├── valid_44.1k.aiff
+│   │   ├── valid_48k.aiff
+│   │   └── ...
 │   ├── caf/
-│   │   └── sample.caf
-│   └── mp4/
-│       └── sample.mp4
+│   │   ├── valid_44.1k.caf
+│   │   └── ...
+│   ├── mp4/
+│   │   ├── valid_44.1k.mp4
+│   │   ├── valid_48k.mp4
+│   │   └── ...
+│   ├── wma/
+│   │   ├── valid_44.1k.wma
+│   │   └── ...
+│   ├── webm/
+│   │   ├── valid_48k.webm
+│   │   └── ...
+│   ├── flv/
+│   │   ├── valid_44.1k.flv
+│   │   └── ...
+│   ├── ac3/
+│   │   ├── valid_48k.ac3
+│   │   └── ...
+│   ├── dts/
+│   │   ├── valid_48k.dts
+│   │   ├── valid_96k.dts
+│   │   └── ...
+│   ├── dsf/
+│   │   ├── valid_2.822MHz.dsf
+│   │   ├── valid_5.644MHz.dsf
+│   │   └── ...
+│   ├── dff/
+│   │   ├── valid_2.822MHz.dff
+│   │   ├── valid_5.644MHz.dff
+│   │   └── ...
+│   └── wv/
+│       ├── valid_44.1k.wv
+│       ├── valid_48k.wv
+│       └── ...
 └── README.md
 ```
 
 ## Required Sample Files
 
-### Minimum Required Files for Testing
+### File Naming Convention
 
-You need at least one sample file for each supported format:
+Valid files are named with their sample rate: `valid_{sample_rate}.{extension}`
 
-1. **MP3** (`sample.mp3`) - ~1-2 seconds, 44.1kHz, stereo, 128-320kbps
-2. **FLAC** (`sample.flac`) - ~1-2 seconds, 44.1kHz, stereo, 16-bit
-3. **AAC** (`sample.aac`) - ~1-2 seconds, 44.1kHz, stereo
-4. **WAV** (`sample.wav`) - ~1-2 seconds, 44.1kHz, stereo, 16-bit
-5. **M4A** (`sample.m4a`) - ~1-2 seconds, 44.1kHz, stereo
+Examples:
+- `valid_44.1k.mp3` - MP3 file at 44.1kHz
+- `valid_48k.flac` - FLAC file at 48kHz
+- `valid_96k.wav` - WAV file at 96kHz
+- `valid_2.822MHz.dsf` - DSF file at 2.8224MHz (DSD64)
 
-### Optional Files (for comprehensive testing)
+### Supported Formats and Sample Rates
 
-6. **OGG** (`sample.ogg`) - ~1-2 seconds, 44.1kHz, stereo
-7. **Opus** (`sample.opus`) - ~1-2 seconds, 44.1kHz, stereo
-8. **ALAC** (`sample.alac`) - ~1-2 seconds, 44.1kHz, stereo, 16-bit
-9. **APE** (`sample.ape`) - ~1-2 seconds, 44.1kHz, stereo
-10. **AIFF** (`sample.aiff`) - ~1-2 seconds, 44.1kHz, stereo, 16-bit
-11. **CAF** (`sample.caf`) - ~1-2 seconds, 44.1kHz, stereo
-12. **MP4** (`sample.mp4`) - ~1-2 seconds, 44.1kHz, stereo
+#### Lossy Formats
+
+1. **MP3** (`.mp3`)
+   - Sample Rates: 44.1kHz
+   - Files: `valid_44.1k.mp3`
+
+2. **AAC** (`.aac`, `.m4a`, `.mp4`)
+   - Sample Rates: 44.1kHz, 48kHz
+   - Files: `valid_44.1k.aac`, `valid_48k.aac`, etc.
+
+3. **OGG Vorbis** (`.ogg`)
+   - Sample Rates: 44.1kHz, 48kHz
+   - Files: `valid_44.1k.ogg`, `valid_48k.ogg`
+
+4. **Opus** (`.opus`)
+   - Sample Rates: 8kHz, 16kHz, 24kHz, 32kHz, 44.1kHz, 48kHz
+   - Files: `valid_8k.opus`, `valid_16k.opus`, etc.
+
+5. **WMA** (`.wma`)
+   - Sample Rates: 44.1kHz
+   - Files: `valid_44.1k.wma`
+
+6. **WebM** (`.webm`)
+   - Sample Rates: 48kHz
+   - Files: `valid_48k.webm`
+
+7. **FLV** (`.flv`)
+   - Sample Rates: 44.1kHz
+   - Files: `valid_44.1k.flv`
+
+8. **AC3** (`.ac3`)
+   - Sample Rates: 48kHz
+   - Files: `valid_48k.ac3`
+
+9. **DTS** (`.dts`)
+   - Sample Rates: 48kHz, 96kHz
+   - Files: `valid_48k.dts`, `valid_96k.dts`
+
+#### Lossless Formats
+
+10. **FLAC** (`.flac`)
+    - Sample Rates: 44.1kHz, 48kHz, 88.2kHz, 96kHz, 176.4kHz, 192kHz
+    - Files: `valid_44.1k.flac`, `valid_48k.flac`, `valid_88.2k.flac`, etc.
+
+11. **ALAC** (`.alac`)
+    - Sample Rates: 44.1kHz, 48kHz, 88.2kHz, 96kHz, 192kHz
+    - Files: `valid_44.1k.alac`, `valid_48k.alac`, etc.
+
+12. **APE** (`.ape`)
+    - Sample Rates: 44.1kHz, 48kHz, 88.2kHz, 96kHz, 192kHz
+    - Files: `valid_44.1k.ape`, `valid_48k.ape`, etc.
+
+13. **WavPack** (`.wv`)
+    - Sample Rates: 44.1kHz, 48kHz, 88.2kHz, 96kHz, 192kHz
+    - Files: `valid_44.1k.wv`, `valid_48k.wv`, etc.
+
+14. **DSD** (`.dsf`, `.dff`)
+    - Sample Rates: 2.8224MHz (DSD64), 5.6448MHz (DSD128)
+    - Files: `valid_2.822MHz.dsf`, `valid_5.644MHz.dsf`, etc.
+
+#### Uncompressed Formats
+
+15. **WAV** (`.wav`)
+    - Sample Rates: 44.1kHz, 48kHz, 88.2kHz, 96kHz, 176.4kHz, 192kHz
+    - Files: `valid_44.1k.wav`, `valid_48k.wav`, etc.
+
+16. **AIFF** (`.aiff`)
+    - Sample Rates: 44.1kHz, 48kHz, 88.2kHz, 96kHz, 176.4kHz, 192kHz
+    - Files: `valid_44.1k.aiff`, `valid_48k.aiff`, etc.
+
+17. **CAF** (`.caf`)
+    - Sample Rates: 44.1kHz (and any other rate)
+    - Files: `valid_44.1k.caf`
 
 ## File Placement
 
 ### Location in Project
 
-Place files in: `Tests/AudioCoreTests/Fixtures/Audio/[format]/sample.[ext]`
+Place files in: `Tests/AudioCoreTests/Fixtures/Audio/[format]/valid_{sample_rate}.{ext}`
 
 For example:
-- `Tests/AudioCoreTests/Fixtures/Audio/mp3/sample.mp3`
-- `Tests/AudioCoreTests/Fixtures/Audio/flac/sample.flac`
+- `Tests/AudioCoreTests/Fixtures/Audio/mp3/valid_44.1k.mp3`
+- `Tests/AudioCoreTests/Fixtures/Audio/flac/valid_48k.flac`
+- `Tests/AudioCoreTests/Fixtures/Audio/wav/valid_96k.wav`
+
+### Invalid/Corrupt Files
+
+Invalid and corrupt test files follow a similar naming pattern:
+- `invalid_empty.{ext}` - Empty file
+- `invalid_header.{ext}` - File with invalid header
+- `invalid_truncated.{ext}` - Truncated file
+- `invalid_zero_size.{ext}` - Zero-size file
+- `invalid_no_audio_data.{ext}` - Header only, no audio data
+- `corrupt_payload.{ext}` - Valid header, corrupted payload
+- `corrupt_magic.{ext}` - Corrupted magic bytes
+- `corrupt_middle.{ext}` - Byte corruption in middle of file
 
 ### Adding to Xcode Project
 
@@ -83,10 +230,21 @@ For example:
 ### In Tests
 
 ```swift
-// Use real sample files for integration tests
+// Use default valid file (typically 44.1kHz)
 if let sampleFile = TestFixtures.sampleMP3() {
     let track = Track(/* ... */, filePath: sampleFile.path)
     try await engine.loadTrack(track)
+}
+
+// Use specific sample rate
+if let highResFile = TestFixtures.validFile(format: "flac", sampleRate: 96000) {
+    let track = Track(/* ... */, filePath: highResFile.path)
+    try await engine.loadTrack(track)
+}
+
+// Use invalid/corrupt files for error testing
+if let emptyFile = TestFixtures.invalidEmptyFile(format: "mp3") {
+    // Test error handling
 }
 ```
 
@@ -288,8 +446,12 @@ Tests/AudioCoreTests/Fixtures/Audio/
 Run the automated script to generate all valid, invalid, and error files:
 
 ```bash
-./Scripts/generate_test_fixtures.sh
+../../Scripts/generate_audio_test_fixtures.sh
 ```
+
+See [`../../Scripts/generate_audio_test_fixtures.sh`](../../Scripts/generate_audio_test_fixtures.sh) for the fixture generation script.
+
+**Note**: Generated audio fixture files are ignored by git (see `.gitignore`). Run the script to regenerate them when needed.
 
 This script generates:
 - ✅ **Valid files**: `sample.{ext}` for each format

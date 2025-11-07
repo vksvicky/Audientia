@@ -169,7 +169,7 @@ final class MockFileSystem: FileSystemProtocol {
         
         // If size not provided, try to get real file size
         if let size = size {
-            fileSizes[path] = size
+        fileSizes[path] = size
         } else {
             // Try to get actual file size from real file system
             if FileManager.default.fileExists(atPath: path),

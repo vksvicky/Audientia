@@ -60,7 +60,7 @@ let artwork = try await parser.extractArtwork(filePath: track.filePath)
 
 🚧 **In Development** - Framework structure created, implementation pending.
 
-See `Documentation/05-roadmap-and-testing-strategy.md` for roadmap.
+See [`../../Documentation/05-roadmap-and-testing-strategy.md`](../../Documentation/05-roadmap-and-testing-strategy.md) for roadmap.
 
 ## Testing
 
@@ -71,4 +71,4 @@ MetadataEngine tests should cover:
 - API integration
 - Error handling
 
-See `Documentation/05-roadmap-and-testing-strategy.md` for Right-BICEP testing guidelines.
+See [`../../Documentation/05-roadmap-and-testing-strategy.md`](../../Documentation/05-roadmap-and-testing-strategy.md) for Right-BICEP testing guidelines.

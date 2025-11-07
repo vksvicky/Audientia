@@ -69,7 +69,7 @@ try await pluginSystem.executePlugin(pluginId: "lyrics-fetcher", input: track)
 
 🚧 **In Development** - Framework structure created, implementation pending.
 
-See `Documentation/05-roadmap-and-testing-strategy.md` for roadmap.
+See [`../../Documentation/05-roadmap-and-testing-strategy.md`](../../Documentation/05-roadmap-and-testing-strategy.md) for roadmap.
 
 ## Testing
 
@@ -80,4 +80,4 @@ PluginSystem tests should cover:
 - Error handling
 - Security boundaries
 
-See `Documentation/05-roadmap-and-testing-strategy.md` for Right-BICEP testing guidelines.
+See [`../../Documentation/05-roadmap-and-testing-strategy.md`](../../Documentation/05-roadmap-and-testing-strategy.md) for Right-BICEP testing guidelines.

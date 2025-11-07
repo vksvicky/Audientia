@@ -25,7 +25,7 @@
 #### Testing Infrastructure
 - [x] XCTest framework setup - **Configured with AudioCoreTests target**
 - [x] Mock factories for audio engine, data layer - **MockFactories, AudioEngineMocks, AudioEngineTestHelpers implemented**
-- [x] Test fixtures (sample audio files, metadata) - **TestFixtures infrastructure created with runtime FLAC sample generation (FLACSampleBuilder), proper STREAMINFO block construction**
+- [x] Test fixtures (sample audio files, metadata) - **TestFixtures infrastructure created with runtime FLAC sample generation (FLACSampleBuilder), proper STREAMINFO block construction. Comprehensive fixture generation script (`Scripts/generate_audio_test_fixtures.sh`) supports 19 formats (mp3, flac, aac, wav, m4a, ogg, opus, alac, ape, aiff, caf, mp4, wma, webm, flv, ac3, dts, dsf/dff, wv) with multiple sample rates per format. Files named with sample rate (e.g., valid_44.1k.mp3, valid_96k.flac). Invalid and corrupt file variants generated for comprehensive error testing. Generated files are git-ignored and regenerated as needed.**
 - [x] Format decoder test infrastructure - **MockFormatDecodingCoordinator, FormatDecoderCoordinatorTests with comprehensive coverage**
 - [ ] CI/CD pipeline (GitHub Actions for macOS)
 

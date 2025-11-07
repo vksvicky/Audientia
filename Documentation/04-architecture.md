@@ -18,8 +18,12 @@ Audientia is built as a native macOS Universal application (macOS 15+, Apple Sil
 
 ### Audio Engine
 - **C++**: Core audio processing
-- **AVFoundation**: Apple's audio framework bridge
-- **FFmpeg**: Format decoding (optional, for exotic formats)
+- **AVFoundation**: Apple's audio framework bridge (primary decoder)
+- **FFmpeg**: Format decoding (bundled library, extended format support)
+  - Version: 6.0+ (8.0+ recommended)
+  - Bundled: Libraries included in app distribution
+  - Formats: FLAC, OGG, Opus, ALAC, APE, WebM, FLV, AC3, DTS, WavPack
+  - Integration: Dynamic linking (LGPL-2.1 compliant)
 - **CoreAudio**: Low-level audio I/O
 
 ### Metadata Engine

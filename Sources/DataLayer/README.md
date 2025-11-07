@@ -68,7 +68,7 @@ let tracks = try await dataLayer.searchTracks(query: "jazz")
 
 🚧 **In Development** - Framework structure created, implementation pending.
 
-See `Documentation/05-roadmap-and-testing-strategy.md` for roadmap.
+See [`../../Documentation/05-roadmap-and-testing-strategy.md`](../../Documentation/05-roadmap-and-testing-strategy.md) for roadmap.
 
 ## Testing
 
@@ -78,4 +78,4 @@ DataLayer tests should cover:
 - Data integrity
 - Performance with large datasets
 
-See `Documentation/05-roadmap-and-testing-strategy.md` for Right-BICEP testing guidelines.
+See [`../../Documentation/05-roadmap-and-testing-strategy.md`](../../Documentation/05-roadmap-and-testing-strategy.md) for Right-BICEP testing guidelines.

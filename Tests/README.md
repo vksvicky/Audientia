@@ -97,5 +97,5 @@ xcodebuild test -project Audientia.xcodeproj -scheme Audientia -only-testing:Sha
 5. **Mocking**: Use mocks for external dependencies
 6. **Fixtures**: Use fixtures for complex test data
 
-See `Documentation/05-roadmap-and-testing-strategy.md` for detailed testing guidelines.
+See [`../Documentation/05-roadmap-and-testing-strategy.md`](../Documentation/05-roadmap-and-testing-strategy.md) for detailed testing guidelines.
 
