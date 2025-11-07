@@ -12,7 +12,7 @@ import Shared
 /// Main audio playback engine
 /// Handles track loading, playback control, queue management, and position tracking
 @MainActor
-public final class AudioEngine {
+public final class AudioEngine: AudioEngineProtocol {
     
     // MARK: - Properties
     
@@ -167,7 +167,8 @@ public final class AudioEngine {
     }
     
     /// Pause playback
-    public func pause() {
+    /// Made async to support concurrent operations and non-blocking I/O
+    public func pause() async {
         guard state == .playing else {
             Logger.audio.debug("Pause called but not playing (state: \(String(describing: self.state)))")
             return
@@ -199,7 +200,8 @@ public final class AudioEngine {
     }
     
     /// Stop playback and reset position
-    public func stop() {
+    /// Made async to support concurrent operations and non-blocking I/O
+    public func stop() async {
         Logger.audio.info("Stopping playback")
         stopPositionTracking()
         currentPosition = 0.0
@@ -331,7 +333,7 @@ public final class AudioEngine {
             }
         } else {
             // No more tracks, stop playback
-            self.stop()
+            await self.stop()
             Logger.audio.info("Queue empty, stopping playback")
         }
     }

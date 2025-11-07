@@ -23,15 +23,7 @@ public func updateAppVersionFromBuild() {
         return version
     }
 
-    // First, try to read from Info.plist (most reliable - comes from project.yml)
-    if let infoDict = Bundle.main.infoDictionary,
-       let versionString = infoDict["CFBundleShortVersionString"] as? String,
-       let version = Version(from: versionString) {
-        versionManager.setAppVersion(version)
-        return
-    }
-
-    // Try to find version file in common locations
+    // Try to find version file in common locations first (build-generated, always up-to-date)
     let possiblePaths = [
         Bundle.main.bundlePath + "/Contents/.app_version",  // App bundle (most reliable)
         Bundle.main.bundlePath + "/../.app_version",  // Build directory
@@ -47,10 +39,17 @@ public func updateAppVersionFromBuild() {
         }
     }
 
+    // Fallback to Info.plist if version file not found
     if !versionFound {
-        // Fallback to generating current version
-        let currentVersion = versionManager.generateCurrentVersion()
-        versionManager.setAppVersion(currentVersion)
+        if let infoDict = Bundle.main.infoDictionary,
+           let versionString = infoDict["CFBundleShortVersionString"] as? String,
+           let version = Version(from: versionString) {
+            versionManager.setAppVersion(version)
+        } else {
+            // Final fallback: generate current version
+            let currentVersion = versionManager.generateCurrentVersion()
+            versionManager.setAppVersion(currentVersion)
+        }
     }
 }
 

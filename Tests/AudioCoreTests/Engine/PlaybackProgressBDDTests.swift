@@ -53,7 +53,7 @@ final class PlaybackProgressBDDTests: XCTestCase {
         XCTAssertGreaterThan(positionBeforePause, 0.0, "Position should have advanced")
         
         // When - User pauses the track
-        engine.pause()
+        await engine.pause()
         
         // Wait a bit more
         try await Task.sleep(nanoseconds: 200_000_000) // 200ms
@@ -72,7 +72,7 @@ final class PlaybackProgressBDDTests: XCTestCase {
         let engine = try await AudioEngineTestHelpers.createEngineWithTrack(track)
         try await engine.play()
         try await Task.sleep(nanoseconds: 200_000_000) // 200ms
-        engine.pause()
+        await engine.pause()
         let positionAtPause = engine.currentPosition
         
         // When - User resumes the track

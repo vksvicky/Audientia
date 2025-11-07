@@ -23,7 +23,7 @@ UI/
 
 ### MVVM Pattern
 - **Views**: SwiftUI views in this module
-- **ViewModels**: Located in `Shared/ViewModels/` (shared across modules)
+- **ViewModels**: Located in `UI/` module (UI-specific ViewModels that depend on AudioCore)
 - **Models**: Located in `Shared/Models/`
 
 ### Dependencies

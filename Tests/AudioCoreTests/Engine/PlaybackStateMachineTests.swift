@@ -51,7 +51,7 @@ final class PlaybackStateMachineTests: XCTestCase {
         try await engine.play()
         
         // When
-        engine.pause()
+        await engine.pause()
         
         // Then
         XCTAssertEqual(engine.state, .paused, "Engine should be in paused state after pause()")
@@ -63,7 +63,7 @@ final class PlaybackStateMachineTests: XCTestCase {
         let track = MockFactory.makeTrack()
         let engine = try await AudioEngineTestHelpers.createEngineWithTrack(track)
         try await engine.play()
-        engine.pause()
+        await engine.pause()
         
         // When
         try await engine.resume()
@@ -80,7 +80,7 @@ final class PlaybackStateMachineTests: XCTestCase {
         try await engine.play()
         
         // When
-        engine.stop()
+        await engine.stop()
         
         // Then
         XCTAssertEqual(engine.state, .stopped, "Engine should be in stopped state after stop()")
@@ -106,12 +106,12 @@ final class PlaybackStateMachineTests: XCTestCase {
     }
     
     /// BDD: Given a stopped engine, when I try to pause, then it should remain stopped
-    func testPauseFromStoppedStateRemainsStopped() {
+    func testPauseFromStoppedStateRemainsStopped() async {
         // Given
         let engine = AudioEngineTestHelpers.createMockEngine()
         
         // When
-        engine.pause()
+        await engine.pause()
         
         // Then
         XCTAssertEqual(engine.state, .stopped, "Engine should remain stopped when pause() called from stopped state")
@@ -144,7 +144,7 @@ final class PlaybackStateMachineTests: XCTestCase {
         _ = engine.currentPosition
         
         // When
-        engine.pause()
+        await engine.pause()
         try await engine.resume()
         
         // Then
@@ -163,7 +163,7 @@ final class PlaybackStateMachineTests: XCTestCase {
         try await engine.seek(to: 30.0)
         
         // When
-        engine.stop()
+        await engine.stop()
         try await engine.play()
         
         // Then
@@ -235,9 +235,9 @@ final class PlaybackStateMachineTests: XCTestCase {
         measure {
             Task {
                 try? await engine.play()
-                engine.pause()
+                await engine.pause()
                 try? await engine.resume()
-                engine.stop()
+                await engine.stop()
             }
         }
     }

@@ -79,7 +79,7 @@ public final class CAudioEngine {
         // Run blocking I/O operation off the main actor
         // Note: AVAudioPlayer initialization can block, so we run it in a detached task
         let success = await Task.detached {
-            self.cppEngine.loadFile(filePath)
+            await self.cppEngine.loadFile(filePath)
         }.value
         
         // Update state on main actor
