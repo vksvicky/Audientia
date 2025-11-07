@@ -45,7 +45,7 @@
 
 **Backend (AudioCore):**
 - [x] C++ playback engine with CoreAudio integration - **✅ CAudioEngine (C++) with AVFoundation bridge implemented, Swift wrapper complete**
-- [ ] Format decoder abstraction (FFmpeg wrapper) - **Structure in place, implementation pending**
+- [x] Format decoder abstraction (FFmpeg wrapper) - **✅ FormatDecodingCoordinator with AVFoundation decoder + FFmpeg stub, TDD/BDD tests in place**
 - [x] Playback queue management - **✅ Implemented with add/remove/clear/reorder operations**
 - [x] Seek and position tracking - **✅ Implemented with position updates and seek operations**
 - [x] Volume control and mute - **✅ Volume control implemented (setVolume/getVolume), mute pending**

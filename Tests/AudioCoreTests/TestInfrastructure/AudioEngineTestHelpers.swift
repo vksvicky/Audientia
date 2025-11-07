@@ -15,13 +15,18 @@ enum AudioEngineTestHelpers {
     /// Create an AudioEngine with mock file system for unit tests
     /// - Parameter tracks: Optional array of tracks to add to mock file system
     /// - Returns: AudioEngine configured for testing
-    static func createMockEngine(withTracks tracks: [Track] = []) -> AudioEngine {
+    static func createMockEngine(
+        withTracks tracks: [Track] = [],
+        formatCoordinator: FormatDecodingCoordinating = MockFormatDecodingCoordinator()
+    ) -> AudioEngine {
         let mockFileSystem = MockFileSystem()
         for track in tracks {
             mockFileSystem.addFile(track.filePath)
         }
-        // Use internal initializer (fileSystem parameter)
-        return AudioEngine(fileSystem: mockFileSystem)
+        return AudioEngine(
+            fileSystem: mockFileSystem,
+            formatCoordinator: formatCoordinator
+        )
     }
     
     /// Create an AudioEngine with real file system for integration tests

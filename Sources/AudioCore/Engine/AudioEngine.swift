@@ -25,9 +25,12 @@ public final class AudioEngine {
     /// Current playback position in seconds
     public private(set) var currentPosition: TimeInterval = 0.0
     
-    /// Track duration in seconds
+    /// Track duration in seconds (prefers detected format metadata)
     public var duration: TimeInterval {
-        currentTrack?.duration ?? 0.0
+        if let detected = detectedFormat, detected.duration > 0 {
+            return detected.duration
+        }
+        return currentTrack?.duration ?? 0.0
     }
     
     /// Playback progress (0.0 to 1.0)
@@ -59,21 +62,33 @@ public final class AudioEngine {
     private var positionUpdateTask: Task<Void, Never>?
     private let positionUpdateInterval: TimeInterval = 0.1 // Update every 100ms
     private let fileSystem: FileSystemProtocol
+    private let formatCoordinator: FormatDecodingCoordinating
     
     // MARK: - Initialization
     
-    /// Initialize AudioEngine with default file system
+    /// Current detected audio format (if available)
+    public private(set) var detectedFormat: DecodedAudioFormat?
+    public private(set) var lastFormatDetectionError: Error?
+    
+    /// Initialize AudioEngine with default dependencies
     public init() {
         self.fileSystem = RealFileSystem()
+        self.formatCoordinator = DefaultFormatDecodingCoordinator()
         Logger.audio.debug("AudioEngine initialized")
     }
     
-    /// Initialize AudioEngine with custom file system (for testing)
-    /// - Parameter fileSystem: File system implementation to use
+    /// Initialize AudioEngine with custom dependencies (mainly for testing)
+    /// - Parameters:
+    ///   - fileSystem: File system abstraction
+    ///   - formatCoordinator: Format decoder coordinator
     @MainActor
-    init(fileSystem: FileSystemProtocol) {
+    init(
+        fileSystem: FileSystemProtocol,
+        formatCoordinator: FormatDecodingCoordinating = DefaultFormatDecodingCoordinator()
+    ) {
         self.fileSystem = fileSystem
-        Logger.audio.debug("AudioEngine initialized with custom file system")
+        self.formatCoordinator = formatCoordinator
+        Logger.audio.debug("AudioEngine initialized with custom dependencies")
     }
     
     deinit {
@@ -97,6 +112,18 @@ public final class AudioEngine {
             state = .error(error.errorDescription ?? "File not found")
             Logger.audio.error("Failed to load track: \(error.localizedDescription)")
             throw error
+        }
+        
+        // Attempt to decode format metadata (non-fatal on failure)
+        do {
+            let format = try formatCoordinator.decodeFormat(for: track.filePath)
+            detectedFormat = format
+            lastFormatDetectionError = nil
+            Logger.audio.info("Detected format: codec=\(format.codec) sampleRate=\(format.sampleRate)Hz")
+        } catch {
+            detectedFormat = nil
+            lastFormatDetectionError = error
+            Logger.audio.warning("Format detection failed: \(error.localizedDescription)")
         }
         
         // Reset position

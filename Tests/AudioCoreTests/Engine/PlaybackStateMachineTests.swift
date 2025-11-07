@@ -194,7 +194,10 @@ final class PlaybackStateMachineTests: XCTestCase {
         // Given
         let mockFileSystem = MockFileSystem()
         mockFileSystem.shouldFail = true // Simulate file not found
-        let engine = AudioEngine(fileSystem: mockFileSystem)
+        let engine = AudioEngine(
+            fileSystem: mockFileSystem,
+            formatCoordinator: MockFormatDecodingCoordinator()
+        )
         let corruptTrack = MockFactory.makeTrack(filePath: "/path/to/corrupt.mp3")
         
         // When & Then

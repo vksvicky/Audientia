@@ -174,3 +174,29 @@ final class MockFileSystem: FileSystemProtocol {
         existingFiles.removeAll()
     }
 }
+
+// MARK: - Mock Format Decoding Coordinator
+
+/// Mock coordinator for format decoding to keep unit tests deterministic
+final class MockFormatDecodingCoordinator: FormatDecodingCoordinating {
+    var decodeCalls: [String] = []
+    var result: DecodedAudioFormat?
+    var error: Error?
+    
+    func decodeFormat(for filePath: String) throws -> DecodedAudioFormat {
+        decodeCalls.append(filePath)
+        if let error {
+            throw error
+        }
+        if let result {
+            return result
+        }
+        return DecodedAudioFormat(
+            codec: "Mock",
+            sampleRate: 44_100,
+            channelCount: 2,
+            bitRate: 320,
+            duration: 0
+        )
+    }
+}
