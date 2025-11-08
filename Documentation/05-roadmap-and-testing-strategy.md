@@ -37,10 +37,10 @@
 - [ ] Metadata extraction and tagging
 - [ ] Playlist management
 - [ ] Search functionality
-- [ ] DSP features (EQ, ReplayGain)
+- [ ] DSP features (EQ, ReplayGain, audio gain, audio normalization)
 - [ ] Device sync
 - [ ] Transcoding
-- [ ] Plugin system
+- [ ] Plugin system (including audio visualizer plugins)
 
 ---
 
