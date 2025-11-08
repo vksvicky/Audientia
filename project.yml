@@ -57,17 +57,10 @@ targets:
       - target: DataLayer
       - target: PluginSystem
     resources:
-      # Assets.xcassets - explicitly included for asset catalog compilation
+      # Assets.xcassets - asset catalog for app icon and images
+      # Note: This should automatically create a Resources build phase
       - path: Resources/Assets.xcassets
-        group: Resources
         buildPhase: resources
-      # Resources folder - included to ensure Resources group appears in Xcode
-      # Note: Assets.xcassets is excluded from this to avoid duplication
-      - path: Resources
-        group: Resources
-        buildPhase: resources
-        excludes:
-          - "**/README.md"
     settings:
       ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
       ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOLS_EXTENSIONS: YES
@@ -592,6 +585,34 @@ targets:
       CODE_SIGNING_ALLOWED: NO
       DEAD_CODE_STRIPPING: YES
 
+  DataLayerTests:
+    type: bundle.unit-test
+    platform: macOS
+    deploymentTarget: "15.0"
+    sources:
+      - path: Tests/DataLayerTests
+        group: Tests
+    dependencies:
+      - target: DataLayer
+      - target: Shared
+      - target: MetadataEngine
+      - framework: XCTest.framework
+        embed: false
+    settings:
+      PRODUCT_BUNDLE_IDENTIFIER: club.cycleruncode.DataLayerTests
+      SWIFT_VERSION: "5.9"
+      MACOSX_DEPLOYMENT_TARGET: "15.0"
+      GENERATE_INFOPLIST_FILE: YES
+      INFOPLIST_KEY_CFBundleName: DataLayerTests
+      INFOPLIST_KEY_NSHumanReadableCopyright: "Copyright © 2025 CycleRunCode Club. All rights reserved."
+      ENABLE_TESTING_SEARCH_PATHS: YES
+      TEST_HOST: ""
+      BUNDLE_LOADER: "$(TEST_HOST)"
+      CODE_SIGN_IDENTITY: "-"
+      CODE_SIGNING_REQUIRED: NO
+      CODE_SIGNING_ALLOWED: NO
+      DEAD_CODE_STRIPPING: YES
+
 schemes:
   Audientia:
     build:
@@ -604,6 +625,7 @@ schemes:
         PluginSystem: all
         Shared: all
         SharedTests: [test]
+        DataLayerTests: [test]
     run:
       config: Debug
       executable: Audientia
@@ -611,6 +633,9 @@ schemes:
       config: Debug
       targets:
         - name: SharedTests
+          parallelizable: true
+          randomExecutionOrdering: true
+        - name: DataLayerTests
           parallelizable: true
           randomExecutionOrdering: true
         - name: AudioCoreTests
