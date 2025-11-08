@@ -65,6 +65,20 @@
          </BuildActionEntry>
          <BuildActionEntry
             buildForTesting = "YES"
+            buildForRunning = "NO"
+            buildForProfiling = "NO"
+            buildForArchiving = "NO"
+            buildForAnalyzing = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "B8EF3FF59DD5DB15D368CFB3"
+               BuildableName = "DataLayerTests.xctest"
+               BlueprintName = "DataLayerTests"
+               ReferencedContainer = "container:Audientia.xcodeproj">
+            </BuildableReference>
+         </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
             buildForRunning = "YES"
             buildForProfiling = "YES"
             buildForArchiving = "YES"
@@ -145,6 +159,17 @@
                BlueprintIdentifier = "368DCADE1C763E3FCB5472B6"
                BuildableName = "SharedTests.xctest"
                BlueprintName = "SharedTests"
+               ReferencedContainer = "container:Audientia.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO"
+            parallelizable = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "B8EF3FF59DD5DB15D368CFB3"
+               BuildableName = "DataLayerTests.xctest"
+               BlueprintName = "DataLayerTests"
                ReferencedContainer = "container:Audientia.xcodeproj">
             </BuildableReference>
          </TestableReference>
