@@ -345,6 +345,7 @@ targets:
           - "**/README.md"
     dependencies:
       - target: Shared
+      - target: MetadataEngine
     settings:
       PRODUCT_BUNDLE_IDENTIFIER: club.cycleruncode.DataLayer
       SWIFT_VERSION: "5.9"
@@ -592,6 +593,8 @@ targets:
     sources:
       - path: Tests/DataLayerTests
         group: Tests
+        excludes:
+          - "**/README.md"
     dependencies:
       - target: DataLayer
       - target: Shared

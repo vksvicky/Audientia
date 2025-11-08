@@ -9,6 +9,7 @@
 import AVFoundation
 import Foundation
 import os.log
+@preconcurrency import Shared
 
 // MARK: - Audio Format Model
 
@@ -127,9 +128,7 @@ public final class DefaultFormatDecodingCoordinator: FormatDecodingCoordinating 
 /// Decoder that uses AVFoundation to read audio metadata
 struct AVFoundationFormatDecoder: FormatDecoder {
     let name = "AVFoundation"
-    let supportedExtensions: Set<String> = [
-        "aac", "aiff", "caf", "m4a", "mp3", "mp4", "wav", "wma"
-    ]
+    let supportedExtensions: Set<String> = AudioFormats.avFoundationSupportedExtensions
 
     func canDecode(filePath: String) -> Bool {
         let fileExtension = URL(fileURLWithPath: filePath).pathExtension.lowercased()
@@ -236,9 +235,7 @@ private extension AVFoundationFormatDecoder {
 
 struct FFmpegFormatDecoder: FormatDecoder {
     let name = "FFmpeg"
-    let supportedExtensions: Set<String> = [
-        "flac", "ogg", "opus", "alac", "ape", "webm", "flv", "ac3", "dts", "wv"
-    ]
+    let supportedExtensions: Set<String> = AudioFormats.ffmpegSupportedExtensions
 
     func canDecode(filePath: String) -> Bool {
         let fileExtension = URL(fileURLWithPath: filePath).pathExtension.lowercased()

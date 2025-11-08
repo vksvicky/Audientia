@@ -47,8 +47,8 @@ public func updateAppVersionFromBuild() {
             versionManager.setAppVersion(version)
         } else {
             // Final fallback: generate current version
-            let currentVersion = versionManager.generateCurrentVersion()
-            versionManager.setAppVersion(currentVersion)
+        let currentVersion = versionManager.generateCurrentVersion()
+        versionManager.setAppVersion(currentVersion)
         }
     }
 }

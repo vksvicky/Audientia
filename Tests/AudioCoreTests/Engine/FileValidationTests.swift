@@ -19,13 +19,8 @@ final class FileValidationTests: XCTestCase {
     
     /// BDD: Given a file with supported extension, when I check if it's supported, then it should return true
     func testSupportedFileExtensions() async throws {
-        // Given - Files with supported extensions
-        let supportedExtensions = [
-            // AVFoundation supported
-            "mp3", "aac", "m4a", "wav", "aiff", "caf", "mp4",
-            // FFmpeg supported
-            "flac", "ogg", "opus", "alac", "ape"
-        ]
+        // Given - Files with supported extensions (from shared constants)
+        let supportedExtensions = AudioFormats.allSupportedExtensions
         
         for ext in supportedExtensions {
             // When - Create a mock file with supported extension
@@ -53,13 +48,8 @@ final class FileValidationTests: XCTestCase {
     /// BDD: Given a file with unsupported extension, when I try to load it, then format detection should fail
     /// Tests the negation: ANY extension NOT in our supported list should be rejected
     func testUnsupportedFileExtensions() async throws {
-        // Given - Complete list of supported extensions (from both decoders)
-        let supportedExtensions: Set<String> = [
-            // AVFoundation supported
-            "aac", "aiff", "caf", "m4a", "mp3", "mp4", "wav",
-            // FFmpeg supported
-            "flac", "ogg", "opus", "alac", "ape"
-        ]
+        // Given - Complete list of supported extensions (from shared constants)
+        let supportedExtensions = AudioFormats.allSupportedExtensions
         
         // Given - Sample extensions that are definitely NOT in our supported list
         // We test a representative sample to verify the negation works

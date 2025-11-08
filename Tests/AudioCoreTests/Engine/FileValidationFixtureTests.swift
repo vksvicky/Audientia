@@ -22,11 +22,8 @@ final class FileValidationFixtureTests: XCTestCase {
     
     // MARK: - Test Configuration
     
-    /// Supported formats for testing
-    let testFormats = [
-        "mp3", "flac", "aac", "wav", "m4a", "ogg", "opus", "alac", "ape",
-        "aiff", "caf", "mp4", "wma", "webm", "flv", "ac3", "dts", "dsf", "dff", "wv"
-    ]
+    /// Supported formats for testing (from shared constants)
+    let testFormats = AudioFormats.allSupportedExtensionsArray
     
     // MARK: - Valid File Validation
     

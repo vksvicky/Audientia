@@ -206,13 +206,8 @@ final class MockFormatDecodingCoordinator: FormatDecodingCoordinating {
     var shouldFail = false
     var failureReason: String = "Decode failed"
     
-    /// Supported extensions for validation (matches real decoders)
-    var supportedExtensions: Set<String> = [
-        // AVFoundation supported
-        "mp3", "aac", "m4a", "wav", "aiff", "caf", "mp4",
-        // FFmpeg supported
-        "flac", "ogg", "opus", "alac", "ape"
-    ]
+    /// Supported extensions for validation (from shared constants)
+    var supportedExtensions: Set<String> = AudioFormats.allSupportedExtensions
     
     /// Whether to validate extensions (default: false for backward compatibility)
     var validateExtensions = false
