@@ -319,28 +319,34 @@
 **Backend (AudioCore):**
 - Equalizer (10-band parametric)
 - ReplayGain analysis and application
+- Audio gain control (per-track and global gain adjustment)
+- Audio normalization (peak normalization, RMS normalization, loudness normalization)
 - Crossfade between tracks
 - Audio visualizer feed (FFT data)
 
 **UI:**
 - EQ interface with presets
-- Visualizer view (Metal rendering)
+- Visualizer view (Metal rendering) - **Note: Audio visualizers can also be implemented as plugins (see Phase 6)**
 - ReplayGain settings
+- Audio gain control (per-track and global)
+- Normalization settings (peak/RMS/loudness)
 
 **Tests:**
-- **TDD**: DSP algorithms, ReplayGain calculation
-- **Unit**: EQ frequency response, gain accuracy
-- **Integration**: Playback with EQ, verify audio output
+- **TDD**: DSP algorithms, ReplayGain calculation, gain control, normalization algorithms
+- **Unit**: EQ frequency response, gain accuracy, normalization accuracy (peak/RMS/loudness)
+- **Integration**: Playback with EQ, verify audio output, verify gain and normalization effects
 - **BDD**: "As a user, I want to adjust bass and hear the change"
+- **BDD**: "As a user, I want to normalize audio levels across my library"
+- **BDD**: "As a user, I want to adjust gain for a specific track"
 
 **Right-BICEP:**
-- **[Right]**: Verify EQ frequency response matches settings
-- **[B]**: Extreme EQ settings, silence, very loud audio
-- **[I]**: Apply EQ → Reset → Verify original audio
-- **[C]**: Compare ReplayGain with external tools (foobar2000)
-- **[E]**: Invalid EQ settings, NaN values, buffer underrun
-- **[P]**: EQ processing < 5% CPU, visualizer 60fps
-- **Edge**: Very high sample rates, mono/stereo/multichannel
+- **[Right]**: Verify EQ frequency response matches settings, verify gain and normalization levels
+- **[B]**: Extreme EQ settings, silence, very loud audio, extreme gain values, already normalized audio
+- **[I]**: Apply EQ → Reset → Verify original audio, Apply gain → Reset → Verify original, Normalize → Denormalize → Verify original
+- **[C]**: Compare ReplayGain with external tools (foobar2000), compare normalization with Audacity/ffmpeg
+- **[E]**: Invalid EQ settings, NaN values, buffer underrun, invalid gain values, normalization errors
+- **[P]**: EQ processing < 5% CPU, visualizer 60fps, gain/normalization processing < 2% CPU
+- **Edge**: Very high sample rates, mono/stereo/multichannel, clipping prevention, gain staging
 
 #### 2.2 Playlists & Organization (Weeks 17-20)
 
@@ -589,26 +595,29 @@
 **Backend:**
 - Plugin SDK documentation
 - Example plugins (Last.fm scrobbler, Discogs metadata)
+- Audio visualizer plugins (spectrum analyzer, waveform, oscilloscope, VU meters)
 - Plugin marketplace infrastructure
 
 **UI:**
 - Plugin browser
 - Plugin documentation viewer
+- Visualizer plugin integration (replaceable visualizer views)
 
 **Tests:**
-- **TDD**: SDK APIs, example plugins
-- **Unit**: SDK function coverage
-- **Integration**: Example plugins end-to-end
+- **TDD**: SDK APIs, example plugins, visualizer plugin APIs
+- **Unit**: SDK function coverage, visualizer plugin rendering
+- **Integration**: Example plugins end-to-end, visualizer plugins with audio feed
 - **BDD**: "As a user, I want to install a Last.fm scrobbler plugin"
+- **BDD**: "As a user, I want to install a custom audio visualizer plugin"
 
 **Right-BICEP:**
-- **[Right]**: Verify example plugins work as documented
-- **[B]**: Simple plugins, complex plugins, plugin dependencies
-- **[I]**: Install → Use → Uninstall → Reinstall, verify state
-- **[C]**: Compare plugin behavior with native implementation
-- **[E]**: Outdated plugins, incompatible versions, broken plugins
-- **[P]**: Plugin load time < 50ms, no performance degradation
-- **Edge**: Plugin conflicts, version mismatches, permission issues
+- **[Right]**: Verify example plugins work as documented, verify visualizer plugins render correctly
+- **[B]**: Simple plugins, complex plugins, plugin dependencies, visualizer plugins with various FFT sizes
+- **[I]**: Install → Use → Uninstall → Reinstall, verify state, visualizer plugin switching
+- **[C]**: Compare plugin behavior with native implementation, compare visualizer output with native visualizer
+- **[E]**: Outdated plugins, incompatible versions, broken plugins, visualizer plugins with invalid FFT data
+- **[P]**: Plugin load time < 50ms, no performance degradation, visualizer plugins maintain 60fps
+- **Edge**: Plugin conflicts, version mismatches, permission issues, visualizer plugin memory leaks, FFT buffer handling
 
 ---
 
