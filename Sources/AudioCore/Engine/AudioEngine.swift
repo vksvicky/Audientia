@@ -12,9 +12,6 @@ import Shared
 /// Main audio playback engine
 /// Handles track loading, playback control, queue management, and position tracking
 @MainActor
-// swiftlint:disable:next todo
-// TODO: Refactor AudioEngine to reduce class body length (currently 351 lines, limit is 300)
-// swiftlint:disable:next type_body_length
 public final class AudioEngine: AudioEngineProtocol {
     
     // MARK: - Properties
@@ -50,7 +47,7 @@ public final class AudioEngine: AudioEngineProtocol {
         didSet {
             self.volume = max(0.0, min(1.0, self.volume))
             if !self.isMuted {
-                // Apply volume to audio engine (when implemented)
+                // Volume will be applied to audio engine in future implementation
                 Logger.audio.debug("Volume set to \(self.volume)")
             }
         }
@@ -463,9 +460,12 @@ public final class AudioEngine: AudioEngineProtocol {
         Logger.audio.debug("Loop mode toggled to: \(self.loopMode)")
     }
     
-    // MARK: - Position Tracking
-    
-    private func startPositionTracking() {
+}
+
+// MARK: - Position Tracking Extension
+
+private extension AudioEngine {
+    func startPositionTracking() {
         stopPositionTracking()
         
         positionUpdateTask = Task { [weak self] in
@@ -488,76 +488,91 @@ public final class AudioEngine: AudioEngineProtocol {
         }
     }
     
-    private func stopPositionTracking() {
+    func stopPositionTracking() {
         positionUpdateTask?.cancel()
         positionUpdateTask = nil
     }
-    
-    // swiftlint:disable:next todo
-    // TODO: Refactor handleTrackCompletion to reduce function body length (currently 51 lines, limit is 50)
-    // swiftlint:disable:next function_body_length
-    private func handleTrackCompletion() async {
+}
+
+// MARK: - Track Completion Handling Extension
+
+private extension AudioEngine {
+    func handleTrackCompletion() async {
         Logger.audio.info("Track completed, checking loop mode and queue")
         
         // Handle loop modes
-        switch loopMode {
-        case .track:
-            // Replay current track
-            if let track = currentTrack {
-                do {
-                    try await replay()
-                    Logger.audio.info("Looped current track: \(track.title)")
-                    return
-                } catch {
-                    Logger.audio.error("Failed to loop track: \(error.localizedDescription)")
-                }
-            }
-            
-        case .queue:
-            // Check if we can loop to first track in history
-            if !queueHistory.isEmpty {
-                let firstTrack = queueHistory[0]
-                queueHistory.removeAll()
-                currentQueueIndex = -1
-                do {
-                    try await loadTrack(firstTrack)
-                    queueHistory.append(firstTrack)
-                    currentQueueIndex = 0
-                    try await play()
-                    Logger.audio.info("Looped to first track in queue")
-                    return
-                } catch {
-                    Logger.audio.error("Failed to loop queue: \(error.localizedDescription)")
-                }
-            }
-            
-        case .none:
-            break // Continue with normal completion handling
+        if await handleLoopMode() {
+            return // Loop mode handled the completion
         }
         
         // Normal completion: advance to next track or stop
-        if !self.queue.isEmpty {
-            // Auto-advance to next track
-            let nextTrack = self.queue.removeFirst()
-            // Add current track to history
-            if let current = self.currentTrack {
-                self.queueHistory.append(current)
-                self.currentQueueIndex = self.queueHistory.count - 1
-            }
-            do {
-                try await self.loadTrack(nextTrack)
-                self.queueHistory.append(nextTrack)
-                self.currentQueueIndex = self.queueHistory.count - 1
-                try await self.play()
-                Logger.audio.info("Auto-advanced to next track: \(nextTrack.title)")
-            } catch {
-                Logger.audio.error("Failed to auto-advance to next track: \(error.localizedDescription)")
-                self.state = .error(error.localizedDescription)
-            }
-        } else {
-            // No more tracks, stop playback
-            await self.stop()
+        await handleNormalCompletion()
+    }
+    
+    func handleLoopMode() async -> Bool {
+        switch loopMode {
+        case .track:
+            return await handleTrackLoop()
+        case .queue:
+            return await handleQueueLoop()
+        case .none:
+            return false
+        }
+    }
+    
+    func handleTrackLoop() async -> Bool {
+        guard let track = currentTrack else { return false }
+        do {
+            try await replay()
+            Logger.audio.info("Looped current track: \(track.title)")
+            return true
+        } catch {
+            Logger.audio.error("Failed to loop track: \(error.localizedDescription)")
+            return false
+        }
+    }
+    
+    func handleQueueLoop() async -> Bool {
+        guard !queueHistory.isEmpty else { return false }
+        let firstTrack = queueHistory[0]
+        queueHistory.removeAll()
+        currentQueueIndex = -1
+        do {
+            try await loadTrack(firstTrack)
+            queueHistory.append(firstTrack)
+            currentQueueIndex = 0
+            try await play()
+            Logger.audio.info("Looped to first track in queue")
+            return true
+        } catch {
+            Logger.audio.error("Failed to loop queue: \(error.localizedDescription)")
+            return false
+        }
+    }
+    
+    func handleNormalCompletion() async {
+        guard !self.queue.isEmpty else {
+            await stop()
             Logger.audio.info("Queue empty, stopping playback")
+            return
+        }
+        
+        // Auto-advance to next track
+        let nextTrack = self.queue.removeFirst()
+        // Add current track to history
+        if let current = self.currentTrack {
+            self.queueHistory.append(current)
+            self.currentQueueIndex = self.queueHistory.count - 1
+        }
+        do {
+            try await self.loadTrack(nextTrack)
+            self.queueHistory.append(nextTrack)
+            self.currentQueueIndex = self.queueHistory.count - 1
+            try await self.play()
+            Logger.audio.info("Auto-advanced to next track: \(nextTrack.title)")
+        } catch {
+            Logger.audio.error("Failed to auto-advance to next track: \(error.localizedDescription)")
+            self.state = .error(error.localizedDescription)
         }
     }
 }

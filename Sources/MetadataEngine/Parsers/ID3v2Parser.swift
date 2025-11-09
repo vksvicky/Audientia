@@ -123,7 +123,6 @@ public final class ID3v2Parser: TagParserProtocol, @unchecked Sendable {
         var genre: String?
     }
     
-    // swiftlint:disable:next cyclomatic_complexity
     private func parseID3v2Frames(data: Data, headerOffset: Int, tagSize: Int) throws -> ParsedFrames {
         var frames = ParsedFrames()
         
@@ -170,24 +169,7 @@ public final class ID3v2Parser: TagParserProtocol, @unchecked Sendable {
             let frameContent = data.subdata(in: offset..<(offset + frameSize))
             
             // Extract text from frame based on frame ID
-            switch frameID {
-            case "TIT2", "TT2": // Title
-                frames.title = extractTextFromFrame(frameContent)
-            case "TPE1", "TP1": // Artist
-                frames.artist = extractTextFromFrame(frameContent)
-            case "TALB", "TAL": // Album
-                frames.album = extractTextFromFrame(frameContent)
-            case "TDRC", "TYER": // Year
-                frames.year = extractYearFromFrame(frameContent)
-            case "TRCK", "TRK": // Track number
-                frames.trackNumber = extractTrackNumberFromFrame(frameContent)
-            case "TPOS": // Disc number
-                frames.discNumber = extractDiscNumberFromFrame(frameContent)
-            case "TCON", "TCO": // Genre
-                frames.genre = extractGenreFromFrame(frameContent)
-            default:
-                break
-            }
+            parseFrame(frameID: frameID, content: frameContent, frames: &frames)
             
             offset += frameSize
         }
@@ -196,6 +178,28 @@ public final class ID3v2Parser: TagParserProtocol, @unchecked Sendable {
     }
     
     // MARK: - Frame Content Extraction
+    
+    /// Parse a single frame and update the ParsedFrames structure
+    private func parseFrame(frameID: String, content: Data, frames: inout ParsedFrames) {
+        switch frameID {
+        case "TIT2", "TT2": // Title
+            frames.title = extractTextFromFrame(content)
+        case "TPE1", "TP1": // Artist
+            frames.artist = extractTextFromFrame(content)
+        case "TALB", "TAL": // Album
+            frames.album = extractTextFromFrame(content)
+        case "TDRC", "TYER": // Year
+            frames.year = extractYearFromFrame(content)
+        case "TRCK", "TRK": // Track number
+            frames.trackNumber = extractTrackNumberFromFrame(content)
+        case "TPOS": // Disc number
+            frames.discNumber = extractDiscNumberFromFrame(content)
+        case "TCON", "TCO": // Genre
+            frames.genre = extractGenreFromFrame(content)
+        default:
+            break
+        }
+    }
     
     private func extractTextFromFrame(_ data: Data) -> String? {
         guard !data.isEmpty else { return nil }

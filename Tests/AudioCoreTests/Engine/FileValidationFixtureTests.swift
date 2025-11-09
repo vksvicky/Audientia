@@ -15,9 +15,6 @@ import XCTest
 /// Tests for file validation using real generated test fixtures
 /// Implements BDD scenarios for invalid/corrupt file handling
 @MainActor
-// swiftlint:disable:next todo
-// TODO: Refactor FileValidationFixtureTests to reduce class body length
-// swiftlint:disable:next type_body_length
 final class FileValidationFixtureTests: XCTestCase {
     
     // MARK: - Test Configuration
@@ -78,16 +75,12 @@ final class FileValidationFixtureTests: XCTestCase {
                 continue // Skip if fixture doesn't exist
             }
             
-            let track = MockFactory.makeTrack(filePath: emptyFile.path)
-            let mockFileSystem = MockFileSystem()
-            mockFileSystem.addFile(emptyFile.path, size: 0)
-            let mockCoordinator = MockFormatDecodingCoordinator()
-            mockCoordinator.shouldFail = true
-            mockCoordinator.failureReason = "File is empty"
-            let engine = AudioEngine(
-                fileSystem: mockFileSystem,
-                formatCoordinator: mockCoordinator
+            let engine = createEngineForFile(
+                file: emptyFile,
+                size: 0,
+                failureReason: "File is empty"
             )
+            let track = MockFactory.makeTrack(filePath: emptyFile.path)
             
             // When - Try to load empty file
             try await engine.loadTrack(track)
@@ -110,16 +103,11 @@ final class FileValidationFixtureTests: XCTestCase {
                 continue
             }
             
-            let track = MockFactory.makeTrack(filePath: invalidHeaderFile.path)
-            let mockFileSystem = MockFileSystem()
-            mockFileSystem.addFile(invalidHeaderFile.path)
-            let mockCoordinator = MockFormatDecodingCoordinator()
-            mockCoordinator.shouldFail = true
-            mockCoordinator.failureReason = "Invalid file header or magic bytes"
-            let engine = AudioEngine(
-                fileSystem: mockFileSystem,
-                formatCoordinator: mockCoordinator
+            let engine = createEngineForFile(
+                file: invalidHeaderFile,
+                failureReason: "Invalid file header or magic bytes"
             )
+            let track = MockFactory.makeTrack(filePath: invalidHeaderFile.path)
             
             // When - Try to load file with invalid header
             try await engine.loadTrack(track)
@@ -150,23 +138,8 @@ final class FileValidationFixtureTests: XCTestCase {
                 continue
             }
             
+            let engine = createEngineForTruncatedFile(file: truncatedFile)
             let track = MockFactory.makeTrack(filePath: truncatedFile.path)
-            let mockFileSystem = MockFileSystem()
-            // Get actual file size
-            if let attributes = try? FileManager.default.attributesOfItem(atPath: truncatedFile.path),
-               let size = attributes[.size] as? Int64 {
-                mockFileSystem.addFile(truncatedFile.path, size: size)
-            } else {
-                mockFileSystem.addFile(truncatedFile.path, size: 100) // Default small size
-            }
-            
-            let mockCoordinator = MockFormatDecodingCoordinator()
-            mockCoordinator.shouldFail = true
-            mockCoordinator.failureReason = "Truncated file or incomplete data"
-            let engine = AudioEngine(
-                fileSystem: mockFileSystem,
-                formatCoordinator: mockCoordinator
-            )
             
             // When - Try to load truncated file
             try await engine.loadTrack(track)
@@ -189,16 +162,12 @@ final class FileValidationFixtureTests: XCTestCase {
                 continue
             }
             
-            let track = MockFactory.makeTrack(filePath: zeroSizeFile.path)
-            let mockFileSystem = MockFileSystem()
-            mockFileSystem.addFile(zeroSizeFile.path, size: 0)
-            let mockCoordinator = MockFormatDecodingCoordinator()
-            mockCoordinator.shouldFail = true
-            mockCoordinator.failureReason = "File is zero size"
-            let engine = AudioEngine(
-                fileSystem: mockFileSystem,
-                formatCoordinator: mockCoordinator
+            let engine = createEngineForFile(
+                file: zeroSizeFile,
+                size: 0,
+                failureReason: "File is zero size"
             )
+            let track = MockFactory.makeTrack(filePath: zeroSizeFile.path)
             
             // When - Try to load zero-size file
             try await engine.loadTrack(track)
@@ -221,16 +190,11 @@ final class FileValidationFixtureTests: XCTestCase {
                 continue
             }
             
-            let track = MockFactory.makeTrack(filePath: noAudioDataFile.path)
-            let mockFileSystem = MockFileSystem()
-            mockFileSystem.addFile(noAudioDataFile.path)
-            let mockCoordinator = MockFormatDecodingCoordinator()
-            mockCoordinator.shouldFail = true
-            mockCoordinator.failureReason = "File contains header but no audio data"
-            let engine = AudioEngine(
-                fileSystem: mockFileSystem,
-                formatCoordinator: mockCoordinator
+            let engine = createEngineForFile(
+                file: noAudioDataFile,
+                failureReason: "File contains header but no audio data"
             )
+            let track = MockFactory.makeTrack(filePath: noAudioDataFile.path)
             
             // When - Try to load file with no audio data
             try await engine.loadTrack(track)
@@ -253,16 +217,11 @@ final class FileValidationFixtureTests: XCTestCase {
                 continue
             }
             
-            let track = MockFactory.makeTrack(filePath: corruptPayloadFile.path)
-            let mockFileSystem = MockFileSystem()
-            mockFileSystem.addFile(corruptPayloadFile.path)
-            let mockCoordinator = MockFormatDecodingCoordinator()
-            mockCoordinator.shouldFail = true
-            mockCoordinator.failureReason = "Valid header but corrupted audio data"
-            let engine = AudioEngine(
-                fileSystem: mockFileSystem,
-                formatCoordinator: mockCoordinator
+            let engine = createEngineForFile(
+                file: corruptPayloadFile,
+                failureReason: "Valid header but corrupted audio data"
             )
+            let track = MockFactory.makeTrack(filePath: corruptPayloadFile.path)
             
             // When - Try to load corrupt payload file
             try await engine.loadTrack(track)
@@ -285,16 +244,11 @@ final class FileValidationFixtureTests: XCTestCase {
                 continue
             }
             
-            let track = MockFactory.makeTrack(filePath: corruptMagicFile.path)
-            let mockFileSystem = MockFileSystem()
-            mockFileSystem.addFile(corruptMagicFile.path)
-            let mockCoordinator = MockFormatDecodingCoordinator()
-            mockCoordinator.shouldFail = true
-            mockCoordinator.failureReason = "Invalid magic bytes or file signature"
-            let engine = AudioEngine(
-                fileSystem: mockFileSystem,
-                formatCoordinator: mockCoordinator
+            let engine = createEngineForFile(
+                file: corruptMagicFile,
+                failureReason: "Invalid magic bytes or file signature"
             )
+            let track = MockFactory.makeTrack(filePath: corruptMagicFile.path)
             
             // When - Try to load corrupt magic bytes file
             try await engine.loadTrack(track)
@@ -509,5 +463,46 @@ final class FileValidationFixtureTests: XCTestCase {
                 )
             }
         }
+    }
+}
+
+// MARK: - Helper Methods Extension
+
+private extension FileValidationFixtureTests {
+    func createEngineForFile(
+        file: URL,
+        size: Int64? = nil,
+        failureReason: String
+    ) -> AudioEngine {
+        let mockFileSystem = MockFileSystem()
+        if let size = size {
+            mockFileSystem.addFile(file.path, size: size)
+        } else {
+            mockFileSystem.addFile(file.path)
+        }
+        let mockCoordinator = MockFormatDecodingCoordinator()
+        mockCoordinator.shouldFail = true
+        mockCoordinator.failureReason = failureReason
+        return AudioEngine(
+            fileSystem: mockFileSystem,
+            formatCoordinator: mockCoordinator
+        )
+    }
+    
+    func createEngineForTruncatedFile(file: URL) -> AudioEngine {
+        let mockFileSystem = MockFileSystem()
+        if let attributes = try? FileManager.default.attributesOfItem(atPath: file.path),
+           let size = attributes[.size] as? Int64 {
+            mockFileSystem.addFile(file.path, size: size)
+        } else {
+            mockFileSystem.addFile(file.path, size: 100)
+        }
+        let mockCoordinator = MockFormatDecodingCoordinator()
+        mockCoordinator.shouldFail = true
+        mockCoordinator.failureReason = "Truncated file or incomplete data"
+        return AudioEngine(
+            fileSystem: mockFileSystem,
+            formatCoordinator: mockCoordinator
+        )
     }
 }

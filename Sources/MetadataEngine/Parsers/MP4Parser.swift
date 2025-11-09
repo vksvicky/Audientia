@@ -10,7 +10,6 @@
 import Foundation
 @preconcurrency import Shared
 
-// swiftlint:disable:file type_body_length function_body_length cyclomatic_complexity
 /// Parser for MP4/M4A metadata tags
 public final class MP4Parser: TagParserProtocol, @unchecked Sendable {
     
@@ -32,62 +31,61 @@ public final class MP4Parser: TagParserProtocol, @unchecked Sendable {
     /// - Returns: Parsed metadata as a Track object, or nil if parsing fails
     /// - Throws: Error if parsing fails
     public func parse(fileURL: URL) async throws -> Track? {
-        // Check if file exists
+        let fileData = try readFileData(fileURL: fileURL)
+        guard let moovOffset = try findMoovBox(data: fileData) else {
+            return nil
+        }
+        let metadata = try parseMetadataFromMoov(data: fileData, moovOffset: moovOffset)
+        guard hasAnyMetadata(metadata) else {
+            return nil
+        }
+        return createTrackFromMetadata(metadata: metadata, fileURL: fileURL, fileData: fileData)
+    }
+    
+    private func readFileData(fileURL: URL) throws -> Data {
         guard FileManager.default.fileExists(atPath: fileURL.path) else {
             throw TagParserError.fileNotFound(fileURL)
         }
-        
-        // Read file data
-        let fileData: Data
         do {
-            fileData = try Data(contentsOf: fileURL)
+            return try Data(contentsOf: fileURL)
         } catch {
             throw TagParserError.readError(fileURL, error)
         }
-        
-        // Check for MP4 file (must have ftyp box)
-        guard fileData.count >= 8 else {
+    }
+    
+    private func findMoovBox(data: Data) throws -> Int? {
+        guard data.count >= 8 else {
             throw TagParserError.corruptedTag("MP4")
         }
-        
-        // Find and validate ftyp box
-        guard let ftypOffset = findBox(data: fileData, boxType: "ftyp", startOffset: 0) else {
-            // No ftyp box found - not a valid MP4 file
+        guard let ftypOffset = findBox(data: data, boxType: "ftyp", startOffset: 0) else {
             throw TagParserError.invalidTagFormat("MP4")
         }
-        
-        // Get ftyp box size to skip past it
-        let ftypSize = readBoxSize(data: fileData, offset: ftypOffset)
-        
-        // Find moov box (contains metadata) - start searching after ftyp box
-        guard let moovOffset = findBox(data: fileData, boxType: "moov", startOffset: ftypOffset + ftypSize) else {
-            // No moov box found - no metadata present
-            return nil
-        }
-        
-        // Parse metadata from moov box
-        let metadata = try parseMetadataFromMoov(data: fileData, moovOffset: moovOffset)
-        
-        // If no metadata found, return nil
-        // Check if we have any metadata atoms (even if empty, the atom exists)
-        // Empty strings mean the atom exists but is empty, nil means no atom was found
-        let hasAnyMetadata = metadata.title != nil ||  // Empty string means atom exists
-                            metadata.artist != nil ||
-                            metadata.album != nil ||
-                            metadata.year != nil ||
-                            metadata.trackNumber != nil ||
-                            metadata.discNumber != nil ||
-                            metadata.genre != nil
-        
-        guard hasAnyMetadata else {
-            return nil
-        }
-        
-        // Extract file metadata
+        let ftypSize = readBoxSize(data: data, offset: ftypOffset)
+        return findBox(data: data, boxType: "moov", startOffset: ftypOffset + ftypSize)
+    }
+    
+    private func createTrackFromMetadata(metadata: ParsedMetadata, fileURL: URL, fileData: Data) -> Track {
         let fileSize = Int64(fileData.count)
         let fileName = fileURL.deletingPathExtension().lastPathComponent
-        
-        // Return Track with parsed metadata or fallback to defaults
+        return createTrack(from: metadata, fileName: fileName, filePath: fileURL.path, fileSize: fileSize)
+    }
+    
+    // MARK: - Helper Methods
+    
+    /// Check if metadata has any valid fields
+    private func hasAnyMetadata(_ metadata: ParsedMetadata) -> Bool {
+        metadata.title != nil || metadata.artist != nil || metadata.album != nil ||
+        metadata.year != nil || metadata.trackNumber != nil ||
+        metadata.discNumber != nil || metadata.genre != nil
+    }
+    
+    /// Create a Track from parsed metadata with fallback values
+    private func createTrack(
+        from metadata: ParsedMetadata,
+        fileName: String,
+        filePath: String,
+        fileSize: Int64
+    ) -> Track {
         let finalTitle: String
         if let title = metadata.title, !title.isEmpty {
             finalTitle = title
@@ -109,31 +107,37 @@ public final class MP4Parser: TagParserProtocol, @unchecked Sendable {
             finalAlbum = "Unknown Album"
         }
         
+        let finalGenre = metadata.genre?.isEmpty == false ? metadata.genre : nil
+        
         return Track(
             title: finalTitle,
             artist: finalArtist,
             album: finalAlbum,
             duration: 0.0, // Duration would need to be extracted from audio stream
-            filePath: fileURL.path,
+            filePath: filePath,
             fileSize: fileSize,
             bitrate: 0, // Bitrate would need to be extracted from audio stream
             sampleRate: 0, // Sample rate would need to be extracted from audio stream
             year: metadata.year,
             trackNumber: metadata.trackNumber,
             discNumber: metadata.discNumber,
-            genre: (metadata.genre != nil && !(metadata.genre?.isEmpty ?? true)) ? metadata.genre : nil
+            genre: finalGenre
         )
     }
     
     // MARK: - MP4 Box Structure Parsing
-    
+}
+
+// MARK: - Box Parsing Extension
+
+private extension MP4Parser {
     /// Find a box of a specific type in the MP4 file
     /// - Parameters:
     ///   - data: The file data
     ///   - boxType: The 4-character box type to find
     ///   - startOffset: The offset to start searching from
     /// - Returns: The offset of the box if found, nil otherwise
-    private func findBox(data: Data, boxType: String, startOffset: Int) -> Int? {
+    func findBox(data: Data, boxType: String, startOffset: Int) -> Int? {
         var offset = startOffset
         
         while offset < data.count - 8 {
@@ -175,7 +179,7 @@ public final class MP4Parser: TagParserProtocol, @unchecked Sendable {
     ///   - moovOffset: The offset of the moov box
     /// - Returns: Parsed metadata
     /// - Throws: Error if parsing fails
-    private func parseMetadataFromMoov(data: Data, moovOffset: Int) throws -> ParsedMetadata {
+    func parseMetadataFromMoov(data: Data, moovOffset: Int) throws -> ParsedMetadata {
         var metadata = ParsedMetadata()
         
         // Read moov box size
@@ -230,7 +234,7 @@ public final class MP4Parser: TagParserProtocol, @unchecked Sendable {
     }
     
     /// Find a box within a specific range
-    private func findBoxInRange(data: Data, boxType: String, startOffset: Int, endOffset: Int) -> Int? {
+    func findBoxInRange(data: Data, boxType: String, startOffset: Int, endOffset: Int) -> Int? {
         var offset = startOffset
         
         while offset < endOffset - 8 {
@@ -263,7 +267,7 @@ public final class MP4Parser: TagParserProtocol, @unchecked Sendable {
     }
     
     /// Read box size from offset
-    private func readBoxSize(data: Data, offset: Int) -> Int {
+    func readBoxSize(data: Data, offset: Int) -> Int {
         guard offset + 4 <= data.count else {
             return 0
         }
@@ -271,8 +275,61 @@ public final class MP4Parser: TagParserProtocol, @unchecked Sendable {
         return Int(readUInt32BigEndian(sizeBytes))
     }
     
+    /// Parse a single atom and update metadata
+    func parseAtom(
+        atomType: String,
+        data: Data,
+        offset: Int,
+        size: Int,
+        metadata: inout ParsedMetadata
+    ) throws {
+        if atomType == "©nam" || atomType == "©ART" || atomType == "©alb" || atomType == "©gen" {
+            try parseTextAtomIntoMetadata(
+                atomType: atomType,
+                data: data,
+                offset: offset,
+                size: size,
+                metadata: &metadata
+            )
+        } else if atomType == "©day" {
+            try parseYearAtom(data: data, offset: offset, size: size, metadata: &metadata)
+        } else if atomType == "trkn" {
+            metadata.trackNumber = try parseTrackNumberAtom(data: data, offset: offset, size: size)
+        } else if atomType == "disk" {
+            metadata.discNumber = try parseDiscNumberAtom(data: data, offset: offset, size: size)
+        }
+    }
+    
+    func parseTextAtomIntoMetadata(
+        atomType: String,
+        data: Data,
+        offset: Int,
+        size: Int,
+        metadata: inout ParsedMetadata
+    ) throws {
+        let text = try parseTextAtom(data: data, offset: offset, size: size)
+        switch atomType {
+        case "©nam":
+            metadata.title = text
+        case "©ART":
+            metadata.artist = text
+        case "©alb":
+            metadata.album = text
+        case "©gen":
+            metadata.genre = text
+        default:
+            break
+        }
+    }
+    
+    func parseYearAtom(data: Data, offset: Int, size: Int, metadata: inout ParsedMetadata) throws {
+        if let yearString = try parseTextAtom(data: data, offset: offset, size: size) {
+            metadata.year = extractYear(from: yearString)
+        }
+    }
+    
     /// Parse atoms in ilst box
-    private func parseIlstAtoms(data: Data, ilstOffset: Int, metadata: inout ParsedMetadata) throws {
+    func parseIlstAtoms(data: Data, ilstOffset: Int, metadata: inout ParsedMetadata) throws {
         let ilstSize = readBoxSize(data: data, offset: ilstOffset)
         var offset = ilstOffset + 8
         
@@ -295,33 +352,14 @@ public final class MP4Parser: TagParserProtocol, @unchecked Sendable {
             }
             
             // Parse atom based on type
-            switch atomType {
-            case "©nam": // Title (0xA9 0x6E 0x61 0x6D)
-                metadata.title = try parseTextAtom(data: data, offset: offset + 8, size: atomSize - 8)
-            case "©ART": // Artist (0xA9 0x41 0x52 0x54)
-                metadata.artist = try parseTextAtom(data: data, offset: offset + 8, size: atomSize - 8)
-            case "©alb": // Album (0xA9 0x61 0x6C 0x62)
-                metadata.album = try parseTextAtom(data: data, offset: offset + 8, size: atomSize - 8)
-            case "©day": // Year (0xA9 0x64 0x61 0x79)
-                if let yearString = try parseTextAtom(data: data, offset: offset + 8, size: atomSize - 8) {
-                    metadata.year = extractYear(from: yearString)
-                }
-            case "trkn": // Track number
-                metadata.trackNumber = try parseTrackNumberAtom(data: data, offset: offset + 8, size: atomSize - 8)
-            case "disk": // Disc number
-                metadata.discNumber = try parseDiscNumberAtom(data: data, offset: offset + 8, size: atomSize - 8)
-            case "©gen": // Genre (0xA9 0x67 0x65 0x6E)
-                metadata.genre = try parseTextAtom(data: data, offset: offset + 8, size: atomSize - 8)
-            default:
-                break
-            }
+            try parseAtom(atomType: atomType, data: data, offset: offset + 8, size: atomSize - 8, metadata: &metadata)
             
             offset += atomSize
         }
     }
     
     /// Parse a text atom (data atom with text content)
-    private func parseTextAtom(data: Data, offset: Int, size: Int) throws -> String? {
+    func parseTextAtom(data: Data, offset: Int, size: Int) throws -> String? {
         guard offset + 8 <= data.count, size >= 8 else {
             return nil
         }
@@ -353,7 +391,7 @@ public final class MP4Parser: TagParserProtocol, @unchecked Sendable {
     }
     
     /// Parse the content of a data atom
-    private func parseDataAtomContent(data: Data, dataOffset: Int, atomContentEnd: Int) throws -> String? {
+    func parseDataAtomContent(data: Data, dataOffset: Int, atomContentEnd: Int) throws -> String? {
         // Read data atom size
         let dataAtomSize = readBoxSize(data: data, offset: dataOffset)
         guard dataAtomSize >= 16, dataOffset + dataAtomSize <= atomContentEnd else {
@@ -400,7 +438,7 @@ public final class MP4Parser: TagParserProtocol, @unchecked Sendable {
     }
     
     /// Parse track number atom (binary format)
-    private func parseTrackNumberAtom(data: Data, offset: Int, size: Int) throws -> Int? {
+    func parseTrackNumberAtom(data: Data, offset: Int, size: Int) throws -> Int? {
         guard offset + 8 <= data.count, size >= 8 else {
             return nil
         }
@@ -413,7 +451,7 @@ public final class MP4Parser: TagParserProtocol, @unchecked Sendable {
     }
     
     /// Parse disc number atom (binary format)
-    private func parseDiscNumberAtom(data: Data, offset: Int, size: Int) throws -> Int? {
+    func parseDiscNumberAtom(data: Data, offset: Int, size: Int) throws -> Int? {
         guard offset + 8 <= data.count, size >= 8 else {
             return nil
         }
@@ -426,7 +464,7 @@ public final class MP4Parser: TagParserProtocol, @unchecked Sendable {
     }
     
     /// Extract year from date string (e.g., "2023" or "2023-01-01")
-    private func extractYear(from dateString: String) -> Int? {
+    func extractYear(from dateString: String) -> Int? {
         // Try to extract 4-digit year from the beginning
         let yearString = String(dateString.prefix(4))
         guard yearString.count == 4,
@@ -437,10 +475,30 @@ public final class MP4Parser: TagParserProtocol, @unchecked Sendable {
         return year
     }
     
-    // MARK: - Helper Functions
+}
+
+// MARK: - Parsed Metadata Structure
+
+private struct ParsedMetadata {
+    var title: String?
+    var artist: String?
+    var album: String?
+    var year: Int?
+    var trackNumber: Int?
+    var discNumber: Int?
+    var genre: String?
     
+    var hasAnyMetadata: Bool {
+        title != nil || artist != nil || album != nil || year != nil ||
+        trackNumber != nil || discNumber != nil || genre != nil
+    }
+}
+
+// MARK: - Helper Functions Extension
+
+private extension MP4Parser {
     /// Read UInt32 in big-endian format
-    private func readUInt32BigEndian(_ data: Data) -> UInt32 {
+    func readUInt32BigEndian(_ data: Data) -> UInt32 {
         guard data.count >= 4 else {
             return 0
         }
@@ -448,27 +506,10 @@ public final class MP4Parser: TagParserProtocol, @unchecked Sendable {
     }
     
     /// Read UInt16 in big-endian format
-    private func readUInt16BigEndian(_ data: Data) -> UInt16 {
+    func readUInt16BigEndian(_ data: Data) -> UInt16 {
         guard data.count >= 2 else {
             return 0
         }
         return UInt16(data[0]) << 8 | UInt16(data[1])
-    }
-    
-    // MARK: - Parsed Metadata Structure
-    
-    private struct ParsedMetadata {
-        var title: String?
-        var artist: String?
-        var album: String?
-        var year: Int?
-        var trackNumber: Int?
-        var discNumber: Int?
-        var genre: String?
-        
-        var hasAnyMetadata: Bool {
-            title != nil || artist != nil || album != nil || year != nil ||
-            trackNumber != nil || discNumber != nil || genre != nil
-        }
     }
 }

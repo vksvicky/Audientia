@@ -15,7 +15,6 @@ import XCTest
 /// BDD tests for Tag Parsing
 /// Following user-centric scenarios: "As a user, I want to..."
 @MainActor
-// swiftlint:disable:next type_body_length
 final class TagParserBDDTests: XCTestCase {
     
     var id3v2Parser: ID3v2Parser!
@@ -305,107 +304,106 @@ final class TagParserBDDTests: XCTestCase {
         XCTAssertEqual(track?.genre, "Rock", "User should see the genre")
     }
     
-    // MARK: - Helper Methods for Creating Mock Files
+}
+
+// MARK: - Helper Methods Extension
+
+private extension TagParserBDDTests {
+    struct MP3TagParams {
+        let title: String
+        let artist: String
+        let album: String
+        let year: Int
+        let genre: String?
+    }
     
-    // swiftlint:disable:next function_body_length
-    private func createMockMP3FileWithTags(
+    struct M4ATagParams {
+        let title: String
+        let artist: String
+        let album: String
+        let year: Int
+        let trackNumber: Int
+        let discNumber: Int
+    }
+    
+    func createMockMP3FileWithTags(
         title: String,
         artist: String,
         album: String,
         year: Int,
         genre: String? = nil
     ) -> URL {
-        // Use the existing ID3v2ParserTests helper pattern
-        // For now, create a minimal valid MP3 with ID3v2 tags
+        let params = MP3TagParams(title: title, artist: artist, album: album, year: year, genre: genre)
+        return createMockMP3FileWithTags(params: params)
+    }
+    
+    func createMockMP3FileWithTags(params: MP3TagParams) -> URL {
         let fileName = "mock_mp3_\(UUID().uuidString).mp3"
         let fileURL = FileManager.default.temporaryDirectory.appendingPathComponent(fileName)
         
-        var mp3Data = Data()
-        
-        // ID3v2.3 header
-        mp3Data.append(Data("ID3".utf8))
-        mp3Data.append(0x03) // Version 3
-        mp3Data.append(0x00) // Revision
-        mp3Data.append(0x00) // Flags
-        
-        // Calculate tag size (simplified - just enough for our tags)
-        var frameData = Data()
-        
-        // TIT2 frame (Title)
-        if !title.isEmpty {
-            let titleData = title.data(using: .utf8) ?? Data()
-            frameData.append(Data("TIT2".utf8))
-            var titleSize: UInt32 = UInt32(1 + titleData.count) // +1 for encoding byte
-            frameData.append(contentsOf: withUnsafeBytes(of: titleSize.bigEndian) { Data($0) })
-            frameData.append(0x00) // Flags
-            frameData.append(0x00)
-            frameData.append(0x03) // UTF-8 encoding
-            frameData.append(titleData)
-        }
-        
-        // TPE1 frame (Artist)
-        if !artist.isEmpty {
-            let artistData = artist.data(using: .utf8) ?? Data()
-            frameData.append(Data("TPE1".utf8))
-            var artistSize: UInt32 = UInt32(1 + artistData.count)
-            frameData.append(contentsOf: withUnsafeBytes(of: artistSize.bigEndian) { Data($0) })
-            frameData.append(0x00) // Flags
-            frameData.append(0x00)
-            frameData.append(0x03) // UTF-8 encoding
-            frameData.append(artistData)
-        }
-        
-        // TALB frame (Album)
-        if !album.isEmpty {
-            let albumData = album.data(using: .utf8) ?? Data()
-            frameData.append(Data("TALB".utf8))
-            var albumSize: UInt32 = UInt32(1 + albumData.count)
-            frameData.append(contentsOf: withUnsafeBytes(of: albumSize.bigEndian) { Data($0) })
-            frameData.append(0x00) // Flags
-            frameData.append(0x00)
-            frameData.append(0x03) // UTF-8 encoding
-            frameData.append(albumData)
-        }
-        
-        // TYER frame (Year) - only if year > 0
-        if year > 0 {
-            let yearString = String(year)
-            let yearData = yearString.data(using: .utf8) ?? Data()
-            frameData.append(Data("TYER".utf8))
-            var yearSize: UInt32 = UInt32(1 + yearData.count)
-            frameData.append(contentsOf: withUnsafeBytes(of: yearSize.bigEndian) { Data($0) })
-            frameData.append(0x00) // Flags
-            frameData.append(0x00)
-            frameData.append(0x03) // UTF-8 encoding
-            frameData.append(yearData)
-        }
-        
-        // TCON frame (Genre) - if provided
-        if let genre = genre, !genre.isEmpty {
-            let genreData = genre.data(using: .utf8) ?? Data()
-            frameData.append(Data("TCON".utf8))
-            var genreSize: UInt32 = UInt32(1 + genreData.count)
-            frameData.append(contentsOf: withUnsafeBytes(of: genreSize.bigEndian) { Data($0) })
-            frameData.append(0x00) // Flags
-            frameData.append(0x00)
-            frameData.append(0x03) // UTF-8 encoding
-            frameData.append(genreData)
-        }
-        
-        // Calculate synchsafe tag size
-        let tagSize = frameData.count
-        let synchsafeSize = toSynchsafeInteger(UInt32(tagSize))
-        mp3Data.append(contentsOf: synchsafeSize)
+        var mp3Data = createID3v2Header()
+        let frameData = createID3v2Frames(params: params)
+        let tagSize = toSynchsafeIntegerBytes(UInt32(frameData.count))
+        mp3Data.append(contentsOf: tagSize)
         mp3Data.append(frameData)
-        
-        // Minimal MP3 frame sync
-        mp3Data.append(Data([0xFF, 0xFB, 0x90, 0x00]))
+        mp3Data.append(Data([0xFF, 0xFB, 0x90, 0x00])) // Minimal MP3 frame
         
         try? mp3Data.write(to: fileURL)
         return fileURL
     }
     
-    private func createMockMP3FileWithoutTags(fileName: String) -> URL {
+    func createID3v2Header() -> Data {
+        var header = Data()
+        header.append(Data("ID3".utf8))
+        header.append(0x03) // Version 3
+        header.append(0x00) // Revision
+        header.append(0x00) // Flags
+        return header
+    }
+    
+    func createID3v2Frames(params: MP3TagParams) -> Data {
+        var frameData = Data()
+        if !params.title.isEmpty {
+            frameData.append(createID3v2TextFrame(frameID: "TIT2", text: params.title))
+        }
+        if !params.artist.isEmpty {
+            frameData.append(createID3v2TextFrame(frameID: "TPE1", text: params.artist))
+        }
+        if !params.album.isEmpty {
+            frameData.append(createID3v2TextFrame(frameID: "TALB", text: params.album))
+        }
+        if params.year > 0 {
+            frameData.append(createID3v2TextFrame(frameID: "TYER", text: String(params.year)))
+        }
+        if let genre = params.genre, !genre.isEmpty {
+            frameData.append(createID3v2TextFrame(frameID: "TCON", text: genre))
+        }
+        return frameData
+    }
+    
+    func createID3v2TextFrame(frameID: String, text: String) -> Data {
+        var frame = Data()
+        let textData = text.data(using: .utf8) ?? Data()
+        frame.append(Data(frameID.utf8))
+        let frameSize: UInt32 = UInt32(1 + textData.count) // +1 for encoding byte
+        frame.append(contentsOf: withUnsafeBytes(of: frameSize.bigEndian) { Data($0) })
+        frame.append(0x00) // Flags
+        frame.append(0x00)
+        frame.append(0x03) // UTF-8 encoding
+        frame.append(textData)
+        return frame
+    }
+    
+    func toSynchsafeIntegerBytes(_ value: UInt32) -> [UInt8] {
+        [
+            UInt8((value >> 21) & 0x7F),
+            UInt8((value >> 14) & 0x7F),
+            UInt8((value >> 7) & 0x7F),
+            UInt8(value & 0x7F)
+        ]
+    }
+    
+    func createMockMP3FileWithoutTags(fileName: String) -> URL {
         let fileURL = FileManager.default.temporaryDirectory.appendingPathComponent("\(fileName).mp3")
         // Just minimal MP3 header, no ID3v2 tag
         let mp3Data = Data([0xFF, 0xFB, 0x90, 0x00])
@@ -413,7 +411,7 @@ final class TagParserBDDTests: XCTestCase {
         return fileURL
     }
     
-    private func createMockMP3FileWithPartialTags(title: String, artist: String) -> URL {
+    func createMockMP3FileWithPartialTags(title: String, artist: String) -> URL {
         createMockMP3FileWithTags(
             title: title,
             artist: artist,
@@ -422,7 +420,7 @@ final class TagParserBDDTests: XCTestCase {
         )
     }
     
-    private func createMockFLACFileWithTags(
+    func createMockFLACFileWithTags(
         title: String,
         artist: String,
         album: String,
@@ -459,7 +457,7 @@ final class TagParserBDDTests: XCTestCase {
         return fileURL
     }
     
-    private func createMockOGGFileWithTags(title: String, artist: String, album: String) -> URL {
+    func createMockOGGFileWithTags(title: String, artist: String, album: String) -> URL {
         // Similar to FLAC but with .ogg extension
         let fileName = "mock_ogg_\(UUID().uuidString).ogg"
         let fileURL = FileManager.default.temporaryDirectory.appendingPathComponent(fileName)
@@ -488,66 +486,94 @@ final class TagParserBDDTests: XCTestCase {
         return fileURL
     }
     
-    // swiftlint:disable:next function_body_length function_parameter_count
-    private func createMockM4AFileWithTags(
-        title: String,
-        artist: String,
-        album: String,
-        year: Int,
-        trackNumber: Int,
-        discNumber: Int
+    func createMockM4AFileWithTags(
+        title: String = "",
+        artist: String = "",
+        album: String = "",
+        year: Int = 0,
+        trackNumber: Int = 0,
+        discNumber: Int = 0
     ) -> URL {
-        // Reuse the helper from MP4ParserTests
+        let params = M4ATagParams(
+            title: title,
+            artist: artist,
+            album: album,
+            year: year,
+            trackNumber: trackNumber,
+            discNumber: discNumber
+        )
+        return createMockM4AFileWithTags(params: params)
+    }
+    
+    func createMockM4AFileWithTags(params: M4ATagParams) -> URL {
         let fileName = "mock_m4a_\(UUID().uuidString).m4a"
         let fileURL = FileManager.default.temporaryDirectory.appendingPathComponent(fileName)
         
-        var mp4Data = Data()
+        var mp4Data = createM4AFtypBox()
+        let moovData = createM4AMoovBox(params: params)
+        mp4Data.append(moovData)
         
-        // ftyp box
+        try? mp4Data.write(to: fileURL)
+        return fileURL
+    }
+    
+    func createM4AFtypBox() -> Data {
+        var ftypData = Data()
         let ftypSize: UInt32 = 32
-        mp4Data.append(contentsOf: withUnsafeBytes(of: ftypSize.bigEndian) { Data($0) })
-        mp4Data.append(Data("ftyp".utf8))
-        mp4Data.append(Data("M4A ".utf8))
-        mp4Data.append(Data([0x00, 0x00, 0x00, 0x00]))
-        mp4Data.append(Data("M4A ".utf8))
-        mp4Data.append(Data([0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00]))
-        
-        // moov box with metadata
-        var moovData = Data()
-        var udtaData = Data()
-        var metaData = Data()
+        ftypData.append(contentsOf: withUnsafeBytes(of: ftypSize.bigEndian) { Data($0) })
+        ftypData.append(Data("ftyp".utf8))
+        ftypData.append(Data("M4A ".utf8))
+        ftypData.append(Data([0x00, 0x00, 0x00, 0x00]))
+        ftypData.append(Data("M4A ".utf8))
+        ftypData.append(Data([0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00]))
+        return ftypData
+    }
+    
+    func createM4AMoovBox(params: M4ATagParams) -> Data {
+        let ilstBox = createM4AIlstBox(params: params)
+        let metaBox = createM4AMetaBox(ilstBox: ilstBox)
+        let udtaBox = createM4AUdtaBox(metaBox: metaBox)
+        return createM4ABox(type: "moov", content: udtaBox)
+    }
+    
+    func createM4AIlstBox(params: M4ATagParams) -> Data {
         var ilstData = Data()
-        
-        // Add metadata atoms
-        func addTextAtom(name: String, value: String) {
-            let textData = value.data(using: .utf8) ?? Data()
-            var dataAtom = Data()
-            let dataSize: UInt32 = UInt32(16 + textData.count)
-            dataAtom.append(contentsOf: withUnsafeBytes(of: dataSize.bigEndian) { Data($0) })
-            dataAtom.append(Data("data".utf8))
-            dataAtom.append(Data([0x00, 0x00, 0x00, 0x01]))
-            dataAtom.append(Data([0x00, 0x00, 0x00, 0x00]))
-            dataAtom.append(textData)
-            
-            var atomSize: UInt32 = UInt32(8 + dataAtom.count)
-            var atomData = Data()
-            atomData.append(contentsOf: withUnsafeBytes(of: atomSize.bigEndian) { Data($0) })
-            // Atom names in MP4 use ISO-8859-1 encoding (© = 0xA9, not UTF-8)
-            if let atomNameData = name.data(using: .isoLatin1) {
-                atomData.append(atomNameData)
-            } else {
-                atomData.append(Data(name.utf8))
-            }
-            atomData.append(dataAtom)
-            ilstData.append(atomData)
+        ilstData.append(createM4ATextAtom(name: "©nam", value: params.title))
+        ilstData.append(createM4ATextAtom(name: "©ART", value: params.artist))
+        ilstData.append(createM4ATextAtom(name: "©alb", value: params.album))
+        ilstData.append(createM4ATextAtom(name: "©day", value: String(params.year)))
+        ilstData.append(createM4ATrackNumberAtom(trackNumber: params.trackNumber))
+        ilstData.append(createM4ADiscNumberAtom(discNumber: params.discNumber))
+        return createM4ABox(type: "ilst", content: ilstData)
+    }
+    
+    func createM4ATextAtom(name: String, value: String) -> Data {
+        let textData = value.data(using: .utf8) ?? Data()
+        let dataAtom = createM4ADataAtom(textData: textData)
+        let atomSize: UInt32 = UInt32(8 + dataAtom.count)
+        var atomData = Data()
+        atomData.append(contentsOf: withUnsafeBytes(of: atomSize.bigEndian) { Data($0) })
+        if let atomNameData = name.data(using: .isoLatin1) {
+            atomData.append(atomNameData)
+        } else {
+            atomData.append(Data(name.utf8))
         }
-        
-        addTextAtom(name: "©nam", value: title)
-        addTextAtom(name: "©ART", value: artist)
-        addTextAtom(name: "©alb", value: album)
-        addTextAtom(name: "©day", value: String(year))
-        
-        // Track number atom
+        atomData.append(dataAtom)
+        return atomData
+    }
+    
+    func createM4ADataAtom(textData: Data) -> Data {
+        var dataAtom = Data()
+        let dataSize: UInt32 = UInt32(16 + textData.count)
+        dataAtom.append(contentsOf: withUnsafeBytes(of: dataSize.bigEndian) { Data($0) })
+        dataAtom.append(Data("data".utf8))
+        dataAtom.append(Data([0x00, 0x00, 0x00, 0x01]))
+        dataAtom.append(Data([0x00, 0x00, 0x00, 0x00]))
+        dataAtom.append(textData)
+        return dataAtom
+    }
+    
+    func createM4ATrackNumberAtom(trackNumber: Int) -> Data {
         var trknAtom = Data()
         let trknSize: UInt32 = 16
         trknAtom.append(contentsOf: withUnsafeBytes(of: trknSize.bigEndian) { Data($0) })
@@ -555,9 +581,10 @@ final class TagParserBDDTests: XCTestCase {
         trknAtom.append(Data([0x00, 0x00, 0x00, 0x00]))
         trknAtom.append(contentsOf: withUnsafeBytes(of: UInt16(trackNumber).bigEndian) { Data($0) })
         trknAtom.append(contentsOf: withUnsafeBytes(of: UInt16(0).bigEndian) { Data($0) })
-        ilstData.append(trknAtom)
-        
-        // Disc number atom
+        return trknAtom
+    }
+    
+    func createM4ADiscNumberAtom(discNumber: Int) -> Data {
         var diskAtom = Data()
         let diskSize: UInt32 = 16
         diskAtom.append(contentsOf: withUnsafeBytes(of: diskSize.bigEndian) { Data($0) })
@@ -565,52 +592,38 @@ final class TagParserBDDTests: XCTestCase {
         diskAtom.append(Data([0x00, 0x00, 0x00, 0x00]))
         diskAtom.append(contentsOf: withUnsafeBytes(of: UInt16(discNumber).bigEndian) { Data($0) })
         diskAtom.append(contentsOf: withUnsafeBytes(of: UInt16(0).bigEndian) { Data($0) })
-        ilstData.append(diskAtom)
-        
-        // Build boxes
-        let ilstSize: UInt32 = UInt32(8 + ilstData.count)
-        var ilstBox = Data()
-        ilstBox.append(contentsOf: withUnsafeBytes(of: ilstSize.bigEndian) { Data($0) })
-        ilstBox.append(Data("ilst".utf8))
-        ilstBox.append(ilstData)
-        
+        return diskAtom
+    }
+    
+    func createM4AMetaBox(ilstBox: Data) -> Data {
+        var metaData = Data()
         let metaSize: UInt32 = UInt32(12 + ilstBox.count)
         metaData.append(contentsOf: withUnsafeBytes(of: metaSize.bigEndian) { Data($0) })
         metaData.append(Data("meta".utf8))
         metaData.append(Data([0x00, 0x00, 0x00, 0x00]))
         metaData.append(ilstBox)
-        
-        let udtaSize: UInt32 = UInt32(8 + metaData.count)
-        udtaData.append(contentsOf: withUnsafeBytes(of: udtaSize.bigEndian) { Data($0) })
-        udtaData.append(Data("udta".utf8))
-        udtaData.append(metaData)
-        
-        let moovSize: UInt32 = UInt32(8 + udtaData.count)
-        moovData.append(contentsOf: withUnsafeBytes(of: moovSize.bigEndian) { Data($0) })
-        moovData.append(Data("moov".utf8))
-        moovData.append(udtaData)
-        
-        mp4Data.append(moovData)
-        try? mp4Data.write(to: fileURL)
-        return fileURL
+        return metaData
     }
     
-    private func createCorruptedMP3File() -> URL {
+    func createM4AUdtaBox(metaBox: Data) -> Data {
+        createM4ABox(type: "udta", content: metaBox)
+    }
+    
+    func createM4ABox(type: String, content: Data) -> Data {
+        var boxData = Data()
+        let boxSize: UInt32 = UInt32(8 + content.count)
+        boxData.append(contentsOf: withUnsafeBytes(of: boxSize.bigEndian) { Data($0) })
+        boxData.append(Data(type.utf8))
+        boxData.append(content)
+        return boxData
+    }
+    
+    func createCorruptedMP3File() -> URL {
         let fileName = "corrupted_\(UUID().uuidString).mp3"
         let fileURL = FileManager.default.temporaryDirectory.appendingPathComponent(fileName)
         // Invalid ID3v2 header
         let corruptedData = Data("BAD".utf8) + Data([0xFF, 0xFB, 0x90, 0x00])
         try? corruptedData.write(to: fileURL)
         return fileURL
-    }
-    
-    // Helper to convert to synchsafe integer
-    private func toSynchsafeInteger(_ value: UInt32) -> Data {
-        var result = Data()
-        result.append(UInt8((value >> 21) & 0x7F))
-        result.append(UInt8((value >> 14) & 0x7F))
-        result.append(UInt8((value >> 7) & 0x7F))
-        result.append(UInt8(value & 0x7F))
-        return result
     }
 }

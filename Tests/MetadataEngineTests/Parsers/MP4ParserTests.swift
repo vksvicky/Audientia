@@ -12,7 +12,6 @@
 @testable import Shared
 import XCTest
 
-// swiftlint:disable:file type_body_length function_body_length
 /// TDD tests for MP4Parser
 /// Following Right-BICEP: Right, Boundary, Inverse, Cross-check, Error, Performance
 @MainActor
@@ -351,113 +350,9 @@ final class MP4ParserTests: XCTestCase {
     private func createMockMP4File(atoms: [String: Any]) -> URL {
         let fileName = "mock_mp4_file_\(UUID().uuidString).mp4"
         let fileURL = FileManager.default.temporaryDirectory.appendingPathComponent(fileName)
-        
-        var mp4Data = Data()
-        
-        // ftyp box (file type box) - 32 bytes
-        var ftypSize: UInt32 = 32
-        mp4Data.append(contentsOf: withUnsafeBytes(of: ftypSize.bigEndian) { Data($0) })
-        mp4Data.append(Data("ftyp".utf8))
-        mp4Data.append(Data("mp4 ".utf8)) // Major brand
-        mp4Data.append(Data([0x00, 0x00, 0x00, 0x00])) // Minor version
-        mp4Data.append(Data("mp4 ".utf8)) // Compatible brand
-        mp4Data.append(Data([0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00]))
-        
-        // moov box (movie box) - contains metadata
-        var moovData = Data()
-        
-        // udta box (user data box)
-        var udtaData = Data()
-        
-        // meta box (metadata box)
-        var metaData = Data()
-        
-        // ilst box (item list box) - contains actual tags
-        var ilstData = Data()
-        
-        // Add metadata atoms
-        for (atomName, value) in atoms {
-            var atomData = Data()
-            
-            if let stringValue = value as? String {
-                // Text atom (data atom with text)
-                var dataAtom = Data()
-                
-                // data atom structure:
-                // - Size (4 bytes)
-                // - Type "data" (4 bytes)
-                // - Version/flags (4 bytes)
-                // - Locale (4 bytes)
-                // - Text data (variable)
-                // Total header = 16 bytes
-                let textData = stringValue.data(using: .utf8) ?? Data()
-                let dataSize: UInt32 = UInt32(16 + textData.count) // 16 bytes header + text data
-                dataAtom.append(contentsOf: withUnsafeBytes(of: dataSize.bigEndian) { Data($0) })
-                dataAtom.append(Data("data".utf8))
-                dataAtom.append(Data([0x00, 0x00, 0x00, 0x01])) // Version + flags (UTF-8)
-                dataAtom.append(Data([0x00, 0x00, 0x00, 0x00])) // Locale
-                dataAtom.append(textData)
-                
-                // Atom container (size + type + data)
-                // Atom names in MP4 use ISO-8859-1 encoding (© = 0xA9, not UTF-8)
-                var atomSize: UInt32 = UInt32(8 + dataAtom.count)
-                atomData.append(contentsOf: withUnsafeBytes(of: atomSize.bigEndian) { Data($0) })
-                // Convert atom name to ISO-8859-1 bytes (e.g., "©nam" -> [0xA9, 0x6E, 0x61, 0x6D])
-                if let atomNameData = atomName.data(using: .isoLatin1) {
-                    atomData.append(atomNameData)
-                } else {
-                    // Fallback: try to convert manually for common atoms
-                    atomData.append(Data(atomName.utf8))
-                }
-                atomData.append(dataAtom)
-            } else if let binaryValue = value as? Data {
-                // Binary atom (e.g., trkn, disk)
-                var atomSize: UInt32 = UInt32(8 + binaryValue.count)
-                atomData.append(contentsOf: withUnsafeBytes(of: atomSize.bigEndian) { Data($0) })
-                // Atom names in MP4 use ISO-8859-1 encoding
-                if let atomNameData = atomName.data(using: .isoLatin1) {
-                    atomData.append(atomNameData)
-                } else {
-                    atomData.append(Data(atomName.utf8))
-                }
-                atomData.append(binaryValue)
-            }
-            
-            ilstData.append(atomData)
-        }
-        
-        // Build ilst box
-        var ilstSize: UInt32 = UInt32(8 + ilstData.count)
-        var ilstBox = Data()
-        ilstBox.append(contentsOf: withUnsafeBytes(of: ilstSize.bigEndian) { Data($0) })
-        ilstBox.append(Data("ilst".utf8))
-        ilstBox.append(ilstData)
-        
-        // Build meta box
-        // Meta box structure: size (4) + type "meta" (4) + version/flags (4) + ilst box
-        // Size field includes the header itself, so total size = 8 (header) + 4 (version/flags) + ilstBox.count
-        // But ilstBox.count already includes its 8-byte header, so we need: 8 + 4 + ilstBox.count
-        var metaSize: UInt32 = UInt32(12 + ilstBox.count) // 12 = 8 (header) + 4 (version/flags)
-        metaData.append(contentsOf: withUnsafeBytes(of: metaSize.bigEndian) { Data($0) })
-        metaData.append(Data("meta".utf8))
-        metaData.append(Data([0x00, 0x00, 0x00, 0x00])) // Version + flags (4 bytes)
-        metaData.append(ilstBox)
-        
-        // Build udta box
-        var udtaSize: UInt32 = UInt32(8 + metaData.count)
-        udtaData.append(contentsOf: withUnsafeBytes(of: udtaSize.bigEndian) { Data($0) })
-        udtaData.append(Data("udta".utf8))
-        udtaData.append(metaData)
-        
-        // Build moov box
-        var moovSize: UInt32 = UInt32(8 + udtaData.count)
-        moovData.append(contentsOf: withUnsafeBytes(of: moovSize.bigEndian) { Data($0) })
-        moovData.append(Data("moov".utf8))
-        moovData.append(udtaData)
-        
-        // Add moov box to MP4 data
+        var mp4Data = createFtypBox()
+        let moovData = createMoovBox(with: atoms)
         mp4Data.append(moovData)
-        
         try? mp4Data.write(to: fileURL)
         return fileURL
     }
@@ -466,18 +361,7 @@ final class MP4ParserTests: XCTestCase {
     private func createMockMP4FileWithOnlyFtyp() -> URL {
         let fileName = "mock_mp4_ftyp_only_\(UUID().uuidString).mp4"
         let fileURL = FileManager.default.temporaryDirectory.appendingPathComponent(fileName)
-        
-        var mp4Data = Data()
-        
-        // ftyp box only
-        let ftypSize: UInt32 = 32
-        mp4Data.append(contentsOf: withUnsafeBytes(of: ftypSize.bigEndian) { Data($0) })
-        mp4Data.append(Data("ftyp".utf8))
-        mp4Data.append(Data("mp4 ".utf8))
-        mp4Data.append(Data([0x00, 0x00, 0x00, 0x00]))
-        mp4Data.append(Data("mp4 ".utf8))
-        mp4Data.append(Data([0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00]))
-        
+        let mp4Data = createFtypBox()
         try? mp4Data.write(to: fileURL)
         return fileURL
     }
@@ -486,33 +370,134 @@ final class MP4ParserTests: XCTestCase {
     private func createCorruptedMP4File(corruptionType: CorruptionType) -> URL {
         let fileName = "corrupted_mp4_file_\(UUID().uuidString).mp4"
         let fileURL = FileManager.default.temporaryDirectory.appendingPathComponent(fileName)
-        
+        let data = createCorruptedData(corruptionType: corruptionType)
+        try? data.write(to: fileURL)
+        return fileURL
+    }
+    
+    private func createCorruptedData(corruptionType: CorruptionType) -> Data {
         var data = Data()
         switch corruptionType {
         case .invalidBoxStructure:
-            // Invalid box size (too large)
-            data.append(contentsOf: withUnsafeBytes(of: UInt32.max.bigEndian) { Data($0) })
-            data.append(Data("ftyp".utf8))
-            data.append(Data("mp4 ".utf8))
+            data = createInvalidBoxStructure()
         case .malformedAtomData:
-            // Valid structure but malformed atom data
-            let ftypSize: UInt32 = 32
-            data.append(contentsOf: withUnsafeBytes(of: ftypSize.bigEndian) { Data($0) })
-            data.append(Data("ftyp".utf8))
-            data.append(Data("mp4 ".utf8))
-            data.append(Data([0x00, 0x00, 0x00, 0x00]))
-            data.append(Data("mp4 ".utf8))
-            data.append(Data([0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00]))
-            
-            // moov box with malformed atom
-            let moovSize: UInt32 = 20
-            data.append(contentsOf: withUnsafeBytes(of: moovSize.bigEndian) { Data($0) })
-            data.append(Data("moov".utf8))
-            // Incomplete atom data
-            data.append(Data([0xFF, 0xFF, 0xFF, 0xFF])) // Invalid size
+            data = createMalformedAtomData()
         }
-        
-        try? data.write(to: fileURL)
-        return fileURL
+        return data
+    }
+    
+    private func createInvalidBoxStructure() -> Data {
+        var data = Data()
+        data.append(contentsOf: withUnsafeBytes(of: UInt32.max.bigEndian) { Data($0) })
+        data.append(Data("ftyp".utf8))
+        data.append(Data("mp4 ".utf8))
+        return data
+    }
+    
+    private func createMalformedAtomData() -> Data {
+        var data = createFtypBox()
+        let moovSize: UInt32 = 20
+        data.append(contentsOf: withUnsafeBytes(of: moovSize.bigEndian) { Data($0) })
+        data.append(Data("moov".utf8))
+        data.append(Data([0xFF, 0xFF, 0xFF, 0xFF])) // Invalid size
+        return data
+    }
+}
+
+// MARK: - Helper Methods Extension
+
+private extension MP4ParserTests {
+    func createFtypBox() -> Data {
+        var ftypData = Data()
+        let ftypSize: UInt32 = 32
+        ftypData.append(contentsOf: withUnsafeBytes(of: ftypSize.bigEndian) { Data($0) })
+        ftypData.append(Data("ftyp".utf8))
+        ftypData.append(Data("mp4 ".utf8))
+        ftypData.append(Data([0x00, 0x00, 0x00, 0x00]))
+        ftypData.append(Data("mp4 ".utf8))
+        ftypData.append(Data([0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00]))
+        return ftypData
+    }
+    
+    func createMoovBox(with atoms: [String: Any]) -> Data {
+        let ilstBox = createIlstBox(with: atoms)
+        let metaBox = createMetaBox(ilstBox: ilstBox)
+        let udtaBox = createUdtaBox(metaBox: metaBox)
+        return createBox(type: "moov", content: udtaBox)
+    }
+    
+    func createIlstBox(with atoms: [String: Any]) -> Data {
+        var ilstData = Data()
+        for (atomName, value) in atoms {
+            let atomData = createAtom(name: atomName, value: value)
+            ilstData.append(atomData)
+        }
+        return createBox(type: "ilst", content: ilstData)
+    }
+    
+    func createAtom(name: String, value: Any) -> Data {
+        if let stringValue = value as? String {
+            return createTextAtom(name: name, text: stringValue)
+        } else if let binaryValue = value as? Data {
+            return createBinaryAtom(name: name, data: binaryValue)
+        }
+        return Data()
+    }
+    
+    func createTextAtom(name: String, text: String) -> Data {
+        let dataAtom = createTextDataAtom(text: text)
+        return createAtomHeader(name: name, content: dataAtom)
+    }
+    
+    func createBinaryAtom(name: String, data: Data) -> Data {
+        createAtomHeader(name: name, content: data)
+    }
+    
+    func createAtomHeader(name: String, content: Data) -> Data {
+        var atomData = Data()
+        let atomSize: UInt32 = UInt32(8 + content.count)
+        atomData.append(contentsOf: withUnsafeBytes(of: atomSize.bigEndian) { Data($0) })
+        if let atomNameData = name.data(using: .isoLatin1) {
+            atomData.append(atomNameData)
+        } else {
+            atomData.append(Data(name.utf8))
+        }
+        atomData.append(content)
+        return atomData
+    }
+    
+    func createTextDataAtom(text: String) -> Data {
+        var dataAtom = Data()
+        let textData = text.data(using: .utf8) ?? Data()
+        let dataSize: UInt32 = UInt32(16 + textData.count)
+        dataAtom.append(contentsOf: withUnsafeBytes(of: dataSize.bigEndian) { Data($0) })
+        dataAtom.append(Data("data".utf8))
+        dataAtom.append(Data([0x00, 0x00, 0x00, 0x01]))
+        dataAtom.append(Data([0x00, 0x00, 0x00, 0x00]))
+        dataAtom.append(textData)
+        return dataAtom
+    }
+    
+    func createMetaBox(ilstBox: Data) -> Data {
+        var metaData = Data()
+        let metaSize: UInt32 = UInt32(12 + ilstBox.count)
+        metaData.append(contentsOf: withUnsafeBytes(of: metaSize.bigEndian) { Data($0) })
+        metaData.append(Data("meta".utf8))
+        metaData.append(Data([0x00, 0x00, 0x00, 0x00]))
+        metaData.append(ilstBox)
+        return metaData
+    }
+    
+    func createUdtaBox(metaBox: Data) -> Data {
+        createBox(type: "udta", content: metaBox)
+    }
+    
+    func createBox(type: String, content: Data) -> Data {
+        var boxData = Data()
+        let boxSize: UInt32 = UInt32(8 + content.count)
+        boxData.append(contentsOf: withUnsafeBytes(of: boxSize.bigEndian) { Data($0) })
+        boxData.append(Data(type.utf8))
+        boxData.append(content)
+        return boxData
     }
 }

@@ -271,25 +271,46 @@ final class LibraryStatisticsTests: XCTestCase {
     
     // MARK: - Helper Methods
     
-    // swiftlint:disable:next function_parameter_count
-    private func createTrack(
-        title: String,
-        artist: String,
-        album: String,
-        duration: TimeInterval,
-        fileSize: Int64,
-        bitrate: Int,
-        sampleRate: Int
-    ) -> Track {
+    private struct TrackParams {
+        let title: String
+        let artist: String
+        let album: String
+        let duration: TimeInterval
+        let fileSize: Int64
+        let bitrate: Int
+        let sampleRate: Int
+    }
+    
+    private func createTrack(params: TrackParams) -> Track {
         Track(
+            title: params.title,
+            artist: params.artist,
+            album: params.album,
+            duration: params.duration,
+            filePath: "/path/to/\(params.title).mp3",
+            fileSize: params.fileSize,
+            bitrate: params.bitrate,
+            sampleRate: params.sampleRate
+        )
+    }
+    
+    private func createTrack(
+        title: String = "Test Song",
+        artist: String = "Test Artist",
+        album: String = "Test Album",
+        duration: TimeInterval = 60.0,
+        fileSize: Int64 = 5_000_000,
+        bitrate: Int = 256,
+        sampleRate: Int = 44100
+    ) -> Track {
+        createTrack(params: TrackParams(
             title: title,
             artist: artist,
             album: album,
             duration: duration,
-            filePath: "/path/to/\(title).mp3",
             fileSize: fileSize,
             bitrate: bitrate,
             sampleRate: sampleRate
-        )
+        ))
     }
 }
