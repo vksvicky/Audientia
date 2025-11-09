@@ -188,6 +188,11 @@ public final class VorbisCommentsParser: TagParserProtocol, @unchecked Sendable 
     private func extractYear(from dateString: String) -> Int? {
         // Extract 4-digit year from beginning of string
         let yearString = String(dateString.prefix(4))
-        return Int(yearString)
+        guard yearString.count == 4,
+              let year = Int(yearString),
+              year > 0 else {
+            return nil
+        }
+        return year
     }
 }

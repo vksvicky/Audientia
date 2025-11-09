@@ -231,7 +231,12 @@ public final class ID3v2Parser: TagParserProtocol, @unchecked Sendable {
         
         // Extract 4-digit year
         let yearString = String(text.prefix(4))
-        return Int(yearString)
+        guard yearString.count == 4,
+              let year = Int(yearString),
+              year > 0 else {
+            return nil
+        }
+        return year
     }
     
     private func extractTrackNumberFromFrame(_ data: Data) -> Int? {

@@ -272,15 +272,76 @@ final class ID3v2ParserTests: XCTestCase {
         trackNumber: Int? = nil
     ) -> URL {
         // Create a minimal MP3 file structure with ID3v2 tags
-        // This is a simplified version - real implementation would need proper MP3 + ID3v2 structure
         let tempDir = FileManager.default.temporaryDirectory
         let fileURL = tempDir.appendingPathComponent("\(UUID().uuidString).mp3")
         
-        // For now, create a placeholder file
-        // In real implementation, this would create a proper MP3 file with ID3v2 tags
-        FileManager.default.createFile(atPath: fileURL.path, contents: Data())
+        var id3Data = Data()
         
+        // ID3v2.3 header (10 bytes)
+        id3Data.append(Data("ID3".utf8)) // Magic (3 bytes)
+        id3Data.append(0x03) // Version (1 byte) - ID3v2.3
+        id3Data.append(0x00) // Revision (1 byte)
+        id3Data.append(0x00) // Flags (1 byte)
+        
+        // Build frame data
+        var frameData = Data()
+        let encodingByte: UInt8 = 0x03 // UTF-8 encoding
+        
+        // Add text frames
+        if !title.isEmpty {
+            frameData.append(createID3v2TextFrame(frameID: "TIT2", text: title, encoding: encodingByte))
+        }
+        if !artist.isEmpty {
+            frameData.append(createID3v2TextFrame(frameID: "TPE1", text: artist, encoding: encodingByte))
+        }
+        if !album.isEmpty {
+            frameData.append(createID3v2TextFrame(frameID: "TALB", text: album, encoding: encodingByte))
+        }
+        if let year = year {
+            frameData.append(createID3v2TextFrame(frameID: "TYER", text: String(year), encoding: encodingByte))
+        }
+        if let trackNumber = trackNumber {
+            frameData.append(createID3v2TextFrame(frameID: "TRCK", text: String(trackNumber), encoding: encodingByte))
+        }
+        
+        // Calculate tag size (synchsafe integer)
+        let tagSize = frameData.count
+        id3Data.append(contentsOf: toSynchsafeInteger(UInt32(tagSize)))
+        id3Data.append(frameData)
+        
+        // Add minimal MP3 frame data
+        id3Data.append(Data([0xFF, 0xFB, 0x90, 0x00])) // MP3 frame sync
+        
+        FileManager.default.createFile(atPath: fileURL.path, contents: id3Data)
         return fileURL
+    }
+    
+    /// Create an ID3v2 text frame
+    /// - Parameters:
+    ///   - frameID: 4-character frame ID (e.g., "TIT2", "TPE1")
+    ///   - text: Text content for the frame
+    ///   - encoding: Encoding byte (0x03 for UTF-8)
+    /// - Returns: Data representing the frame
+    private func createID3v2TextFrame(frameID: String, text: String, encoding: UInt8) -> Data {
+        var frame = Data()
+        let textData = text.data(using: .utf8) ?? Data()
+        frame.append(Data(frameID.utf8)) // Frame ID (4 bytes)
+        frame.append(contentsOf: toSynchsafeInteger(UInt32(textData.count + 1))) // Size (+1 for encoding)
+        frame.append(0x00) // Flags (2 bytes)
+        frame.append(0x00)
+        frame.append(encoding) // Encoding (1 byte)
+        frame.append(textData) // Content
+        return frame
+    }
+    
+    /// Convert integer to synchsafe integer bytes (7 bits per byte)
+    private func toSynchsafeInteger(_ value: UInt32) -> [UInt8] {
+        var result: [UInt8] = []
+        result.append(UInt8((value >> 21) & 0x7F))
+        result.append(UInt8((value >> 14) & 0x7F))
+        result.append(UInt8((value >> 7) & 0x7F))
+        result.append(UInt8(value & 0x7F))
+        return result
     }
     
     private func createCorruptedMP3File() -> URL {

@@ -276,14 +276,40 @@ final class VorbisCommentsParserTests: XCTestCase {
         trackNumber: Int? = nil
     ) -> URL {
         // Create a minimal OGG file structure with Vorbis Comments
-        // This is a simplified version - real implementation would need proper OGG + Vorbis Comments structure
+        // The VorbisCommentsParser uses a simple string search, so we just need:
+        // 1. "OggS" header at the start
+        // 2. Comment strings like "TITLE=...", "ARTIST=...", etc. in the data
         let tempDir = FileManager.default.temporaryDirectory
         let fileURL = tempDir.appendingPathComponent("\(UUID().uuidString).ogg")
         
-        // For now, create a placeholder file
-        // In real implementation, this would create a proper OGG file with Vorbis Comments
-        FileManager.default.createFile(atPath: fileURL.path, contents: Data())
+        var oggData = Data()
+        oggData.append(Data("OggS".utf8)) // OGG header
         
+        // Add padding
+        oggData.append(contentsOf: Data(repeating: 0x00, count: 20))
+        
+        // Add comment strings that the parser will search for
+        var comments: [String] = [
+            "TITLE=\(title)",
+            "ARTIST=\(artist)",
+            "ALBUM=\(album)"
+        ]
+        
+        if let year = year {
+            comments.append("DATE=\(year)")
+        }
+        
+        if let trackNumber = trackNumber {
+            comments.append("TRACKNUMBER=\(trackNumber)")
+        }
+        
+        // Add comment strings with null terminators
+        for comment in comments {
+            oggData.append(Data(comment.utf8))
+            oggData.append(0x00) // Null terminator
+        }
+        
+        FileManager.default.createFile(atPath: fileURL.path, contents: oggData)
         return fileURL
     }
     
