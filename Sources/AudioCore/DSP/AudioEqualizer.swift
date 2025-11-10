@@ -157,7 +157,7 @@ private actor EqualizerActor {
     init() {
         // Initialize with standard frequencies and flat response
         self.bands = Self.standardFrequencies.map { frequency in
-            EqualizerBand(frequency: frequency, gain: 0.0, q: 1.0)
+            EqualizerBand(frequency: frequency, gain: 0.0, qualityFactor: 1.0)
         }
     }
     
@@ -172,7 +172,7 @@ private actor EqualizerActor {
         bands[bandIndex] = EqualizerBand(
             frequency: bands[bandIndex].frequency,
             gain: gain,
-            q: bands[bandIndex].q
+            qualityFactor: bands[bandIndex].qualityFactor
         )
     }
     
@@ -185,7 +185,7 @@ private actor EqualizerActor {
     
     func reset() {
         bands = Self.standardFrequencies.map { frequency in
-            EqualizerBand(frequency: frequency, gain: 0.0, q: 1.0)
+            EqualizerBand(frequency: frequency, gain: 0.0, qualityFactor: 1.0)
         }
     }
     

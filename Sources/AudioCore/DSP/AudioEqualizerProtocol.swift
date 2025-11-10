@@ -10,9 +10,6 @@
 import Foundation
 @preconcurrency import Shared
 
-// swiftlint:disable identifier_name
-// Q factor is a standard DSP term, so we allow single-letter 'q' parameter name
-
 /// Equalizer band configuration
 /// A parametric equalizer band with frequency, gain, and Q factor
 public struct EqualizerBand: Equatable, Sendable {
@@ -23,15 +20,14 @@ public struct EqualizerBand: Equatable, Sendable {
     public let gain: Float
     
     /// Q factor (bandwidth) - typically 0.1 to 10.0
-    public let q: Float
+    public let qualityFactor: Float
     
-    public init(frequency: Float, gain: Float, q: Float = 1.0) {
+    public init(frequency: Float, gain: Float, qualityFactor: Float = 1.0) {
         self.frequency = frequency
         self.gain = gain
-        self.q = q
+        self.qualityFactor = qualityFactor
     }
 }
-// swiftlint:enable identifier_name
 
 /// Protocol for 10-band parametric equalizer
 public protocol AudioEqualizerProtocol: Sendable {
