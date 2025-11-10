@@ -174,7 +174,7 @@ public final class AudioEngine: AudioEngineProtocol {
         if currentTrack == nil && !queue.isEmpty {
             let nextTrack = queue.removeFirst()
             try await loadTrack(nextTrack)
-            // Track is now loaded, add to history
+            // Track is now loaded, add to history (this is the first track)
             queueHistory.append(nextTrack)
             currentQueueIndex = queueHistory.count - 1
         }
@@ -330,12 +330,18 @@ public final class AudioEngine: AudioEngineProtocol {
         // Check if we have a next track in queue
         if !queue.isEmpty {
             let nextTrack = queue.removeFirst()
-            // Add current track to history if it exists
+            // Ensure current track is in history (should already be there from play() or previous playNext())
             if let current = currentTrack {
-                queueHistory.append(current)
-                currentQueueIndex = queueHistory.count - 1
+                // Only add if not already the last item in history
+                if queueHistory.isEmpty || queueHistory.last?.id != current.id {
+                    queueHistory.append(current)
+                    currentQueueIndex = queueHistory.count - 1
+                }
             }
             try await loadTrack(nextTrack)
+            // Add the next track to history
+            queueHistory.append(nextTrack)
+            currentQueueIndex = queueHistory.count - 1
             try await play()
             Logger.audio.info("Advanced to next track: \(nextTrack.title)")
             return
@@ -375,7 +381,7 @@ public final class AudioEngine: AudioEngineProtocol {
             queue.insert(current, at: 0)
         }
         
-        // Update history and index
+        // Update index before loading previous track
         currentQueueIndex = previousIndex
         try await loadTrack(previousTrack)
         try await play()

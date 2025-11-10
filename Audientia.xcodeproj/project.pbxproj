@@ -124,6 +124,7 @@
 		D3E9BEF34748CF9003A667A9 /* AudioCore.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = F3040189EB9AC8FE164A0AF7 /* AudioCore.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		D4596E446398CFC49E6CA2F6 /* PluginSystem.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA91ED4D710EBE2CFCE5FB2C /* PluginSystem.swift */; };
 		E0EB5030CC50F69F5792688E /* AdvancedPlaybackTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4860645CAF21051967BFBA6 /* AdvancedPlaybackTests.swift */; };
+		A1B2C3D4E5F6A7B8C9D0E1F2 /* AudioFeaturesVerificationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6A7B8C9D0E1F3 /* AudioFeaturesVerificationTests.swift */; };
 		843F69D6AFB544C2B66BE8AA /* AudioGainControlTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 843F69D6AFB544C2B66BE8A9 /* AudioGainControlTests.swift */; };
 		E6D2C4ED63964EBCB42DA1B8 /* AudioGainControlBDDTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6D2C4ED63964EBCB42DA1B7 /* AudioGainControlBDDTests.swift */; };
 		946867C36D0148A69ED173B8 /* AudioGainControlProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 946867C36D0148A69ED173B7 /* AudioGainControlProtocol.swift */; };
@@ -692,6 +693,7 @@
 		F3816D8A1DCA235E29FBCFF0 /* SharedTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SharedTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		F3DE597C332BEBB55098CC40 /* corrupt_middle.alac */ = {isa = PBXFileReference; lastKnownFileType = file; path = corrupt_middle.alac; sourceTree = "<group>"; };
 		F4860645CAF21051967BFBA6 /* AdvancedPlaybackTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdvancedPlaybackTests.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F6A7B8C9D0E1F3 /* AudioFeaturesVerificationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioFeaturesVerificationTests.swift; sourceTree = "<group>"; };
 		843F69D6AFB544C2B66BE8A9 /* AudioGainControlTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioGainControlTests.swift; sourceTree = "<group>"; };
 		E6D2C4ED63964EBCB42DA1B7 /* AudioGainControlBDDTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioGainControlBDDTests.swift; sourceTree = "<group>"; };
 		9C0D1E2F3A4B5C6D7E8F9A0B /* AudioNormalizationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioNormalizationTests.swift; sourceTree = "<group>"; };
@@ -1562,6 +1564,7 @@
 			isa = PBXGroup;
 			children = (
 				F4860645CAF21051967BFBA6 /* AdvancedPlaybackTests.swift */,
+				A1B2C3D4E5F6A7B8C9D0E1F3 /* AudioFeaturesVerificationTests.swift */,
 				CE8B8FF5A9E3969EC3664870 /* AudioEngineFormatDetectionTests.swift */,
 				339865ED7298854506FC0A88 /* CAudioEngineTests.swift */,
 				53A4DA471A171AE64EC8D82B /* FileValidationFixtureTests.swift */,
@@ -2118,6 +2121,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				E0EB5030CC50F69F5792688E /* AdvancedPlaybackTests.swift in Sources */,
+				A1B2C3D4E5F6A7B8C9D0E1F2 /* AudioFeaturesVerificationTests.swift in Sources */,
 				843F69D6AFB544C2B66BE8AA /* AudioGainControlTests.swift in Sources */,
 				E6D2C4ED63964EBCB42DA1B8 /* AudioGainControlBDDTests.swift in Sources */,
 				9C0D1E2F3A4B5C6D7E8F9A0C /* AudioNormalizationTests.swift in Sources */,

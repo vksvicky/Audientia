@@ -17,6 +17,7 @@ Comprehensive documentation for the Audientia project.
 - **[`06-best-practices-and-clean-code.md`](06-best-practices-and-clean-code.md)** - Coding standards, best practices, and clean code principles
 - **[`07-logging-observability.md`](07-logging-observability.md)** - Logging patterns and observability guidelines
 - **[`12-git-hooks.md`](12-git-hooks.md)** - Git hooks configuration and pre-commit checks
+- **[`15-branch-merge-strategy.md`](15-branch-merge-strategy.md)** - Branch merge strategy and review branch management
 
 ### Features
 - **[`08-ml-ai-features.md`](08-ml-ai-features.md)** - ML/AI features and implementation plans
@@ -24,6 +25,7 @@ Comprehensive documentation for the Audientia project.
 - **[`10-integration-open-source-reuse.md`](10-integration-open-source-reuse.md)** - Open source integration and reuse strategy
 - **[`11-versioning-system.md`](11-versioning-system.md)** - Version management system documentation
 - **[`13-ffmpeg-integration.md`](13-ffmpeg-integration.md)** - FFmpeg integration, bundling, and deployment guide
+- **[`14-audio-features-verification.md`](14-audio-features-verification.md)** - Audio features verification against proven open source players
 
 ## Quick Reference
 
@@ -37,12 +39,14 @@ Comprehensive documentation for the Audientia project.
 - Use [`07-logging-observability.md`](07-logging-observability.md) for logging patterns
 - Reference [`05-roadmap-and-testing-strategy.md`](05-roadmap-and-testing-strategy.md) for testing guidelines
 - See [`12-git-hooks.md`](12-git-hooks.md) for pre-commit hook configuration
+- Review [`15-branch-merge-strategy.md`](15-branch-merge-strategy.md) for branch management practices
 
 ### Features
 - See [`08-ml-ai-features.md`](08-ml-ai-features.md) for ML/AI capabilities
 - Review [`10-integration-open-source-reuse.md`](10-integration-open-source-reuse.md) for external integrations
 - Check [`11-versioning-system.md`](11-versioning-system.md) for version management
 - Consult [`13-ffmpeg-integration.md`](13-ffmpeg-integration.md) for FFmpeg integration details
+- Reference [`14-audio-features-verification.md`](14-audio-features-verification.md) for audio features verification status
 
 ## Document Status
 
