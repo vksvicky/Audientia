@@ -304,6 +304,7 @@ final class CrossfadeTests: XCTestCase {
         
         // When & Then
         measure {
+            let semaphore = DispatchSemaphore(value: 0)
             Task {
                 _ = try? await crossfade.applyCrossfade(
                     outgoingAudio: outgoingAudio,
@@ -312,7 +313,9 @@ final class CrossfadeTests: XCTestCase {
                     channels: channels,
                     config: config
                 )
+                semaphore.signal()
             }
+            semaphore.wait()
         }
     }
     

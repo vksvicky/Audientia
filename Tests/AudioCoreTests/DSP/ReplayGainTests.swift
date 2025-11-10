@@ -294,13 +294,16 @@ final class ReplayGainTests: XCTestCase {
         
         // When & Then
         measure {
+            let semaphore = DispatchSemaphore(value: 0)
             Task {
                 _ = try? await replayGain.analyzeReplayGain(
                     audioData: audioData,
                     sampleRate: sampleRate,
                     channels: channels
                 )
+                semaphore.signal()
             }
+            semaphore.wait()
         }
     }
     

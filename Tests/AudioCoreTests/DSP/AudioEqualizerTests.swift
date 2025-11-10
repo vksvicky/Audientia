@@ -245,13 +245,16 @@ final class AudioEqualizerTests: XCTestCase {
         
         // When & Then
         measure {
+            let semaphore = DispatchSemaphore(value: 0)
             Task {
                 _ = try? await equalizer.process(
                     audioData: audioData,
                     sampleRate: sampleRate,
                     channels: channels
                 )
+                semaphore.signal()
             }
+            semaphore.wait()
         }
     }
     
