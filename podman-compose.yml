@@ -1,0 +1,69 @@
+# podman-compose.yml for Audientia
+# 
+# Provides containerized build and test environment for Audientia using Podman
+# Note: macOS apps require macOS to run, so this is primarily for tooling
+#
+# Copyright © 2025 CycleRunCode Club. All rights reserved.
+
+# Podman Compose file format version
+# Using 3.9 (latest 3.x) for compatibility with Podman Compose
+version: '3.9'
+
+services:
+  audientia-build:
+    build:
+      context: .
+      dockerfile: Containerfile
+    image: audientia:latest
+    container_name: audientia-build
+    volumes:
+      # Mount source code
+      - .:/workspace
+      # Mount build directory (optional, for persistent builds)
+      - ./build:/workspace/build
+      # Mount Xcode project (if generated)
+      - ./Audientia.xcodeproj:/workspace/Audientia.xcodeproj:ro
+    working_dir: /workspace
+    environment:
+      - LANG=en_US.UTF-8
+      - LC_ALL=en_US.UTF-8
+    command: ["help"]
+    stdin_open: true
+    tty: true
+
+  audientia-test:
+    build:
+      context: .
+      dockerfile: Containerfile
+    image: audientia:latest
+    container_name: audientia-test
+    volumes:
+      - .:/workspace
+      - ./build:/workspace/build
+    working_dir: /workspace
+    environment:
+      - LANG=en_US.UTF-8
+      - LC_ALL=en_US.UTF-8
+    command: ["test"]
+    profiles:
+      - test
+
+  audientia-dev:
+    build:
+      context: .
+      dockerfile: Containerfile
+    image: audientia:latest
+    container_name: audientia-dev
+    volumes:
+      - .:/workspace
+      - ./build:/workspace/build
+    working_dir: /workspace
+    environment:
+      - LANG=en_US.UTF-8
+      - LC_ALL=en_US.UTF-8
+    command: ["bash"]
+    stdin_open: true
+    tty: true
+    profiles:
+      - dev
+

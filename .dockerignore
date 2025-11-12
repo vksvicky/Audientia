@@ -1,0 +1,55 @@
+# .dockerignore for Audientia
+# Exclude unnecessary files from Docker build context
+
+# Build artifacts
+build/
+*.xcodeproj/
+*.xcworkspace/
+DerivedData/
+*.xcuserdata/
+
+# Git
+.git/
+.gitignore
+.gitattributes
+
+# Documentation (keep minimal, exclude large files)
+Documentation/*.md
+!Documentation/README.md
+
+# Test artifacts
+*.xctest/
+*.swiftmodule/
+
+# macOS specific
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Dependencies (if any)
+Pods/
+Carthage/
+.swiftpm/
+
+# Temporary files
+*.tmp
+*.log
+*.swp
+
+# Audio test fixtures (can be large)
+Tests/**/Fixtures/*.mp3
+Tests/**/Fixtures/*.flac
+Tests/**/Fixtures/*.wav
+Tests/**/Fixtures/*.m4a
+
+# Keep only essential files for build
+# Sources, Tests, Scripts, Configuration
+
