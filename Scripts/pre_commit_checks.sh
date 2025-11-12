@@ -5,9 +5,9 @@
 # Useful for testing changes before committing
 #
 # Usage:
-#   ./Scripts/pre_commit_checks.sh                    # Check staged files (or modified if none staged)
-#   ./Scripts/pre_commit_checks.sh <file>...          # Check specific files/directories
-#   ./Scripts/pre_commit_checks.sh --all              # Check all modified files (staged + unstaged)
+#   ./Scripts/pre_commit_checks.sh                    # Check staged files (or modified if none staged)                                                        
+#   ./Scripts/pre_commit_checks.sh <file>...          # Check specific files/directories                                                                       
+#   ./Scripts/pre_commit_checks.sh --all              # Check all files (staged + unstaged + untracked)                                                           
 #   ./Scripts/pre_commit_checks.sh --staged           # Check only staged files
 #
 # Note: Files don't need to be staged when passed as arguments
@@ -61,11 +61,12 @@ else
     
     # Handle special flags
     if [ "$1" = "--all" ]; then
-        # Check all modified files (staged + unstaged)
+        # Check all files (staged + unstaged + untracked)
         STAGED=$(git diff --cached --name-only --diff-filter=ACM 2>/dev/null || echo "")
         UNSTAGED=$(git diff --name-only --diff-filter=ACM 2>/dev/null || echo "")
-        FILES_TO_CHECK="$STAGED $UNSTAGED"
-        echo -e "${BLUE}ℹ️  Checking all modified files (staged + unstaged)...${NC}"
+        UNTRACKED=$(git ls-files --others --exclude-standard -- Tests/ Sources/ Scripts/ Documentation/ 2>/dev/null | grep -E '\.(swift|rs|cpp|hpp|h|js|ts|json|yml|yaml|md)$' || echo "")
+        FILES_TO_CHECK="$STAGED $UNSTAGED $UNTRACKED"
+        echo -e "${BLUE}ℹ️  Checking all files (staged + unstaged + untracked)...${NC}"
     elif [ "$1" = "--staged" ]; then
         # Check only staged files
         FILES_TO_CHECK=$(git diff --cached --name-only --diff-filter=ACM 2>/dev/null || echo "")

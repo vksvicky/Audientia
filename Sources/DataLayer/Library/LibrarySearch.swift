@@ -44,9 +44,20 @@ public final class LibrarySearch: @unchecked Sendable {
             return []
         }
         
-        // Get all tracks from indexer (for now, we'll need to add a method to get all tracks)
-        // For this implementation, we'll use a simple approach: get tracks by iterating
-        // In a real implementation, we'd have a more efficient way to get all tracks
+        // Use optimized search index if available (LibraryIndexer)
+        if let optimizedIndexer = indexer as? LibraryIndexer {
+            let matchingIds = await optimizedIndexer.searchTracks(query: normalizedQuery, field: field)
+            // Convert IDs to tracks
+            var matchingTracks: [Track] = []
+            for id in matchingIds {
+                if let track = await optimizedIndexer.getTrack(by: id) {
+                    matchingTracks.append(track)
+                }
+            }
+            return matchingTracks
+        }
+        
+        // Fallback to linear search for other indexer implementations
         let allTracks = try await getAllTracks()
         
         // Filter tracks based on search field
