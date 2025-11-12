@@ -17,7 +17,7 @@ public final class NowPlayingViewModel: ObservableObject {
     // MARK: - Published Properties
     
     /// Currently playing track
-    @Published public private(set) var currentTrack: Track?
+    @Published public private(set) var currentTrack: Shared.Track?
     
     /// Current playback state
     @Published public private(set) var playbackState: PlaybackState = .stopped
@@ -145,7 +145,7 @@ public final class NowPlayingViewModel: ObservableObject {
     
     /// Load a track for playback
     /// - Parameter track: The track to load
-    public func loadTrack(_ track: Track) async throws {
+    public func loadTrack(_ track: Shared.Track) async throws {
         Logger.userInterface.info("Loading track: \(track.title, privacy: .public)")
         lastError = nil
         

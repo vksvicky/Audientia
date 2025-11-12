@@ -26,8 +26,8 @@ enum MockFactory {
         discNumber: Int? = 1,
         genre: String? = "Rock",
         rating: Int? = nil
-    ) -> Track {
-        Track(
+    ) -> Shared.Track {
+        Shared.Track(
             id: id,
             title: title,
             artist: artist,
@@ -46,7 +46,7 @@ enum MockFactory {
     }
     
     /// Creates an array of mock tracks
-    static func makeTracks(count: Int) -> [Track] {
+    static func makeTracks(count: Int) -> [Shared.Track] {
         (0..<count).map { index in
             makeTrack(
                 title: "Track \(index + 1)",

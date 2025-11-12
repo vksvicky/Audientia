@@ -20,7 +20,7 @@ public final class AudioGainControl: AudioGainControlProtocol, @unchecked Sendab
     /// Get gain for a specific track (in dB)
     /// - Parameter track: The track to get gain for
     /// - Returns: Gain in dB, or nil if no track-specific gain is set
-    public func getTrackGain(for track: Track) async -> Float? {
+    public func getTrackGain(for track: Shared.Track) async -> Float? {
         await gainActor.getTrackGain(for: track.id)
     }
     
@@ -28,14 +28,14 @@ public final class AudioGainControl: AudioGainControlProtocol, @unchecked Sendab
     /// - Parameters:
     ///   - gain: Gain in dB (typically -20.0 to +20.0, but can be any value)
     ///   - track: The track to set gain for
-    public func setTrackGain(_ gain: Float, for track: Track) async {
+    public func setTrackGain(_ gain: Float, for track: Shared.Track) async {
         let clampedGain = clampGain(gain)
         await gainActor.setTrackGain(clampedGain, for: track.id)
     }
     
     /// Remove track-specific gain (revert to global gain)
     /// - Parameter track: The track to remove gain for
-    public func removeTrackGain(for track: Track) async {
+    public func removeTrackGain(for track: Shared.Track) async {
         await gainActor.removeTrackGain(for: track.id)
     }
     
@@ -55,7 +55,7 @@ public final class AudioGainControl: AudioGainControlProtocol, @unchecked Sendab
     /// Get effective gain for a track (track gain + global gain)
     /// - Parameter track: The track to get effective gain for
     /// - Returns: Effective gain in dB
-    public func getEffectiveGain(for track: Track) async -> Float {
+    public func getEffectiveGain(for track: Shared.Track) async -> Float {
         await gainActor.getEffectiveGain(for: track.id)
     }
     

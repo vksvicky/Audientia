@@ -29,7 +29,7 @@ final class AdvancedPlaybackTests: XCTestCase {
         // Then
         XCTAssertNotEqual(engine.currentTrack?.id, initialTrack?.id, "Should advance to next track")
         XCTAssertEqual(engine.currentTrack?.id, tracks[1].id, "Should be playing second track")
-        XCTAssertEqual(engine.state, .playing, "Should be playing")
+        XCTAssertEqual(engine.state, PlaybackState.playing, "Should be playing")
     }
     
     /// BDD: Given a queue with multiple tracks, when I play previous, then it should go to previous track
@@ -45,7 +45,7 @@ final class AdvancedPlaybackTests: XCTestCase {
         
         // Then
         XCTAssertEqual(engine.currentTrack?.id, tracks[0].id, "Should be playing first track")
-        XCTAssertEqual(engine.state, .playing, "Should be playing")
+        XCTAssertEqual(engine.state, PlaybackState.playing, "Should be playing")
     }
     
     /// BDD: Given I'm at the last track, when I play next, then it should handle gracefully
@@ -151,7 +151,7 @@ final class AdvancedPlaybackTests: XCTestCase {
         // Then
         XCTAssertEqual(engine.currentPosition, 0.0, "Position should be reset to 0")
         XCTAssertEqual(engine.currentTrack?.id, track.id, "Should still be same track")
-        XCTAssertEqual(engine.state, .playing, "Should be playing")
+        XCTAssertEqual(engine.state, PlaybackState.playing, "Should be playing")
     }
     
     /// BDD: Given a paused track, when I replay, then it should restart and play
@@ -168,7 +168,7 @@ final class AdvancedPlaybackTests: XCTestCase {
         
         // Then
         XCTAssertEqual(engine.currentPosition, 0.0, "Position should be reset")
-        XCTAssertEqual(engine.state, .playing, "Should be playing")
+        XCTAssertEqual(engine.state, PlaybackState.playing, "Should be playing")
     }
     
     // MARK: - Skip Functionality Tests
@@ -240,7 +240,7 @@ final class AdvancedPlaybackTests: XCTestCase {
         // Given
         let track = MockFactory.makeTrack(duration: 5.0) // Short track for testing
         let engine = try await AudioEngineTestHelpers.createEngineWithTrack(track)
-        engine.setLoopMode(.track)
+        engine.setLoopMode(LoopMode.track)
         try await engine.play()
         
         // When - Simulate track completion
@@ -257,7 +257,7 @@ final class AdvancedPlaybackTests: XCTestCase {
         // Given
         let tracks = MockFactory.makeTracks(count: 2)
         let engine = AudioEngineTestHelpers.createMockEngineWithQueue(tracks)
-        engine.setLoopMode(.queue)
+        engine.setLoopMode(LoopMode.queue)
         try await engine.play() // Start with first track
         try await engine.playNext() // Move to last track
         
@@ -273,7 +273,7 @@ final class AdvancedPlaybackTests: XCTestCase {
         // Given
         let track = MockFactory.makeTrack()
         let engine = try await AudioEngineTestHelpers.createEngineWithTrack(track)
-        engine.setLoopMode(.none)
+        engine.setLoopMode(LoopMode.none)
         try await engine.play()
         
         // When - Track completes
@@ -287,25 +287,25 @@ final class AdvancedPlaybackTests: XCTestCase {
     func testToggleLoopMode() {
         // Given
         let engine = AudioEngineTestHelpers.createMockEngine()
-        XCTAssertEqual(engine.loopMode, .none, "Should start with no loop")
+        XCTAssertEqual(engine.loopMode, LoopMode.none, "Should start with no loop")
         
         // When - Toggle to track
         engine.toggleLoopMode()
         
         // Then
-        XCTAssertEqual(engine.loopMode, .track, "Should be track loop")
+        XCTAssertEqual(engine.loopMode, LoopMode.track, "Should be track loop")
         
         // When - Toggle to queue
         engine.toggleLoopMode()
         
         // Then
-        XCTAssertEqual(engine.loopMode, .queue, "Should be queue loop")
+        XCTAssertEqual(engine.loopMode, LoopMode.queue, "Should be queue loop")
         
         // When - Toggle to none
         engine.toggleLoopMode()
         
         // Then
-        XCTAssertEqual(engine.loopMode, .none, "Should be no loop")
+        XCTAssertEqual(engine.loopMode, LoopMode.none, "Should be no loop")
     }
     
     // MARK: - Boundary Conditions

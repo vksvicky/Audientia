@@ -49,7 +49,7 @@ final class AudioGainControlBDDTests: XCTestCase {
     /// BDD: As a user, I want to reduce the gain for a quiet track so it doesn't play too loudly
     func testUserReducesGainForQuietTrack() async {
         // Given - I have a track that's too quiet
-        let track = MockFactory.makeTrack(title: "Quiet Song")
+        let track: Shared.Track = MockFactory.makeTrack(title: "Quiet Song")
         
         // When - I reduce the gain by -6 dB
         await gainControl.setTrackGain(-6.0, for: track)
@@ -65,7 +65,7 @@ final class AudioGainControlBDDTests: XCTestCase {
     /// BDD: As a user, I want to remove track-specific gain so the track uses the global gain setting
     func testUserRemovesTrackSpecificGain() async {
         // Given - I have a track with a specific gain setting
-        let track = MockFactory.makeTrack(title: "Custom Gain Song")
+        let track: Shared.Track = MockFactory.makeTrack(title: "Custom Gain Song")
         await gainControl.setGlobalGain(2.0)
         await gainControl.setTrackGain(-3.0, for: track)
         
@@ -84,8 +84,8 @@ final class AudioGainControlBDDTests: XCTestCase {
     /// BDD: As a user, I want to adjust the global gain so all tracks play at my preferred volume
     func testUserAdjustsGlobalGain() async {
         // Given - I have multiple tracks in my library
-        let track1 = MockFactory.makeTrack(id: UUID(), title: "Song 1")
-        let track2 = MockFactory.makeTrack(id: UUID(), title: "Song 2")
+        let track1: Shared.Track = MockFactory.makeTrack(id: UUID(), title: "Song 1")
+        let track2: Shared.Track = MockFactory.makeTrack(id: UUID(), title: "Song 2")
         
         // When - I set the global gain to +2 dB
         await gainControl.setGlobalGain(2.0)
@@ -103,7 +103,7 @@ final class AudioGainControlBDDTests: XCTestCase {
     /// BDD: As a user, I want to combine track-specific and global gain so I can fine-tune individual tracks
     func testUserCombinesTrackAndGlobalGain() async {
         // Given - I have a track and both global and track-specific gain settings
-        let track = MockFactory.makeTrack(title: "Fine-Tuned Song")
+        let track: Shared.Track = MockFactory.makeTrack(title: "Fine-Tuned Song")
         await gainControl.setGlobalGain(2.0)
         await gainControl.setTrackGain(-3.0, for: track)
         
@@ -151,9 +151,9 @@ final class AudioGainControlBDDTests: XCTestCase {
     /// BDD: As a user, I want to set different gains for different tracks so each plays at its optimal volume
     func testUserSetsDifferentGainsForDifferentTracks() async {
         // Given - I have multiple tracks that need different gain adjustments
-        let quietTrack = MockFactory.makeTrack(id: UUID(), title: "Quiet Track")
-        let loudTrack = MockFactory.makeTrack(id: UUID(), title: "Loud Track")
-        let normalTrack = MockFactory.makeTrack(id: UUID(), title: "Normal Track")
+        let quietTrack: Shared.Track = MockFactory.makeTrack(id: UUID(), title: "Quiet Track")
+        let loudTrack: Shared.Track = MockFactory.makeTrack(id: UUID(), title: "Loud Track")
+        let normalTrack: Shared.Track = MockFactory.makeTrack(id: UUID(), title: "Normal Track")
         
         // When - I set different gains for each
         await gainControl.setTrackGain(6.0, for: quietTrack)   // Boost quiet track
@@ -183,8 +183,8 @@ final class AudioGainControlBDDTests: XCTestCase {
     /// BDD: As a user, I want to reset all gain settings so I can start fresh
     func testUserResetsAllGainSettings() async {
         // Given - I have tracks with various gain settings
-        let track1 = MockFactory.makeTrack(id: UUID(), title: "Track 1")
-        let track2 = MockFactory.makeTrack(id: UUID(), title: "Track 2")
+        let track1: Shared.Track = MockFactory.makeTrack(id: UUID(), title: "Track 1")
+        let track2: Shared.Track = MockFactory.makeTrack(id: UUID(), title: "Track 2")
         
         await gainControl.setGlobalGain(5.0)
         await gainControl.setTrackGain(3.0, for: track1)
@@ -210,7 +210,7 @@ final class AudioGainControlBDDTests: XCTestCase {
     /// BDD: As a user, I want to fine-tune volume using small gain adjustments
     func testUserFineTunesVolumeWithSmallAdjustments() async {
         // Given - I have a track that's almost at the right volume
-        let track = MockFactory.makeTrack(title: "Almost Perfect Song")
+        let track: Shared.Track = MockFactory.makeTrack(title: "Almost Perfect Song")
         
         // When - I make small gain adjustments
         await gainControl.setTrackGain(1.0, for: track)

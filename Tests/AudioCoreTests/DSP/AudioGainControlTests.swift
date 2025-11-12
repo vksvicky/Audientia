@@ -343,7 +343,7 @@ final class AudioGainControlTests: XCTestCase {
     /// Test performance of gain calculations for many tracks
     func testGainCalculationPerformance() async {
         // Given - Many tracks with different gains
-        var tracks: [Track] = []
+        var tracks: [Shared.Track] = []
         for i in 0..<1000 {
             let track = MockFactory.makeTrack(id: UUID(), title: "Track \(i)")
             tracks.append(track)

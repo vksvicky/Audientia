@@ -16,7 +16,7 @@ enum AudioEngineTestHelpers {
     /// - Parameter tracks: Optional array of tracks to add to mock file system
     /// - Returns: AudioEngine configured for testing
     static func createMockEngine(
-        withTracks tracks: [Track] = [],
+        withTracks tracks: [Shared.Track] = [],
         formatCoordinator: FormatDecodingCoordinating = MockFormatDecodingCoordinator()
     ) -> AudioEngine {
         let mockFileSystem = MockFileSystem()
@@ -38,7 +38,7 @@ enum AudioEngineTestHelpers {
     /// Create an AudioEngine with a track already loaded (for convenience)
     /// - Parameter track: Track to load
     /// - Returns: AudioEngine with track loaded
-    static func createEngineWithTrack(_ track: Track) async throws -> AudioEngine {
+    static func createEngineWithTrack(_ track: Shared.Track) async throws -> AudioEngine {
         let engine = createMockEngine(withTracks: [track])
         try await engine.loadTrack(track)
         return engine
@@ -47,7 +47,7 @@ enum AudioEngineTestHelpers {
     /// Create an AudioEngine with mock file system and tracks already in queue
     /// - Parameter tracks: Array of tracks to add to queue and mock file system
     /// - Returns: AudioEngine with tracks in queue and registered in mock file system
-    static func createMockEngineWithQueue(_ tracks: [Track]) -> AudioEngine {
+    static func createMockEngineWithQueue(_ tracks: [Shared.Track]) -> AudioEngine {
         let engine = createMockEngine(withTracks: tracks)
         for track in tracks {
             engine.addToQueue(track)

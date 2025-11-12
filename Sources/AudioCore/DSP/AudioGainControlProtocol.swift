@@ -16,17 +16,17 @@ public protocol AudioGainControlProtocol: Sendable {
     /// Get gain for a specific track (in dB)
     /// - Parameter track: The track to get gain for
     /// - Returns: Gain in dB, or nil if no track-specific gain is set
-    func getTrackGain(for track: Track) async -> Float?
+    func getTrackGain(for track: Shared.Track) async -> Float?
     
     /// Set gain for a specific track (in dB)
     /// - Parameters:
     ///   - gain: Gain in dB (typically -20.0 to +20.0, but can be any value)
     ///   - track: The track to set gain for
-    func setTrackGain(_ gain: Float, for track: Track) async
+    func setTrackGain(_ gain: Float, for track: Shared.Track) async
     
     /// Remove track-specific gain (revert to global gain)
     /// - Parameter track: The track to remove gain for
-    func removeTrackGain(for track: Track) async
+    func removeTrackGain(for track: Shared.Track) async
     
     /// Get global gain (in dB)
     /// - Returns: Global gain in dB (default: 0.0)
@@ -39,7 +39,7 @@ public protocol AudioGainControlProtocol: Sendable {
     /// Get effective gain for a track (track gain + global gain)
     /// - Parameter track: The track to get effective gain for
     /// - Returns: Effective gain in dB
-    func getEffectiveGain(for track: Track) async -> Float
+    func getEffectiveGain(for track: Shared.Track) async -> Float
     
     /// Convert gain from dB to linear multiplier
     /// - Parameter gainDB: Gain in dB
