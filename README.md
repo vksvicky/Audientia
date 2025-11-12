@@ -103,7 +103,30 @@ xcodebuild test -project Audientia.xcodeproj -scheme Audientia
 
 # Run specific test target
 xcodebuild test -project Audientia.xcodeproj -scheme Audientia -only-testing:SharedTests
+
+# Run performance tests
+xcodebuild test -project Audientia.xcodeproj -scheme Audientia -only-testing:AudioCoreTests/PerformanceTestSuite
 ```
+
+### Containerization
+
+Audientia provides Docker and Podman containerization for consistent development and CI/CD environments:
+
+```bash
+# Build Docker container
+docker build -t audientia:latest .
+
+# Run with Docker Compose
+docker-compose up audientia-build
+
+# Build Podman container
+podman build -f Containerfile -t audientia:latest .
+
+# Run with Podman Compose
+podman-compose -f podman-compose.yml up audientia-build
+```
+
+See [`Documentation/16-containerization.md`](Documentation/16-containerization.md) for complete containerization guide.
 
 ### Project Generation
 
@@ -222,6 +245,7 @@ See [`Documentation/04-architecture.md`](Documentation/04-architecture.md) for d
 - [`Documentation/10-integration-open-source-reuse.md`](Documentation/10-integration-open-source-reuse.md) - Open source integration
 - [`Documentation/13-ffmpeg-integration.md`](Documentation/13-ffmpeg-integration.md) - FFmpeg integration and deployment guide
 - [`Documentation/11-versioning-system.md`](Documentation/11-versioning-system.md) - Version management
+- [`Documentation/16-containerization.md`](Documentation/16-containerization.md) - Docker and Podman containerization guide
 
 See [`Documentation/README.md`](Documentation/README.md) for complete documentation index.
 

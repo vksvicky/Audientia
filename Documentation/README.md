@@ -26,6 +26,7 @@ Comprehensive documentation for the Audientia project.
 - **[`11-versioning-system.md`](11-versioning-system.md)** - Version management system documentation
 - **[`13-ffmpeg-integration.md`](13-ffmpeg-integration.md)** - FFmpeg integration, bundling, and deployment guide
 - **[`14-audio-features-verification.md`](14-audio-features-verification.md)** - Audio features verification against proven open source players
+- **[`16-containerization.md`](16-containerization.md)** - Docker and Podman containerization guide
 
 ## Quick Reference
 
@@ -47,6 +48,7 @@ Comprehensive documentation for the Audientia project.
 - Check [`11-versioning-system.md`](11-versioning-system.md) for version management
 - Consult [`13-ffmpeg-integration.md`](13-ffmpeg-integration.md) for FFmpeg integration details
 - Reference [`14-audio-features-verification.md`](14-audio-features-verification.md) for audio features verification status
+- See [`16-containerization.md`](16-containerization.md) for Docker and Podman setup
 
 ## Document Status
 

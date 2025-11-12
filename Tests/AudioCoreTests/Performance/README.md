@@ -11,7 +11,15 @@ This test suite validates that all major operations meet their SLA (Service Leve
 ### Library Operations
 - **Scan 10,000 tracks**: < 5 minutes
 - **Search 100,000 tracks**: < 100ms (P95)
+- **Search 1,000,000 tracks**: < 200ms (P95)
 - **Load playlist (1000 tracks)**: < 200ms
+- **Indexing 100,000 tracks**: < 30s
+
+### Search Performance
+- **Different query types**: < 100ms (P95)
+- **Concurrent searches**: 10 searches < 1s
+- **Long query strings**: < 100ms (P95)
+- **Unicode/special characters**: < 100ms (P95)
 
 ### Playback
 - **Start playback**: < 100ms
@@ -27,6 +35,16 @@ This test suite validates that all major operations meet their SLA (Service Leve
 - **Gain calculation (1000 tracks)**: < 100ms
 - **Normalization analysis (44.1kHz, 1s)**: < 50ms
 - **Peak/RMS calculations**: < 10ms
+
+### Concurrent Operations
+- **Concurrent library operations**: < 5s
+- **Concurrent searches**: < 1s for 10 searches
+
+### Database Operations
+- **Database queries**: < 1ms per query
+
+### UI Operations
+- **UI data updates (filter & sort)**: < 16ms for 60fps
 
 ## Test Infrastructure
 

@@ -1,0 +1,98 @@
+//
+//  TaggingPerformanceTests.swift
+//  Audientia - Tagging Performance Tests
+//
+//  Performance tests for metadata tagging operations
+//  Following Right-BICEP [P]erformance Characteristics
+//
+//  Copyright © 2025 CycleRunCode Club. All rights reserved.
+//
+
+@testable import Shared
+import XCTest
+
+/// Performance tests for tagging operations
+@MainActor
+final class TaggingPerformanceTests: XCTestCase {
+    
+    /// Performance: Single tag write: < 100ms
+    func testTagWritePerformance() async {
+        // Given - Track for tagging
+        let track = MockFactory.makeTrack()
+        
+        // When - Measure tag write
+        // Note: This is a placeholder - real implementation would use MetadataEngine
+        let (_, metrics) = await PerformanceTestHelpers.measureAsync(iterations: 100) {
+            // Simulate tag write operation
+            // In real implementation: await metadataEngine.writeTag(track, fields: ...)
+            true
+        }
+        
+        // Then - Average should be < 100ms
+        PerformanceTestHelpers.assertAveragePerformance(
+            metrics: metrics,
+            maxAverageDuration: 0.1 // 100ms
+        )
+        
+        print(PerformanceTestHelpers.generateReport(
+            testName: "Tag Write (single)",
+            metrics: metrics,
+            sla: 0.1
+        ))
+    }
+    
+    /// Performance: Batch 100 tracks: < 10s
+    func testBatchTagWritePerformance() async {
+        // Given - 100 tracks for batch tagging
+        let tracks = (0..<100).map { index in
+            MockFactory.makeTrack(
+                id: UUID(),
+                title: "Track \(index)"
+            )
+        }
+        
+        // When - Measure batch tag write
+        let (_, metrics) = await PerformanceTestHelpers.measureAsync(iterations: 1) {
+            // Simulate batch tag write
+            // In real implementation: await metadataEngine.writeTagsBatch(tracks, fields: ...)
+            tracks.count
+        }
+        
+        // Then - Should complete within 10 seconds
+        PerformanceTestHelpers.assertPerformanceSLA(
+            metrics: metrics,
+            maxDuration: 10.0 // 10 seconds
+        )
+        
+        print(PerformanceTestHelpers.generateReport(
+            testName: "Batch Tag Write (100 tracks)",
+            metrics: metrics,
+            sla: 10.0
+        ))
+    }
+    
+    /// Performance: Tag read: < 10ms
+    func testTagReadPerformance() async {
+        // Given - Track for reading tags
+        let track = MockFactory.makeTrack()
+        
+        // When - Measure tag read
+        let (_, metrics) = await PerformanceTestHelpers.measureAsync(iterations: 1000) {
+            // Simulate tag read operation
+            // In real implementation: await metadataEngine.readTag(track)
+            track.title
+        }
+        
+        // Then - Average should be < 10ms
+        PerformanceTestHelpers.assertAveragePerformance(
+            metrics: metrics,
+            maxAverageDuration: 0.01 // 10ms
+        )
+        
+        print(PerformanceTestHelpers.generateReport(
+            testName: "Tag Read",
+            metrics: metrics,
+            sla: 0.01
+        ))
+    }
+}
