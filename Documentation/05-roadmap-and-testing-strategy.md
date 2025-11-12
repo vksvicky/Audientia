@@ -216,7 +216,8 @@
 - [x] Test fixtures (sample audio files, metadata) - **TestFixtures infrastructure created with runtime FLAC sample generation (FLACSampleBuilder), proper STREAMINFO block construction. Comprehensive fixture generation script (`Scripts/generate_audio_test_fixtures.sh`) supports 19 formats (mp3, flac, aac, wav, m4a, ogg, opus, alac, ape, aiff, caf, mp4, wma, webm, flv, ac3, dts, dsf/dff, wv) with multiple sample rates per format. Files named with sample rate (e.g., valid_44.1k.mp3, valid_96k.flac). Invalid and corrupt file variants generated for comprehensive error testing. Generated files are git-ignored and regenerated as needed. Tests now gracefully handle missing fixtures (skip formats without fixtures, fail only if no formats available).**
 - [x] Format decoder test infrastructure - **MockFormatDecodingCoordinator, FormatDecoderCoordinatorTests with comprehensive coverage**
 - [x] DSP component mocks for UI testing - **✅ MockDSPComponents implemented with MockAudioEqualizer, MockAudioGainControl, MockAudioNormalizer, MockReplayGain, and MockAudioVisualizer. All mocks conform to their respective protocols (AudioEqualizerProtocol, AudioGainControlProtocol, AudioNormalizationProtocol, ReplayGainProtocol, AudioVisualizerProtocol) and support actor-based thread safety. Mocks include call tracking (setBandGainCalled, resetCalled, etc.) and configurable failure scenarios (shouldFailSetBandGain, shouldFailProcess, etc.) for comprehensive UI testing without real audio processing.**
-- [x] CI/CD pipeline (GitHub Actions for macOS) - **✅ GitHub Actions workflow configured for macOS builds. Includes: Xcode setup, dependency installation (xcodegen, ffmpeg), test fixture generation, Xcode project generation, build verification, unit tests, SwiftLint checks. Tests are resilient to CI timing variations (polling instead of fixed sleeps). All tests fail clearly when fixtures are missing (no silent skipping with XCTSkip). Performance tests properly await async operations using DispatchSemaphore for CI compatibility.**
+- [x] Performance testing infrastructure - **✅ PerformanceTestHelpers implemented with comprehensive performance measurement utilities: measureAsync()/measureSync() for execution time measurement with multiple iterations, measureMemoryUsage() for memory profiling, PerformanceMetrics struct with duration statistics (average, min, max, P50, P95, P99 percentiles), assertPerformanceSLA() and assertAveragePerformance() for SLA validation, generateReport() for human-readable performance reports. PerformanceTestSuite implemented with comprehensive performance tests covering all roadmap benchmarks: library operations (scan 10k tracks, search 100k tracks, load playlist), playback (start playback, seek accuracy), tagging (single/batch write, read), DSP operations (gain calculation, normalization analysis, peak/RMS calculations), and memory usage tracking. All tests validate against roadmap SLA requirements.**
+- [x] CI/CD pipeline (GitHub Actions for macOS) - **✅ GitHub Actions workflow configured for macOS builds. Includes: Xcode setup, dependency installation (xcodegen, ffmpeg), test fixture generation, Xcode project generation, build verification, unit tests, SwiftLint checks. Tests are resilient to CI timing variations (polling instead of fixed sleeps). All tests fail clearly when fixtures are missing (no silent skipping with XCTSkip). Performance tests properly await async operations using DispatchSemaphore for accurate measurements and CI compatibility.**
 
 **Right-BICEP Coverage:**
 - **[Right]**: Verify playback state transitions, data persistence
@@ -691,7 +692,7 @@
    - [x] Invalid inputs, network failures, resource exhaustion, corruption - **✅ testLoadCorruptFileThrowsError, testPlayEmptyQueueThrowsError, testSeekWithoutLoadedTrackThrowsError**
 
 6. **[P]erformance Characteristics**:
-   - [x] Response times, throughput, memory usage, CPU usage - **✅ testSeekPerformance implemented**
+   - [x] Response times, throughput, memory usage, CPU usage - **✅ Comprehensive performance test infrastructure implemented: PerformanceTestHelpers with metrics collection (duration, percentiles P50/P95/P99, memory usage), PerformanceTestSuite with tests covering all roadmap benchmarks (library operations, playback, tagging, DSP operations). All performance tests validate against SLA requirements and include statistical analysis for reliable measurements.**
 
 7. **Edge Cases**:
    - [x] Unicode, special characters, very large/small values, race conditions - **✅ Boundary tests for very short/long tracks, position edge cases, comprehensive concurrency tests for race conditions and cancellation**
@@ -702,7 +703,7 @@
 
 - [x] **Unit Tests**: > 80% code coverage - **✅ AudioEngine and FormatDecoderCoordinator have comprehensive unit test coverage**
 - [x] **Integration Tests**: All critical paths covered - **✅ Format decoder integration tests with runtime FLAC fixtures, AudioEngine format detection integration**
-- [x] **Performance Tests**: All operations meet SLA targets - **✅ testSeekPerformance implemented**
+- [x] **Performance Tests**: All operations meet SLA targets - **✅ Comprehensive PerformanceTestSuite implemented with tests for all roadmap benchmarks: library operations (scan 10k tracks < 5min, search 100k tracks < 100ms P95, load playlist 1k tracks < 200ms), playback (start < 100ms, seek accuracy ±10ms), tagging (single write < 100ms, batch 100 tracks < 10s, read < 10ms), DSP operations (gain calculation 1k tracks < 100ms, normalization analysis < 50ms, peak/RMS < 10ms), and memory usage tracking. PerformanceTestHelpers provides measurement utilities with statistical analysis (P50, P95, P99 percentiles) and SLA validation.**
 - [x] **BDD Scenarios**: All user-facing features have scenarios - **✅ BDD-style tests for all AudioEngine features**
 
 ## CI/CD Pipeline
@@ -710,7 +711,7 @@
 - [x] **GitHub Actions workflow configured** - **✅ macOS build pipeline with Xcode setup, dependency installation, test fixture generation, build verification, unit tests, and SwiftLint checks**
 - **On every commit**: Unit tests, linting, build verification - **✅ Implemented in `.github/workflows/macos-build.yml`**
 - **On PR**: Integration tests, code coverage report - **✅ Tests run on PRs**
-- **On merge to main**: Full test suite, performance benchmarks, release candidate build - **✅ Full test suite runs**
+- **On merge to main**: Full test suite, performance benchmarks, release candidate build - **✅ Full test suite runs. PerformanceTestSuite ready for CI integration to detect performance regressions.**
 - **Weekly**: Full regression suite, dependency updates - **Pending**
 
 ## Testing Tools

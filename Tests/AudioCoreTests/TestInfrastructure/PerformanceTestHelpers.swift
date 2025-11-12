@@ -180,7 +180,7 @@ public final class PerformanceTestHelpers {
     }
     
     /// Assert that performance meets SLA requirements
-    public static func assertPerformanceSLA(
+    nonisolated public static func assertPerformanceSLA(
         metrics: PerformanceMetrics,
         maxDuration: TimeInterval,
         maxP95Duration: TimeInterval? = nil,
@@ -207,7 +207,7 @@ public final class PerformanceTestHelpers {
     }
     
     /// Assert that average performance meets requirements
-    public static func assertAveragePerformance(
+    nonisolated public static func assertAveragePerformance(
         metrics: PerformanceMetrics,
         maxAverageDuration: TimeInterval,
         file: StaticString = #file,
@@ -223,7 +223,7 @@ public final class PerformanceTestHelpers {
     }
     
     /// Generate performance report
-    public static func generateReport(
+    nonisolated public static func generateReport(
         testName: String,
         metrics: PerformanceMetrics,
         sla: TimeInterval? = nil

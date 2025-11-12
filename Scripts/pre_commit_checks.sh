@@ -64,7 +64,7 @@ else
         # Check all files (staged + unstaged + untracked)
         STAGED=$(git diff --cached --name-only --diff-filter=ACM 2>/dev/null || echo "")
         UNSTAGED=$(git diff --name-only --diff-filter=ACM 2>/dev/null || echo "")
-        UNTRACKED=$(git ls-files --others --exclude-standard -- Tests/ Sources/ Scripts/ Documentation/ 2>/dev/null | grep -E '\.(swift|rs|cpp|hpp|h|js|ts|json|yml|yaml|md)$' || echo "")
+        UNTRACKED=$(git ls-files --others --exclude-standard 2>/dev/null | grep -E '\.(swift|rs|cpp|hpp|h|js|ts|json|yml|yaml|md)$' || echo "")
         FILES_TO_CHECK="$STAGED $UNSTAGED $UNTRACKED"
         echo -e "${BLUE}ℹ️  Checking all files (staged + unstaged + untracked)...${NC}"
     elif [ "$1" = "--staged" ]; then
