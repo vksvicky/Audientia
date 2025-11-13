@@ -1,10 +1,16 @@
 # Audientia
 
+[![macOS Build](https://github.com/vksvicky/Audientia/workflows/macOS%20Build/badge.svg)](https://github.com/vksvicky/Audientia/actions)
+[![Swift](https://img.shields.io/badge/Swift-5.9-orange.svg)](https://swift.org)
+[![Platform](https://img.shields.io/badge/Platform-macOS%2015.0+-lightgrey.svg)](https://www.apple.com/macos)
+[![License](https://img.shields.io/badge/License-MIT%20%7C%20AGPL--3.0-blue.svg)](LICENSE)
+[![Xcode](https://img.shields.io/badge/Xcode-16.0+-blue.svg)](https://developer.apple.com/xcode)
+
 An open-source macOS music manager and player inspired by MediaMonkey, built with a modern, test-first stack. Audientia aims to combine powerful local library management, smart tagging, device sync, and streaming—while integrating ML-assisted organisation and recommendations.
 
-**Company**: CycleRunCode Club
-**Package**: club.cycleruncode
-**Copyright**: © 2025 CycleRunCode Club. All rights reserved.
+**Company**: CycleRunCode Club  
+**Package**: club.cycleruncode  
+**Copyright**: © 2025 CycleRunCode Club. All rights reserved.  
 **Support**: support@cycleruncode.club
 
 ## Features
