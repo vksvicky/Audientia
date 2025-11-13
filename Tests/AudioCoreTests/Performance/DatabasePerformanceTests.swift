@@ -22,11 +22,11 @@ final class DatabasePerformanceTests: XCTestCase {
         let queryCount = 1000
         
         // When - Measure query performance
-        let (_, metrics) = await PerformanceTestHelpers.measureAsync(iterations: queryCount) {
+        let (_, metrics) = await PerformanceTestHelpers.measureAsync(operation: {
             // Simulate database query
             // In real implementation: await dataLayer.queryTracks(...)
             _ = UUID()
-        }
+        }, iterations: queryCount)
         
         // Then - Average should be < 1ms per query
         PerformanceTestHelpers.assertAveragePerformance(

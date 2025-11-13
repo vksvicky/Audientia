@@ -32,11 +32,11 @@ final class DSPPerformanceTests: XCTestCase {
         }
         
         // When - Measure gain calculation
-        let (_, metrics) = await PerformanceTestHelpers.measureAsync(iterations: 1) {
+        let (_, metrics) = await PerformanceTestHelpers.measureAsync(operation: {
             for track in tracks {
                 _ = await gainControl.getEffectiveGain(for: track)
             }
-        }
+        }, iterations: 1)
         
         // Then - Should complete within 100ms
         PerformanceTestHelpers.assertPerformanceSLA(
@@ -63,7 +63,7 @@ final class DSPPerformanceTests: XCTestCase {
         let audioData = (0..<sampleCount).map { _ in Float.random(in: -1.0...1.0) }
         
         // When - Measure normalization analysis
-        let (_, metrics) = try await PerformanceTestHelpers.measureAsync(iterations: 100) {
+        let (_, metrics) = try await PerformanceTestHelpers.measureAsync(operation: {
             try await normalizer.analyzeNormalization(
                 audioData: audioData,
                 sampleRate: sampleRate,
@@ -71,7 +71,7 @@ final class DSPPerformanceTests: XCTestCase {
                 mode: .peak,
                 targetLevel: -3.0
             )
-        }
+        }, iterations: 100)
         
         // Then - Average should be < 50ms
         PerformanceTestHelpers.assertAveragePerformance(
@@ -99,12 +99,12 @@ final class DSPPerformanceTests: XCTestCase {
         let audioData = (0..<sampleCount).map { _ in Float.random(in: -1.0...1.0) }
         
         // When - Measure peak/RMS calculations
-        let (_, metrics) = await PerformanceTestHelpers.measureAsync(iterations: 1000) {
+        let (_, metrics) = await PerformanceTestHelpers.measureAsync(operation: {
             await normalizer.calculatePeakLevel(
                 audioData: audioData,
                 channels: channels
             )
-        }
+        }, iterations: 1000)
         
         // Then - Average should be < 10ms
         PerformanceTestHelpers.assertAveragePerformance(

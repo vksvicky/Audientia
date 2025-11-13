@@ -25,10 +25,10 @@ final class PlaybackPerformanceTests: XCTestCase {
         let engine = try await AudioEngineTestHelpers.createEngineWithTrack(track)
         
         // When - Measure playback start
-        let (_, metrics) = try await PerformanceTestHelpers.measureAsync(iterations: 10) {
-            try await engine.play()
-            try await engine.pause()
-        }
+        let (_, metrics) = await PerformanceTestHelpers.measureAsync(operation: {
+            try? await engine.play()
+            await engine.pause()
+        }, iterations: 10)
         
         // Then - Average should be < 100ms
         PerformanceTestHelpers.assertAveragePerformance(

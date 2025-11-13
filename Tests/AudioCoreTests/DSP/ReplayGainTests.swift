@@ -53,8 +53,6 @@ final class ReplayGainTests: XCTestCase {
     /// BDD: Given audio data, when I apply ReplayGain, then audio should be modified
     func testApplyReplayGainModifiesAudio() async throws {
         // Given
-        let sampleRate = 44100
-        let channels = 2
         let audioData: [Float] = [0.5, -0.3, 0.8, -0.2]
         let replayGainResult = ReplayGainResult(trackGain: -3.0, peak: 0.8)
         

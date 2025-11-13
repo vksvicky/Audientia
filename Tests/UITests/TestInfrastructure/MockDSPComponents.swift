@@ -83,41 +83,40 @@ final class MockAudioEqualizer: AudioEqualizerProtocol {
 
 // MARK: - Mock AudioGainControl
 
-@MainActor
-final class MockAudioGainControl: AudioGainControlProtocol {
-    var globalGain: Float = 0.0
-    var trackGains: [UUID: Float] = [:]
+final class MockAudioGainControl: AudioGainControlProtocol, @unchecked Sendable {
+    private var _globalGain: Float = 0.0
+    private var _trackGains: [UUID: Float] = [:]
     
     var setGlobalGainCalled = false
     var setTrackGainCalled = false
     var removeTrackGainCalled = false
     
     func getTrackGain(for track: Track) async -> Float? {
-        trackGains[track.id]
+        _trackGains[track.id]
     }
     
     func setTrackGain(_ gain: Float, for track: Track) async {
         setTrackGainCalled = true
-        trackGains[track.id] = gain
+        _trackGains[track.id] = gain
     }
     
     func removeTrackGain(for track: Track) async {
         removeTrackGainCalled = true
-        trackGains.removeValue(forKey: track.id)
+        _trackGains.removeValue(forKey: track.id)
     }
     
     func getGlobalGain() async -> Float {
-        globalGain
+        _globalGain
     }
     
     func setGlobalGain(_ gain: Float) async {
         setGlobalGainCalled = true
-        globalGain = gain
+        _globalGain = gain
     }
     
     func getEffectiveGain(for track: Track) async -> Float {
-        let trackGain = trackGains[track.id] ?? 0.0
-        return globalGain + trackGain
+        let trackGain = _trackGains[track.id] ?? 0.0
+        return _globalGain + trackGain
     }
     
     func gainDBToLinear(_ gainDB: Float) -> Float {

@@ -32,12 +32,12 @@ final class UIPerformanceTests: XCTestCase {
         }
         
         // When - Measure data preparation for UI (filtering, sorting)
-        let (_, metrics) = await PerformanceTestHelpers.measureAsync(iterations: 100) {
+        let (_, metrics) = await PerformanceTestHelpers.measureAsync(operation: {
             // Simulate UI data operations: filter and sort
             let filtered = tracks.filter { $0.artist.contains("Artist 50") }
             let sorted = filtered.sorted { $0.title < $1.title }
             return sorted
-        }
+        }, iterations: 100)
         
         // Then - Should be fast enough for 60fps (< 16ms)
         PerformanceTestHelpers.assertAveragePerformance(

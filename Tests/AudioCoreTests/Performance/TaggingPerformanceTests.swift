@@ -20,15 +20,15 @@ final class TaggingPerformanceTests: XCTestCase {
     /// Performance: Single tag write: < 100ms
     func testTagWritePerformance() async {
         // Given - Track for tagging
-        let track = MockFactory.makeTrack()
+        _ = MockFactory.makeTrack()
         
         // When - Measure tag write
         // Note: This is a placeholder - real implementation would use MetadataEngine
-        let (_, metrics) = await PerformanceTestHelpers.measureAsync(iterations: 100) {
+        let (_, metrics) = await PerformanceTestHelpers.measureAsync(operation: {
             // Simulate tag write operation
             // In real implementation: await metadataEngine.writeTag(track, fields: ...)
             true
-        }
+        }, iterations: 100)
         
         // Then - Average should be < 100ms
         PerformanceTestHelpers.assertAveragePerformance(
@@ -56,11 +56,11 @@ final class TaggingPerformanceTests: XCTestCase {
         }
         
         // When - Measure batch tag write
-        let (_, metrics) = await PerformanceTestHelpers.measureAsync(iterations: 1) {
+        let (_, metrics) = await PerformanceTestHelpers.measureAsync(operation: {
             // Simulate batch tag write
             // In real implementation: await metadataEngine.writeTagsBatch(tracks, fields: ...)
             tracks.count
-        }
+        }, iterations: 1)
         
         // Then - Should complete within 10 seconds
         PerformanceTestHelpers.assertPerformanceSLA(
@@ -82,11 +82,11 @@ final class TaggingPerformanceTests: XCTestCase {
         let track = MockFactory.makeTrack()
         
         // When - Measure tag read
-        let (_, metrics) = await PerformanceTestHelpers.measureAsync(iterations: 1000) {
+        let (_, metrics) = await PerformanceTestHelpers.measureAsync(operation: {
             // Simulate tag read operation
             // In real implementation: await metadataEngine.readTag(track)
             track.title
-        }
+        }, iterations: 1000)
         
         // Then - Average should be < 10ms
         PerformanceTestHelpers.assertAveragePerformance(

@@ -93,6 +93,20 @@
          </BuildActionEntry>
          <BuildActionEntry
             buildForTesting = "YES"
+            buildForRunning = "NO"
+            buildForProfiling = "NO"
+            buildForArchiving = "NO"
+            buildForAnalyzing = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "81CB892C7C3B4F7A077CCF26"
+               BuildableName = "MetadataEngineTests.xctest"
+               BlueprintName = "MetadataEngineTests"
+               ReferencedContainer = "container:Audientia.xcodeproj">
+            </BuildableReference>
+         </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
             buildForRunning = "YES"
             buildForProfiling = "YES"
             buildForArchiving = "YES"
@@ -192,6 +206,17 @@
                BlueprintIdentifier = "AFA388E7F056592A788B631B"
                BuildableName = "UITests.xctest"
                BlueprintName = "UITests"
+               ReferencedContainer = "container:Audientia.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO"
+            parallelizable = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "81CB892C7C3B4F7A077CCF26"
+               BuildableName = "MetadataEngineTests.xctest"
+               BlueprintName = "MetadataEngineTests"
                ReferencedContainer = "container:Audientia.xcodeproj">
             </BuildableReference>
          </TestableReference>

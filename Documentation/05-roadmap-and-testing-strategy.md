@@ -31,16 +31,34 @@
 - [x] **Built** - BDD scenarios
 - [x] **Built** - CI/CD pipeline
 - [x] **Built** - Test fixtures infrastructure
-- [x] **Built** - Code quality improvements: SwiftLint compliance, OSLog logging (replaced print statements), proper import sorting, cyclomatic complexity reduction, dependency management fixes
+- [x] **Built** - Code quality improvements: SwiftLint compliance, OSLog logging (replaced print statements), proper import sorting, cyclomatic complexity reduction, dependency management fixes, test class refactoring (large test classes split into focused, maintainable test suites)
 
 **Not Yet Built:**
 - [ ] Complete library management UI (partial: scanning, indexing, search, statistics backend implemented)
 - [ ] Complete metadata extraction (partial: tag parsing for ID3v2, Vorbis Comments, MP4 implemented; artwork extraction, metadata normalization pending)
 - [ ] Playlist management
-- [ ] DSP features (partial: audio gain, normalization, EQ, ReplayGain, crossfade, visualizer feed implemented; plugin-based visualizer UI pending)
+- [ ] DSP features (partial: audio gain, normalization, EQ, ReplayGain, crossfade, visualizer feed implemented; ARDFTSRC resampler, cue points, plugin-based visualizer UI pending)
+- [ ] Settings UI - Centralized settings management for all features
+- [ ] Lyrics display and management
+- [ ] AI musical notes generation
+- [ ] Background library search
 - [ ] Device sync
 - [ ] Transcoding
 - [ ] Plugin system (including audio visualizer plugins)
+
+**dbpowerAmp Feature Comparison:**
+- [x] Audio format support (20+ formats) - **✅ Implemented**
+- [x] Tag reading/writing (ID3v2, Vorbis, MP4) - **✅ Implemented**
+- [x] ReplayGain analysis - **✅ Implemented**
+- [x] Audio normalization - **✅ Implemented**
+- [x] Equalizer - **✅ Implemented**
+- [x] Crossfade - **✅ Implemented**
+- [ ] ARDFTSRC resampler (arbitrary sample rates, bandwidth/phase options) - **Pending**
+- [ ] Cue points - **Pending**
+- [ ] Batch conversion with profiles - **Pending (see Phase 4: Transcoding)**
+- [ ] PerfectMeta (MusicBrainz integration) - **Pending (see Phase 3: Metadata Enhancement)**
+- [ ] CD ripping - **Not planned (macOS focus)**
+- [ ] Multi-encoder support - **Pending (see Phase 4: Transcoding)**
 
 ---
 
@@ -289,32 +307,37 @@
 **Backend (MetadataEngine):**
 - [x] Tag parser (ID3v2, Vorbis Comments, MP4) - **✅ ID3v2Parser implemented with comprehensive TDD tests (ID3v2ParserTests) covering Right-BICEP principles. VorbisCommentsParser implemented with comprehensive TDD tests (VorbisCommentsParserTests) covering Right-BICEP principles. MP4Parser implemented with comprehensive TDD tests (MP4ParserTests) covering Right-BICEP principles. All parsers support TagParserProtocol, handle various encodings, and gracefully handle missing/corrupted tags.**
 - [x] Tag parser coordinator - **✅ TagParserCoordinator implemented with comprehensive TDD tests (TagParserCoordinatorTests) covering Right-BICEP principles. Routes files to appropriate parsers based on file extension, supports dependency injection for testing, handles unsupported formats and missing files gracefully.**
-- [ ] Artwork extraction
-- [ ] Metadata normalization
+- [x] Artwork extraction - **✅ ArtworkExtractor implemented with comprehensive TDD tests (ArtworkExtractorTests) and BDD tests (ArtworkExtractorBDDTests) covering Right-BICEP principles. Supports MP3 (ID3v2 APIC frames), MP4/M4A (covr atoms - pending), and Vorbis-based files (FLAC, OGG, Opus - pending). Extracts artwork data with MIME type and optional dimensions. MP3 extraction fully implemented and tested.**
+- [x] Metadata normalization - **✅ MetadataNormalizer implemented with comprehensive TDD tests (MetadataNormalizerTests) and BDD tests (MetadataNormalizerBDDTests) covering Right-BICEP principles. Normalizes artist, album, title, and genre fields by trimming whitespace and collapsing multiple spaces. Supports full track normalization.**
 
 **UI:**
 - [ ] Library browser (list/grid views)
 - [ ] Search interface
 - [ ] Library statistics view
 - [ ] Import/scan progress
+- [ ] Settings interface - **Centralized settings management for all application features: DSP settings (EQ, gain, normalization, ReplayGain, resampler), library settings (default library, scan preferences, indexing options), playback settings (crossfade, loop modes, skip intervals), UI settings (theme, visualizer preferences), and advanced settings (resampler configuration, bandwidth, phase options)**
 
 **Tests:**
 - [x] **TDD**: Scanner, indexer, search algorithms - **✅ LibraryScannerBDDTests with basic BDD scenarios (scan music folder, empty folder, mixed files). LibraryScannerMetadataTests with comprehensive TDD tests for metadata extraction integration following Right-BICEP principles (metadata delegation, error handling, empty directories, nested directories, consistent results, performance characteristics). LibraryIndexerTests with comprehensive TDD tests for indexing (Right-BICEP: boundary conditions, inverse relationships, error handling, performance, edge cases). LibrarySearchTests with comprehensive TDD tests for search functionality (case-insensitive, partial matching, field-specific search, performance). LibraryStatisticsTests with comprehensive TDD tests for statistics calculation (Right-BICEP: boundary conditions, inverse relationships, cross-checking, error handling, performance, edge cases)**
 - [x] **TDD**: Tag parsing accuracy - **✅ ID3v2ParserTests with comprehensive TDD tests covering Right-BICEP principles (valid tags, boundary conditions, inverse relationships, error conditions, performance, edge cases). VorbisCommentsParserTests with comprehensive TDD tests covering Right-BICEP principles (valid Vorbis Comments, boundary conditions, inverse relationships, error conditions, performance, edge cases). MP4ParserTests with comprehensive TDD tests covering Right-BICEP principles (valid MP4/M4A tags, boundary conditions, inverse relationships, error conditions, performance, edge cases). All test suites include tests for various encodings, missing tags, corrupted tags, and special characters.**
 - [x] **TDD**: Tag parser coordinator - **✅ TagParserCoordinatorTests with comprehensive TDD tests covering Right-BICEP principles (routing to correct parsers, boundary conditions, error handling, performance, edge cases). Tests verify correct parser selection based on file extension, case-insensitive matching, unsupported format handling, and default parser initialization.**
+- [x] **TDD**: Artwork extraction - **✅ ArtworkExtractorTests refactored into focused test classes: ArtworkExtractorTestBase (shared setup and helper methods), ArtworkExtractorBasicTests (basic functionality - Right, Inverse, Cross-check), ArtworkExtractorErrorTests (error and boundary conditions), ArtworkExtractorEdgeCaseTests (edge cases and performance). Comprehensive TDD tests covering Right-BICEP principles (MP3 APIC frame extraction, boundary conditions, error handling, performance, edge cases). Tests verify artwork extraction from MP3 files, handling of missing/corrupted artwork, large/small artwork, multiple APIC frames, and Unicode descriptions.**
+- [x] **TDD**: Metadata normalization - **✅ MetadataNormalizerTests with comprehensive TDD tests covering Right-BICEP principles (whitespace trimming, space collapsing, boundary conditions, error handling, performance, edge cases). Tests verify normalization of artist, album, title, genre, and full track normalization.**
 - [ ] **Unit**: Search relevance
 - [ ] **Integration**: Full library scan with various file types
 - [x] **BDD**: "As a user, I want to scan my music folder and see all tracks" - **✅ LibraryScannerBDDTests implemented with 3 BDD scenarios. LibraryScannerMetadataTests includes BDD scenarios for metadata extraction, error handling, and edge cases. LibraryIndexerBDDTests implemented with BDD scenarios for indexing scanned tracks, removing tracks, and clearing library. LibrarySearchBDDTests implemented with BDD scenarios for searching by title, artist, album, and across all fields with case-insensitive matching. LibraryStatisticsBDDTests implemented with BDD scenarios for viewing library statistics (track count, total duration, file size, artist/album counts, average bitrate/sample rate, empty library)**
 - [x] **BDD**: Tag parsing scenarios - **✅ TagParserBDDTests implemented with comprehensive BDD scenarios covering user-facing tag parsing workflows: parsing MP3/FLAC/OGG/M4A tags, handling missing/partial metadata, special characters, corrupted files, multi-format libraries, track/disc numbers, and genre information. All scenarios follow user-centric "As a user, I want to..." format.**
+- [x] **BDD**: Artwork extraction scenarios - **✅ ArtworkExtractorBDDTests implemented with BDD scenarios covering user-facing artwork extraction workflows: extracting artwork from MP3/MP4/FLAC files, handling missing artwork, corrupted files, displaying artwork. All scenarios follow user-centric "As a user, I want to..." format.**
+- [x] **BDD**: Metadata normalization scenarios - **✅ MetadataNormalizerBDDTests implemented with BDD scenarios covering user-facing normalization workflows: normalizing metadata for consistency, handling missing metadata, preserving special characters and Unicode. All scenarios follow user-centric "As a user, I want to..." format.**
 
 **Right-BICEP:**
-- [x] **[Right]**: Verify all tracks found, metadata accurate - **✅ Tests verify tracks found correctly, metadata extraction delegation works. Tag parsers verify correct metadata extraction from ID3v2, Vorbis Comments, and MP4 tags. Tag parser coordinator verifies correct routing to appropriate parsers.**
+- [x] **[Right]**: Verify all tracks found, metadata accurate - **✅ Tests verify tracks found correctly, metadata extraction delegation works. Tag parsers verify correct metadata extraction from ID3v2, Vorbis Comments, and MP4 tags. Tag parser coordinator verifies correct routing to appropriate parsers. Artwork extractor verifies correct artwork extraction from MP3 files. Metadata normalizer verifies correct normalization of metadata strings.**
 - [x] **[B]**: Empty folder, 100k+ files, nested 20 levels deep - **✅ Empty folder test, nested directories test implemented. Tag parser tests include empty files, files with only headers, and files with very long tag values.**
 - [x] **[I]**: Scan → Remove file → Rescan, verify removed - **✅ Consistent results test (scan twice produces same results). Tag parser tests verify parsing twice yields consistent results.**
 - [x] **[C]**: Compare tag values with external tag editor - **✅ ID3v2ParserTests, VorbisCommentsParserTests, and MP4ParserTests verify tag parsing accuracy against expected values, test various tag formats and encodings. Tag parser coordinator tests verify correct parser selection.**
 - [x] **[E]**: Permission denied, disk full, interrupted scan - **✅ Non-existent directory error handling test, metadata extraction failure graceful fallback test, invalid track indexing error handling, tag parsing error handling (corrupted tags, missing tags, invalid files). Tag parser coordinator handles unsupported formats and non-existent files gracefully.**
 - [x] **[P]**: Scan 10k tracks < 5 minutes, search < 100ms - **✅ Performance tests implemented: indexing 1000 tracks < 5 seconds, searching 1000 tracks < 100ms. Tag parser performance tests verify parsing completes within reasonable time. Tag parser coordinator efficiently selects correct parser.**
-- [x] **Edge**: Symlinks, aliases, network drives, read-only files - **✅ Nested directories test, error handling for non-existent directories, Swift 6 concurrency edge cases handled. Tag parser tests include edge cases: special characters, multiple dots in filenames, case-insensitive extensions, empty URLs, files with no extensions.**
+- [x] **Edge**: Symlinks, aliases, network drives, read-only files - **✅ Nested directories test, error handling for non-existent directories, Swift 6 concurrency edge cases handled. Tag parser tests include edge cases: special characters, multiple dots in filenames, case-insensitive extensions, empty URLs, files with no extensions. Artwork extractor tests include edge cases: multiple APIC frames, Unicode descriptions, very large/small artwork, corrupted files. Metadata normalizer tests include edge cases: Unicode characters, zero-width spaces, very long strings, nil values.**
 
 ---
 
@@ -402,18 +425,22 @@
 - Batch tag operations
 - Tag validation
 - Undo/redo system
+- Lyrics management - **Lyrics storage in metadata tags (USLT/SYLT frames in ID3v2, lyrics tags in Vorbis Comments, lyrics atoms in MP4), lyrics synchronization (timed lyrics), lyrics import/export, multiple lyrics sources support**
 
 **UI:**
 - Tag editor view
 - Batch tag operations UI
 - Tag validation warnings
 - Undo/redo controls
+- Lyrics editor - **Lyrics input and editing, synchronized lyrics editor with timeline, lyrics import from external files, lyrics search and fetch from online sources**
 
 **Tests:**
 - **TDD**: Tag writers, validation logic
 - **Unit**: Tag write/read roundtrip, validation rules
 - **Integration**: Edit tags, verify file updated correctly
 - **BDD**: "As a user, I want to edit a track's artist and see it saved"
+- **TDD**: Lyrics management - **Lyrics storage in tags, synchronized lyrics parsing, lyrics import/export, multiple lyrics sources**
+- **BDD**: "As a user, I want to view lyrics synchronized with the music playback" - **Lyrics display, synchronization, karaoke-style highlighting scenarios**
 
 **Right-BICEP:**
 - **[Right]**: Verify tags written correctly, readable by other apps
@@ -493,17 +520,21 @@
 - Transcode profile system
 - Quality presets
 - Background transcoding queue
+- ARDFTSRC resampler - **Advanced resampler supporting arbitrary sample rates (e.g., 123456Hz), superior to SSRC. Features: global resampler options (Control Center >> Advanced), Maximum Bandwidth configuration, Minimum phase option (less pre-ringing), DSP effect Resample with mode selection to override global settings, high-quality sample rate conversion for transcoding and playback**
 
 **UI:**
 - Transcode settings
 - Transcode progress
 - Quality presets selector
+- Resampler settings UI - **ARDFTSRC resampler configuration: global resampler options, Maximum Bandwidth slider, Minimum phase toggle (less pre-ringing), per-track resampler mode override, arbitrary sample rate input (e.g., 123456Hz), resampler quality presets**
 
 **Tests:**
 - **TDD**: Transcode engine, profile system
 - **Unit**: Transcode quality, format conversion
 - **Integration**: Transcode file, verify output quality
 - **BDD**: "As a user, I want to sync FLAC files as MP3 320kbps"
+- **TDD**: ARDFTSRC resampler algorithms - **Resampler implementation tests: arbitrary sample rate conversion, bandwidth configuration, minimum phase option, quality comparison with SSRC, performance benchmarks**
+- **BDD**: "As a user, I want to configure resampler settings for optimal audio quality" - **Resampler configuration, bandwidth/phase options, per-track override scenarios**
 
 **Right-BICEP:**
 - **[Right]**: Verify output format, bitrate, quality match settings
@@ -552,17 +583,21 @@
 - Embedding generation
 - Similarity calculation
 - Recommendation engine
+- AI musical notes generation - **AI-powered musical notation generation from audio: automatic transcription to sheet music, chord detection and notation, melody extraction, rhythm analysis, export to MusicXML/MIDI, integration with music theory models**
 
 **UI:**
 - ML-enhanced metadata display
 - "More like this" recommendations
 - Similarity visualization
+- AI musical notes viewer - **Display generated musical notation, interactive sheet music viewer, chord progression visualization, export options (PDF, MusicXML, MIDI), playback synchronization with notation**
 
 **Tests:**
 - **TDD**: ML model integration, recommendation algorithms
 - **Unit**: Classification accuracy, similarity scores
 - **Integration**: Classify track, verify recommendations
 - **BDD**: "As a user, I want to see similar tracks based on current song"
+- **TDD**: AI musical notes generation - **Musical notation generation accuracy, chord detection, melody extraction, rhythm analysis, MusicXML/MIDI export**
+- **BDD**: "As a musician, I want to generate sheet music from audio files" - **AI transcription, notation display, export scenarios**
 
 **Right-BICEP:**
 - **[Right]**: Verify classifications reasonable, recommendations relevant
@@ -638,11 +673,26 @@
 
 ### Phase 7: Polish & Optimization (Weeks 53-60)
 
-#### 7.1 UI/UX Refinement
+#### 7.1 UI/UX Refinement & Advanced Features
 - Accessibility (VoiceOver, keyboard navigation)
 - Dark mode optimization
 - Window management
 - Performance profiling and optimization
+- Settings UI - **Centralized settings management for all application features: DSP settings (EQ, gain, normalization, ReplayGain, resampler), library settings (default library, scan preferences, indexing options), playback settings (crossfade, loop modes, skip intervals), UI settings (theme, visualizer preferences), and advanced settings (resampler configuration, bandwidth, phase options)**
+
+**Backend:**
+- Cue points - **Cue point management: add/remove/edit cue points, jump to cue points during playback, cue point persistence in metadata, visual cue point markers on progress bar, hotkey support for cue navigation**
+- Background library search - **Background search operations using async/await and TaskGroup for concurrent search execution. Search operations run in background without blocking UI, with progress updates and cancellation support**
+
+**UI:**
+- Cue points UI - **Cue point editor: add/remove cue points, cue point list with labels, visual markers on progress bar, hotkey configuration for cue navigation, cue point export/import**
+- Lyrics display UI - **Lyrics viewer: synchronized lyrics display during playback, lyrics search and import, multiple lyrics sources (embedded tags, external files, online sources), lyrics editor, karaoke-style highlighting**
+
+**Tests:**
+- **TDD**: Cue point management - **Cue point CRUD operations, cue point persistence, cue navigation, cue point export/import**
+- **BDD**: "As a user, I want to add cue points to mark important sections in a track" - **Cue point creation, editing, deletion, navigation scenarios**
+- **TDD**: Background library search - **Background search execution, progress updates, cancellation support, concurrent search operations**
+- **BDD**: "As a user, I want to search my library without blocking the UI" - **Background search scenarios, progress indication, cancellation**
 
 #### 7.2 Integration & Ecosystem
 - Apple Music library import
@@ -717,7 +767,7 @@
 
 ### Code Quality Improvements
 
-- [x] **SwiftLint compliance** - **✅ All SwiftLint violations resolved: cyclomatic complexity reduced (LibraryIndexer.search refactored into helper methods), force unwrapping replaced with safe unwrapping, trailing newlines fixed, vertical whitespace violations resolved, for-where clauses preferred over if statements**
+- [x] **SwiftLint compliance** - **✅ All SwiftLint violations resolved: cyclomatic complexity reduced (LibraryIndexer.search refactored into helper methods), force unwrapping replaced with safe unwrapping, trailing newlines fixed, vertical whitespace violations resolved, for-where clauses preferred over if statements, type_body_length violations addressed by splitting large test classes into focused test suites (ArtworkExtractorTests refactored into ArtworkExtractorTestBase, ArtworkExtractorBasicTests, ArtworkExtractorErrorTests, ArtworkExtractorEdgeCaseTests)**
 - [x] **Logging standards** - **✅ All print statements replaced with OSLog (Logger.testing) in performance tests. Proper logging infrastructure using Logger extension from Shared module.**
 - [x] **Import organization** - **✅ All imports properly sorted (system imports first, then @testable imports) per SwiftLint sorted_imports rule**
 - [x] **Dependency management** - **✅ AppKitBridge dependency on AudioCore added to project.yml. All framework dependencies properly declared.**

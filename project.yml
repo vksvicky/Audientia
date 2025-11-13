@@ -536,6 +536,8 @@ targets:
     sources:
       - path: Tests/AudioCoreTests
         group: Tests
+        excludes:
+          - "**/README.md"
     dependencies:
       - target: AudioCore
       - target: Shared
@@ -618,6 +620,35 @@ targets:
       CODE_SIGNING_ALLOWED: NO
       DEAD_CODE_STRIPPING: YES
 
+  MetadataEngineTests:
+    type: bundle.unit-test
+    platform: macOS
+    deploymentTarget: "15.0"
+    sources:
+      - path: Tests/MetadataEngineTests
+        group: Tests
+        excludes:
+          - "**/README.md"
+    dependencies:
+      - target: MetadataEngine
+      - target: Shared
+      - framework: XCTest.framework
+        embed: false
+    settings:
+      PRODUCT_BUNDLE_IDENTIFIER: club.cycleruncode.MetadataEngineTests
+      SWIFT_VERSION: "5.9"
+      MACOSX_DEPLOYMENT_TARGET: "15.0"
+      GENERATE_INFOPLIST_FILE: YES
+      INFOPLIST_KEY_CFBundleName: MetadataEngineTests
+      INFOPLIST_KEY_NSHumanReadableCopyright: "Copyright © 2025 CycleRunCode Club. All rights reserved."
+      ENABLE_TESTING_SEARCH_PATHS: YES
+      TEST_HOST: ""
+      BUNDLE_LOADER: "$(TEST_HOST)"
+      CODE_SIGN_IDENTITY: "-"
+      CODE_SIGNING_REQUIRED: NO
+      CODE_SIGNING_ALLOWED: NO
+      DEAD_CODE_STRIPPING: YES
+
 schemes:
   Audientia:
     build:
@@ -631,6 +662,7 @@ schemes:
         Shared: all
         SharedTests: [test]
         DataLayerTests: [test]
+        MetadataEngineTests: [test]
     run:
       config: Debug
       executable: Audientia
@@ -647,6 +679,9 @@ schemes:
           parallelizable: true
           randomExecutionOrdering: true
         - name: UITests
+          parallelizable: true
+          randomExecutionOrdering: true
+        - name: MetadataEngineTests
           parallelizable: true
           randomExecutionOrdering: true
 

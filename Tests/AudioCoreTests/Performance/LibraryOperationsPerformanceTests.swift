@@ -31,7 +31,7 @@ final class LibraryOperationsPerformanceTests: XCTestCase {
         }
         
         // When - Measure scanning performance
-        let (_, metrics) = await PerformanceTestHelpers.measureAsync(iterations: 1) {
+        let (_, metrics) = await PerformanceTestHelpers.measureAsync(operation: {
             // Simulate scanning operation
             // In real implementation, this would use LibraryScanner
             var scanned: [Shared.Track] = []
@@ -39,7 +39,7 @@ final class LibraryOperationsPerformanceTests: XCTestCase {
                 scanned.append(track)
             }
             return scanned
-        }
+        }, iterations: 1)
         
         // Then - Should complete within 5 minutes
         PerformanceTestHelpers.assertPerformanceSLA(
@@ -105,11 +105,11 @@ final class LibraryOperationsPerformanceTests: XCTestCase {
         }
         
         // When - Measure playlist loading
-        let (_, metrics) = await PerformanceTestHelpers.measureAsync(iterations: 10) {
+        let (_, metrics) = await PerformanceTestHelpers.measureAsync(operation: {
             // Simulate playlist load
             // In real implementation, this would load from DataLayer
             Array(tracks)
-        }
+        }, iterations: 10)
         
         // Then - Average should be < 200ms
         PerformanceTestHelpers.assertAveragePerformance(
