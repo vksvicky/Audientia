@@ -539,6 +539,7 @@ targets:
     dependencies:
       - target: AudioCore
       - target: Shared
+      - target: DataLayer
       - framework: XCTest.framework
         embed: false
     settings:

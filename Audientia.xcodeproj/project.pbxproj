@@ -595,6 +595,13 @@
 			remoteGlobalIDString = 60DBDF79817EDE096FCDC555;
 			remoteInfo = PluginSystem;
 		};
+		E29E56452EC620E700367C24 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = AF348473424FB6AD275FC868 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 15ABA0849044C2D5313CF0D0;
+			remoteInfo = DataLayer;
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -2185,6 +2192,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				E29E56462EC620E700367C24 /* PBXTargetDependency */,
 				B301F51591A8B587CEFF60BA /* PBXTargetDependency */,
 				75A3AC244733E22FF97A64F9 /* PBXTargetDependency */,
 			);
@@ -3178,6 +3186,11 @@
 			isa = PBXTargetDependency;
 			target = C9315070ADDD2733ECF2C9B0 /* Shared */;
 			targetProxy = 1349D7302F2570B422FBEBA2 /* PBXContainerItemProxy */;
+		};
+		E29E56462EC620E700367C24 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 15ABA0849044C2D5313CF0D0 /* DataLayer */;
+			targetProxy = E29E56452EC620E700367C24 /* PBXContainerItemProxy */;
 		};
 		E4F15749ABA9879C024F3E7B /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
