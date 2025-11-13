@@ -54,7 +54,10 @@ public final class LibraryScanner: LibraryScannerProtocol, @unchecked Sendable {
                 throw LibraryScannerError.directoryNotFound
             }
             
-            for case let fileURL as URL in enumerator {
+            // Convert enumerator to array for Swift 6 async compatibility
+            let allURLs = enumerator.allObjects.compactMap { $0 as? URL }
+            
+            for fileURL in allURLs {
                 // Check if it's a regular file
                 let resourceValues = try? fileURL.resourceValues(forKeys: [.isRegularFileKey])
                 guard resourceValues?.isRegularFile == true else {
