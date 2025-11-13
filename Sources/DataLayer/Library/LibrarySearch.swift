@@ -47,18 +47,26 @@ public final class LibrarySearch: @unchecked Sendable {
         // Use optimized search index if available (LibraryIndexer)
         if let optimizedIndexer = indexer as? LibraryIndexer {
             let matchingIds = await optimizedIndexer.searchTracks(query: normalizedQuery, field: field)
-            // Convert IDs to tracks
-            var matchingTracks: [Track] = []
-            for id in matchingIds {
-                if let track = await optimizedIndexer.getTrack(by: id) {
-                    matchingTracks.append(track)
+            // Convert IDs to tracks in parallel for better performance
+            return await withTaskGroup(of: Track?.self) { group in
+                for id in matchingIds {
+                    group.addTask {
+                        await optimizedIndexer.getTrack(by: id)
+                    }
                 }
+                
+                var matchingTracks: [Track] = []
+                for await track in group {
+                    if let track = track {
+                        matchingTracks.append(track)
+                    }
+                }
+                return matchingTracks
             }
-            return matchingTracks
         }
         
         // Fallback to linear search for other indexer implementations
-        let allTracks = try await getAllTracks()
+        let allTracks = await getAllTracks()
         
         // Filter tracks based on search field
         let matchingTracks = allTracks.filter { track in

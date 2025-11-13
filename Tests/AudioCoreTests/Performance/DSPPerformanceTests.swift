@@ -8,9 +8,11 @@
 //  Copyright © 2025 CycleRunCode Club. All rights reserved.
 //
 
+import os.log
+import XCTest
+
 @testable import AudioCore
 @testable import Shared
-import XCTest
 
 /// Performance tests for DSP operations
 @MainActor
@@ -42,11 +44,12 @@ final class DSPPerformanceTests: XCTestCase {
             maxDuration: 0.1 // 100ms
         )
         
-        print(PerformanceTestHelpers.generateReport(
+        let report = PerformanceTestHelpers.generateReport(
             testName: "Gain Calculation (1,000 tracks)",
             metrics: metrics,
             sla: 0.1
-        ))
+        )
+        Logger.testing.info("\(report)")
     }
     
     /// Performance: Normalization analysis for 44.1kHz audio: < 50ms
@@ -76,11 +79,13 @@ final class DSPPerformanceTests: XCTestCase {
             maxAverageDuration: 0.05 // 50ms
         )
         
-        print(PerformanceTestHelpers.generateReport(
+        let report = PerformanceTestHelpers.generateReport(
             testName: "Normalization Analysis (44.1kHz, 1s)",
             metrics: metrics,
-            sla: 0.05
-        ))
+            sla: 0.05,
+            slaMetric: .average
+        )
+        Logger.testing.info("\(report)")
     }
     
     /// Performance: Peak/RMS calculations: < 10ms
@@ -107,10 +112,12 @@ final class DSPPerformanceTests: XCTestCase {
             maxAverageDuration: 0.01 // 10ms
         )
         
-        print(PerformanceTestHelpers.generateReport(
+        let report = PerformanceTestHelpers.generateReport(
             testName: "Peak/RMS Calculation",
             metrics: metrics,
-            sla: 0.01
-        ))
+            sla: 0.01,
+            slaMetric: .average
+        )
+        Logger.testing.info("\(report)")
     }
 }

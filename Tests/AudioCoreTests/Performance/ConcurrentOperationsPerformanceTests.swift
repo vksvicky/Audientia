@@ -8,9 +8,11 @@
 //  Copyright © 2025 CycleRunCode Club. All rights reserved.
 //
 
+import os.log
+import XCTest
+
 @testable import DataLayer
 @testable import Shared
-import XCTest
 
 /// Performance tests for concurrent operations
 @MainActor
@@ -69,8 +71,8 @@ final class ConcurrentOperationsPerformanceTests: XCTestCase {
         // Then - All operations should complete without deadlock
         XCTAssertLessThan(totalDuration, 5.0, "Concurrent operations should complete in < 5s")
         
-        print("Concurrent Operations Performance:")
-        print("  5 searches + 3 indexing operations completed in \(String(format: "%.3f", totalDuration))s")
+        Logger.testing.info("Concurrent Operations Performance:")
+        Logger.testing.info("  5 searches + 3 indexing operations completed in \(String(format: "%.3f", totalDuration))s")
         
         // Cleanup
         try await indexer.clear()

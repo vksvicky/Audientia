@@ -8,8 +8,10 @@
 //  Copyright © 2025 CycleRunCode Club. All rights reserved.
 //
 
-@testable import Shared
+import os.log
 import XCTest
+
+@testable import Shared
 
 /// Performance tests for UI operations
 @MainActor
@@ -43,10 +45,12 @@ final class UIPerformanceTests: XCTestCase {
             maxAverageDuration: 0.016 // 16ms for 60fps
         )
         
-        print(PerformanceTestHelpers.generateReport(
+        let report = PerformanceTestHelpers.generateReport(
             testName: "UI Data Update (1,000 tracks, filter & sort)",
             metrics: metrics,
-            sla: 0.016
-        ))
+            sla: 0.016,
+            slaMetric: .average
+        )
+        Logger.testing.info("\(report)")
     }
 }

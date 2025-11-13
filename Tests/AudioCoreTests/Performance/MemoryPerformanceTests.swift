@@ -8,8 +8,10 @@
 //  Copyright © 2025 CycleRunCode Club. All rights reserved.
 //
 
-@testable import Shared
+import os.log
 import XCTest
+
+@testable import Shared
 
 /// Performance tests for memory usage
 @MainActor
@@ -37,9 +39,9 @@ final class MemoryPerformanceTests: XCTestCase {
         let deltaMB = Double(memoryResult.delta) / 1_000_000.0
         XCTAssertLessThan(deltaMB, 100.0, "Memory usage should be reasonable")
         
-        print("Memory Usage Test:")
-        print("  Before: \(String(format: "%.2f", Double(memoryResult.before) / 1_000_000.0)) MB")
-        print("  After: \(String(format: "%.2f", Double(memoryResult.after) / 1_000_000.0)) MB")
-        print("  Delta: \(String(format: "%.2f", deltaMB)) MB")
+        Logger.testing.info("Memory Usage Test:")
+        Logger.testing.info("  Before: \(String(format: "%.2f", Double(memoryResult.before) / 1_000_000.0)) MB")
+        Logger.testing.info("  After: \(String(format: "%.2f", Double(memoryResult.after) / 1_000_000.0)) MB")
+        Logger.testing.info("  Delta: \(String(format: "%.2f", deltaMB)) MB")
     }
 }

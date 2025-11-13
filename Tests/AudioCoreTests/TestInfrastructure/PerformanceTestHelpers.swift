@@ -80,7 +80,45 @@ public struct PerformanceMetrics {
 /// Helper for performance testing and benchmarking
 @MainActor
 public final class PerformanceTestHelpers {
-    
+
+    public enum SLAMetric {
+        case total
+        case average
+        case p50
+        case p95
+        case p99
+    }
+
+    nonisolated private static func value(for metric: SLAMetric, metrics: PerformanceMetrics) -> TimeInterval {
+        switch metric {
+        case .total:
+            return metrics.duration
+        case .average:
+            return metrics.averageDuration
+        case .p50:
+            return metrics.p50Duration
+        case .p95:
+            return metrics.p95Duration
+        case .p99:
+            return metrics.p99Duration
+        }
+    }
+
+    nonisolated private static func label(for metric: SLAMetric) -> String {
+        switch metric {
+        case .total:
+            return "total"
+        case .average:
+            return "average"
+        case .p50:
+            return "p50"
+        case .p95:
+            return "p95"
+        case .p99:
+            return "p99"
+        }
+    }
+
     /// Measure execution time of an async operation
     public static func measureAsync<T>(
         operation: () async throws -> T,
@@ -226,7 +264,8 @@ public final class PerformanceTestHelpers {
     nonisolated public static func generateReport(
         testName: String,
         metrics: PerformanceMetrics,
-        sla: TimeInterval? = nil
+        sla: TimeInterval? = nil,
+        slaMetric: SLAMetric = .total
     ) -> String {
         var report = """
         Performance Report: \(testName)
@@ -235,8 +274,11 @@ public final class PerformanceTestHelpers {
         """
         
         if let sla = sla {
-            let meetsSLA = metrics.duration <= sla
-            report += "\nSLA: \(String(format: "%.3fs", sla)) - \(meetsSLA ? "✅ PASS" : "❌ FAIL")"
+            let measuredValue = value(for: slaMetric, metrics: metrics)
+            let meetsSLA = measuredValue <= sla
+            let metricLabel = label(for: slaMetric)
+            report += "\nSLA (\(metricLabel)): \(String(format: "%.3fs", sla)) - \(meetsSLA ? "✅ PASS" : "❌ FAIL")"
+            report += " (Measured: \(String(format: "%.3fs", measuredValue)))"
         }
         
         return report

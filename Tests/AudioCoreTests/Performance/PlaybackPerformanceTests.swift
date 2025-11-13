@@ -8,9 +8,11 @@
 //  Copyright © 2025 CycleRunCode Club. All rights reserved.
 //
 
+import os.log
+import XCTest
+
 @testable import AudioCore
 @testable import Shared
-import XCTest
 
 /// Performance tests for playback operations
 @MainActor
@@ -34,11 +36,13 @@ final class PlaybackPerformanceTests: XCTestCase {
             maxAverageDuration: 0.1 // 100ms
         )
         
-        print(PerformanceTestHelpers.generateReport(
+        let report = PerformanceTestHelpers.generateReport(
             testName: "Playback Start",
             metrics: metrics,
-            sla: 0.1
-        ))
+            sla: 0.1,
+            slaMetric: .average
+        )
+        Logger.testing.info("\(report)")
     }
     
     /// Performance: Seek accuracy: ±10ms
@@ -69,8 +73,8 @@ final class PlaybackPerformanceTests: XCTestCase {
         let maxAccuracy = accuracies.max() ?? 0
         XCTAssertLessThanOrEqual(maxAccuracy, 0.01, "Seek accuracy should be within ±10ms")
         
-        print("Seek Accuracy Test:")
-        print("  Max accuracy: \(String(format: "%.3f", maxAccuracy))s")
-        print("  Target: ±0.010s")
+        Logger.testing.info("Seek Accuracy Test:")
+        Logger.testing.info("  Max accuracy: \(String(format: "%.3f", maxAccuracy))s")
+        Logger.testing.info("  Target: ±0.010s")
     }
 }

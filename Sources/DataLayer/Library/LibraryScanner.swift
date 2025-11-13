@@ -54,20 +54,21 @@ public final class LibraryScanner: LibraryScannerProtocol, @unchecked Sendable {
                 throw LibraryScannerError.directoryNotFound
             }
             
-            for case let fileURL as URL in enumerator {
+            // Use nextObject() instead of for...in to avoid Swift 6 async iterator issues
+            while let element = enumerator.nextObject() as? URL {
                 // Check if it's a regular file
-                let resourceValues = try? fileURL.resourceValues(forKeys: [.isRegularFileKey])
+                let resourceValues = try? element.resourceValues(forKeys: [.isRegularFileKey])
                 guard resourceValues?.isRegularFile == true else {
                     continue
                 }
                 
                 // Check if it's an audio file
-                let fileExtension = fileURL.pathExtension.lowercased()
+                let fileExtension = element.pathExtension.lowercased()
                 guard supportedExtensions.contains(fileExtension) else {
                     continue
                 }
                 
-                urls.append(fileURL)
+                urls.append(element)
             }
             
             return urls

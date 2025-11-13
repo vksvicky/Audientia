@@ -8,8 +8,10 @@
 //  Copyright © 2025 CycleRunCode Club. All rights reserved.
 //
 
-@testable import Shared
+import os.log
 import XCTest
+
+@testable import Shared
 
 /// Performance tests for tagging operations
 @MainActor
@@ -34,11 +36,13 @@ final class TaggingPerformanceTests: XCTestCase {
             maxAverageDuration: 0.1 // 100ms
         )
         
-        print(PerformanceTestHelpers.generateReport(
+        let report = PerformanceTestHelpers.generateReport(
             testName: "Tag Write (single)",
             metrics: metrics,
-            sla: 0.1
-        ))
+            sla: 0.1,
+            slaMetric: .average
+        )
+        Logger.testing.info("\(report)")
     }
     
     /// Performance: Batch 100 tracks: < 10s
@@ -64,11 +68,12 @@ final class TaggingPerformanceTests: XCTestCase {
             maxDuration: 10.0 // 10 seconds
         )
         
-        print(PerformanceTestHelpers.generateReport(
+        let report = PerformanceTestHelpers.generateReport(
             testName: "Batch Tag Write (100 tracks)",
             metrics: metrics,
             sla: 10.0
-        ))
+        )
+        Logger.testing.info("\(report)")
     }
     
     /// Performance: Tag read: < 10ms
@@ -89,10 +94,12 @@ final class TaggingPerformanceTests: XCTestCase {
             maxAverageDuration: 0.01 // 10ms
         )
         
-        print(PerformanceTestHelpers.generateReport(
+        let report = PerformanceTestHelpers.generateReport(
             testName: "Tag Read",
             metrics: metrics,
-            sla: 0.01
-        ))
+            sla: 0.01,
+            slaMetric: .average
+        )
+        Logger.testing.info("\(report)")
     }
 }

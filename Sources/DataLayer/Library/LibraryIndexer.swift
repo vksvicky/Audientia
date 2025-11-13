@@ -73,6 +73,8 @@ public final class LibraryIndexer: LibraryIndexerProtocol, @unchecked Sendable {
 }
 
 /// Actor for thread-safe index operations
+/// Optimized: Only indexes full words and numbers (minimal index size)
+/// Prefix matching done at search time for better performance
 private actor IndexActor {
     /// In-memory index of tracks by ID
     private var tracksById: [UUID: Track] = [:]
@@ -80,34 +82,130 @@ private actor IndexActor {
     /// In-memory index of tracks by file path (for duplicate detection)
     private var tracksByPath: [String: UUID] = [:]
     
-    /// Inverted search index: maps normalized search terms to sets of track IDs
-    /// This enables O(1) lookup for search terms instead of O(n) linear search
-    private var searchIndex: [String: Set<UUID>] = [:]
+    /// Minimal inverted index: only full words (no prefixes to reduce index size)
+    private var wordIndex: [String: Set<UUID>] = [:]
+    
+    /// Number index: separate index for numeric searches
+    private var numberIndex: [String: Set<UUID>] = [:]
     
     /// Minimum search term length to index (to avoid indexing single characters)
     private let minSearchTermLength = 2
     
-    func index(tracks: [Track]) throws {
+    func index(tracks: [Track]) async throws {
+        // Use optimized sequential processing - parallel overhead is too expensive
+        // Process in batches to avoid memory issues with very large libraries
+        let batchSize = 5000
+        
+        for batchStart in stride(from: 0, to: tracks.count, by: batchSize) {
+            let batchEnd = min(batchStart + batchSize, tracks.count)
+            let batch = Array(tracks[batchStart..<batchEnd])
+            
+            // Process batch sequentially - much faster than parallel for this workload
+            try processBatchSequentially(tracks: batch)
+        }
+    }
+    
+    /// Process tracks sequentially (optimized for performance)
+    /// Only indexes full words and numbers - minimal overhead
+    private func processBatchSequentially(tracks: [Track]) throws {
+        var tracksToRemove: [UUID] = []
+        
         for track in tracks {
             // Validate track has non-empty file path
             guard !track.filePath.isEmpty else {
                 throw LibraryIndexerError.invalidTrack
             }
             
-            // Handle duplicates: if track with same path exists, replace it
+            // Handle duplicates
             if let existingId = tracksByPath[track.filePath], existingId != track.id {
-                // Remove old track from search index
-                removeTrackFromSearchIndex(trackId: existingId)
-                // Remove old track
-                tracksById.removeValue(forKey: existingId)
+                tracksToRemove.append(existingId)
+                removeTrackFromIndex(trackId: existingId)
             }
+            
+            // Index only essential terms: full words and numbers
+            indexTrackMinimal(track: track)
             
             // Add/update track
             tracksById[track.id] = track
             tracksByPath[track.filePath] = track.id
+        }
+        
+        // Remove old duplicate tracks from main indexes
+        for trackId in tracksToRemove {
+            tracksById.removeValue(forKey: trackId)
+            // Note: tracksByPath is already updated with the new track's ID above
+        }
+    }
+    
+    /// Index a track with minimal overhead - only full words and numbers
+    private func indexTrackMinimal(track: Track) {
+        let fields = [track.title, track.artist, track.album]
+        
+        for text in fields {
+            let normalized = text.lowercased().trimmingCharacters(in: .whitespacesAndNewlines)
             
-            // Add to search index
-            addTrackToSearchIndex(track: track)
+            // Index words (full words only, no prefixes)
+            let wordSeparators = CharacterSet.whitespacesAndNewlines.union(CharacterSet(charactersIn: "-_"))
+            let words = normalized.components(separatedBy: wordSeparators)
+                .filter { $0.count >= minSearchTermLength }
+            
+            for word in words {
+                wordIndex[word, default: Set<UUID>()].insert(track.id)
+            }
+            
+            // Index numbers separately
+            let numbers = extractNumbers(from: normalized)
+            for number in numbers {
+                numberIndex[number, default: Set<UUID>()].insert(track.id)
+            }
+        }
+    }
+    
+    /// Extract numbers from text
+    private func extractNumbers(from text: String) -> [String] {
+        var numbers: [String] = []
+        let digitPattern = CharacterSet.decimalDigits
+        var currentNumber = ""
+        
+        for char in text {
+            guard let scalar = char.unicodeScalars.first, digitPattern.contains(scalar) else {
+                if currentNumber.count >= minSearchTermLength {
+                    numbers.append(currentNumber)
+                }
+                currentNumber = ""
+                continue
+            }
+            currentNumber.append(char)
+        }
+        if currentNumber.count >= minSearchTermLength {
+            numbers.append(currentNumber)
+        }
+        
+        return numbers
+    }
+    
+    /// Remove track from all indexes
+    private func removeTrackFromIndex(trackId: UUID) {
+        // Remove from word index
+        for (word, trackIds) in wordIndex {
+            var updated = trackIds
+            updated.remove(trackId)
+            if updated.isEmpty {
+                wordIndex.removeValue(forKey: word)
+            } else {
+                wordIndex[word] = updated
+            }
+        }
+        
+        // Remove from number index
+        for (number, trackIds) in numberIndex {
+            var updated = trackIds
+            updated.remove(trackId)
+            if updated.isEmpty {
+                numberIndex.removeValue(forKey: number)
+            } else {
+                numberIndex[number] = updated
+            }
         }
     }
     
@@ -116,9 +214,7 @@ private actor IndexActor {
             throw LibraryIndexerError.trackNotFound
         }
         
-        // Remove from search index
-        removeTrackFromSearchIndex(trackId: track.id)
-        
+        removeTrackFromIndex(trackId: track.id)
         tracksById.removeValue(forKey: track.id)
         tracksByPath.removeValue(forKey: track.filePath)
     }
@@ -126,7 +222,8 @@ private actor IndexActor {
     func clear() {
         tracksById.removeAll()
         tracksByPath.removeAll()
-        searchIndex.removeAll()
+        wordIndex.removeAll()
+        numberIndex.removeAll()
     }
     
     func getTrack(by id: UUID) -> Track? {
@@ -141,7 +238,7 @@ private actor IndexActor {
         Array(tracksById.values)
     }
     
-    /// Search tracks using the inverted index
+    /// Fast search using minimal index - exact matches only for performance
     /// - Parameters:
     ///   - query: Normalized search query (lowercased)
     ///   - field: Field to search in
@@ -150,212 +247,97 @@ private actor IndexActor {
         guard !query.isEmpty else {
             return []
         }
-        
-        // For queries shorter than minimum, fall back to linear search
-        // This supports single-character searches while keeping the index efficient
+
         if query.count < minSearchTermLength {
             return linearSearch(query: query, field: field)
         }
         
-        var candidateIds = findCandidatesForQuery(query)
+        let allTermMatches = collectTermMatches(from: query)
         
-        guard !candidateIds.isEmpty else {
+        guard !allTermMatches.isEmpty else {
+            return linearSearch(query: query, field: field)
+        }
+        
+        let candidates = intersectTermMatches(allTermMatches)
+        return filterResults(candidates: candidates, query: query, field: field)
+    }
+    
+    /// Collect all term matches from query words and numbers
+    private func collectTermMatches(from query: String) -> [Set<UUID>] {
+        let wordSeparators = CharacterSet.whitespacesAndNewlines.union(CharacterSet(charactersIn: "-_"))
+        let queryWords = query.components(separatedBy: wordSeparators)
+            .filter { $0.count >= minSearchTermLength }
+        let queryNumbers = extractNumbers(from: query)
+        
+        var allTermMatches: [Set<UUID>] = []
+        
+        for word in queryWords {
+            if let wordMatches = wordIndex[word] {
+                allTermMatches.append(wordMatches)
+            }
+        }
+        
+        for number in queryNumbers {
+            if let numberMatches = numberIndex[number] {
+                allTermMatches.append(numberMatches)
+            }
+        }
+        
+        return allTermMatches
+    }
+    
+    /// Intersect all term matches efficiently
+    private func intersectTermMatches(_ allTermMatches: [Set<UUID>]) -> Set<UUID> {
+        guard !allTermMatches.isEmpty else {
             return []
         }
         
-        // Filter by field if needed and verify matches
-        let matchingIds = candidateIds.filter { trackId in
+        // Sort by size - start intersection with smallest set for efficiency
+        let sortedMatches = allTermMatches.sorted { $0.count < $1.count }
+        
+        var candidates = sortedMatches[0]
+        for termMatches in sortedMatches.dropFirst() {
+            candidates = candidates.intersection(termMatches)
+            if candidates.isEmpty {
+                return []
+            }
+        }
+        
+        return candidates
+    }
+    
+    /// Filter results by field and apply limits
+    private func filterResults(candidates: Set<UUID>, query: String, field: SearchField) -> [UUID] {
+        // Limit results early for performance
+        let limitedCandidates = candidates.count > 1000 ? Set(candidates.prefix(1000)) : candidates
+        
+        if field == .all {
+            return Array(limitedCandidates)
+        }
+        
+        return limitedCandidates.filter { trackId in
             guard let track = tracksById[trackId] else { return false }
             return matchesQuery(track: track, query: query, field: field)
         }
-        
-        return Array(matchingIds)
     }
     
-    /// Find candidate track IDs for a search query using multiple strategies
-    /// - Parameter query: Normalized search query (lowercased)
-    /// - Returns: Set of candidate track IDs
-    private func findCandidatesForQuery(_ query: String) -> Set<UUID> {
-        var candidateIds: Set<UUID> = []
-        
-        // Strategy 1: Direct lookup for the full query
-        candidateIds.formUnion(findDirectMatches(for: query))
-        
-        // Strategy 2: Extract words from query and look them up
-        candidateIds.formUnion(findWordBasedMatches(for: query))
-        
-        // Strategy 3: For substring matching (only if needed)
-        candidateIds.formUnion(findSubstringMatches(for: query, existingMatches: candidateIds))
-        
-        return candidateIds
-    }
-    
-    /// Strategy 1: Direct lookup for the full query
-    /// - Parameter query: Search query
-    /// - Returns: Set of matching track IDs
-    private func findDirectMatches(for query: String) -> Set<UUID> {
-        guard let directMatches = searchIndex[query] else {
-            return []
-        }
-        return directMatches
-    }
-    
-    /// Strategy 2: Extract words from query and look them up
-    /// - Parameter query: Search query
-    /// - Returns: Set of matching track IDs
-    private func findWordBasedMatches(for query: String) -> Set<UUID> {
-        var matches: Set<UUID> = []
-        let wordSeparators = CharacterSet.whitespacesAndNewlines.union(CharacterSet(charactersIn: "-_"))
-        let queryWords = query.components(separatedBy: wordSeparators).filter { !$0.isEmpty }
-        
-        for word in queryWords where word.count >= minSearchTermLength {
-            // Direct lookup for the word
-            if let wordMatches = searchIndex[word] {
-                matches.formUnion(wordMatches)
-            }
-            
-            // Lookup prefixes of the word
-            matches.formUnion(findPrefixMatches(for: word))
-        }
-        
-        return matches
-    }
-    
-    /// Find matches for all prefixes of a word
-    /// - Parameter word: Word to find prefixes for
-    /// - Returns: Set of matching track IDs
-    private func findPrefixMatches(for word: String) -> Set<UUID> {
-        var matches: Set<UUID> = []
-        
-        for i in minSearchTermLength...word.count {
-            let prefix = String(word.prefix(i))
-            if let prefixMatches = searchIndex[prefix] {
-                matches.formUnion(prefixMatches)
-            }
-        }
-        
-        return matches
-    }
-    
-    /// Strategy 3: For substring matching, check if query is a substring of indexed terms
-    /// - Parameters:
-    ///   - query: Search query
-    ///   - existingMatches: Already found matches
-    /// - Returns: Set of additional matching track IDs
-    private func findSubstringMatches(for query: String, existingMatches: Set<UUID>) -> Set<UUID> {
-        // Only do this if we haven't found many matches yet (to avoid full scan)
-        guard existingMatches.count < 100, query.count <= 10 else {
-            return []
-        }
-        
-        var matches: Set<UUID> = []
-        
-        // Check indexed terms that could contain the query
-        for (indexedTerm, trackIds) in searchIndex {
-            if indexedTerm.contains(query) || query.contains(indexedTerm) {
-                matches.formUnion(trackIds)
-            }
-        }
-        
-        return matches
-    }
-    
-    /// Linear search fallback for short queries (e.g., single characters)
+    /// Linear search fallback for queries that don't match indexed terms
     /// - Parameters:
     ///   - query: Normalized search query (lowercased)
     ///   - field: Field to search in
     /// - Returns: Array of matching track IDs
     private func linearSearch(query: String, field: SearchField) -> [UUID] {
         var matchingIds: [UUID] = []
+        let limit = 1000 // Limit linear search results
         
         for (trackId, track) in tracksById where matchesQuery(track: track, query: query, field: field) {
             matchingIds.append(trackId)
+            if matchingIds.count >= limit {
+                break
+            }
         }
         
         return matchingIds
-    }
-    
-    // MARK: - Search Index Management
-    
-    /// Add a track to the search index
-    private func addTrackToSearchIndex(track: Track) {
-        // Index all searchable fields
-        let fields = [
-            track.title,
-            track.artist,
-            track.album
-        ]
-        
-        for text in fields {
-            let normalized = text.lowercased()
-            let terms = extractSearchTerms(from: normalized)
-            
-            for term in terms {
-                if searchIndex[term] == nil {
-                    searchIndex[term] = Set<UUID>()
-                }
-                searchIndex[term]?.insert(track.id)
-            }
-        }
-    }
-    
-    /// Remove a track from the search index
-    private func removeTrackFromSearchIndex(trackId: UUID) {
-        // Remove track ID from all search index entries
-        for (term, trackIds) in searchIndex {
-            var updatedIds = trackIds
-            updatedIds.remove(trackId)
-            if updatedIds.isEmpty {
-                searchIndex.removeValue(forKey: term)
-            } else {
-                searchIndex[term] = updatedIds
-            }
-        }
-    }
-    
-    /// Extract search terms from a string
-    /// Indexes words and full strings for efficient searching
-    private func extractSearchTerms(from text: String) -> [String] {
-        var terms: Set<String> = []
-        let normalized = text.lowercased().trimmingCharacters(in: .whitespacesAndNewlines)
-        
-        // Add the full normalized string
-        if normalized.count >= minSearchTermLength {
-            terms.insert(normalized)
-        }
-        
-        // Index words (split by whitespace and common separators)
-        let wordSeparators = CharacterSet.whitespacesAndNewlines.union(CharacterSet(charactersIn: "-_"))
-        let words = normalized.components(separatedBy: wordSeparators).filter { !$0.isEmpty }
-        
-        for word in words where word.count >= minSearchTermLength {
-            terms.insert(word)
-            // Also add prefixes of words for partial matching
-            // e.g., "track" -> "tr", "tra", "trac", "track"
-            for i in minSearchTermLength...word.count {
-                let prefix = String(word.prefix(i))
-                if prefix.count >= minSearchTermLength {
-                    terms.insert(prefix)
-                }
-            }
-        }
-        
-        // Also index character sequences for substring matching
-        // This allows "track 50000" to be found by searching "50000"
-        // But limit to reasonable length to avoid index bloat
-        let maxSequenceLength = 20
-        if normalized.count >= minSearchTermLength {
-            for startIndex in normalized.indices {
-                let remaining = String(normalized[startIndex...])
-                let sequenceLength = min(remaining.count, maxSequenceLength)
-                if sequenceLength >= minSearchTermLength {
-                    let sequence = String(remaining.prefix(sequenceLength))
-                    terms.insert(sequence)
-                }
-            }
-        }
-        
-        return Array(terms)
     }
     
     /// Check if a track matches the search query

@@ -57,7 +57,7 @@ Utilities for measuring and reporting performance:
 - `measureMemoryUsage()` - Measure memory usage before/after operations
 - `assertPerformanceSLA()` - Assert that performance meets SLA requirements
 - `assertAveragePerformance()` - Assert that average performance meets requirements
-- `generateReport()` - Generate human-readable performance reports
+- `generateReport(slaMetric:)` - Generate human-readable performance reports with configurable SLA metric comparisons
 
 ### PerformanceMetrics
 
@@ -96,12 +96,14 @@ When adding new performance tests:
 1. Define the SLA requirement based on roadmap benchmarks
 2. Use `PerformanceTestHelpers.measureAsync()` or `measureSync()`
 3. Use `assertPerformanceSLA()` or `assertAveragePerformance()` to validate
-4. Include `generateReport()` for visibility in test output
+4. Include `generateReport(slaMetric:)` for visibility in test output and consistent SLA evaluation
 5. Document the SLA in both the test and the roadmap
 
 Example:
 
 ```swift
+import os.log
+
 func testNewFeaturePerformance() async {
     let (_, metrics) = await PerformanceTestHelpers.measureAsync(iterations: 100) {
         // Your operation here
@@ -113,11 +115,13 @@ func testNewFeaturePerformance() async {
         maxP95Duration: 0.1
     )
     
-    print(PerformanceTestHelpers.generateReport(
+    let report = PerformanceTestHelpers.generateReport(
         testName: "New Feature",
         metrics: metrics,
-        sla: 0.1
-    ))
+        sla: 0.1,
+        slaMetric: .p95
+    )
+    Logger.testing.info("\(report)")
 }
 ```
 

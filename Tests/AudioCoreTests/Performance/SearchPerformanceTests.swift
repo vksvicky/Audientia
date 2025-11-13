@@ -8,9 +8,11 @@
 //  Copyright © 2025 CycleRunCode Club. All rights reserved.
 //
 
+import os.log
+import XCTest
+
 @testable import DataLayer
 @testable import Shared
-import XCTest
 
 /// Performance tests for search operations
 @MainActor
@@ -47,11 +49,13 @@ final class SearchPerformanceTests: XCTestCase {
             maxP95Duration: 0.1 // 100ms per search
         )
         
-        print(PerformanceTestHelpers.generateReport(
+        let report = PerformanceTestHelpers.generateReport(
             testName: "Library Search (100,000 tracks)",
             metrics: metrics,
-            sla: 0.1
-        ))
+            sla: 0.1,
+            slaMetric: .p95
+        )
+        Logger.testing.info("\(report)")
         
         // Cleanup
         try await indexer.clear()
@@ -100,11 +104,13 @@ final class SearchPerformanceTests: XCTestCase {
                 maxP95Duration: 0.1 // 100ms per search
             )
             
-            print(PerformanceTestHelpers.generateReport(
+            let report = PerformanceTestHelpers.generateReport(
                 testName: "Search Query Type '\(queries[index])'",
                 metrics: metrics,
-                sla: 0.1
-            ))
+                sla: 0.1,
+                slaMetric: .p95
+            )
+            Logger.testing.info("\(report)")
         }
         
         // Cleanup
@@ -146,8 +152,8 @@ final class SearchPerformanceTests: XCTestCase {
         // Then - All concurrent searches should complete quickly
         XCTAssertLessThan(totalDuration, 1.0, "10 concurrent searches should complete in < 1s")
         
-        print("Concurrent Search Performance:")
-        print("  10 concurrent searches completed in \(String(format: "%.3f", totalDuration))s")
+        Logger.testing.info("Concurrent Search Performance:")
+        Logger.testing.info("  10 concurrent searches completed in \(String(format: "%.3f", totalDuration))s")
         
         // Cleanup
         try await indexer.clear()
@@ -183,11 +189,13 @@ final class SearchPerformanceTests: XCTestCase {
             maxP95Duration: 0.2 // 200ms per search for 1M tracks
         )
         
-        print(PerformanceTestHelpers.generateReport(
+        let report = PerformanceTestHelpers.generateReport(
             testName: "Library Search (1,000,000 tracks)",
             metrics: metrics,
-            sla: 0.2
-        ))
+            sla: 0.2,
+            slaMetric: .p95
+        )
+        Logger.testing.info("\(report)")
         
         // Cleanup
         try await indexer.clear()
@@ -223,11 +231,13 @@ final class SearchPerformanceTests: XCTestCase {
             maxP95Duration: 0.1 // 100ms even with long query
         )
         
-        print(PerformanceTestHelpers.generateReport(
+        let report = PerformanceTestHelpers.generateReport(
             testName: "Search with Long Query (100,000 tracks)",
             metrics: metrics,
-            sla: 0.1
-        ))
+            sla: 0.1,
+            slaMetric: .p95
+        )
+        Logger.testing.info("\(report)")
         
         // Cleanup
         try await indexer.clear()
@@ -265,11 +275,13 @@ final class SearchPerformanceTests: XCTestCase {
                 maxP95Duration: 0.1
             )
             
-            print(PerformanceTestHelpers.generateReport(
+            let report = PerformanceTestHelpers.generateReport(
                 testName: "Search with Unicode '\(query)'",
                 metrics: metrics,
-                sla: 0.1
-            ))
+                sla: 0.1,
+                slaMetric: .p95
+            )
+            Logger.testing.info("\(report)")
         }
         
         // Cleanup

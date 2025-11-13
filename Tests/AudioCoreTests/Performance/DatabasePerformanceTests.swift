@@ -8,6 +8,7 @@
 //  Copyright © 2025 CycleRunCode Club. All rights reserved.
 //
 
+import os.log
 import XCTest
 
 /// Performance tests for database operations
@@ -33,10 +34,12 @@ final class DatabasePerformanceTests: XCTestCase {
             maxAverageDuration: 0.001 // 1ms per query
         )
         
-        print(PerformanceTestHelpers.generateReport(
+        let report = PerformanceTestHelpers.generateReport(
             testName: "Database Query (1,000 queries)",
             metrics: metrics,
-            sla: 0.001
-        ))
+            sla: 0.001,
+            slaMetric: .average
+        )
+        Logger.testing.info("\(report)")
     }
 }

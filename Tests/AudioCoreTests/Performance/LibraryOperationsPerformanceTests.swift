@@ -8,9 +8,11 @@
 //  Copyright © 2025 CycleRunCode Club. All rights reserved.
 //
 
+import os.log
+import XCTest
+
 @testable import DataLayer
 @testable import Shared
-import XCTest
 
 /// Performance tests for library operations
 @MainActor
@@ -46,11 +48,12 @@ final class LibraryOperationsPerformanceTests: XCTestCase {
             maxP95Duration: nil
         )
         
-        print(PerformanceTestHelpers.generateReport(
+        let report = PerformanceTestHelpers.generateReport(
             testName: "Library Scan (10,000 tracks)",
             metrics: metrics,
             sla: 300.0
-        ))
+        )
+        Logger.testing.info("\(report)")
     }
     
     /// Performance: Indexing 100,000 tracks: < 30s
@@ -79,11 +82,12 @@ final class LibraryOperationsPerformanceTests: XCTestCase {
             maxDuration: 30.0 // 30 seconds for 100k tracks
         )
         
-        print(PerformanceTestHelpers.generateReport(
+        let report = PerformanceTestHelpers.generateReport(
             testName: "Indexing (100,000 tracks)",
             metrics: metrics,
             sla: 30.0
-        ))
+        )
+        Logger.testing.info("\(report)")
         
         // Cleanup
         try await indexer.clear()
@@ -113,10 +117,12 @@ final class LibraryOperationsPerformanceTests: XCTestCase {
             maxAverageDuration: 0.2 // 200ms
         )
         
-        print(PerformanceTestHelpers.generateReport(
+        let report = PerformanceTestHelpers.generateReport(
             testName: "Playlist Load (1,000 tracks)",
             metrics: metrics,
-            sla: 0.2
-        ))
+            sla: 0.2,
+            slaMetric: .average
+        )
+        Logger.testing.info("\(report)")
     }
 }
