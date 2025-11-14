@@ -380,6 +380,10 @@
 		E28D17462EC6727800467BC0 /* ArtworkExtractorErrorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E28D17452EC6727800467BC0 /* ArtworkExtractorErrorTests.swift */; };
 		E28D17482EC6727F00467BC0 /* ArtworkExtractorTestBase.swift in Sources */ = {isa = PBXBuildFile; fileRef = E28D17472EC6727F00467BC0 /* ArtworkExtractorTestBase.swift */; };
 		E28D174A2EC6728800467BC0 /* ArtworkExtractorEdgeCaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E28D17492EC6728800467BC0 /* ArtworkExtractorEdgeCaseTests.swift */; };
+		E28D174D2EC7318600467BC0 /* ReplayGainCrossChecker.swift in Sources */ = {isa = PBXBuildFile; fileRef = E28D174B2EC7318600467BC0 /* ReplayGainCrossChecker.swift */; };
+		E28D174E2EC7318600467BC0 /* ReplayGainExternalToolProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = E28D174C2EC7318600467BC0 /* ReplayGainExternalToolProtocol.swift */; };
+		E28D17532EC731A700467BC0 /* ReplayGainCrossCheckerBDDTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E28D17512EC731A700467BC0 /* ReplayGainCrossCheckerBDDTests.swift */; };
+		E28D17542EC731A700467BC0 /* ReplayGainCrossCheckerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E28D17522EC731A700467BC0 /* ReplayGainCrossCheckerTests.swift */; };
 		E6820D1AEE51655CD8FABA51 /* invalid_no_audio_data.ac3 in Resources */ = {isa = PBXBuildFile; fileRef = 6D03B11D6B9A305FA63B3BA0 /* invalid_no_audio_data.ac3 */; };
 		E6851C43444B5EC33F9002E0 /* corrupt_payload.webm in Resources */ = {isa = PBXBuildFile; fileRef = 98493860B174C0DE4C004DD9 /* corrupt_payload.webm */; };
 		E6E149CFDDE8BAEAE58486D1 /* LibraryStatisticsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93839D2944E814238BE60F07 /* LibraryStatisticsTests.swift */; };
@@ -1010,6 +1014,10 @@
 		E28D17452EC6727800467BC0 /* ArtworkExtractorErrorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArtworkExtractorErrorTests.swift; sourceTree = "<group>"; };
 		E28D17472EC6727F00467BC0 /* ArtworkExtractorTestBase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArtworkExtractorTestBase.swift; sourceTree = "<group>"; };
 		E28D17492EC6728800467BC0 /* ArtworkExtractorEdgeCaseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArtworkExtractorEdgeCaseTests.swift; sourceTree = "<group>"; };
+		E28D174B2EC7318600467BC0 /* ReplayGainCrossChecker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReplayGainCrossChecker.swift; sourceTree = "<group>"; };
+		E28D174C2EC7318600467BC0 /* ReplayGainExternalToolProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReplayGainExternalToolProtocol.swift; sourceTree = "<group>"; };
+		E28D17512EC731A700467BC0 /* ReplayGainCrossCheckerBDDTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReplayGainCrossCheckerBDDTests.swift; sourceTree = "<group>"; };
+		E28D17522EC731A700467BC0 /* ReplayGainCrossCheckerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReplayGainCrossCheckerTests.swift; sourceTree = "<group>"; };
 		E2EE21413E43E6232AED6F87 /* AudioNormalizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioNormalizer.swift; sourceTree = "<group>"; };
 		E3699D6F2B6BA44D93215D32 /* corrupt_payload.flv */ = {isa = PBXFileReference; lastKnownFileType = file; path = corrupt_payload.flv; sourceTree = "<group>"; };
 		E3B3ADADC533D4B7DBF59507 /* invalid_no_audio_data.dsf */ = {isa = PBXFileReference; lastKnownFileType = text; path = invalid_no_audio_data.dsf; sourceTree = "<group>"; };
@@ -1313,6 +1321,8 @@
 				2D67CFDD2E8BE28A8A60FB07 /* AudioVisualizerProtocol.swift */,
 				C5BD8E9DAECA28F91F1B727D /* Crossfade.swift */,
 				12AB619E5C3762CAC599C5CA /* CrossfadeProtocol.swift */,
+				E28D174B2EC7318600467BC0 /* ReplayGainCrossChecker.swift */,
+				E28D174C2EC7318600467BC0 /* ReplayGainExternalToolProtocol.swift */,
 				D174B2FDDF5D542D90C9EB5D /* ReplayGain.swift */,
 				9713471F9212F43D3443486D /* ReplayGainProtocol.swift */,
 			);
@@ -1453,6 +1463,8 @@
 				589BDBF55676BBC233099907 /* CrossfadeBDDTests.swift */,
 				83837C00C71C88523AA4875C /* CrossfadeTests.swift */,
 				80924DB00E7785C0EA7DE5FA /* ReplayGainBDDTests.swift */,
+				E28D17512EC731A700467BC0 /* ReplayGainCrossCheckerBDDTests.swift */,
+				E28D17522EC731A700467BC0 /* ReplayGainCrossCheckerTests.swift */,
 				267A644C98F5BA4393E8AB65 /* ReplayGainTests.swift */,
 			);
 			path = DSP;
@@ -2801,6 +2813,8 @@
 				A547C75B279EEA6881562994 /* PlaybackStateMachineTests.swift in Sources */,
 				1A42C20ED2DED600C1081C9D /* QueueManagementTests.swift in Sources */,
 				643DA663EF207DBC6C937484 /* ReplayGainBDDTests.swift in Sources */,
+				E28D17532EC731A700467BC0 /* ReplayGainCrossCheckerBDDTests.swift in Sources */,
+				E28D17542EC731A700467BC0 /* ReplayGainCrossCheckerTests.swift in Sources */,
 				46E98F9A89CFB9CEA5A5F7C3 /* ReplayGainTests.swift in Sources */,
 				761BBCAFBBF40D00F5E78815 /* SearchPerformanceTests.swift in Sources */,
 				0653A13F1018A87FC9F06EDF /* SeekAndPositionTests.swift in Sources */,
@@ -2851,6 +2865,8 @@
 				53303F2CBC3FB4B1F67514AE /* CAudioEngine.swift in Sources */,
 				7E16DABD89A966E1BBE812FA /* CAudioEngineBridge.cpp in Sources */,
 				44FF6FA24D32ACECA4CB9547 /* Crossfade.swift in Sources */,
+				E28D174D2EC7318600467BC0 /* ReplayGainCrossChecker.swift in Sources */,
+				E28D174E2EC7318600467BC0 /* ReplayGainExternalToolProtocol.swift in Sources */,
 				712D1A5D7681421CC1EE7C10 /* CrossfadeProtocol.swift in Sources */,
 				BE541EA7A45DEEE6DB3BC11B /* FileSystemProtocol.swift in Sources */,
 				87F971118D79BC770BF64D32 /* FormatDecoderCoordinator.swift in Sources */,
