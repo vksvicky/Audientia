@@ -62,7 +62,7 @@ public struct AudioGainControlView: View {
             Divider()
             
             // Current Track Gain
-            if let currentTrack = viewModel.currentTrack {
+            if viewModel.currentTrack != nil {
                 VStack(alignment: .leading, spacing: 8) {
                     HStack {
                         Text("Current Track Gain")

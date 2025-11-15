@@ -47,7 +47,7 @@ public final class LibrarySearch: @unchecked Sendable {
         // Get all tracks from indexer (for now, we'll need to add a method to get all tracks)
         // For this implementation, we'll use a simple approach: get tracks by iterating
         // In a real implementation, we'd have a more efficient way to get all tracks
-        let allTracks = try await getAllTracks()
+        let allTracks = await getAllTracks()
         
         // Filter tracks based on search field
         let matchingTracks = allTracks.filter { track in

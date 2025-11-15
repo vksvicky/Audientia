@@ -168,6 +168,7 @@ targets:
           - "**/README.md"
     dependencies:
       - target: Shared
+      - target: AudioCore
     settings:
       PRODUCT_BUNDLE_IDENTIFIER: club.cycleruncode.AppKitBridge
       SWIFT_VERSION: "5.9"

@@ -328,7 +328,7 @@ final class AudioGainControlTests: XCTestCase {
     /// Test that gain control handles infinity values gracefully
     func testHandlesInfinityValues() async {
         // Given - Infinity gain value
-        let track = MockFactory.makeTrack(title: "Test Track")
+        _ = MockFactory.makeTrack(title: "Test Track")
         
         // When - Set infinity gain
         await gainControl.setGlobalGain(Float.infinity)
