@@ -35,7 +35,7 @@
 **Not Yet Built:**
 - [ ] Complete library management UI (partial: scanning, indexing, search, statistics backend implemented)
 - [ ] Complete metadata extraction (partial: tag parsing for ID3v2, Vorbis Comments, MP4 implemented; artwork extraction, metadata normalization pending)
-- [ ] Playlist management UI (partial: playlist CRUD operations, smart playlist rule engine, playlist statistics backend implemented)
+- [ ] Playlist management UI (partial: playlist browser and ViewModel implemented with TDD/BDD tests; playlist editor, smart playlist rule builder, drag-and-drop reordering pending)
 - [ ] DSP features (partial: audio gain, normalization, EQ, ReplayGain, crossfade, visualizer feed implemented; plugin-based visualizer UI pending)
 - [ ] Device sync
 - [ ] Transcoding
@@ -369,16 +369,16 @@
 - [x] Playlist statistics - **✅ PlaylistStatisticsCalculator implemented with PlaylistStatisticsCalculatorProtocol. Calculates track count, total/average duration, total/average file size, unique artist/album/genre counts, average rating, and year range (earliest/latest). Comprehensive handling of optional fields and edge cases.**
 
 **UI:**
-- [ ] Playlist browser
+- [x] Playlist browser - **✅ PlaylistBrowserView implemented with list view displaying all playlists, create/delete/rename functionality, empty state, loading indicators, playlist details (track count, duration, smart playlist indicator). PlaylistViewModel implemented with PlaylistManagerProtocol integration for playlist management. Comprehensive TDD tests (PlaylistBrowserViewTests) and BDD tests (PlaylistBrowserViewBDDTests) following Right-BICEP principles. MockPlaylistComponents provides shared mock infrastructure for UI testing.**
 - [ ] Playlist editor
 - [ ] Smart playlist rule builder
 - [ ] Drag-and-drop reordering
 
 **Tests:**
-- [x] **TDD**: Rule engine, playlist operations - **✅ PlaylistManagerTests with comprehensive TDD tests covering Right-BICEP principles (CRUD operations, track management, boundary conditions, inverse relationships, error handling, performance). SmartPlaylistRuleEngineTests with comprehensive TDD tests covering rule evaluation, field matching, operator logic, boundary conditions, error handling, performance. PlaylistStatisticsCalculatorTests with comprehensive TDD tests covering statistics calculations, boundary conditions, inverse relationships, cross-checking, error handling, performance.**
-- [x] **Unit**: Rule evaluation, playlist sorting - **✅ Rule evaluation tests verify correct matching for all operators and field types. Playlist operations tests verify track ordering and reordering. Statistics tests verify accurate calculations for all metrics.**
+- [x] **TDD**: Rule engine, playlist operations - **✅ PlaylistManagerTests with comprehensive TDD tests covering Right-BICEP principles (CRUD operations, track management, boundary conditions, inverse relationships, error handling, performance). SmartPlaylistRuleEngineTests with comprehensive TDD tests covering rule evaluation, field matching, operator logic, boundary conditions, error handling, performance. PlaylistStatisticsCalculatorTests with comprehensive TDD tests covering statistics calculations, boundary conditions, inverse relationships, cross-checking, error handling, performance. PlaylistViewModelTests with comprehensive TDD tests covering ViewModel operations, boundary conditions, inverse relationships, error handling, performance. PlaylistBrowserViewTests with comprehensive TDD tests covering view display, boundary conditions, error handling, performance.**
+- [x] **Unit**: Rule evaluation, playlist sorting - **✅ Rule evaluation tests verify correct matching for all operators and field types. Playlist operations tests verify track ordering and reordering. Statistics tests verify accurate calculations for all metrics. ViewModel tests verify playlist list management, creation, deletion, and updates.**
 - [ ] **Integration**: Create smart playlist, verify matches
-- [x] **BDD**: "As a user, I want to create a playlist of 5-star songs from 2020" - **✅ PlaylistManagerBDDTests implemented with BDD scenarios: creating playlists (regular and smart), adding/removing tracks, updating playlist names, deleting playlists, reordering tracks, viewing all playlists. Smart playlist scenarios include creating playlists with rating/year rules, complex AND/OR rule combinations, and rule-based track filtering.**
+- [x] **BDD**: "As a user, I want to create a playlist of 5-star songs from 2020" - **✅ PlaylistManagerBDDTests implemented with BDD scenarios: creating playlists (regular and smart), adding/removing tracks, updating playlist names, deleting playlists, reordering tracks, viewing all playlists. Smart playlist scenarios include creating playlists with rating/year rules, complex AND/OR rule combinations, and rule-based track filtering. PlaylistViewModelBDDTests implemented with BDD scenarios: viewing all playlists, creating new playlists, deleting playlists, renaming playlists, seeing empty state, seeing loading state, handling errors, distinguishing regular and smart playlists. PlaylistBrowserViewBDDTests implemented with BDD scenarios: viewing all playlists, seeing empty state, creating playlists from browser, deleting playlists from browser, renaming playlists from browser, seeing playlist details, distinguishing regular and smart playlists, seeing loading indicator, seeing error messages.**
 
 **Right-BICEP:**
 - [x] **[Right]**: Verify playlist matches rule criteria - **✅ Tests verify playlist operations produce correct results, rule evaluation matches expected criteria, statistics calculations are accurate.**
