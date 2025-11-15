@@ -39,7 +39,6 @@
 		330B0E466697AECB9199EBBB /* Shared.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 06774C335950E7C8AFB02F02 /* Shared.framework */; };
 		338AAE6A43BE64FBA889055F /* AudioCore.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = F3040189EB9AC8FE164A0AF7 /* AudioCore.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		3531A69EC0D9AAA792C7AF79 /* MockAudioEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85EC5C89EFC18F2C1AF714A4 /* MockAudioEngine.swift */; };
-		35FDB5681BEF7B1FE788D3AE /* Logger.swift.tmp in Resources */ = {isa = PBXBuildFile; fileRef = AFAE38567584A16BEB79B4A8 /* Logger.swift.tmp */; };
 		37B6F17841494CB39D884AC7 /* TagParserBDDTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC7A734EB56A440E937CF431 /* TagParserBDDTests.swift */; };
 		396737DE4DC87A8E29900523 /* Shared.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 06774C335950E7C8AFB02F02 /* Shared.framework */; };
 		3AA579D26131F543B897612E /* Shared.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 06774C335950E7C8AFB02F02 /* Shared.framework */; };
@@ -623,7 +622,6 @@
 		AEE88511E0738FBA3794D3BB /* invalid_zero_size.alac */ = {isa = PBXFileReference; lastKnownFileType = text; path = invalid_zero_size.alac; sourceTree = "<group>"; };
 		AF4B6A2B9C88E7508CC31955 /* invalid_empty.wma */ = {isa = PBXFileReference; lastKnownFileType = text; path = invalid_empty.wma; sourceTree = "<group>"; };
 		AF95E2C2611DD9C0BAC6CD2D /* TestFixtures.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestFixtures.swift; sourceTree = "<group>"; };
-		AFAE38567584A16BEB79B4A8 /* Logger.swift.tmp */ = {isa = PBXFileReference; lastKnownFileType = text; path = Logger.swift.tmp; sourceTree = "<group>"; };
 		AFE80D1FEA6DDB5CE55DA96A /* .gitkeep */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitkeep; sourceTree = "<group>"; };
 		B010725CE44DF520E5EB01C2 /* corrupt_middle.wma */ = {isa = PBXFileReference; lastKnownFileType = file; path = corrupt_middle.wma; sourceTree = "<group>"; };
 		B0107B795FF6563795FB8163 /* corrupt_magic.wma */ = {isa = PBXFileReference; lastKnownFileType = file; path = corrupt_magic.wma; sourceTree = "<group>"; };
@@ -1145,7 +1143,6 @@
 			isa = PBXGroup;
 			children = (
 				09EE5151C8F58737FF6B7A2E /* Logger.swift */,
-				AFAE38567584A16BEB79B4A8 /* Logger.swift.tmp */,
 			);
 			path = Logging;
 			sourceTree = "<group>";
@@ -2006,7 +2003,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				35FDB5681BEF7B1FE788D3AE /* Logger.swift.tmp in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
