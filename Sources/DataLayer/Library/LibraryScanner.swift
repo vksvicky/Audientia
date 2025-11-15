@@ -54,7 +54,8 @@ public final class LibraryScanner: LibraryScannerProtocol, @unchecked Sendable {
                 throw LibraryScannerError.directoryNotFound
             }
             
-            for case let fileURL as URL in enumerator {
+            while let next = enumerator.nextObject() {
+                guard let fileURL = next as? URL else { continue }
                 // Check if it's a regular file
                 let resourceValues = try? fileURL.resourceValues(forKeys: [.isRegularFileKey])
                 guard resourceValues?.isRegularFile == true else {
