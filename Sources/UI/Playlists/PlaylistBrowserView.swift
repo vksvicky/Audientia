@@ -91,7 +91,7 @@ public struct PlaylistBrowserView: View {
                     }
                 }
             }
-        } message: { _ in
+        } message: {
             Text("Enter a new name for the playlist.")
         }
     }

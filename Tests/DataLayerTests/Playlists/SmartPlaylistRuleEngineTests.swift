@@ -99,6 +99,21 @@ final class SmartPlaylistRuleEngineTests: XCTestCase {
         XCTAssertTrue(result, "Track should match artist contains rule")
     }
     
+    /// Test evaluating contains operator for title with "Loving You" and "Love"
+    func testEvaluateContainsTitleLovingYou() {
+        // Given - "Loving You" should contain "Love" (as "loving" contains "love")
+        let track = createTrack(title: "Loving You")
+        let rules = SmartPlaylistRules(rules: [
+            SmartPlaylistRule(field: .title, operator: .contains, value: "Love")
+        ])
+        
+        // When
+        let result = ruleEngine.evaluate(rules: rules, against: track)
+        
+        // Then
+        XCTAssertTrue(result, "'Loving You' should match 'Love' because 'loving' contains 'love'")
+    }
+    
     /// Test evaluating startsWith operator
     func testEvaluateStartsWith() {
         // Given

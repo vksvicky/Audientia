@@ -46,13 +46,12 @@ public final class SmartPlaylistRuleEngine: SmartPlaylistRuleEngineProtocol, @un
         
         // Evaluate rules with logical operators
         var result: Bool?
-        var lastLogicalOperator: SmartPlaylistRule.LogicalOperator?
         
         for rule in rules.rules {
             let ruleResult = evaluate(rule: rule, against: track)
             
-            if let previousResult = result, let logicalOp = lastLogicalOperator {
-                // Combine with previous result using logical operator
+            if let previousResult = result, let logicalOp = rule.logicalOperator {
+                // Combine with previous result using logical operator from current rule
                 switch logicalOp {
                 case .and:
                     result = previousResult && ruleResult
@@ -60,11 +59,9 @@ public final class SmartPlaylistRuleEngine: SmartPlaylistRuleEngineProtocol, @un
                     result = previousResult || ruleResult
                 }
             } else {
-                // First rule
+                // First rule (no logical operator) or no previous result
                 result = ruleResult
             }
-            
-            lastLogicalOperator = rule.logicalOperator
         }
         
         return result ?? false

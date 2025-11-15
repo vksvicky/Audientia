@@ -292,6 +292,23 @@
 		E207678F2EC93337000E80C9 /* PlaylistViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E207678C2EC93337000E80C9 /* PlaylistViewModel.swift */; };
 		E20767902EC93337000E80C9 /* PlaylistBrowserView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E207678B2EC93337000E80C9 /* PlaylistBrowserView.swift */; };
 		E20767922EC93496000E80C9 /* MockPlaylistComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = E20767912EC93496000E80C9 /* MockPlaylistComponents.swift */; };
+		E207679A2EC939B4000E80C9 /* PlaylistEditorViewDragDropTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E20767932EC939B4000E80C9 /* PlaylistEditorViewDragDropTests.swift */; };
+		E207679B2EC939B4000E80C9 /* PlaylistEditorViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E20767952EC939B4000E80C9 /* PlaylistEditorViewModelTests.swift */; };
+		E207679C2EC939B4000E80C9 /* SmartPlaylistRuleBuilderViewModelBDDTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E20767982EC939B4000E80C9 /* SmartPlaylistRuleBuilderViewModelBDDTests.swift */; };
+		E207679D2EC939B4000E80C9 /* PlaylistViewModelBDDTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E20767972EC939B4000E80C9 /* PlaylistViewModelBDDTests.swift */; };
+		E207679E2EC939B4000E80C9 /* PlaylistEditorViewModelBDDTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E20767942EC939B4000E80C9 /* PlaylistEditorViewModelBDDTests.swift */; };
+		E207679F2EC939B4000E80C9 /* SmartPlaylistRuleBuilderViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E20767992EC939B4000E80C9 /* SmartPlaylistRuleBuilderViewModelTests.swift */; };
+		E20767A02EC939B4000E80C9 /* PlaylistEditorViewTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E20767962EC939B4000E80C9 /* PlaylistEditorViewTests.swift */; };
+		E20767A22EC939F8000E80C9 /* SmartPlaylistIntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E20767A12EC939F8000E80C9 /* SmartPlaylistIntegrationTests.swift */; };
+		E20767A72EC93A45000E80C9 /* SmartPlaylistRuleBuilderViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E20767A62EC93A45000E80C9 /* SmartPlaylistRuleBuilderViewModel.swift */; };
+		E20767A82EC93A45000E80C9 /* SmartPlaylistRuleBuilderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E20767A52EC93A45000E80C9 /* SmartPlaylistRuleBuilderView.swift */; };
+		E20767A92EC93A45000E80C9 /* PlaylistEditorViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E20767A42EC93A45000E80C9 /* PlaylistEditorViewModel.swift */; };
+		E20767AA2EC93A45000E80C9 /* PlaylistEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E20767A32EC93A45000E80C9 /* PlaylistEditorView.swift */; };
+		E20767AB2EC93A45000E80C9 /* SmartPlaylistRuleBuilderViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E20767A62EC93A45000E80C9 /* SmartPlaylistRuleBuilderViewModel.swift */; };
+		E20767AC2EC93A45000E80C9 /* SmartPlaylistRuleBuilderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E20767A52EC93A45000E80C9 /* SmartPlaylistRuleBuilderView.swift */; };
+		E20767AD2EC93A45000E80C9 /* PlaylistEditorViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E20767A42EC93A45000E80C9 /* PlaylistEditorViewModel.swift */; };
+		E20767AE2EC93A45000E80C9 /* PlaylistEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E20767A32EC93A45000E80C9 /* PlaylistEditorView.swift */; };
+		E20767B02EC93A94000E80C9 /* PlaylistEditorViewBDDTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E20767AF2EC93A94000E80C9 /* PlaylistEditorViewBDDTests.swift */; };
 		E2743DE32EC4B5E900194D39 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E2743DDF2EC4B5DD00194D39 /* Assets.xcassets */; };
 		E2743DE42EC4B60700194D39 /* (null) in Sources */ = {isa = PBXBuildFile; };
 		E2743DE62EC4B61B00194D39 /* AppKitBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2743D362EC4B5AF00194D39 /* AppKitBridge.swift */; };
@@ -942,6 +959,19 @@
 		E207678B2EC93337000E80C9 /* PlaylistBrowserView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaylistBrowserView.swift; sourceTree = "<group>"; };
 		E207678C2EC93337000E80C9 /* PlaylistViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaylistViewModel.swift; sourceTree = "<group>"; };
 		E20767912EC93496000E80C9 /* MockPlaylistComponents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockPlaylistComponents.swift; sourceTree = "<group>"; };
+		E20767932EC939B4000E80C9 /* PlaylistEditorViewDragDropTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaylistEditorViewDragDropTests.swift; sourceTree = "<group>"; };
+		E20767942EC939B4000E80C9 /* PlaylistEditorViewModelBDDTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaylistEditorViewModelBDDTests.swift; sourceTree = "<group>"; };
+		E20767952EC939B4000E80C9 /* PlaylistEditorViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaylistEditorViewModelTests.swift; sourceTree = "<group>"; };
+		E20767962EC939B4000E80C9 /* PlaylistEditorViewTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaylistEditorViewTests.swift; sourceTree = "<group>"; };
+		E20767972EC939B4000E80C9 /* PlaylistViewModelBDDTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaylistViewModelBDDTests.swift; sourceTree = "<group>"; };
+		E20767982EC939B4000E80C9 /* SmartPlaylistRuleBuilderViewModelBDDTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmartPlaylistRuleBuilderViewModelBDDTests.swift; sourceTree = "<group>"; };
+		E20767992EC939B4000E80C9 /* SmartPlaylistRuleBuilderViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmartPlaylistRuleBuilderViewModelTests.swift; sourceTree = "<group>"; };
+		E20767A12EC939F8000E80C9 /* SmartPlaylistIntegrationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmartPlaylistIntegrationTests.swift; sourceTree = "<group>"; };
+		E20767A32EC93A45000E80C9 /* PlaylistEditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaylistEditorView.swift; sourceTree = "<group>"; };
+		E20767A42EC93A45000E80C9 /* PlaylistEditorViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaylistEditorViewModel.swift; sourceTree = "<group>"; };
+		E20767A52EC93A45000E80C9 /* SmartPlaylistRuleBuilderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmartPlaylistRuleBuilderView.swift; sourceTree = "<group>"; };
+		E20767A62EC93A45000E80C9 /* SmartPlaylistRuleBuilderViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmartPlaylistRuleBuilderViewModel.swift; sourceTree = "<group>"; };
+		E20767AF2EC93A94000E80C9 /* PlaylistEditorViewBDDTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaylistEditorViewBDDTests.swift; sourceTree = "<group>"; };
 		E2743D362EC4B5AF00194D39 /* AppKitBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppKitBridge.swift; sourceTree = "<group>"; };
 		E2743D372EC4B5AF00194D39 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		E2743D3B2EC4B5AF00194D39 /* AudioEqualizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioEqualizer.swift; sourceTree = "<group>"; };
@@ -1737,8 +1767,16 @@
 			children = (
 				E207677E2EC932FE000E80C9 /* PlaylistBrowserViewBDDTests.swift */,
 				E207677F2EC932FE000E80C9 /* PlaylistBrowserViewTests.swift */,
+				E20767AF2EC93A94000E80C9 /* PlaylistEditorViewBDDTests.swift */,
+				E20767932EC939B4000E80C9 /* PlaylistEditorViewDragDropTests.swift */,
+				E20767942EC939B4000E80C9 /* PlaylistEditorViewModelBDDTests.swift */,
+				E20767952EC939B4000E80C9 /* PlaylistEditorViewModelTests.swift */,
+				E20767962EC939B4000E80C9 /* PlaylistEditorViewTests.swift */,
+				E20767972EC939B4000E80C9 /* PlaylistViewModelBDDTests.swift */,
 				E20767802EC932FE000E80C9 /* PlaylistViewModelBDDTests.swift */,
 				E20767812EC932FE000E80C9 /* PlaylistViewModelTests.swift */,
+				E20767982EC939B4000E80C9 /* SmartPlaylistRuleBuilderViewModelBDDTests.swift */,
+				E20767992EC939B4000E80C9 /* SmartPlaylistRuleBuilderViewModelTests.swift */,
 			);
 			path = Playlists;
 			sourceTree = "<group>";
@@ -2056,6 +2094,10 @@
 			children = (
 				E207678B2EC93337000E80C9 /* PlaylistBrowserView.swift */,
 				E207678C2EC93337000E80C9 /* PlaylistViewModel.swift */,
+				E20767A32EC93A45000E80C9 /* PlaylistEditorView.swift */,
+				E20767A42EC93A45000E80C9 /* PlaylistEditorViewModel.swift */,
+				E20767A52EC93A45000E80C9 /* SmartPlaylistRuleBuilderView.swift */,
+				E20767A62EC93A45000E80C9 /* SmartPlaylistRuleBuilderViewModel.swift */,
 			);
 			path = Playlists;
 			sourceTree = "<group>";
@@ -2137,6 +2179,7 @@
 				E28D17752EC900D500467BC0 /* PlaylistManagerBDDTests.swift */,
 				E28D17762EC900D500467BC0 /* PlaylistManagerTests.swift */,
 				E28D17772EC900D500467BC0 /* PlaylistStatisticsCalculatorTests.swift */,
+				E20767A12EC939F8000E80C9 /* SmartPlaylistIntegrationTests.swift */,
 				E28D17782EC900D500467BC0 /* SmartPlaylistRuleEngineTests.swift */,
 			);
 			path = Playlists;
@@ -3005,6 +3048,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E20767A72EC93A45000E80C9 /* SmartPlaylistRuleBuilderViewModel.swift in Sources */,
+				E20767A82EC93A45000E80C9 /* SmartPlaylistRuleBuilderView.swift in Sources */,
+				E20767A92EC93A45000E80C9 /* PlaylistEditorViewModel.swift in Sources */,
+				E20767AA2EC93A45000E80C9 /* PlaylistEditorView.swift in Sources */,
 				E2743E272EC4B6C800194D39 /* Album.swift in Sources */,
 				E2743E282EC4B6C800194D39 /* AutoVersionUpdate.swift in Sources */,
 				E2743E292EC4B6C800194D39 /* AudioFormats.swift in Sources */,
@@ -3061,6 +3108,7 @@
 				737857A958466473F9E250BE /* LibrarySearchBDDTests.swift in Sources */,
 				C5771D137BDD50AA8DAE4328 /* LibrarySearchTests.swift in Sources */,
 				9AF22C6AA87D7C01D7E557D7 /* LibraryStatisticsBDDTests.swift in Sources */,
+				E20767A22EC939F8000E80C9 /* SmartPlaylistIntegrationTests.swift in Sources */,
 				E6E149CFDDE8BAEAE58486D1 /* LibraryStatisticsTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -3069,11 +3117,16 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E20767AB2EC93A45000E80C9 /* SmartPlaylistRuleBuilderViewModel.swift in Sources */,
+				E20767AC2EC93A45000E80C9 /* SmartPlaylistRuleBuilderView.swift in Sources */,
+				E20767AD2EC93A45000E80C9 /* PlaylistEditorViewModel.swift in Sources */,
+				E20767AE2EC93A45000E80C9 /* PlaylistEditorView.swift in Sources */,
 				E20767922EC93496000E80C9 /* MockPlaylistComponents.swift in Sources */,
 				9CAF7A9DEA9502C98C6E69AC /* AudioGainControlViewBDDTests.swift in Sources */,
 				F9F396986427FFEC03C27303 /* AudioVisualizerBDDTests.swift in Sources */,
 				13DB5A008237AA4221FAAB93 /* EQInterfaceBDDTests.swift in Sources */,
 				3531A69EC0D9AAA792C7AF79 /* MockAudioEngine.swift in Sources */,
+				E20767B02EC93A94000E80C9 /* PlaylistEditorViewBDDTests.swift in Sources */,
 				E207678D2EC93337000E80C9 /* PlaylistViewModel.swift in Sources */,
 				E207678E2EC93337000E80C9 /* PlaylistBrowserView.swift in Sources */,
 				E20767832EC932FE000E80C9 /* PlaylistViewModelBDDTests.swift in Sources */,
@@ -3083,6 +3136,13 @@
 				7D227E028CA959384550A7DF /* MockDSPComponents.swift in Sources */,
 				3F72E778A767F5B7AB8F7705 /* NormalizationSettingsBDDTests.swift in Sources */,
 				8AFE06598A3152B581752FB4 /* NowPlayingBDDScenarios.swift in Sources */,
+				E207679A2EC939B4000E80C9 /* PlaylistEditorViewDragDropTests.swift in Sources */,
+				E207679B2EC939B4000E80C9 /* PlaylistEditorViewModelTests.swift in Sources */,
+				E207679C2EC939B4000E80C9 /* SmartPlaylistRuleBuilderViewModelBDDTests.swift in Sources */,
+				E207679D2EC939B4000E80C9 /* PlaylistViewModelBDDTests.swift in Sources */,
+				E207679E2EC939B4000E80C9 /* PlaylistEditorViewModelBDDTests.swift in Sources */,
+				E207679F2EC939B4000E80C9 /* SmartPlaylistRuleBuilderViewModelTests.swift in Sources */,
+				E20767A02EC939B4000E80C9 /* PlaylistEditorViewTests.swift in Sources */,
 				8F8DCB77DF1C6765D4F5EF62 /* NowPlayingViewModelTests.swift in Sources */,
 				137DDBA3F86B6DC84B971495 /* ReplayGainSettingsBDDTests.swift in Sources */,
 				E2743E702EC4B6F800194D39 /* NowPlayingViewModel.swift in Sources */,

@@ -83,8 +83,7 @@ final class MockAudioEqualizer: AudioEqualizerProtocol {
 
 // MARK: - Mock AudioGainControl
 
-@MainActor
-final class MockAudioGainControl: AudioGainControlProtocol {
+final class MockAudioGainControl: AudioGainControlProtocol, @unchecked Sendable {
     var globalGain: Float = 0.0
     var trackGains: [UUID: Float] = [:]
     
