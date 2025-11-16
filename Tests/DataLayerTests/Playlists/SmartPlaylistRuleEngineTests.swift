@@ -100,8 +100,10 @@ final class SmartPlaylistRuleEngineTests: XCTestCase {
     }
     
     /// Test evaluating contains operator for title with "Loving You" and "Love"
+    /// Note: "loving you" does NOT contain "love" as a substring - Swift's contains() performs
+    /// exact substring matching, and "love" is not a substring of "loving you" (it's a prefix of "loving" but not a substring of the full string).
     func testEvaluateContainsTitleLovingYou() {
-        // Given - "Loving You" should contain "Love" (as "loving" contains "love")
+        // Given - "Loving You" should NOT contain "Love" as a substring
         let track = createTrack(title: "Loving You")
         let rules = SmartPlaylistRules(rules: [
             SmartPlaylistRule(field: .title, operator: .contains, value: "Love")
@@ -110,8 +112,8 @@ final class SmartPlaylistRuleEngineTests: XCTestCase {
         // When
         let result = ruleEngine.evaluate(rules: rules, against: track)
         
-        // Then
-        XCTAssertTrue(result, "'Loving You' should match 'Love' because 'loving' contains 'love'")
+        // Then - "loving you" does not contain "love" as a substring
+        XCTAssertFalse(result, "'Loving You' should NOT match 'Love' because 'loving you' does not contain 'love' as a substring")
     }
     
     /// Test evaluating startsWith operator

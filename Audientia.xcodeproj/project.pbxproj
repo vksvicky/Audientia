@@ -309,6 +309,20 @@
 		E20767AD2EC93A45000E80C9 /* PlaylistEditorViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E20767A42EC93A45000E80C9 /* PlaylistEditorViewModel.swift */; };
 		E20767AE2EC93A45000E80C9 /* PlaylistEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E20767A32EC93A45000E80C9 /* PlaylistEditorView.swift */; };
 		E20767B02EC93A94000E80C9 /* PlaylistEditorViewBDDTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E20767AF2EC93A94000E80C9 /* PlaylistEditorViewBDDTests.swift */; };
+		E20767B32ECA4C86000E80C9 /* ID3v2TagWriter.swift in Sources */ = {isa = PBXBuildFile; fileRef = E20767B12ECA4C86000E80C9 /* ID3v2TagWriter.swift */; };
+		E20767B42ECA4C86000E80C9 /* TagWriterProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = E20767B22ECA4C86000E80C9 /* TagWriterProtocol.swift */; };
+		E20767CD2ECA50C9000E80C9 /* VorbisCommentsParserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E20767B92ECA4CAE000E80C9 /* VorbisCommentsParserTests.swift */; };
+		E20767CE2ECA50C9000E80C9 /* TagParserCoordinatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E20767B82ECA4CAE000E80C9 /* TagParserCoordinatorTests.swift */; };
+		E20767CF2ECA50C9000E80C9 /* TagParserBDDTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E20767B72ECA4CAE000E80C9 /* TagParserBDDTests.swift */; };
+		E20767D02ECA50C9000E80C9 /* MP4ParserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E20767B62ECA4CAE000E80C9 /* MP4ParserTests.swift */; };
+		E20767D12ECA50C9000E80C9 /* ID3v2ParserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E20767B52ECA4CAE000E80C9 /* ID3v2ParserTests.swift */; };
+		E20767D22ECA50CF000E80C9 /* ID3v2TagWriterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E20767BB2ECA4CAE000E80C9 /* ID3v2TagWriterTests.swift */; };
+		E20767D32ECA50CF000E80C9 /* TagWriterProtocolTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E20767BC2ECA4CAE000E80C9 /* TagWriterProtocolTests.swift */; };
+		E20767C62ECA4CAE000E80C9 /* MetadataEngine.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9A4C5BEE3265B00B36646883 /* MetadataEngine.framework */; };
+		E20767C72ECA4CAE000E80C9 /* Shared.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 967CEDCE0C0F130BCC2547FD /* Shared.framework */; };
+		E20767C82ECA4CAE000E80C9 /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 44C5D554AFCD90973860C6BF /* XCTest.framework */; };
+		E20767C92ECA4CAE000E80C9 /* MetadataEngine.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 9A4C5BEE3265B00B36646883 /* MetadataEngine.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		E20767CA2ECA4CAE000E80C9 /* Shared.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 967CEDCE0C0F130BCC2547FD /* Shared.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		E2743DE32EC4B5E900194D39 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E2743DDF2EC4B5DD00194D39 /* Assets.xcassets */; };
 		E2743DE42EC4B60700194D39 /* (null) in Sources */ = {isa = PBXBuildFile; };
 		E2743DE62EC4B61B00194D39 /* AppKitBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2743D362EC4B5AF00194D39 /* AppKitBridge.swift */; };
@@ -551,6 +565,20 @@
 			remoteGlobalIDString = 3F66AFB27086D6EDE602BBDC;
 			remoteInfo = MetadataEngine;
 		};
+		E20767CB2ECA4CAE000E80C9 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = AF348473424FB6AD275FC868 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 3F66AFB27086D6EDE602BBDC;
+			remoteInfo = MetadataEngine;
+		};
+		E20767CC2ECA4CAE000E80C9 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = AF348473424FB6AD275FC868 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = C9315070ADDD2733ECF2C9B0;
+			remoteInfo = Shared;
+		};
 		79D8FEC138355D35A98CDC4D /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = AF348473424FB6AD275FC868 /* Project object */;
@@ -664,6 +692,18 @@
 				2632442A3D7E03CBBAC20CEC /* DataLayer.framework in Embed Frameworks */,
 				8D49DE05076824D00A320E09 /* Shared.framework in Embed Frameworks */,
 				6B9CFCF84A2843803580BC45 /* MetadataEngine.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E20767C22ECA4CAE000E80C9 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				E20767C92ECA4CAE000E80C9 /* MetadataEngine.framework in Embed Frameworks */,
+				E20767CA2ECA4CAE000E80C9 /* Shared.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -866,6 +906,7 @@
 		98D4056F0A985DDA54AEF853 /* AudioEqualizerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioEqualizerTests.swift; sourceTree = "<group>"; };
 		99B9FA6B8E8A2715E61244E9 /* valid_88.2k.aiff */ = {isa = PBXFileReference; lastKnownFileType = audio.aiff; path = valid_88.2k.aiff; sourceTree = "<group>"; };
 		9A4C5BEE3265B00B36646883 /* MetadataEngine.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = MetadataEngine.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		E20767C52ECA4CAE000E80C9 /* MetadataEngineTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MetadataEngineTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		9B492EC159DCD8E412A68CF7 /* invalid_truncated.dts */ = {isa = PBXFileReference; lastKnownFileType = text; path = invalid_truncated.dts; sourceTree = "<group>"; };
 		9B4CD14BE823AD63A75F8AA0 /* AudioGainControlViewBDDTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioGainControlViewBDDTests.swift; sourceTree = "<group>"; };
 		9C97D0020E2E7CED20A94293 /* corrupt_magic.alac */ = {isa = PBXFileReference; lastKnownFileType = file; path = corrupt_magic.alac; sourceTree = "<group>"; };
@@ -972,6 +1013,15 @@
 		E20767A52EC93A45000E80C9 /* SmartPlaylistRuleBuilderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmartPlaylistRuleBuilderView.swift; sourceTree = "<group>"; };
 		E20767A62EC93A45000E80C9 /* SmartPlaylistRuleBuilderViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmartPlaylistRuleBuilderViewModel.swift; sourceTree = "<group>"; };
 		E20767AF2EC93A94000E80C9 /* PlaylistEditorViewBDDTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaylistEditorViewBDDTests.swift; sourceTree = "<group>"; };
+		E20767B12ECA4C86000E80C9 /* ID3v2TagWriter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ID3v2TagWriter.swift; sourceTree = "<group>"; };
+		E20767B22ECA4C86000E80C9 /* TagWriterProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagWriterProtocol.swift; sourceTree = "<group>"; };
+		E20767B52ECA4CAE000E80C9 /* ID3v2ParserTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ID3v2ParserTests.swift; sourceTree = "<group>"; };
+		E20767B62ECA4CAE000E80C9 /* MP4ParserTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MP4ParserTests.swift; sourceTree = "<group>"; };
+		E20767B72ECA4CAE000E80C9 /* TagParserBDDTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagParserBDDTests.swift; sourceTree = "<group>"; };
+		E20767B82ECA4CAE000E80C9 /* TagParserCoordinatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagParserCoordinatorTests.swift; sourceTree = "<group>"; };
+		E20767B92ECA4CAE000E80C9 /* VorbisCommentsParserTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VorbisCommentsParserTests.swift; sourceTree = "<group>"; };
+		E20767BB2ECA4CAE000E80C9 /* ID3v2TagWriterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ID3v2TagWriterTests.swift; sourceTree = "<group>"; };
+		E20767BC2ECA4CAE000E80C9 /* TagWriterProtocolTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagWriterProtocolTests.swift; sourceTree = "<group>"; };
 		E2743D362EC4B5AF00194D39 /* AppKitBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppKitBridge.swift; sourceTree = "<group>"; };
 		E2743D372EC4B5AF00194D39 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		E2743D3B2EC4B5AF00194D39 /* AudioEqualizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioEqualizer.swift; sourceTree = "<group>"; };
@@ -1148,6 +1198,16 @@
 			buildActionMask = 2147483647;
 			files = (
 				CF624AF99FE2A9214FE25C84 /* Shared.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E20767C12ECA4CAE000E80C9 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E20767C62ECA4CAE000E80C9 /* MetadataEngine.framework in Frameworks */,
+				E20767C72ECA4CAE000E80C9 /* Shared.framework in Frameworks */,
+				E20767C82ECA4CAE000E80C9 /* XCTest.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1368,6 +1428,7 @@
 				967CEDCE0C0F130BCC2547FD /* DataLayer.framework */,
 				1BF8BBF674EEA17F50F57670 /* DataLayerTests.xctest */,
 				9A4C5BEE3265B00B36646883 /* MetadataEngine.framework */,
+				E20767C52ECA4CAE000E80C9 /* MetadataEngineTests.xctest */,
 				E7CEDCFEA77C7164A82895D4 /* PluginSystem.framework */,
 				06774C335950E7C8AFB02F02 /* Shared.framework */,
 				F3816D8A1DCA235E29FBCFF0 /* SharedTests.xctest */,
@@ -1527,6 +1588,7 @@
 			children = (
 				1D9A3FF138840CB18109F77B /* AudioCoreTests */,
 				2AEF9DEA585BA4CABBE5B87B /* DataLayerTests */,
+				E20767BE2ECA4CAE000E80C9 /* MetadataEngineTests */,
 				05E8BF1C7A6EC3077C51B853 /* SharedTests */,
 				86E0526E51A9A15D13764BC4 /* UITests */,
 			);
@@ -1781,6 +1843,36 @@
 			path = Playlists;
 			sourceTree = "<group>";
 		};
+		E20767BA2ECA4CAE000E80C9 /* Parsers */ = {
+			isa = PBXGroup;
+			children = (
+				E20767B52ECA4CAE000E80C9 /* ID3v2ParserTests.swift */,
+				E20767B62ECA4CAE000E80C9 /* MP4ParserTests.swift */,
+				E20767B72ECA4CAE000E80C9 /* TagParserBDDTests.swift */,
+				E20767B82ECA4CAE000E80C9 /* TagParserCoordinatorTests.swift */,
+				E20767B92ECA4CAE000E80C9 /* VorbisCommentsParserTests.swift */,
+			);
+			path = Parsers;
+			sourceTree = "<group>";
+		};
+		E20767BD2ECA4CAE000E80C9 /* Writers */ = {
+			isa = PBXGroup;
+			children = (
+				E20767BB2ECA4CAE000E80C9 /* ID3v2TagWriterTests.swift */,
+				E20767BC2ECA4CAE000E80C9 /* TagWriterProtocolTests.swift */,
+			);
+			path = Writers;
+			sourceTree = "<group>";
+		};
+		E20767BE2ECA4CAE000E80C9 /* MetadataEngineTests */ = {
+			isa = PBXGroup;
+			children = (
+				E20767BA2ECA4CAE000E80C9 /* Parsers */,
+				E20767BD2ECA4CAE000E80C9 /* Writers */,
+			);
+			path = MetadataEngineTests;
+			sourceTree = "<group>";
+		};
 		E2743D312EC4B5AF00194D39 /* AudioCore */ = {
 			isa = PBXGroup;
 			children = (
@@ -1934,13 +2026,6 @@
 			path = DataLayer;
 			sourceTree = "<group>";
 		};
-		E2743D662EC4B5AF00194D39 /* Artwork */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Artwork;
-			sourceTree = "<group>";
-		};
 		E2743D6C2EC4B5AF00194D39 /* Parsers */ = {
 			isa = PBXGroup;
 			children = (
@@ -1956,6 +2041,8 @@
 		E2743D6D2EC4B5AF00194D39 /* Writers */ = {
 			isa = PBXGroup;
 			children = (
+				E20767B12ECA4C86000E80C9 /* ID3v2TagWriter.swift */,
+				E20767B22ECA4C86000E80C9 /* TagWriterProtocol.swift */,
 			);
 			path = Writers;
 			sourceTree = "<group>";
@@ -1963,7 +2050,6 @@
 		E2743D712EC4B5AF00194D39 /* MetadataEngine */ = {
 			isa = PBXGroup;
 			children = (
-				E2743D662EC4B5AF00194D39 /* Artwork */,
 				E2743D6C2EC4B5AF00194D39 /* Parsers */,
 				E2743D6D2EC4B5AF00194D39 /* Writers */,
 				E2743D6E2EC4B5AF00194D39 /* MetadataEngine.swift */,
@@ -2462,6 +2548,27 @@
 			productReference = 1BF8BBF674EEA17F50F57670 /* DataLayerTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
+		E20767D42ECA4CAE000E80C9 /* MetadataEngineTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = E20767BF2ECA4CAE000E80C9 /* Build configuration list for PBXNativeTarget "MetadataEngineTests" */;
+			buildPhases = (
+				E20767C02ECA4CAE000E80C9 /* Sources */,
+				E20767C12ECA4CAE000E80C9 /* Frameworks */,
+				E20767C22ECA4CAE000E80C9 /* Embed Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				E20767C32ECA4CAE000E80C9 /* PBXTargetDependency */,
+				E20767C42ECA4CAE000E80C9 /* PBXTargetDependency */,
+			);
+			name = MetadataEngineTests;
+			packageProductDependencies = (
+			);
+			productName = MetadataEngineTests;
+			productReference = E20767C52ECA4CAE000E80C9 /* MetadataEngineTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		C9315070ADDD2733ECF2C9B0 /* Shared */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 0BD5B19A829D05D7EC918265 /* Build configuration list for PBXNativeTarget "Shared" */;
@@ -2515,6 +2622,7 @@
 				15ABA0849044C2D5313CF0D0 /* DataLayer */,
 				B8EF3FF59DD5DB15D368CFB3 /* DataLayerTests */,
 				3F66AFB27086D6EDE602BBDC /* MetadataEngine */,
+				E20767D42ECA4CAE000E80C9 /* MetadataEngineTests */,
 				60DBDF79817EDE096FCDC555 /* PluginSystem */,
 				C9315070ADDD2733ECF2C9B0 /* Shared */,
 				368DCADE1C763E3FCB5472B6 /* SharedTests */,
@@ -3031,8 +3139,24 @@
 				E2743E242EC4B6A200194D39 /* MetadataEngine.swift in Sources */,
 				E2743E1F2EC4B69900194D39 /* ID3v2Parser.swift in Sources */,
 				E2743E202EC4B69900194D39 /* VorbisCommentsParser.swift in Sources */,
+				E20767B32ECA4C86000E80C9 /* ID3v2TagWriter.swift in Sources */,
+				E20767B42ECA4C86000E80C9 /* TagWriterProtocol.swift in Sources */,
 				E2743E212EC4B69900194D39 /* TagParserProtocol.swift in Sources */,
 				E2743E222EC4B69900194D39 /* MP4Parser.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E20767C02ECA4CAE000E80C9 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E20767CD2ECA50C9000E80C9 /* VorbisCommentsParserTests.swift in Sources */,
+				E20767CE2ECA50C9000E80C9 /* TagParserCoordinatorTests.swift in Sources */,
+				E20767CF2ECA50C9000E80C9 /* TagParserBDDTests.swift in Sources */,
+				E20767D02ECA50C9000E80C9 /* MP4ParserTests.swift in Sources */,
+				E20767D12ECA50C9000E80C9 /* ID3v2ParserTests.swift in Sources */,
+				E20767D22ECA50CF000E80C9 /* ID3v2TagWriterTests.swift in Sources */,
+				E20767D32ECA50CF000E80C9 /* TagWriterProtocolTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3298,6 +3422,16 @@
 			isa = PBXTargetDependency;
 			target = 6A56C40CB66C8E0C935B0696 /* AudioCore */;
 			targetProxy = D8E7F9A2B3C4D5E6F7A8B9C0 /* PBXContainerItemProxy */;
+		};
+		E20767C32ECA4CAE000E80C9 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 3F66AFB27086D6EDE602BBDC /* MetadataEngine */;
+			targetProxy = E20767CB2ECA4CAE000E80C9 /* PBXContainerItemProxy */;
+		};
+		E20767C42ECA4CAE000E80C9 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = C9315070ADDD2733ECF2C9B0 /* Shared */;
+			targetProxy = E20767CC2ECA4CAE000E80C9 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -3886,6 +4020,68 @@
 			};
 			name = Release;
 		};
+		E20767CD2ECA4CAE000E80C9 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGNING_ALLOWED = NO;
+				CODE_SIGNING_REQUIRED = NO;
+				CODE_SIGN_IDENTITY = "-";
+				COMBINE_HIDPI_IMAGES = YES;
+				DEAD_CODE_STRIPPING = YES;
+				ENABLE_TESTING_SEARCH_PATHS = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\".\"",
+				);
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleName = MetadataEngineTests;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2025 CycleRunCode Club. All rights reserved.";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 15.0;
+				PRODUCT_BUNDLE_IDENTIFIER = club.cycleruncode.MetadataEngineTests;
+				PRODUCT_MODULE_NAME = MetadataEngineTests;
+				SDKROOT = macosx;
+				SWIFT_VERSION = 5.9;
+				TEST_HOST = "";
+			};
+			name = Debug;
+		};
+		E20767CE2ECA4CAE000E80C9 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGNING_ALLOWED = NO;
+				CODE_SIGNING_REQUIRED = NO;
+				CODE_SIGN_IDENTITY = "-";
+				COMBINE_HIDPI_IMAGES = YES;
+				DEAD_CODE_STRIPPING = YES;
+				ENABLE_TESTING_SEARCH_PATHS = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\".\"",
+				);
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleName = MetadataEngineTests;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2025 CycleRunCode Club. All rights reserved.";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 15.0;
+				PRODUCT_BUNDLE_IDENTIFIER = club.cycleruncode.MetadataEngineTests;
+				PRODUCT_MODULE_NAME = MetadataEngineTests;
+				SDKROOT = macosx;
+				SWIFT_VERSION = 5.9;
+				TEST_HOST = "";
+			};
+			name = Release;
+		};
 		CDD4A90D7ED78CA2C68038F8 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -4097,6 +4293,15 @@
 			buildConfigurations = (
 				8C80CED1AF389EA1DF8651A5 /* Debug */,
 				75C7F051874D51CCD80FC25E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		E20767BF2ECA4CAE000E80C9 /* Build configuration list for PBXNativeTarget "MetadataEngineTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E20767CD2ECA4CAE000E80C9 /* Debug */,
+				E20767CE2ECA4CAE000E80C9 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;

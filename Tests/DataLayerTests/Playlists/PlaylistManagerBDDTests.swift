@@ -85,8 +85,8 @@ final class PlaylistManagerBDDTests: XCTestCase {
         
         // When - User creates a smart playlist with rules for 5-star songs from 2020
         let rules = SmartPlaylistRules(rules: [
-            SmartPlaylistRule(field: .rating, operator: .equals, value: "5", logicalOperator: .and),
-            SmartPlaylistRule(field: .year, operator: .equals, value: "2020")
+            SmartPlaylistRule(field: .rating, operator: .equals, value: "5"),
+            SmartPlaylistRule(field: .year, operator: .equals, value: "2020", logicalOperator: .and)
         ])
         let playlist = try await playlistManager.createSmartPlaylist(name: "5-Star Songs 2020", rules: rules)
         
