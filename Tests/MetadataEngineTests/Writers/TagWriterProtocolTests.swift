@@ -81,7 +81,7 @@ final class TagWriterProtocolTests: XCTestCase {
         FileManager.default.createFile(atPath: fileURL.path, contents: Data(), attributes: nil)
         defer { try? FileManager.default.removeItem(at: fileURL) }
         
-        let track = createTrack()
+        _ = createTrack()
         
         // When/Then - Should handle empty file appropriately
         // This will be implemented in concrete writer tests
@@ -152,7 +152,7 @@ final class TagWriterProtocolTests: XCTestCase {
         let fileURL = createTempFileURL()
         // Don't create the file
         
-        let track = createTrack()
+        _ = createTrack()
         
         // When/Then - Should throw fileNotFound error
         // This will be implemented in concrete writer tests
@@ -171,7 +171,7 @@ final class TagWriterProtocolTests: XCTestCase {
         attributes[.posixPermissions] = 0o444 // Read-only
         try FileManager.default.setAttributes(attributes, ofItemAtPath: fileURL.path)
         
-        let track = createTrack()
+        _ = createTrack()
         
         // When/Then - Should throw readOnlyFile error
         // This will be implemented in concrete writer tests
@@ -183,7 +183,7 @@ final class TagWriterProtocolTests: XCTestCase {
     /// Test tag write performance
     func testWritePerformance() async throws {
         // Given - Track to write
-        let track = createTrack()
+        _ = createTrack()
         
         // When/Then - Write should complete < 100ms
         // This will be implemented in concrete writer tests

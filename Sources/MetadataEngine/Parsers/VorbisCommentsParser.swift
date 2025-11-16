@@ -79,25 +79,40 @@ public final class VorbisCommentsParser: TagParserProtocol, @unchecked Sendable 
     }
     
     private func parseVorbisComments(data: Data) throws -> ParsedComments {
+        // Try to parse proper Vorbis Comments structure first
+        // This handles files written by our writer (OGG header + Vorbis Comments)
+        if let parsed = try? parseVorbisCommentsStructure(data: data),
+           hasAnyMetadata(parsed) {
+            return parsed
+        }
+        
+        // Fallback to simplified pattern search for existing files
+        return parseVorbisCommentsByPattern(data: data)
+    }
+    
+    /// Check if parsed comments contain any metadata
+    private func hasAnyMetadata(_ comments: ParsedComments) -> Bool {
+        comments.title != nil || comments.artist != nil || comments.album != nil ||
+        comments.year != nil || comments.trackNumber != nil ||
+        comments.discNumber != nil || comments.genre != nil
+    }
+    
+    /// Parse Vorbis Comments using pattern search (fallback method)
+    private func parseVorbisCommentsByPattern(data: Data) -> ParsedComments {
         var comments = ParsedComments()
         
-        // Vorbis Comments structure:
-        // - OGG page header (27 bytes)
-        // - Vorbis identification header
-        // - Vorbis comments header (starts with packet type 0x03)
-        // - Comment vector length (4 bytes, little-endian)
-        // - Comments (each: length (4 bytes) + UTF-8 string)
+        // Limit search to first 10KB to avoid false matches in audio data
+        let searchLimit = min(10_000, data.count)
+        let searchData = Data(data.prefix(searchLimit))
         
-        // Find Vorbis comments packet (packet type 0x03)
-        // This is a simplified implementation - real parser would need to:
-        // 1. Parse OGG pages
-        // 2. Find the comments packet
-        // 3. Parse the comment vector
+        // Extract comments using pattern matching
+        extractCommentsFromPattern(data: searchData, comments: &comments)
         
-        // For now, search for common Vorbis comment patterns
-        // Real implementation would properly parse the OGG structure
-        
-        // Look for comment patterns like "TITLE=...", "ARTIST=...", etc.
+        return comments
+    }
+    
+    /// Extract comments from data using pattern search
+    private func extractCommentsFromPattern(data: Data, comments: inout ParsedComments) {
         if let titleRange = findComment(data: data, field: "TITLE") {
             comments.title = extractCommentValue(data: data, range: titleRange)
         }
@@ -110,29 +125,167 @@ public final class VorbisCommentsParser: TagParserProtocol, @unchecked Sendable 
             comments.album = extractCommentValue(data: data, range: albumRange)
         }
         
-        if let dateRange = findComment(data: data, field: "DATE") {
-            if let dateString = extractCommentValue(data: data, range: dateRange) {
-                comments.year = extractYear(from: dateString)
-            }
+        if let dateRange = findComment(data: data, field: "DATE"),
+           let dateString = extractCommentValue(data: data, range: dateRange) {
+            comments.year = extractYear(from: dateString)
         }
         
-        if let trackRange = findComment(data: data, field: "TRACKNUMBER") {
-            if let trackString = extractCommentValue(data: data, range: trackRange) {
-                comments.trackNumber = Int(trackString)
-            }
+        if let trackRange = findComment(data: data, field: "TRACKNUMBER"),
+           let trackString = extractCommentValue(data: data, range: trackRange) {
+            comments.trackNumber = Int(trackString)
         }
         
-        if let discRange = findComment(data: data, field: "DISCNUMBER") {
-            if let discString = extractCommentValue(data: data, range: discRange) {
-                comments.discNumber = Int(discString)
-            }
+        if let discRange = findComment(data: data, field: "DISCNUMBER"),
+           let discString = extractCommentValue(data: data, range: discRange) {
+            comments.discNumber = Int(discString)
         }
         
         if let genreRange = findComment(data: data, field: "GENRE") {
             comments.genre = extractCommentValue(data: data, range: genreRange)
         }
+    }
+    
+    /// Parse Vorbis Comments structure (vendor string + comment vector)
+    private func parseVorbisCommentsStructure(data: Data) throws -> ParsedComments {
+        var comments = ParsedComments()
+        let offset = try findVorbisCommentsStart(data: data)
+        var currentOffset = offset
+        
+        // Read and skip vendor string
+        currentOffset = try skipVendorString(data: data, offset: currentOffset)
+        
+        // Read comment vector length
+        let commentVectorLength = try readCommentVectorLength(data: data, offset: &currentOffset)
+        
+        // Parse each comment
+        for _ in 0..<commentVectorLength {
+            guard let comment = try? readNextComment(data: data, offset: &currentOffset) else {
+                break
+            }
+            applyCommentToMetadata(comment: comment, metadata: &comments)
+        }
         
         return comments
+    }
+    
+    /// Find the start offset of Vorbis Comments in the data
+    private func findVorbisCommentsStart(data: Data) throws -> Int {
+        // Skip OGG header if present (starts with "OggS")
+        if data.count >= 27, String(data: data.prefix(4), encoding: .ascii) == "OggS" {
+            return 27
+        }
+        
+        // Search for vendor string "Audientia" to find Vorbis Comments start
+        let vendorPattern = Data("Audientia".utf8)
+        if let vendorRange = data.range(of: vendorPattern),
+           vendorRange.lowerBound >= 4 {
+            return vendorRange.lowerBound - 4
+        }
+        
+        // Try to find vendor string length pattern (reasonable length: 1-100 bytes)
+        return try findVendorStringByLength(data: data)
+    }
+    
+    /// Find vendor string by searching for length patterns
+    private func findVendorStringByLength(data: Data) throws -> Int {
+        let searchLimit = min(1000, data.count - 4)
+        for searchOffset in 0..<searchLimit {
+            let lengthBytes = data.subdata(in: searchOffset..<(searchOffset + 4))
+            let length = readUInt32LittleEndian(lengthBytes)
+            if length > 0 && length < 1000 && searchOffset + 4 + Int(length) <= data.count {
+                let vendorString = data.subdata(in: (searchOffset + 4)..<(searchOffset + 4 + Int(length)))
+                if let vendor = String(data: vendorString, encoding: .utf8), !vendor.isEmpty {
+                    return searchOffset
+                }
+            }
+        }
+        throw TagParserError.corruptedTag("Vorbis Comments")
+    }
+    
+    /// Skip vendor string and return new offset
+    private func skipVendorString(data: Data, offset: Int) throws -> Int {
+        guard offset + 4 <= data.count else {
+            throw TagParserError.corruptedTag("Vorbis Comments")
+        }
+        let vendorLengthBytes = data.subdata(in: offset..<(offset + 4))
+        let vendorLength = readUInt32LittleEndian(vendorLengthBytes)
+        let newOffset = offset + 4 + Int(vendorLength)
+        guard newOffset <= data.count else {
+            throw TagParserError.corruptedTag("Vorbis Comments")
+        }
+        return newOffset
+    }
+    
+    /// Read comment vector length and update offset
+    private func readCommentVectorLength(data: Data, offset: inout Int) throws -> UInt32 {
+        guard offset + 4 <= data.count else {
+            throw TagParserError.corruptedTag("Vorbis Comments")
+        }
+        let lengthBytes = data.subdata(in: offset..<(offset + 4))
+        let length = readUInt32LittleEndian(lengthBytes)
+        offset += 4
+        return length
+    }
+    
+    /// Read next comment and update offset
+    private func readNextComment(data: Data, offset: inout Int) throws -> String? {
+        guard offset + 4 <= data.count else {
+            return nil
+        }
+        
+        let commentLengthBytes = data.subdata(in: offset..<(offset + 4))
+        let commentLength = readUInt32LittleEndian(commentLengthBytes)
+        offset += 4
+        
+        guard offset + Int(commentLength) <= data.count else {
+            return nil
+        }
+        
+        let commentData = data.subdata(in: offset..<(offset + Int(commentLength)))
+        offset += Int(commentLength)
+        
+        return String(data: commentData, encoding: .utf8)
+    }
+    
+    /// Apply a comment string to metadata structure
+    private func applyCommentToMetadata(comment: String?, metadata: inout ParsedComments) {
+        guard let comment = comment,
+              let equalsIndex = comment.firstIndex(of: "=") else {
+            return
+        }
+        
+        let fieldName = String(comment[..<equalsIndex]).uppercased()
+        let value = String(comment[comment.index(after: equalsIndex)...])
+        
+        switch fieldName {
+        case "TITLE":
+            metadata.title = value
+        case "ARTIST":
+            metadata.artist = value
+        case "ALBUM":
+            metadata.album = value
+        case "DATE":
+            metadata.year = extractYear(from: value)
+        case "TRACKNUMBER":
+            metadata.trackNumber = Int(value)
+        case "DISCNUMBER":
+            metadata.discNumber = Int(value)
+        case "GENRE":
+            metadata.genre = value
+        default:
+            break
+        }
+    }
+    
+    /// Read UInt32 from little-endian bytes
+    private func readUInt32LittleEndian(_ bytes: Data) -> UInt32 {
+        guard bytes.count >= 4 else { return 0 }
+        var value: UInt32 = 0
+        value |= UInt32(bytes[0])
+        value |= UInt32(bytes[1]) << 8
+        value |= UInt32(bytes[2]) << 16
+        value |= UInt32(bytes[3]) << 24
+        return value
     }
     
     // MARK: - Comment Extraction Helpers

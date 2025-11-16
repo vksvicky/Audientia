@@ -331,7 +331,7 @@ final class ID3v2TagWriterTests: XCTestCase {
         FileManager.default.createFile(atPath: fileURL.path, contents: Data(), attributes: nil)
         defer { try? FileManager.default.removeItem(at: fileURL) }
         
-        let track = createTrack()
+        _ = createTrack()
         
         // When/Then - Should throw unsupportedFormat error or return false from canWrite
         XCTAssertFalse(writer.canWrite(fileURL: fileURL))

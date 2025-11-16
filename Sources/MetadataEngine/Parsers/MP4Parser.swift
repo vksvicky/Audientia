@@ -443,7 +443,23 @@ private extension MP4Parser {
             return nil
         }
         
-        // Track number format: 4 bytes reserved (0) + 2 bytes track number (big-endian) + 2 bytes total tracks
+        // Check if there's a data atom inside (typical MP4 format)
+        let typeBytes = data.subdata(in: (offset + 4)..<(offset + 8))
+        if let typeString = String(data: typeBytes, encoding: .ascii), typeString == "data" {
+            // Data atom format: 8 bytes header + 4 bytes flags + 4 bytes locale + 2 bytes track number + 2 bytes total
+            // Track number is at: offset + 8 (data header) + 4 (flags) + 4 (locale) = offset + 16
+            guard offset + 16 + 2 <= data.count else {
+                return nil
+            }
+            let trackNumberBytes = data.subdata(in: (offset + 16)..<(offset + 18))
+            let trackNumber = readUInt16BigEndian(trackNumberBytes)
+            return trackNumber > 0 ? Int(trackNumber) : nil
+        }
+        
+        // Direct format: 4 bytes reserved (0) + 2 bytes track number (big-endian) + 2 bytes total tracks
+        guard offset + 6 <= data.count else {
+            return nil
+        }
         let trackNumberBytes = data.subdata(in: (offset + 4)..<(offset + 6))
         let trackNumber = readUInt16BigEndian(trackNumberBytes)
         
@@ -456,7 +472,23 @@ private extension MP4Parser {
             return nil
         }
         
-        // Disc number format: 4 bytes reserved (0) + 2 bytes disc number (big-endian) + 2 bytes total discs
+        // Check if there's a data atom inside (typical MP4 format)
+        let typeBytes = data.subdata(in: (offset + 4)..<(offset + 8))
+        if let typeString = String(data: typeBytes, encoding: .ascii), typeString == "data" {
+            // Data atom format: 8 bytes header + 4 bytes flags + 4 bytes locale + 2 bytes disc number + 2 bytes total
+            // Disc number is at: offset + 8 (data header) + 4 (flags) + 4 (locale) = offset + 16
+            guard offset + 16 + 2 <= data.count else {
+                return nil
+            }
+            let discNumberBytes = data.subdata(in: (offset + 16)..<(offset + 18))
+            let discNumber = readUInt16BigEndian(discNumberBytes)
+            return discNumber > 0 ? Int(discNumber) : nil
+        }
+        
+        // Direct format: 4 bytes reserved (0) + 2 bytes disc number (big-endian) + 2 bytes total discs
+        guard offset + 6 <= data.count else {
+            return nil
+        }
         let discNumberBytes = data.subdata(in: (offset + 4)..<(offset + 6))
         let discNumber = readUInt16BigEndian(discNumberBytes)
         
