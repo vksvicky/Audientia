@@ -318,4 +318,3 @@ private final class MockTagEditHistory: TagEditHistoryProtocol, @unchecked Senda
         lastRecordedEdit = TagEdit(originalTrack: originalTrack, editedTrack: editedTrack, fileURL: fileURL)
     }
 }
-

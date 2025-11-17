@@ -193,4 +193,3 @@ private final class MockBatchTagOperations: BatchTagOperationsProtocol, @uncheck
         return result ?? BatchTagOperationResult(successCount: 0, failureCount: 0, failures: [])
     }
 }
-

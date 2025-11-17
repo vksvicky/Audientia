@@ -259,4 +259,3 @@ public enum TagEditorError: LocalizedError {
         }
     }
 }
-

@@ -106,7 +106,7 @@ public struct TagEditorView: View {
             Section {
                 HStack {
                     // Undo/Redo buttons
-                    Button(action: {
+                    Button {
                         Task {
                             do {
                                 try await viewModel.undo()
@@ -114,12 +114,12 @@ public struct TagEditorView: View {
                                 showError(error.localizedDescription)
                             }
                         }
-                    }) {
+                    } label: {
                         Label("Undo", systemImage: "arrow.uturn.backward")
                     }
                     .disabled(!viewModel.canUndo || viewModel.isSaving)
                     
-                    Button(action: {
+                    Button {
                         Task {
                             do {
                                 try await viewModel.redo()
@@ -127,7 +127,7 @@ public struct TagEditorView: View {
                                 showError(error.localizedDescription)
                             }
                         }
-                    }) {
+                    } label: {
                         Label("Redo", systemImage: "arrow.uturn.forward")
                     }
                     .disabled(!viewModel.canRedo || viewModel.isSaving)
@@ -135,11 +135,11 @@ public struct TagEditorView: View {
                     Spacer()
                     
                     // Save button
-                    Button(action: {
+                    Button {
                         Task {
                             await saveTags()
                         }
-                    }) {
+                    } label: {
                         if viewModel.isSaving {
                             ProgressView()
                                 .scaleEffect(0.8)
@@ -154,11 +154,16 @@ public struct TagEditorView: View {
         }
         .formStyle(.grouped)
         .navigationTitle("Edit Tags")
-        .alert("Error", isPresented: $showingError) {
-            Button("OK", role: .cancel) { }
-        } message: {
-            Text(errorMessage)
-        }
+        .alert(
+            "Error",
+            isPresented: $showingError,
+            actions: {
+                Button("OK", role: .cancel) { }
+            },
+            message: {
+                Text(errorMessage)
+            }
+        )
         .task(id: viewModel.lastError?.localizedDescription) {
             if let error = viewModel.lastError {
                 showError(error.localizedDescription)
@@ -182,5 +187,3 @@ public struct TagEditorView: View {
         showingError = true
     }
 }
-
-

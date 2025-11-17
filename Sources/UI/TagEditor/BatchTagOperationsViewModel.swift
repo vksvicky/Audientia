@@ -82,7 +82,11 @@ public final class BatchTagOperationsViewModel: ObservableObject {
             result = operationResult
             progress = 1.0
             
-            Logger.userInterface.info("Batch update completed: \(operationResult.successCount) successes, \(operationResult.failureCount) failures")
+            let successCount = operationResult.successCount
+            let failureCount = operationResult.failureCount
+            Logger.userInterface.info(
+                "Batch update completed: \(successCount) successes, \(failureCount) failures"
+            )
         } catch {
             lastError = error
             progress = 0.0
@@ -99,4 +103,3 @@ public final class BatchTagOperationsViewModel: ObservableObject {
         progress = 0.0
     }
 }
-

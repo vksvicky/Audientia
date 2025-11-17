@@ -97,11 +97,11 @@ public struct BatchTagOperationsView: View {
             
             // Action Buttons Section
             Section {
-                Button(action: {
+                Button {
                     Task {
                         await performBatchUpdate()
                     }
-                }) {
+                } label: {
                     if viewModel.isProcessing {
                         ProgressView()
                             .scaleEffect(0.8)
@@ -115,11 +115,16 @@ public struct BatchTagOperationsView: View {
         }
         .formStyle(.grouped)
         .navigationTitle("Batch Tag Operations")
-        .alert("Error", isPresented: $showingError) {
-            Button("OK", role: .cancel) { }
-        } message: {
-            Text(errorMessage)
-        }
+        .alert(
+            "Error",
+            isPresented: $showingError,
+            actions: {
+                Button("OK", role: .cancel) { }
+            },
+            message: {
+                Text(errorMessage)
+            }
+        )
         .task(id: viewModel.lastError?.localizedDescription) {
             if let error = viewModel.lastError {
                 showError(error.localizedDescription)
@@ -149,4 +154,3 @@ public struct BatchTagOperationsView: View {
         showingError = true
     }
 }
-
