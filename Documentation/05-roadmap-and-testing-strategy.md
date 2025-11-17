@@ -402,10 +402,10 @@
 - [x] Undo/redo system - **✅ TagEditHistory implemented with comprehensive TDD tests (TagEditHistoryTests) and BDD scenarios (TagEditHistoryBDDTests) covering Right-BICEP principles. Supports recording edits (original/edited tracks), undo/redo operations, history size limits (default 100), and clear functionality. Tracks canUndo/canRedo state.**
 
 **UI:**
-- [ ] Tag editor view
-- [ ] Batch tag operations UI
-- [ ] Tag validation warnings
-- [ ] Undo/redo controls
+- [x] Tag editor view - **✅ TagEditorView implemented with TagEditorViewModel, full TDD/BDD coverage (TagEditorViewTests/BDD, TagEditorViewModelTests/BDD) spanning Right-BICEP scenarios (load/edit/save, validation, undo/redo). Integrates TagWriterCoordinator, TagValidatorProtocol, TagEditHistoryProtocol with async/await-safe mocks for UI tests.**
+- [x] Batch tag operations UI - **✅ BatchTagOperationsView + ViewModel implemented with TDD/BDD tests (BatchTagOperationsViewModelTests/BDD). Supports multi-track selection, progress state, result summaries, failure details, and error surfacing via Right-BICEP scenarios (Right results, boundary track counts, inverse clearResult, cross-check error propagation, error/perf cases).**
+- [x] Tag validation warnings - **✅ TagEditorView surfaces TagValidator errors inline via validationErrors section; tests verify warning presentation for invalid year/title, covering Right-BICEP B/E cases.**
+- [x] Undo/redo controls - **✅ TagEditorView exposes Undo/Redo buttons wired to TagEditHistory, with ViewModel undo/redo async operations plus View/UI tests confirming availability states and history restoration (Right, Inverse, Error scenarios).**
 
 **Tests:**
 - [x] **TDD**: Tag writers, validation logic - **✅ Comprehensive TDD tests for all tag writers (ID3v2TagWriterTests, VorbisCommentsTagWriterTests, MP4TagWriterTests), TagValidatorTests, BatchTagOperationsTests, TagEditHistoryTests. All tests follow Right-BICEP principles with boundary conditions, inverse relationships, error handling, performance tests, and edge cases.**

@@ -90,7 +90,7 @@ public final class MockPlaylistManager: PlaylistManagerProtocol {
             throw PlaylistManagerError.playlistNotFound
         }
         
-        guard var playlist = playlists.first(where: { $0.id == id }) else {
+        guard let playlist = playlists.first(where: { $0.id == id }) else {
             throw PlaylistManagerError.playlistNotFound
         }
         
@@ -189,7 +189,7 @@ public final class MockPlaylistManager: PlaylistManagerProtocol {
         }
         
         // Reorder tracks based on trackIds
-        var playlistTracks = tracks[playlistId] ?? []
+        let playlistTracks = tracks[playlistId] ?? []
         var reorderedTracks: [Track] = []
         var addedTrackIds = Set<UUID>()
         

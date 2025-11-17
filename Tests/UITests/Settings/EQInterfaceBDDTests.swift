@@ -135,7 +135,7 @@ final class EQInterfaceBDDTests: XCTestCase {
     /// BDD: As a user, when I adjust multiple frequency bands, then each band should maintain its setting
     func testUserAdjustsMultipleBands() async throws {
         // Given - Equalizer is at flat settings
-        let initialBands = await mockEqualizer.getBands()
+        _ = await mockEqualizer.getBands()
         
         // When - User adjusts multiple bands
         try await mockEqualizer.setBandGain(0, gain: 4.0)  // Bass

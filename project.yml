@@ -169,6 +169,7 @@ targets:
     dependencies:
       - target: Shared
       - target: AudioCore
+      - target: MetadataEngine
     settings:
       PRODUCT_BUNDLE_IDENTIFIER: club.cycleruncode.AppKitBridge
       SWIFT_VERSION: "5.9"
@@ -566,10 +567,14 @@ targets:
       - path: Sources/UI/Settings
         group: Sources
         target: UITests
+      - path: Sources/UI/TagEditor
+        group: Sources
+        target: UITests
     dependencies:
       - target: AudioCore
       - target: Shared
       - target: Audientia
+      - target: MetadataEngine
       - framework: XCTest.framework
         embed: false
     settings:

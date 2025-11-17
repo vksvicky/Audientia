@@ -65,7 +65,7 @@ final class SmartPlaylistRuleBuilderViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.rules.count, 1)
         
         // When - Removing the rule
-        if let rule = viewModel.rules.first {
+        if viewModel.rules.first != nil {
             viewModel.removeRule(at: 0)
         }
         

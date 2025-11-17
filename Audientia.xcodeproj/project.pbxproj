@@ -295,7 +295,6 @@
 		E207679A2EC939B4000E80C9 /* PlaylistEditorViewDragDropTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E20767932EC939B4000E80C9 /* PlaylistEditorViewDragDropTests.swift */; };
 		E207679B2EC939B4000E80C9 /* PlaylistEditorViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E20767952EC939B4000E80C9 /* PlaylistEditorViewModelTests.swift */; };
 		E207679C2EC939B4000E80C9 /* SmartPlaylistRuleBuilderViewModelBDDTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E20767982EC939B4000E80C9 /* SmartPlaylistRuleBuilderViewModelBDDTests.swift */; };
-		E207679D2EC939B4000E80C9 /* PlaylistViewModelBDDTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E20767972EC939B4000E80C9 /* PlaylistViewModelBDDTests.swift */; };
 		E207679E2EC939B4000E80C9 /* PlaylistEditorViewModelBDDTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E20767942EC939B4000E80C9 /* PlaylistEditorViewModelBDDTests.swift */; };
 		E207679F2EC939B4000E80C9 /* SmartPlaylistRuleBuilderViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E20767992EC939B4000E80C9 /* SmartPlaylistRuleBuilderViewModelTests.swift */; };
 		E20767A02EC939B4000E80C9 /* PlaylistEditorViewTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E20767962EC939B4000E80C9 /* PlaylistEditorViewTests.swift */; };
@@ -339,6 +338,40 @@
 		E20767F72ECA6652000E80C9 /* TagWriterCoordinatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E20767F52ECA6652000E80C9 /* TagWriterCoordinatorTests.swift */; };
 		E20767F82ECA6652000E80C9 /* VorbisCommentsTagWriterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E20767F62ECA6652000E80C9 /* VorbisCommentsTagWriterTests.swift */; };
 		E20767F92ECA6652000E80C9 /* MP4TagWriterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E20767F42ECA6652000E80C9 /* MP4TagWriterTests.swift */; };
+		E20768012ECA7547000E80C9 /* TagEditorViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E20767FE2ECA7547000E80C9 /* TagEditorViewModelTests.swift */; };
+		E20768022ECA7547000E80C9 /* TagEditorViewTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E20767FF2ECA7547000E80C9 /* TagEditorViewTests.swift */; };
+		E20768032ECA7547000E80C9 /* BatchTagOperationsViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E20767FB2ECA7547000E80C9 /* BatchTagOperationsViewModelTests.swift */; };
+		E20768042ECA7547000E80C9 /* BatchTagOperationsViewModelBDDTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E20767FA2ECA7547000E80C9 /* BatchTagOperationsViewModelBDDTests.swift */; };
+		E20768052ECA7547000E80C9 /* TagEditorViewBDDTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E20767FC2ECA7547000E80C9 /* TagEditorViewBDDTests.swift */; };
+		E20768062ECA7547000E80C9 /* TagEditorViewModelBDDTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E20767FD2ECA7547000E80C9 /* TagEditorViewModelBDDTests.swift */; };
+		E207680C2ECA7573000E80C9 /* BatchTagOperationsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E20768072ECA7573000E80C9 /* BatchTagOperationsView.swift */; };
+		E207680D2ECA7573000E80C9 /* TagEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E20768092ECA7573000E80C9 /* TagEditorView.swift */; };
+		E207680E2ECA7573000E80C9 /* BatchTagOperationsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E20768082ECA7573000E80C9 /* BatchTagOperationsViewModel.swift */; };
+		E207680F2ECA7573000E80C9 /* TagEditorViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E207680A2ECA7573000E80C9 /* TagEditorViewModel.swift */; };
+		E20768102ECA7573000E80C9 /* BatchTagOperationsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E20768072ECA7573000E80C9 /* BatchTagOperationsView.swift */; };
+		E20768112ECA7573000E80C9 /* TagEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E20768092ECA7573000E80C9 /* TagEditorView.swift */; };
+		E20768122ECA7573000E80C9 /* BatchTagOperationsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E20768082ECA7573000E80C9 /* BatchTagOperationsViewModel.swift */; };
+		E20768132ECA7573000E80C9 /* TagEditorViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E207680A2ECA7573000E80C9 /* TagEditorViewModel.swift */; };
+		E207681C2ECB1363000E80C9 /* BatchTagOperationsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E20768072ECA7573000E80C9 /* BatchTagOperationsView.swift */; };
+		E207681D2ECB1363000E80C9 /* TagEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E20768092ECA7573000E80C9 /* TagEditorView.swift */; };
+		E207681E2ECB1363000E80C9 /* BatchTagOperationsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E20768082ECA7573000E80C9 /* BatchTagOperationsViewModel.swift */; };
+		E207681F2ECB1363000E80C9 /* TagEditorViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E207680A2ECA7573000E80C9 /* TagEditorViewModel.swift */; };
+		E20768202ECB4E92000E80C9 /* TagValidatorProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = E20767D92ECA6608000E80C9 /* TagValidatorProtocol.swift */; };
+		E20768212ECB4E92000E80C9 /* TagWriterProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = E20767B22ECA4C86000E80C9 /* TagWriterProtocol.swift */; };
+		E20768222ECB4E92000E80C9 /* TagEditHistory.swift in Sources */ = {isa = PBXBuildFile; fileRef = E20767D62ECA6608000E80C9 /* TagEditHistory.swift */; };
+		E20768232ECB4E92000E80C9 /* VorbisCommentsParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2743D6B2EC4B5AF00194D39 /* VorbisCommentsParser.swift */; };
+		E20768242ECB4E92000E80C9 /* TagValidator.swift in Sources */ = {isa = PBXBuildFile; fileRef = E20767D82ECA6608000E80C9 /* TagValidator.swift */; };
+		E20768252ECB4E92000E80C9 /* BatchTagOperations.swift in Sources */ = {isa = PBXBuildFile; fileRef = E20767D42ECA6608000E80C9 /* BatchTagOperations.swift */; };
+		E20768262ECB4E92000E80C9 /* VorbisCommentsTagWriter.swift in Sources */ = {isa = PBXBuildFile; fileRef = E20767E12ECA6626000E80C9 /* VorbisCommentsTagWriter.swift */; };
+		E20768272ECB4E92000E80C9 /* MP4Parser.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2743D682EC4B5AF00194D39 /* MP4Parser.swift */; };
+		E20768282ECB4E92000E80C9 /* ID3v2Parser.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2743D672EC4B5AF00194D39 /* ID3v2Parser.swift */; };
+		E20768292ECB4E92000E80C9 /* ID3v2TagWriter.swift in Sources */ = {isa = PBXBuildFile; fileRef = E20767B12ECA4C86000E80C9 /* ID3v2TagWriter.swift */; };
+		E207682A2ECB4E92000E80C9 /* MetadataEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2743D6E2EC4B5AF00194D39 /* MetadataEngine.swift */; };
+		E207682B2ECB4E92000E80C9 /* TagParserCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2743D692EC4B5AF00194D39 /* TagParserCoordinator.swift */; };
+		E207682C2ECB4E92000E80C9 /* TagWriterCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = E20767E02ECA6626000E80C9 /* TagWriterCoordinator.swift */; };
+		E207682D2ECB4E92000E80C9 /* TagParserProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2743D6A2EC4B5AF00194D39 /* TagParserProtocol.swift */; };
+		E207682E2ECB4E92000E80C9 /* MetadataExtractorProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2743D6F2EC4B5AF00194D39 /* MetadataExtractorProtocol.swift */; };
+		E207682F2ECB4E92000E80C9 /* MP4TagWriter.swift in Sources */ = {isa = PBXBuildFile; fileRef = E20767DF2ECA6626000E80C9 /* MP4TagWriter.swift */; };
 		E2743DE32EC4B5E900194D39 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E2743DDF2EC4B5DD00194D39 /* Assets.xcassets */; };
 		E2743DE42EC4B60700194D39 /* (null) in Sources */ = {isa = PBXBuildFile; };
 		E2743DE62EC4B61B00194D39 /* AppKitBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2743D362EC4B5AF00194D39 /* AppKitBridge.swift */; };
@@ -671,6 +704,13 @@
 			proxyType = 1;
 			remoteGlobalIDString = C9315070ADDD2733ECF2C9B0;
 			remoteInfo = Shared;
+		};
+		E20768302ECB4EC5000E80C9 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = AF348473424FB6AD275FC868 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 3F66AFB27086D6EDE602BBDC;
+			remoteInfo = MetadataEngine;
 		};
 /* End PBXContainerItemProxy section */
 
@@ -1019,7 +1059,6 @@
 		E20767942EC939B4000E80C9 /* PlaylistEditorViewModelBDDTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaylistEditorViewModelBDDTests.swift; sourceTree = "<group>"; };
 		E20767952EC939B4000E80C9 /* PlaylistEditorViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaylistEditorViewModelTests.swift; sourceTree = "<group>"; };
 		E20767962EC939B4000E80C9 /* PlaylistEditorViewTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaylistEditorViewTests.swift; sourceTree = "<group>"; };
-		E20767972EC939B4000E80C9 /* PlaylistViewModelBDDTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaylistViewModelBDDTests.swift; sourceTree = "<group>"; };
 		E20767982EC939B4000E80C9 /* SmartPlaylistRuleBuilderViewModelBDDTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmartPlaylistRuleBuilderViewModelBDDTests.swift; sourceTree = "<group>"; };
 		E20767992EC939B4000E80C9 /* SmartPlaylistRuleBuilderViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmartPlaylistRuleBuilderViewModelTests.swift; sourceTree = "<group>"; };
 		E20767A12EC939F8000E80C9 /* SmartPlaylistIntegrationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmartPlaylistIntegrationTests.swift; sourceTree = "<group>"; };
@@ -1054,6 +1093,16 @@
 		E20767F42ECA6652000E80C9 /* MP4TagWriterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MP4TagWriterTests.swift; sourceTree = "<group>"; };
 		E20767F52ECA6652000E80C9 /* TagWriterCoordinatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagWriterCoordinatorTests.swift; sourceTree = "<group>"; };
 		E20767F62ECA6652000E80C9 /* VorbisCommentsTagWriterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VorbisCommentsTagWriterTests.swift; sourceTree = "<group>"; };
+		E20767FA2ECA7547000E80C9 /* BatchTagOperationsViewModelBDDTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BatchTagOperationsViewModelBDDTests.swift; sourceTree = "<group>"; };
+		E20767FB2ECA7547000E80C9 /* BatchTagOperationsViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BatchTagOperationsViewModelTests.swift; sourceTree = "<group>"; };
+		E20767FC2ECA7547000E80C9 /* TagEditorViewBDDTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagEditorViewBDDTests.swift; sourceTree = "<group>"; };
+		E20767FD2ECA7547000E80C9 /* TagEditorViewModelBDDTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagEditorViewModelBDDTests.swift; sourceTree = "<group>"; };
+		E20767FE2ECA7547000E80C9 /* TagEditorViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagEditorViewModelTests.swift; sourceTree = "<group>"; };
+		E20767FF2ECA7547000E80C9 /* TagEditorViewTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagEditorViewTests.swift; sourceTree = "<group>"; };
+		E20768072ECA7573000E80C9 /* BatchTagOperationsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BatchTagOperationsView.swift; sourceTree = "<group>"; };
+		E20768082ECA7573000E80C9 /* BatchTagOperationsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BatchTagOperationsViewModel.swift; sourceTree = "<group>"; };
+		E20768092ECA7573000E80C9 /* TagEditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagEditorView.swift; sourceTree = "<group>"; };
+		E207680A2ECA7573000E80C9 /* TagEditorViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagEditorViewModel.swift; sourceTree = "<group>"; };
 		E2743D362EC4B5AF00194D39 /* AppKitBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppKitBridge.swift; sourceTree = "<group>"; };
 		E2743D372EC4B5AF00194D39 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		E2743D3B2EC4B5AF00194D39 /* AudioEqualizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioEqualizer.swift; sourceTree = "<group>"; };
@@ -1674,6 +1723,7 @@
 		86E0526E51A9A15D13764BC4 /* UITests */ = {
 			isa = PBXGroup;
 			children = (
+				E20768002ECA7547000E80C9 /* TagEditor */,
 				E20767822EC932FE000E80C9 /* Playlists */,
 				7F0B89C081248C6F3DF044C5 /* NowPlaying */,
 				E4A669C12C2E1E716251E48A /* Settings */,
@@ -1866,7 +1916,6 @@
 				E20767942EC939B4000E80C9 /* PlaylistEditorViewModelBDDTests.swift */,
 				E20767952EC939B4000E80C9 /* PlaylistEditorViewModelTests.swift */,
 				E20767962EC939B4000E80C9 /* PlaylistEditorViewTests.swift */,
-				E20767972EC939B4000E80C9 /* PlaylistViewModelBDDTests.swift */,
 				E20767802EC932FE000E80C9 /* PlaylistViewModelBDDTests.swift */,
 				E20767812EC932FE000E80C9 /* PlaylistViewModelTests.swift */,
 				E20767982EC939B4000E80C9 /* SmartPlaylistRuleBuilderViewModelBDDTests.swift */,
@@ -1961,6 +2010,30 @@
 				E20767EC2ECA6642000E80C9 /* TagValidatorTests.swift */,
 			);
 			path = Validation;
+			sourceTree = "<group>";
+		};
+		E20768002ECA7547000E80C9 /* TagEditor */ = {
+			isa = PBXGroup;
+			children = (
+				E20767FA2ECA7547000E80C9 /* BatchTagOperationsViewModelBDDTests.swift */,
+				E20767FB2ECA7547000E80C9 /* BatchTagOperationsViewModelTests.swift */,
+				E20767FC2ECA7547000E80C9 /* TagEditorViewBDDTests.swift */,
+				E20767FD2ECA7547000E80C9 /* TagEditorViewModelBDDTests.swift */,
+				E20767FE2ECA7547000E80C9 /* TagEditorViewModelTests.swift */,
+				E20767FF2ECA7547000E80C9 /* TagEditorViewTests.swift */,
+			);
+			path = TagEditor;
+			sourceTree = "<group>";
+		};
+		E207680B2ECA7573000E80C9 /* TagEditor */ = {
+			isa = PBXGroup;
+			children = (
+				E20768072ECA7573000E80C9 /* BatchTagOperationsView.swift */,
+				E20768082ECA7573000E80C9 /* BatchTagOperationsViewModel.swift */,
+				E20768092ECA7573000E80C9 /* TagEditorView.swift */,
+				E207680A2ECA7573000E80C9 /* TagEditorViewModel.swift */,
+			);
+			path = TagEditor;
 			sourceTree = "<group>";
 		};
 		E2743D312EC4B5AF00194D39 /* AudioCore */ = {
@@ -2309,6 +2382,7 @@
 		E2743D9E2EC4B5AF00194D39 /* UI */ = {
 			isa = PBXGroup;
 			children = (
+				E207680B2ECA7573000E80C9 /* TagEditor */,
 				E2743D8F2EC4B5AF00194D39 /* NowPlaying */,
 				E2743D902EC4B5AF00194D39 /* Playlists */,
 				E2743D982EC4B5AF00194D39 /* Settings */,
@@ -2522,6 +2596,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				E20768312ECB4EC5000E80C9 /* PBXTargetDependency */,
 				CEEB98BE739CEFC8C86E7D76 /* PBXTargetDependency */,
 				F9E8D7C6B5A4F3E2D1C0B9A8 /* PBXTargetDependency */,
 			);
@@ -3170,6 +3245,22 @@
 			files = (
 				E2743E472EC4B6E700194D39 /* ContentView.swift in Sources */,
 				E2743E482EC4B6E700194D39 /* AudioSettingsView.swift in Sources */,
+				E20768202ECB4E92000E80C9 /* TagValidatorProtocol.swift in Sources */,
+				E20768212ECB4E92000E80C9 /* TagWriterProtocol.swift in Sources */,
+				E20768222ECB4E92000E80C9 /* TagEditHistory.swift in Sources */,
+				E20768232ECB4E92000E80C9 /* VorbisCommentsParser.swift in Sources */,
+				E20768242ECB4E92000E80C9 /* TagValidator.swift in Sources */,
+				E20768252ECB4E92000E80C9 /* BatchTagOperations.swift in Sources */,
+				E20768262ECB4E92000E80C9 /* VorbisCommentsTagWriter.swift in Sources */,
+				E20768272ECB4E92000E80C9 /* MP4Parser.swift in Sources */,
+				E20768282ECB4E92000E80C9 /* ID3v2Parser.swift in Sources */,
+				E20768292ECB4E92000E80C9 /* ID3v2TagWriter.swift in Sources */,
+				E207682A2ECB4E92000E80C9 /* MetadataEngine.swift in Sources */,
+				E207682B2ECB4E92000E80C9 /* TagParserCoordinator.swift in Sources */,
+				E207682C2ECB4E92000E80C9 /* TagWriterCoordinator.swift in Sources */,
+				E207682D2ECB4E92000E80C9 /* TagParserProtocol.swift in Sources */,
+				E207682E2ECB4E92000E80C9 /* MetadataExtractorProtocol.swift in Sources */,
+				E207682F2ECB4E92000E80C9 /* MP4TagWriter.swift in Sources */,
 				E2743E492EC4B6E700194D39 /* AudientiaApp.swift in Sources */,
 				E2743E4A2EC4B6E700194D39 /* EQInterfaceView.swift in Sources */,
 				E2743E4B2EC4B6E700194D39 /* AudioGainControlView.swift in Sources */,
@@ -3178,6 +3269,10 @@
 				E2743E4E2EC4B6E700194D39 /* AboutView.swift in Sources */,
 				E2743E4F2EC4B6E700194D39 /* ModuleVersionConflictView.swift in Sources */,
 				E2743E502EC4B6E700194D39 /* AudioVisualizerView.swift in Sources */,
+				E20768102ECA7573000E80C9 /* BatchTagOperationsView.swift in Sources */,
+				E20768112ECA7573000E80C9 /* TagEditorView.swift in Sources */,
+				E20768122ECA7573000E80C9 /* BatchTagOperationsViewModel.swift in Sources */,
+				E20768132ECA7573000E80C9 /* TagEditorViewModel.swift in Sources */,
 				E2743E512EC4B6E700194D39 /* NowPlayingViewModel.swift in Sources */,
 				E2743E522EC4B6E700194D39 /* ReplayGainSettingsView.swift in Sources */,
 			);
@@ -3274,6 +3369,10 @@
 				E2743E552EC4B6E700194D39 /* AudientiaApp.swift in Sources */,
 				E2743E562EC4B6E700194D39 /* EQInterfaceView.swift in Sources */,
 				E2743E572EC4B6E700194D39 /* AboutView.swift in Sources */,
+				E207680C2ECA7573000E80C9 /* BatchTagOperationsView.swift in Sources */,
+				E207680D2ECA7573000E80C9 /* TagEditorView.swift in Sources */,
+				E207680E2ECA7573000E80C9 /* BatchTagOperationsViewModel.swift in Sources */,
+				E207680F2ECA7573000E80C9 /* TagEditorViewModel.swift in Sources */,
 				E207678F2EC93337000E80C9 /* PlaylistViewModel.swift in Sources */,
 				E20767902EC93337000E80C9 /* PlaylistBrowserView.swift in Sources */,
 				E2743E582EC4B6E700194D39 /* AudioGainControlView.swift in Sources */,
@@ -3332,6 +3431,16 @@
 			files = (
 				E20767AB2EC93A45000E80C9 /* SmartPlaylistRuleBuilderViewModel.swift in Sources */,
 				E20767AC2EC93A45000E80C9 /* SmartPlaylistRuleBuilderView.swift in Sources */,
+				E207681C2ECB1363000E80C9 /* BatchTagOperationsView.swift in Sources */,
+				E207681D2ECB1363000E80C9 /* TagEditorView.swift in Sources */,
+				E207681E2ECB1363000E80C9 /* BatchTagOperationsViewModel.swift in Sources */,
+				E207681F2ECB1363000E80C9 /* TagEditorViewModel.swift in Sources */,
+				E20768012ECA7547000E80C9 /* TagEditorViewModelTests.swift in Sources */,
+				E20768022ECA7547000E80C9 /* TagEditorViewTests.swift in Sources */,
+				E20768032ECA7547000E80C9 /* BatchTagOperationsViewModelTests.swift in Sources */,
+				E20768042ECA7547000E80C9 /* BatchTagOperationsViewModelBDDTests.swift in Sources */,
+				E20768052ECA7547000E80C9 /* TagEditorViewBDDTests.swift in Sources */,
+				E20768062ECA7547000E80C9 /* TagEditorViewModelBDDTests.swift in Sources */,
 				E20767AD2EC93A45000E80C9 /* PlaylistEditorViewModel.swift in Sources */,
 				E20767AE2EC93A45000E80C9 /* PlaylistEditorView.swift in Sources */,
 				E20767922EC93496000E80C9 /* MockPlaylistComponents.swift in Sources */,
@@ -3352,7 +3461,6 @@
 				E207679A2EC939B4000E80C9 /* PlaylistEditorViewDragDropTests.swift in Sources */,
 				E207679B2EC939B4000E80C9 /* PlaylistEditorViewModelTests.swift in Sources */,
 				E207679C2EC939B4000E80C9 /* SmartPlaylistRuleBuilderViewModelBDDTests.swift in Sources */,
-				E207679D2EC939B4000E80C9 /* PlaylistViewModelBDDTests.swift in Sources */,
 				E207679E2EC939B4000E80C9 /* PlaylistEditorViewModelBDDTests.swift in Sources */,
 				E207679F2EC939B4000E80C9 /* SmartPlaylistRuleBuilderViewModelTests.swift in Sources */,
 				E20767A02EC939B4000E80C9 /* PlaylistEditorViewTests.swift in Sources */,
@@ -3524,6 +3632,11 @@
 			isa = PBXTargetDependency;
 			target = C9315070ADDD2733ECF2C9B0 /* Shared */;
 			targetProxy = E20767CC2ECA4CAE000E80C9 /* PBXContainerItemProxy */;
+		};
+		E20768312ECB4EC5000E80C9 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 3F66AFB27086D6EDE602BBDC /* MetadataEngine */;
+			targetProxy = E20768302ECB4EC5000E80C9 /* PBXContainerItemProxy */;
 		};
 		E4F15749ABA9879C024F3E7B /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;

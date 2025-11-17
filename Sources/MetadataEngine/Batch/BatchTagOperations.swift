@@ -64,8 +64,13 @@ public struct BatchTagOperationFailure: Sendable {
     }
 }
 
+/// Protocol for batch tag operations (for dependency injection)
+public protocol BatchTagOperationsProtocol: Sendable {
+    func updateTracks(tracks: [Shared.Track], fileURLs: [URL]) async throws -> BatchTagOperationResult
+}
+
 /// Batch operations for updating multiple tracks at once
-public final class BatchTagOperations: @unchecked Sendable {
+public final class BatchTagOperations: BatchTagOperationsProtocol, @unchecked Sendable {
     private let writer: TagWriterProtocol
     private let validator: TagValidatorProtocol
     
@@ -84,7 +89,7 @@ public final class BatchTagOperations: @unchecked Sendable {
     ///   - fileURLs: Array of file URLs corresponding to the tracks (must match length)
     /// - Returns: Result containing success count, failure count, and failure details
     /// - Throws: BatchTagOperationsError if arrays are mismatched or empty
-    public func updateTracks(tracks: [Track], fileURLs: [URL]) async throws -> BatchTagOperationResult {
+    public func updateTracks(tracks: [Shared.Track], fileURLs: [URL]) async throws -> BatchTagOperationResult {
         // Validate input
         guard !tracks.isEmpty else {
             throw BatchTagOperationsError.noTracks
