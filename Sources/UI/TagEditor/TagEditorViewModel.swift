@@ -190,6 +190,24 @@ public final class TagEditorViewModel: ObservableObject {
         isSaving = false
     }
     
+    /// Apply metadata from a lookup result
+    /// - Parameter mergedTrack: The merged track from metadata lookup
+    public func applyMetadata(from mergedTrack: Shared.Track) {
+        editedTitle = mergedTrack.title
+        editedArtist = mergedTrack.artist
+        editedAlbum = mergedTrack.album
+        editedYear = mergedTrack.year
+        editedTrackNumber = mergedTrack.trackNumber
+        editedDiscNumber = mergedTrack.discNumber
+        editedGenre = mergedTrack.genre
+        
+        // Clear validation errors (will be re-validated on save)
+        validationErrors = []
+        lastError = nil
+        
+        Logger.userInterface.info("Applied metadata from lookup: \(mergedTrack.title)")
+    }
+    
     /// Undo last edit
     public func undo() async throws {
         guard let edit = history.undo() else {

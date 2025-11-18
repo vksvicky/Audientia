@@ -372,6 +372,37 @@
 		E207682D2ECB4E92000E80C9 /* TagParserProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2743D6A2EC4B5AF00194D39 /* TagParserProtocol.swift */; };
 		E207682E2ECB4E92000E80C9 /* MetadataExtractorProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2743D6F2EC4B5AF00194D39 /* MetadataExtractorProtocol.swift */; };
 		E207682F2ECB4E92000E80C9 /* MP4TagWriter.swift in Sources */ = {isa = PBXBuildFile; fileRef = E20767DF2ECA6626000E80C9 /* MP4TagWriter.swift */; };
+		E20768382ECD0321000E80C9 /* MergeConflictResolutionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E20768342ECD0321000E80C9 /* MergeConflictResolutionView.swift */; };
+		E20768392ECD0321000E80C9 /* MetadataLookupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E20768352ECD0321000E80C9 /* MetadataLookupView.swift */; };
+		E207683A2ECD0321000E80C9 /* AutoTaggingProgressViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E20768332ECD0321000E80C9 /* AutoTaggingProgressViewModel.swift */; };
+		E207683B2ECD0321000E80C9 /* AutoTaggingProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E20768322ECD0321000E80C9 /* AutoTaggingProgressView.swift */; };
+		E207683C2ECD0321000E80C9 /* MetadataLookupViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E20768362ECD0321000E80C9 /* MetadataLookupViewModel.swift */; };
+		E207683D2ECD0321000E80C9 /* MergeConflictResolutionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E20768342ECD0321000E80C9 /* MergeConflictResolutionView.swift */; };
+		E207683E2ECD0321000E80C9 /* MetadataLookupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E20768352ECD0321000E80C9 /* MetadataLookupView.swift */; };
+		E207683F2ECD0321000E80C9 /* AutoTaggingProgressViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E20768332ECD0321000E80C9 /* AutoTaggingProgressViewModel.swift */; };
+		E20768402ECD0321000E80C9 /* AutoTaggingProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E20768322ECD0321000E80C9 /* AutoTaggingProgressView.swift */; };
+		E20768412ECD0321000E80C9 /* MetadataLookupViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E20768362ECD0321000E80C9 /* MetadataLookupViewModel.swift */; };
+		E20768682ECD06D0000E80C9 /* AcoustIDProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = E20768602ECD06D0000E80C9 /* AcoustIDProtocol.swift */; };
+		E20768692ECD06D0000E80C9 /* AcoustIDService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E20768612ECD06D0000E80C9 /* AcoustIDService.swift */; };
+		E207686A2ECD06D0000E80C9 /* DiscogsClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = E20768622ECD06D0000E80C9 /* DiscogsClient.swift */; };
+		E207686B2ECD06D0000E80C9 /* DiscogsProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = E20768632ECD06D0000E80C9 /* DiscogsProtocol.swift */; };
+		E207686C2ECD06D0000E80C9 /* MetadataMergeProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = E20768642ECD06D0000E80C9 /* MetadataMergeProtocol.swift */; };
+		E207686D2ECD06D0000E80C9 /* MetadataMerger.swift in Sources */ = {isa = PBXBuildFile; fileRef = E20768652ECD06D0000E80C9 /* MetadataMerger.swift */; };
+		E207686E2ECD06D0000E80C9 /* MusicBrainzClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = E20768662ECD06D0000E80C9 /* MusicBrainzClient.swift */; };
+		E207686F2ECD06D0000E80C9 /* MusicBrainzProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = E20768672ECD06D0000E80C9 /* MusicBrainzProtocol.swift */; };
+		E20768722ECD06D0000E80C9 /* MetadataLookupSheetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E20768712ECD06D0000E80C9 /* MetadataLookupSheetView.swift */; };
+		E20768422ECD0321000E80C9 /* MergeConflictResolutionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E20768342ECD0321000E80C9 /* MergeConflictResolutionView.swift */; };
+		E20768432ECD0321000E80C9 /* MetadataLookupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E20768352ECD0321000E80C9 /* MetadataLookupView.swift */; };
+		E20768442ECD0321000E80C9 /* AutoTaggingProgressViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E20768332ECD0321000E80C9 /* AutoTaggingProgressViewModel.swift */; };
+		E20768452ECD0321000E80C9 /* AutoTaggingProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E20768322ECD0321000E80C9 /* AutoTaggingProgressView.swift */; };
+		E20768462ECD0321000E80C9 /* MetadataLookupViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E20768362ECD0321000E80C9 /* MetadataLookupViewModel.swift */; };
+		E207684E2ECD035D000E80C9 /* MetadataLookupViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E207684B2ECD035D000E80C9 /* MetadataLookupViewModelTests.swift */; };
+		E207684F2ECD035D000E80C9 /* MetadataLookupViewModelBDDTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E207684A2ECD035D000E80C9 /* MetadataLookupViewModelBDDTests.swift */; };
+		E20768502ECD035D000E80C9 /* AutoTaggingProgressViewTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E20768482ECD035D000E80C9 /* AutoTaggingProgressViewTests.swift */; };
+		E20768512ECD035D000E80C9 /* MergeConflictResolutionViewTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E20768492ECD035D000E80C9 /* MergeConflictResolutionViewTests.swift */; };
+		E20768522ECD035D000E80C9 /* MetadataLookupViewTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E207684C2ECD035D000E80C9 /* MetadataLookupViewTests.swift */; };
+		E20768532ECD035D000E80C9 /* AutoTaggingProgressViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E20768472ECD035D000E80C9 /* AutoTaggingProgressViewModelTests.swift */; };
+		E207685A2ECD06C9000E80C9 /* MetadataEngine.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9A4C5BEE3265B00B36646883 /* MetadataEngine.framework */; };
 		E2743DE32EC4B5E900194D39 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E2743DDF2EC4B5DD00194D39 /* Assets.xcassets */; };
 		E2743DE42EC4B60700194D39 /* (null) in Sources */ = {isa = PBXBuildFile; };
 		E2743DE62EC4B61B00194D39 /* AppKitBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2743D362EC4B5AF00194D39 /* AppKitBridge.swift */; };
@@ -706,6 +737,27 @@
 			remoteInfo = Shared;
 		};
 		E20768302ECB4EC5000E80C9 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = AF348473424FB6AD275FC868 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 3F66AFB27086D6EDE602BBDC;
+			remoteInfo = MetadataEngine;
+		};
+		E20768542ECD0609000E80C9 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = AF348473424FB6AD275FC868 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 3F66AFB27086D6EDE602BBDC;
+			remoteInfo = MetadataEngine;
+		};
+		E20768562ECD0619000E80C9 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = AF348473424FB6AD275FC868 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 3F66AFB27086D6EDE602BBDC;
+			remoteInfo = MetadataEngine;
+		};
+		E20768582ECD061F000E80C9 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = AF348473424FB6AD275FC868 /* Project object */;
 			proxyType = 1;
@@ -1103,6 +1155,18 @@
 		E20768082ECA7573000E80C9 /* BatchTagOperationsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BatchTagOperationsViewModel.swift; sourceTree = "<group>"; };
 		E20768092ECA7573000E80C9 /* TagEditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagEditorView.swift; sourceTree = "<group>"; };
 		E207680A2ECA7573000E80C9 /* TagEditorViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagEditorViewModel.swift; sourceTree = "<group>"; };
+		E20768712ECD06D0000E80C9 /* MetadataLookupSheetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetadataLookupSheetView.swift; sourceTree = "<group>"; };
+		E20768322ECD0321000E80C9 /* AutoTaggingProgressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoTaggingProgressView.swift; sourceTree = "<group>"; };
+		E20768332ECD0321000E80C9 /* AutoTaggingProgressViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoTaggingProgressViewModel.swift; sourceTree = "<group>"; };
+		E20768342ECD0321000E80C9 /* MergeConflictResolutionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MergeConflictResolutionView.swift; sourceTree = "<group>"; };
+		E20768352ECD0321000E80C9 /* MetadataLookupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetadataLookupView.swift; sourceTree = "<group>"; };
+		E20768362ECD0321000E80C9 /* MetadataLookupViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetadataLookupViewModel.swift; sourceTree = "<group>"; };
+		E20768472ECD035D000E80C9 /* AutoTaggingProgressViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoTaggingProgressViewModelTests.swift; sourceTree = "<group>"; };
+		E20768482ECD035D000E80C9 /* AutoTaggingProgressViewTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoTaggingProgressViewTests.swift; sourceTree = "<group>"; };
+		E20768492ECD035D000E80C9 /* MergeConflictResolutionViewTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MergeConflictResolutionViewTests.swift; sourceTree = "<group>"; };
+		E207684A2ECD035D000E80C9 /* MetadataLookupViewModelBDDTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetadataLookupViewModelBDDTests.swift; sourceTree = "<group>"; };
+		E207684B2ECD035D000E80C9 /* MetadataLookupViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetadataLookupViewModelTests.swift; sourceTree = "<group>"; };
+		E207684C2ECD035D000E80C9 /* MetadataLookupViewTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetadataLookupViewTests.swift; sourceTree = "<group>"; };
 		E2743D362EC4B5AF00194D39 /* AppKitBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppKitBridge.swift; sourceTree = "<group>"; };
 		E2743D372EC4B5AF00194D39 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		E2743D3B2EC4B5AF00194D39 /* AudioEqualizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioEqualizer.swift; sourceTree = "<group>"; };
@@ -1146,6 +1210,14 @@
 		E2743D6E2EC4B5AF00194D39 /* MetadataEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetadataEngine.swift; sourceTree = "<group>"; };
 		E2743D6F2EC4B5AF00194D39 /* MetadataExtractorProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetadataExtractorProtocol.swift; sourceTree = "<group>"; };
 		E2743D702EC4B5AF00194D39 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		E20768602ECD06D0000E80C9 /* AcoustIDProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AcoustIDProtocol.swift; sourceTree = "<group>"; };
+		E20768612ECD06D0000E80C9 /* AcoustIDService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AcoustIDService.swift; sourceTree = "<group>"; };
+		E20768622ECD06D0000E80C9 /* DiscogsClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiscogsClient.swift; sourceTree = "<group>"; };
+		E20768632ECD06D0000E80C9 /* DiscogsProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiscogsProtocol.swift; sourceTree = "<group>"; };
+		E20768642ECD06D0000E80C9 /* MetadataMergeProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetadataMergeProtocol.swift; sourceTree = "<group>"; };
+		E20768652ECD06D0000E80C9 /* MetadataMerger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetadataMerger.swift; sourceTree = "<group>"; };
+		E20768662ECD06D0000E80C9 /* MusicBrainzClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MusicBrainzClient.swift; sourceTree = "<group>"; };
+		E20768672ECD06D0000E80C9 /* MusicBrainzProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MusicBrainzProtocol.swift; sourceTree = "<group>"; };
 		E2743D762EC4B5AF00194D39 /* PluginSystem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PluginSystem.swift; sourceTree = "<group>"; };
 		E2743D772EC4B5AF00194D39 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		E2743D792EC4B5AF00194D39 /* AudioFormats.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioFormats.swift; sourceTree = "<group>"; };
@@ -1230,6 +1302,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E207685A2ECD06C9000E80C9 /* MetadataEngine.framework in Frameworks */,
 				7F95FCE05BE3BACC7ABC28E2 /* Shared.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1723,6 +1796,7 @@
 		86E0526E51A9A15D13764BC4 /* UITests */ = {
 			isa = PBXGroup;
 			children = (
+				E207684D2ECD035D000E80C9 /* MetadataLookup */,
 				E20768002ECA7547000E80C9 /* TagEditor */,
 				E20767822EC932FE000E80C9 /* Playlists */,
 				7F0B89C081248C6F3DF044C5 /* NowPlaying */,
@@ -2032,8 +2106,34 @@
 				E20768082ECA7573000E80C9 /* BatchTagOperationsViewModel.swift */,
 				E20768092ECA7573000E80C9 /* TagEditorView.swift */,
 				E207680A2ECA7573000E80C9 /* TagEditorViewModel.swift */,
+				E20768712ECD06D0000E80C9 /* MetadataLookupSheetView.swift */,
 			);
 			path = TagEditor;
+			sourceTree = "<group>";
+		};
+		E20768372ECD0321000E80C9 /* MetadataLookup */ = {
+			isa = PBXGroup;
+			children = (
+				E20768322ECD0321000E80C9 /* AutoTaggingProgressView.swift */,
+				E20768332ECD0321000E80C9 /* AutoTaggingProgressViewModel.swift */,
+				E20768342ECD0321000E80C9 /* MergeConflictResolutionView.swift */,
+				E20768352ECD0321000E80C9 /* MetadataLookupView.swift */,
+				E20768362ECD0321000E80C9 /* MetadataLookupViewModel.swift */,
+			);
+			path = MetadataLookup;
+			sourceTree = "<group>";
+		};
+		E207684D2ECD035D000E80C9 /* MetadataLookup */ = {
+			isa = PBXGroup;
+			children = (
+				E20768472ECD035D000E80C9 /* AutoTaggingProgressViewModelTests.swift */,
+				E20768482ECD035D000E80C9 /* AutoTaggingProgressViewTests.swift */,
+				E20768492ECD035D000E80C9 /* MergeConflictResolutionViewTests.swift */,
+				E207684A2ECD035D000E80C9 /* MetadataLookupViewModelBDDTests.swift */,
+				E207684B2ECD035D000E80C9 /* MetadataLookupViewModelTests.swift */,
+				E207684C2ECD035D000E80C9 /* MetadataLookupViewTests.swift */,
+			);
+			path = MetadataLookup;
 			sourceTree = "<group>";
 		};
 		E2743D312EC4B5AF00194D39 /* AudioCore */ = {
@@ -2219,6 +2319,7 @@
 				E20767D52ECA6608000E80C9 /* Batch */,
 				E20767D72ECA6608000E80C9 /* UndoRedo */,
 				E20767DA2ECA6608000E80C9 /* Validation */,
+				E20768702ECD06D0000E80C9 /* Enhancement */,
 				E2743D6C2EC4B5AF00194D39 /* Parsers */,
 				E2743D6D2EC4B5AF00194D39 /* Writers */,
 				E2743D6E2EC4B5AF00194D39 /* MetadataEngine.swift */,
@@ -2226,6 +2327,21 @@
 				E2743D702EC4B5AF00194D39 /* README.md */,
 			);
 			path = MetadataEngine;
+			sourceTree = "<group>";
+		};
+		E20768702ECD06D0000E80C9 /* Enhancement */ = {
+			isa = PBXGroup;
+			children = (
+				E20768602ECD06D0000E80C9 /* AcoustIDProtocol.swift */,
+				E20768612ECD06D0000E80C9 /* AcoustIDService.swift */,
+				E20768622ECD06D0000E80C9 /* DiscogsClient.swift */,
+				E20768632ECD06D0000E80C9 /* DiscogsProtocol.swift */,
+				E20768642ECD06D0000E80C9 /* MetadataMergeProtocol.swift */,
+				E20768652ECD06D0000E80C9 /* MetadataMerger.swift */,
+				E20768662ECD06D0000E80C9 /* MusicBrainzClient.swift */,
+				E20768672ECD06D0000E80C9 /* MusicBrainzProtocol.swift */,
+			);
+			path = Enhancement;
 			sourceTree = "<group>";
 		};
 		E2743D722EC4B5AF00194D39 /* API */ = {
@@ -2382,6 +2498,7 @@
 		E2743D9E2EC4B5AF00194D39 /* UI */ = {
 			isa = PBXGroup;
 			children = (
+				E20768372ECD0321000E80C9 /* MetadataLookup */,
 				E207680B2ECA7573000E80C9 /* TagEditor */,
 				E2743D8F2EC4B5AF00194D39 /* NowPlaying */,
 				E2743D902EC4B5AF00194D39 /* Playlists */,
@@ -2514,6 +2631,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				E20768572ECD0619000E80C9 /* PBXTargetDependency */,
 				B301F51591A8B587CEFF60BA /* PBXTargetDependency */,
 				75A3AC244733E22FF97A64F9 /* PBXTargetDependency */,
 			);
@@ -2618,6 +2736,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				E20768552ECD0609000E80C9 /* PBXTargetDependency */,
 				F2911300676412ABE97EE556 /* PBXTargetDependency */,
 			);
 			name = PluginSystem;
@@ -2639,6 +2758,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				E20768592ECD061F000E80C9 /* PBXTargetDependency */,
 				CE0AEAD1F19B26D2E272840A /* PBXTargetDependency */,
 			);
 			name = AudioCore;
@@ -3255,6 +3375,12 @@
 				E20768272ECB4E92000E80C9 /* MP4Parser.swift in Sources */,
 				E20768282ECB4E92000E80C9 /* ID3v2Parser.swift in Sources */,
 				E20768292ECB4E92000E80C9 /* ID3v2TagWriter.swift in Sources */,
+				E20768382ECD0321000E80C9 /* MergeConflictResolutionView.swift in Sources */,
+				E20768392ECD0321000E80C9 /* MetadataLookupView.swift in Sources */,
+				E207683A2ECD0321000E80C9 /* AutoTaggingProgressViewModel.swift in Sources */,
+				E207683B2ECD0321000E80C9 /* AutoTaggingProgressView.swift in Sources */,
+				E207683C2ECD0321000E80C9 /* MetadataLookupViewModel.swift in Sources */,
+				E20768722ECD06D0000E80C9 /* MetadataLookupSheetView.swift in Sources */,
 				E207682A2ECB4E92000E80C9 /* MetadataEngine.swift in Sources */,
 				E207682B2ECB4E92000E80C9 /* TagParserCoordinator.swift in Sources */,
 				E207682C2ECB4E92000E80C9 /* TagWriterCoordinator.swift in Sources */,
@@ -3341,6 +3467,14 @@
 				E20767DD2ECA6608000E80C9 /* TagValidatorProtocol.swift in Sources */,
 				E20767DE2ECA6608000E80C9 /* BatchTagOperations.swift in Sources */,
 				E2743E222EC4B69900194D39 /* MP4Parser.swift in Sources */,
+				E20768682ECD06D0000E80C9 /* AcoustIDProtocol.swift in Sources */,
+				E20768692ECD06D0000E80C9 /* AcoustIDService.swift in Sources */,
+				E207686A2ECD06D0000E80C9 /* DiscogsClient.swift in Sources */,
+				E207686B2ECD06D0000E80C9 /* DiscogsProtocol.swift in Sources */,
+				E207686C2ECD06D0000E80C9 /* MetadataMergeProtocol.swift in Sources */,
+				E207686D2ECD06D0000E80C9 /* MetadataMerger.swift in Sources */,
+				E207686E2ECD06D0000E80C9 /* MusicBrainzClient.swift in Sources */,
+				E207686F2ECD06D0000E80C9 /* MusicBrainzProtocol.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3368,11 +3502,17 @@
 				E2743E542EC4B6E700194D39 /* AudioSettingsView.swift in Sources */,
 				E2743E552EC4B6E700194D39 /* AudientiaApp.swift in Sources */,
 				E2743E562EC4B6E700194D39 /* EQInterfaceView.swift in Sources */,
+				E207683D2ECD0321000E80C9 /* MergeConflictResolutionView.swift in Sources */,
+				E207683E2ECD0321000E80C9 /* MetadataLookupView.swift in Sources */,
+				E207683F2ECD0321000E80C9 /* AutoTaggingProgressViewModel.swift in Sources */,
+				E20768402ECD0321000E80C9 /* AutoTaggingProgressView.swift in Sources */,
+				E20768412ECD0321000E80C9 /* MetadataLookupViewModel.swift in Sources */,
 				E2743E572EC4B6E700194D39 /* AboutView.swift in Sources */,
 				E207680C2ECA7573000E80C9 /* BatchTagOperationsView.swift in Sources */,
 				E207680D2ECA7573000E80C9 /* TagEditorView.swift in Sources */,
 				E207680E2ECA7573000E80C9 /* BatchTagOperationsViewModel.swift in Sources */,
 				E207680F2ECA7573000E80C9 /* TagEditorViewModel.swift in Sources */,
+				E20768722ECD06D0000E80C9 /* MetadataLookupSheetView.swift in Sources */,
 				E207678F2EC93337000E80C9 /* PlaylistViewModel.swift in Sources */,
 				E20767902EC93337000E80C9 /* PlaylistBrowserView.swift in Sources */,
 				E2743E582EC4B6E700194D39 /* AudioGainControlView.swift in Sources */,
@@ -3435,12 +3575,18 @@
 				E207681D2ECB1363000E80C9 /* TagEditorView.swift in Sources */,
 				E207681E2ECB1363000E80C9 /* BatchTagOperationsViewModel.swift in Sources */,
 				E207681F2ECB1363000E80C9 /* TagEditorViewModel.swift in Sources */,
+				E20768722ECD06D0000E80C9 /* MetadataLookupSheetView.swift in Sources */,
 				E20768012ECA7547000E80C9 /* TagEditorViewModelTests.swift in Sources */,
 				E20768022ECA7547000E80C9 /* TagEditorViewTests.swift in Sources */,
 				E20768032ECA7547000E80C9 /* BatchTagOperationsViewModelTests.swift in Sources */,
 				E20768042ECA7547000E80C9 /* BatchTagOperationsViewModelBDDTests.swift in Sources */,
 				E20768052ECA7547000E80C9 /* TagEditorViewBDDTests.swift in Sources */,
 				E20768062ECA7547000E80C9 /* TagEditorViewModelBDDTests.swift in Sources */,
+				E20768422ECD0321000E80C9 /* MergeConflictResolutionView.swift in Sources */,
+				E20768432ECD0321000E80C9 /* MetadataLookupView.swift in Sources */,
+				E20768442ECD0321000E80C9 /* AutoTaggingProgressViewModel.swift in Sources */,
+				E20768452ECD0321000E80C9 /* AutoTaggingProgressView.swift in Sources */,
+				E20768462ECD0321000E80C9 /* MetadataLookupViewModel.swift in Sources */,
 				E20767AD2EC93A45000E80C9 /* PlaylistEditorViewModel.swift in Sources */,
 				E20767AE2EC93A45000E80C9 /* PlaylistEditorView.swift in Sources */,
 				E20767922EC93496000E80C9 /* MockPlaylistComponents.swift in Sources */,
@@ -3467,6 +3613,12 @@
 				8F8DCB77DF1C6765D4F5EF62 /* NowPlayingViewModelTests.swift in Sources */,
 				137DDBA3F86B6DC84B971495 /* ReplayGainSettingsBDDTests.swift in Sources */,
 				E2743E702EC4B6F800194D39 /* NowPlayingViewModel.swift in Sources */,
+				E207684E2ECD035D000E80C9 /* MetadataLookupViewModelTests.swift in Sources */,
+				E207684F2ECD035D000E80C9 /* MetadataLookupViewModelBDDTests.swift in Sources */,
+				E20768502ECD035D000E80C9 /* AutoTaggingProgressViewTests.swift in Sources */,
+				E20768512ECD035D000E80C9 /* MergeConflictResolutionViewTests.swift in Sources */,
+				E20768522ECD035D000E80C9 /* MetadataLookupViewTests.swift in Sources */,
+				E20768532ECD035D000E80C9 /* AutoTaggingProgressViewModelTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3638,6 +3790,21 @@
 			target = 3F66AFB27086D6EDE602BBDC /* MetadataEngine */;
 			targetProxy = E20768302ECB4EC5000E80C9 /* PBXContainerItemProxy */;
 		};
+		E20768552ECD0609000E80C9 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 3F66AFB27086D6EDE602BBDC /* MetadataEngine */;
+			targetProxy = E20768542ECD0609000E80C9 /* PBXContainerItemProxy */;
+		};
+		E20768572ECD0619000E80C9 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 3F66AFB27086D6EDE602BBDC /* MetadataEngine */;
+			targetProxy = E20768562ECD0619000E80C9 /* PBXContainerItemProxy */;
+		};
+		E20768592ECD061F000E80C9 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 3F66AFB27086D6EDE602BBDC /* MetadataEngine */;
+			targetProxy = E20768582ECD061F000E80C9 /* PBXContainerItemProxy */;
+		};
 		E4F15749ABA9879C024F3E7B /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 3F66AFB27086D6EDE602BBDC /* MetadataEngine */;
@@ -3699,6 +3866,10 @@
 				ENABLE_APP_SANDBOX = NO;
 				ENABLE_HARDENED_RUNTIME = NO;
 				EXECUTABLE_NAME = "$(PRODUCT_NAME)";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(BUILT_PRODUCTS_DIR)",
+				);
 				INFOPLIST_FILE = Configuration/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -4460,6 +4631,10 @@
 				ENABLE_APP_SANDBOX = NO;
 				ENABLE_HARDENED_RUNTIME = NO;
 				EXECUTABLE_NAME = "$(PRODUCT_NAME)";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(BUILT_PRODUCTS_DIR)",
+				);
 				INFOPLIST_FILE = Configuration/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",

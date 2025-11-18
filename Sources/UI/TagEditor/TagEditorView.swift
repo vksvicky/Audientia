@@ -23,6 +23,12 @@ public struct TagEditorView: View {
     @State private var showingSaveConfirmation = false
     @State private var showingError = false
     @State private var errorMessage = ""
+    @State private var showingMetadataLookup = false
+    
+    // Metadata lookup dependencies (optional, can be injected)
+    private let acoustIDService: (any AcoustIDServicing)?
+    private let musicBrainzClient: (any MusicBrainzClientProtocol)?
+    private let discogsClient: (any DiscogsClientProtocol)?
     
     // MARK: - Initialization
     
@@ -31,10 +37,16 @@ public struct TagEditorView: View {
     ///   - tagWriter: Tag writer coordinator
     ///   - validator: Tag validator
     ///   - history: Tag edit history
+    ///   - acoustIDService: AcoustID service (optional, for metadata lookup)
+    ///   - musicBrainzClient: MusicBrainz client (optional, for metadata lookup)
+    ///   - discogsClient: Discogs client (optional, for metadata lookup)
     public init(
         tagWriter: any TagWriterCoordinating,
         validator: any TagValidatorProtocol,
-        history: any TagEditHistoryProtocol
+        history: any TagEditHistoryProtocol,
+        acoustIDService: (any AcoustIDServicing)? = nil,
+        musicBrainzClient: (any MusicBrainzClientProtocol)? = nil,
+        discogsClient: (any DiscogsClientProtocol)? = nil
     ) {
         _viewModel = StateObject(
             wrappedValue: TagEditorViewModel(
@@ -43,6 +55,9 @@ public struct TagEditorView: View {
                 history: history
             )
         )
+        self.acoustIDService = acoustIDService
+        self.musicBrainzClient = musicBrainzClient
+        self.discogsClient = discogsClient
     }
     
     // MARK: - Body
@@ -99,6 +114,18 @@ public struct TagEditorView: View {
                                 .foregroundColor(.secondary)
                         }
                     }
+                }
+            }
+            
+            // Metadata Lookup Section
+            if acoustIDService != nil && musicBrainzClient != nil && discogsClient != nil {
+                Section("Metadata Enhancement") {
+                    Button {
+                        showingMetadataLookup = true
+                    } label: {
+                        Label("Lookup Metadata", systemImage: "magnifyingglass")
+                    }
+                    .disabled(viewModel.currentTrack == nil)
                 }
             }
             
@@ -167,6 +194,26 @@ public struct TagEditorView: View {
         .task(id: viewModel.lastError?.localizedDescription) {
             if let error = viewModel.lastError {
                 showError(error.localizedDescription)
+            }
+        }
+        .sheet(isPresented: $showingMetadataLookup) {
+            if let track = viewModel.currentTrack,
+               let acoustID = acoustIDService,
+               let musicBrainz = musicBrainzClient,
+               let discogs = discogsClient {
+                MetadataLookupSheetView(
+                    track: track,
+                    acoustIDService: acoustID,
+                    musicBrainzClient: musicBrainz,
+                    discogsClient: discogs,
+                    onApply: { mergedTrack in
+                        viewModel.applyMetadata(from: mergedTrack)
+                        showingMetadataLookup = false
+                    },
+                    onCancel: {
+                        showingMetadataLookup = false
+                    }
+                )
             }
         }
     }
