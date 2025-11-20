@@ -389,7 +389,8 @@
 		E207686C2ECD06D0000E80C9 /* MetadataMergeProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = E20768642ECD06D0000E80C9 /* MetadataMergeProtocol.swift */; };
 		E207686D2ECD06D0000E80C9 /* MetadataMerger.swift in Sources */ = {isa = PBXBuildFile; fileRef = E20768652ECD06D0000E80C9 /* MetadataMerger.swift */; };
 		E207686E2ECD06D0000E80C9 /* MusicBrainzClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = E20768662ECD06D0000E80C9 /* MusicBrainzClient.swift */; };
-		E207686F2ECD06D0000E80C9 /* MusicBrainzProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = E20768672ECD06D0000E80C9 /* MusicBrainzProtocol.swift */; };
+		E20768702ECD06D0000E80C9 /* MetadataMerger+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = E207686F2ECD06D0000E80C9 /* MetadataMerger+Helpers.swift */; };
+		84A65AC24BB5446BB3CD651D /* MusicBrainzProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = E20768672ECD06D0000E80C9 /* MusicBrainzProtocol.swift */; };
 		E20768722ECD06D0000E80C9 /* MetadataLookupSheetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E20768712ECD06D0000E80C9 /* MetadataLookupSheetView.swift */; };
 		E20768422ECD0321000E80C9 /* MergeConflictResolutionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E20768342ECD0321000E80C9 /* MergeConflictResolutionView.swift */; };
 		E20768432ECD0321000E80C9 /* MetadataLookupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E20768352ECD0321000E80C9 /* MetadataLookupView.swift */; };
@@ -404,7 +405,6 @@
 		E20768532ECD035D000E80C9 /* AutoTaggingProgressViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E20768472ECD035D000E80C9 /* AutoTaggingProgressViewModelTests.swift */; };
 		E207685A2ECD06C9000E80C9 /* MetadataEngine.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9A4C5BEE3265B00B36646883 /* MetadataEngine.framework */; };
 		E2743DE32EC4B5E900194D39 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E2743DDF2EC4B5DD00194D39 /* Assets.xcassets */; };
-		E2743DE42EC4B60700194D39 /* (null) in Sources */ = {isa = PBXBuildFile; };
 		E2743DE62EC4B61B00194D39 /* AppKitBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2743D362EC4B5AF00194D39 /* AppKitBridge.swift */; };
 		E2743DEA2EC4B66100194D39 /* CAudioEngine.mm in Sources */ = {isa = PBXBuildFile; fileRef = E2743D4C2EC4B5AF00194D39 /* CAudioEngine.mm */; };
 		E2743DEB2EC4B66100194D39 /* AudioEngineError.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2743D492EC4B5AF00194D39 /* AudioEngineError.swift */; };
@@ -1216,6 +1216,7 @@
 		E20768632ECD06D0000E80C9 /* DiscogsProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiscogsProtocol.swift; sourceTree = "<group>"; };
 		E20768642ECD06D0000E80C9 /* MetadataMergeProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetadataMergeProtocol.swift; sourceTree = "<group>"; };
 		E20768652ECD06D0000E80C9 /* MetadataMerger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetadataMerger.swift; sourceTree = "<group>"; };
+		E207686F2ECD06D0000E80C9 /* MetadataMerger+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MetadataMerger+Helpers.swift"; sourceTree = "<group>"; };
 		E20768662ECD06D0000E80C9 /* MusicBrainzClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MusicBrainzClient.swift; sourceTree = "<group>"; };
 		E20768672ECD06D0000E80C9 /* MusicBrainzProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MusicBrainzProtocol.swift; sourceTree = "<group>"; };
 		E2743D762EC4B5AF00194D39 /* PluginSystem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PluginSystem.swift; sourceTree = "<group>"; };
@@ -2319,7 +2320,7 @@
 				E20767D52ECA6608000E80C9 /* Batch */,
 				E20767D72ECA6608000E80C9 /* UndoRedo */,
 				E20767DA2ECA6608000E80C9 /* Validation */,
-				E20768702ECD06D0000E80C9 /* Enhancement */,
+				716048C76D1442E19BA2AE39 /* Enhancement */,
 				E2743D6C2EC4B5AF00194D39 /* Parsers */,
 				E2743D6D2EC4B5AF00194D39 /* Writers */,
 				E2743D6E2EC4B5AF00194D39 /* MetadataEngine.swift */,
@@ -2329,7 +2330,7 @@
 			path = MetadataEngine;
 			sourceTree = "<group>";
 		};
-		E20768702ECD06D0000E80C9 /* Enhancement */ = {
+		716048C76D1442E19BA2AE39 /* Enhancement */ = {
 			isa = PBXGroup;
 			children = (
 				E20768602ECD06D0000E80C9 /* AcoustIDProtocol.swift */,
@@ -2338,6 +2339,7 @@
 				E20768632ECD06D0000E80C9 /* DiscogsProtocol.swift */,
 				E20768642ECD06D0000E80C9 /* MetadataMergeProtocol.swift */,
 				E20768652ECD06D0000E80C9 /* MetadataMerger.swift */,
+				E207686F2ECD06D0000E80C9 /* MetadataMerger+Helpers.swift */,
 				E20768662ECD06D0000E80C9 /* MusicBrainzClient.swift */,
 				E20768672ECD06D0000E80C9 /* MusicBrainzProtocol.swift */,
 			);
@@ -3421,7 +3423,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E2743DE42EC4B60700194D39 /* (null) in Sources */,
 				E2743DEA2EC4B66100194D39 /* CAudioEngine.mm in Sources */,
 				E2743DEB2EC4B66100194D39 /* AudioEngineError.swift in Sources */,
 				E2743DEC2EC4B66100194D39 /* FileSystemProtocol.swift in Sources */,
@@ -3473,8 +3474,9 @@
 				E207686B2ECD06D0000E80C9 /* DiscogsProtocol.swift in Sources */,
 				E207686C2ECD06D0000E80C9 /* MetadataMergeProtocol.swift in Sources */,
 				E207686D2ECD06D0000E80C9 /* MetadataMerger.swift in Sources */,
+				E20768702ECD06D0000E80C9 /* MetadataMerger+Helpers.swift in Sources */,
 				E207686E2ECD06D0000E80C9 /* MusicBrainzClient.swift in Sources */,
-				E207686F2ECD06D0000E80C9 /* MusicBrainzProtocol.swift in Sources */,
+				84A65AC24BB5446BB3CD651D /* MusicBrainzProtocol.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
