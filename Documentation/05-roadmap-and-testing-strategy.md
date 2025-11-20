@@ -458,33 +458,44 @@
 
 #### 4.1 Device Discovery & Sync (Weeks 29-32)
 
-**Backend:**
-- USB device detection (IOKit)
-- MTP protocol implementation
-- SMB network share access
-- Sync job queue
-- Conflict detection
+**Backend Checklist**
+- [x] Define shared device/sync models (`Device`, `DeviceType`, `DeviceStatus`, `SyncJob`, `SyncConflict`, etc.) with Sendable/Hashable conformance.
+- [x] Introduce protocol surface for discovery, connector, job queue, and conflict detector to keep implementations swappable/testable.
+- [x] Ship actor-based `DeviceSyncManager` coordinating discovery, queueing, conflict resolution, cancellation, and logging via `Logger.deviceSync`.
+- [x] Provide in-memory job queue actor (`InMemorySyncJobQueue`) for first iteration.
+- [ ] Implement production USB/MTP/SMB connector backends (protocol placeholders ready).
+- [ ] Persist job queue (CoreData/SQLite) for resume-after-relaunch scenarios.
 
-**UI:**
-- Device browser
-- Sync configuration
-- Sync progress and logs
-- Conflict resolution UI
+**UI Checklist**
+- [x] `DeviceSyncViewModel` publishing devices, selected target, job list, progress, and user-facing info/error banners.
+- [x] `DeviceSyncView` presenting device selector, job list, start/cancel/resolve controls, and status banners.
+- [ ] Device configuration wizard (per original roadmap) for advanced sync rules.
+- [ ] Dedicated conflict resolution UI (current view auto-resolves or applies bulk actions; detailed UI tracked for later).
 
-**Tests:**
-- **TDD**: Device detection, sync algorithms
-- **Unit**: Sync diff calculation, conflict detection
-- **Integration**: Full sync with test d
-- **BDD**: "As a user, I want to sync my library to a USB device"
+**Mocks & Fixtures**
+- [x] Backend mocks (`MockDeviceDiscovery`, `MockDeviceConnector`, `MockJobQueue`, `MockConflictDetector`) plus reusable `DeviceSyncFixtures`.
+- [x] UI mock manager (`MockDeviceSyncManager`) for SwiftUI tests.
+- [ ] Physical device harness (hardware-in-the-loop) for regression testing.
 
-**Right-BICEP:**
-- **[Right]**: Verify all tracks synced, metadata preserved
-- **[B]**: Empty device, full device, very large library
-- **[I]**: Sync → Unsync → Verify device unchanged
-- **[C]**: Compare file checksums before/after sync
-- **[E]**: Device disconnected, insufficient space, permission denied
-- **[P]**: Sync 1000 tracks < 10 minutes, progress updates < 1s
-- **Edge**: FAT32 4GB limit, long filenames, special characters
+**Testing Checklist (Right-BICEP)**
+- [x] `DeviceSyncManagerTests` (unit/TDD) – queueing, cancellation, failures, conflict resolution, mock performance (<1 s for 50 tracks).
+- [x] `DeviceSyncManagerBDDTests` – scenarios for USB success, device disconnect, insufficient space.
+- [x] `DeviceSyncViewModelTests` + `DeviceSyncViewBDDTests` – Given/When/Then user flows (select device, start sync, resolve conflict).
+- [x] Right-BICEP coverage documented:  
+  - **[Right]** Job completion matches track count; checksums verified when conflicts arise.  
+  - **[B]** Empty queues, >1k-track batches, low-space/FAT32 devices, read-only media.  
+  - **[I]** Start → Cancel → Resume loops and conflict resolution requeues.  
+  - **[C]** Library ↔ device hash comparisons, queue snapshot cross-checks.  
+  - **[E]** Simulated disconnects, transfer failures, pending conflicts, missing devices.  
+  - **[P]** Mock SLA reminders (<1 s tests, roadmap goal 1000 tracks <10 min).  
+  - **Edge** Unicode names, long paths, network shares, low-permission mounts.  
+- [ ] Full-device integration test (real hardware) to validate I/O stack end-to-end.
+
+**Incremental Delivery**
+- [x] Models + protocols compiling with failing tests.
+- [x] Backend implementation (`DeviceSyncManager`, queue, mocks) making tests green.
+- [x] SwiftUI ViewModel/View with UI test coverage.
+- [ ] Swap in real USB/MTP/SMB connectors + persistent queue without API changes.
 
 #### 4.2 Transcoding Pipeline (Weeks 33-36)
 

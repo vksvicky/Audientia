@@ -12,12 +12,18 @@ struct ContentView: View {
     @EnvironmentObject var settings: AppSettings
     
     var body: some View {
-        VStack(spacing: 0) {
-            // Now Playing View
+        TabView {
             NowPlayingView()
-                .frame(maxHeight: .infinity)
+                .tabItem {
+                    Label("Now Playing", systemImage: "music.note.house")
+                }
+            
+            DeviceSyncView()
+                .tabItem {
+                    Label("Device Sync", systemImage: "externaldrive.connected.to.line.below")
+                }
         }
-        .frame(minWidth: 400, minHeight: 300)
+        .frame(minWidth: 600, minHeight: 400)
     }
 }
 

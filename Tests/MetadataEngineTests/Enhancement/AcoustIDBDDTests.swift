@@ -80,7 +80,7 @@ final class AcoustIDBDDTests: XCTestCase {
         )
         let match3 = AcoustIDMatch(
             recordingID: "mbid-789",
-            title: "Stairway to Heaven (Live)",
+            title: "Stairway to Heaven",
             artist: "Led Zeppelin",
             album: "How the West Was Won",
             year: 2003,

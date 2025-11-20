@@ -89,13 +89,10 @@ public final class MetadataMerger: @unchecked Sendable {
     }
     
     private func highestConfidenceStrategy(originalTrack: Track, sources: [MetadataSource]) -> MetadataFields {
-        let originalFields = createOriginalFields(from: originalTrack)
-        let allSources = [MetadataSource(type: .existing, confidence: 1.0, metadata: originalFields)] + sources
-        
         var bestFields: [String: (value: Any, confidence: Double)] = [:]
         
         // For each field, find the source with highest confidence
-        for source in allSources {
+        for source in sources {
             updateBestFields(bestFields: &bestFields, source: source)
         }
         

@@ -318,10 +318,10 @@ final class MetadataMergeTests: XCTestCase {
         // When: Merging metadata
         let merged = try merger.merge(originalTrack: originalTrack, sources: [source])
         
-        // Then: Empty strings are treated as missing and filled
-        XCTAssertEqual(merged.title, "") // Empty string preserved (not nil)
-        XCTAssertEqual(merged.artist, "")
-        XCTAssertEqual(merged.album, "")
+        // Then: Empty strings are treated as missing and filled with source data
+        XCTAssertEqual(merged.title, "Bohemian Rhapsody")
+        XCTAssertEqual(merged.artist, "Queen")
+        XCTAssertEqual(merged.album, "A Night at the Opera")
     }
     
     // MARK: - Cross-Check Using Other Means

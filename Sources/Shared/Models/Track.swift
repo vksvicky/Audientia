@@ -142,3 +142,5 @@ extension Track {
         case rating
     }
 }
+
+extension Track: @unchecked Sendable {}

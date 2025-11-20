@@ -30,6 +30,9 @@ public extension Logger {
     /// Shared models and utilities logging
     static let shared = Logger(subsystem: subsystem, category: "shared")
 
+    /// Device Sync logging
+    static let deviceSync = Logger(subsystem: subsystem, category: "device-sync")
+
     /// Testing and test infrastructure logging
     static let testing = Logger(subsystem: subsystem, category: "testing")
 }

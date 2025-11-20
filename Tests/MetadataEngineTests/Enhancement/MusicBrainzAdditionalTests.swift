@@ -30,7 +30,7 @@ final class MusicBrainzAdditionalTests: XCTestCase {
         } catch let error as MusicBrainzError {
             XCTAssertEqual(error, .networkError("Connection timeout"))
         } catch {
-            XCTFail("Unexpected error: \(error)")
+            XCTFail("Unexpected error: \(String(describing: error))")
         }
     }
     
@@ -48,7 +48,7 @@ final class MusicBrainzAdditionalTests: XCTestCase {
         } catch let error as MusicBrainzError {
             XCTAssertEqual(error, .rateLimitExceeded)
         } catch {
-            XCTFail("Unexpected error: \(error)")
+            XCTFail("Unexpected error: \(String(describing: error))")
         }
     }
     
@@ -66,7 +66,7 @@ final class MusicBrainzAdditionalTests: XCTestCase {
         } catch let error as MusicBrainzError {
             XCTAssertEqual(error, .invalidResponse("Malformed JSON"))
         } catch {
-            XCTFail("Unexpected error: \(error)")
+            XCTFail("Unexpected error: \(String(describing: error))")
         }
     }
     

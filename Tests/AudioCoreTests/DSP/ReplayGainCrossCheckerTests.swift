@@ -10,18 +10,21 @@
 
 @testable import AudioCore
 @testable import Shared
+
+import Foundation
 import XCTest
 
 /// Mock implementation of external ReplayGain tool for testing
-@MainActor
-final class MockReplayGainExternalTool: ReplayGainExternalToolProtocol {
+final class MockReplayGainExternalTool: ReplayGainExternalToolProtocol, @unchecked Sendable {
     var toolName: String = "MockTool"
     
     var mockResult: ReplayGainResult?
     var shouldFail = false
     var analyzeCalled = false
     
-    var resultProvider: (() -> ReplayGainResult)?
+    var resultProvider: (@Sendable (Int) -> ReplayGainResult)?
+    private var providerIndex = 0
+    private let providerQueue = DispatchQueue(label: "MockReplayGainExternalTool.provider")
     
     func analyzeReplayGain(
         audioData: [Float],
@@ -35,7 +38,11 @@ final class MockReplayGainExternalTool: ReplayGainExternalToolProtocol {
         }
         
         if let provider = resultProvider {
-            return provider()
+            return providerQueue.sync {
+                let index = providerIndex
+                providerIndex = providerIndex &+ 1
+                return provider(index)
+            }
         }
         
         guard let result = mockResult else {
@@ -304,7 +311,7 @@ final class ReplayGainCrossCheckerTests: XCTestCase {
     /// Test that cross-checking completes quickly
     func testCrossCheckingPerformance() async throws {
         // Given
-        let audioData = (0..<10000).map { Float.random(in: -1.0...1.0) }
+        let audioData = (0..<10000).map { _ in Float.random(in: -1.0...1.0) }
         let sampleRate = 44100
         let channels = 2
         
@@ -336,10 +343,8 @@ final class ReplayGainCrossCheckerTests: XCTestCase {
             [Float]([0.6, -0.2, 0.9, -0.1, 0.15, 0.95])
         ]
         
-        var trackIndex = 0
-        mockExternalTool.resultProvider = {
-            trackIndex += 1
-            return ReplayGainResult(trackGain: Float(-2.0 - Float(trackIndex) * 0.1), peak: 0.9)
+        mockExternalTool.resultProvider = { index in
+            ReplayGainResult(trackGain: -2.0 - Float(index + 1) * 0.1, peak: 0.9)
         }
         
         // When

@@ -130,7 +130,7 @@ final class MusicBrainzBDDTests: XCTestCase {
             XCTAssertEqual(error, .recordingNotFound(recordingID))
             XCTAssertNotNil(error.errorDescription)
         } catch {
-            XCTFail("Unexpected error: \(error)")
+            XCTFail("Unexpected error: \(String(describing: error))")
         }
     }
     
@@ -152,7 +152,7 @@ final class MusicBrainzBDDTests: XCTestCase {
             XCTAssertEqual(error, .networkError("Connection timeout"))
             XCTAssertNotNil(error.errorDescription)
         } catch {
-            XCTFail("Unexpected error: \(error)")
+            XCTFail("Unexpected error: \(String(describing: error))")
         }
     }
     
@@ -174,7 +174,7 @@ final class MusicBrainzBDDTests: XCTestCase {
             XCTAssertEqual(error, .rateLimitExceeded)
             XCTAssertNotNil(error.errorDescription)
         } catch {
-            XCTFail("Unexpected error: \(error)")
+            XCTFail("Unexpected error: \(String(describing: error))")
         }
     }
     

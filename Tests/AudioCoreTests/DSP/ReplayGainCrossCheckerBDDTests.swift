@@ -119,14 +119,10 @@ final class ReplayGainCrossCheckerBDDTests: XCTestCase {
         }
         
         // Configure foobar2000 to return results similar to our implementation (within tolerance)
-        var trackIndex = 0
-        mockFoobar2000.resultProvider = {
-            let index = trackIndex
-            trackIndex += 1
-            let ourResult = ourResults[index]
-            // Return results within tolerance (small difference, within 0.3 dB)
+        mockFoobar2000.resultProvider = { [trackResults = ourResults] (index: Int) in
+            let ourResult = trackResults[index]
             return ReplayGainResult(
-                trackGain: ourResult.trackGain + 0.2, // Small difference within tolerance
+                trackGain: ourResult.trackGain + 0.2,
                 peak: ourResult.peak
             )
         }

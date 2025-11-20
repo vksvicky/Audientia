@@ -570,6 +570,18 @@ targets:
       - path: Sources/UI/TagEditor
         group: Sources
         target: UITests
+      - path: Sources/UI/MetadataLookup
+        group: Sources
+        target: UITests
+      - path: Sources/UI/Playlists
+        group: Sources
+        target: UITests
+      - path: Sources/UI/Visualizer
+        group: Sources
+        target: UITests
+      - path: Sources/UI/DeviceSync
+        group: Sources
+        target: UITests
     dependencies:
       - target: AudioCore
       - target: Shared
