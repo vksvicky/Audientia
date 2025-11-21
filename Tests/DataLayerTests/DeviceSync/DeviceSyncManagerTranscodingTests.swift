@@ -69,7 +69,7 @@ final class DeviceSyncManagerTranscodingTests: XCTestCase {
         await mockTranscodeEngine.setShouldSucceed(true)
         
         // When
-        let job = try await manager.startSync(request: request)
+        _ = try await manager.startSync(request: request)
         
         // Wait for processing
         try await Task.sleep(nanoseconds: 100_000_000) // 0.1 seconds

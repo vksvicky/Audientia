@@ -169,8 +169,8 @@ final class MusicBrainzAdditionalTests: XCTestCase {
         let client = MockMusicBrainzClient()
         let tracks = (1...20).map { trackNum in
             MusicBrainzRecording(
-                id: "mbid-\(trackNum)",
-                title: "Track \(trackNum)",
+                id: "mbid-\(String(trackNum))",
+                title: "Track \(String(trackNum))",
                 artist: "Test Artist",
                 trackNumber: trackNum
             )

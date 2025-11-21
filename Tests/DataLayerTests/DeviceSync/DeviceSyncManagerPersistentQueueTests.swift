@@ -103,7 +103,7 @@ final class DeviceSyncManagerPersistentQueueTests: XCTestCase {
     func testGivenMultipleJobsWhenAppRestartsThenAllJobsAreRestored() async throws {
         // Given: Multiple jobs in persistent queue
         let testJobs = try await createTestJobs()
-        let enqueueQueue = try await prepareQueueWithJobs(jobs: testJobs)
+        _ = try await prepareQueueWithJobs(jobs: testJobs)
         
         // When: Create new manager and restore
         await recreateManagerAndRestore()
@@ -175,7 +175,7 @@ final class DeviceSyncManagerPersistentQueueTests: XCTestCase {
     
     private func verifyJobsRestored(jobs: TestJobs) async throws {
         let restoredJobs = await manager.jobs()
-        let jobIds = restoredJobs.map { $0.id }
+        _ = restoredJobs.map { $0.id }
         XCTAssertEqual(restoredJobs.count, 3, "Expected 3 jobs but got \(restoredJobs.count)")
         XCTAssertTrue(restoredJobs.contains { $0.id == jobs.job1.id }, "Job1 not found")
         XCTAssertTrue(restoredJobs.contains { $0.id == jobs.job2.id }, "Job2 not found")

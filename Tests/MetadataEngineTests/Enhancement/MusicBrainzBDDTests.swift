@@ -252,8 +252,8 @@ final class MusicBrainzBDDTests: XCTestCase {
         
         let tracks = (1...12).map { trackNum in
             MusicBrainzRecording(
-                id: "mbid-\(trackNum)",
-                title: "Track \(trackNum)",
+                id: "mbid-\(String(trackNum))",
+                title: "Track \(String(trackNum))",
                 artist: "Queen",
                 release: "A Night at the Opera",
                 releaseID: releaseID,
