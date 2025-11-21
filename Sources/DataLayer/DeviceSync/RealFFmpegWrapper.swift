@@ -52,7 +52,7 @@ actor RealFFmpegWrapper: FFmpegWrapperProtocol {
                 progress: progress
             )
         } catch {
-            progressTask?.cancel()
+            progressTask.cancel()
             throw TranscodeError.transcodingFailed(error.localizedDescription)
         }
     }
