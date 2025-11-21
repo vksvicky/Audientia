@@ -45,6 +45,9 @@
 		0CAAA1E035556C74E89C62FD /* SmartPlaylistRuleBuilderViewModelBDDTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA17A637C7CE0014C0835102 /* SmartPlaylistRuleBuilderViewModelBDDTests.swift */; };
 		0D39EC8EC74BFBFA0F061272 /* valid_48k.wav in Resources */ = {isa = PBXBuildFile; fileRef = 78F6DBAD19C78BF9FAB9E2D1 /* valid_48k.wav */; };
 		0D45FC4430D4CBCA18865244 /* DeviceSyncView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCA674D716E98316F444D945 /* DeviceSyncView.swift */; };
+			2B4C6D8E0F1A3B5C7D9E0F2A /* TranscodeSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A3B2C1D4E5F6789ABCDEF01 /* TranscodeSettingsView.swift */; };
+			4D6E8F0A1B2C3D4E5F6A7B8 /* TranscodeProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C5D7E9F0A1B2C3D4E5F6A7B /* TranscodeProgressView.swift */; };
+
 		0D6A4299BDFF04B85D9E926D /* valid_44.1k.flac in Resources */ = {isa = PBXBuildFile; fileRef = 5302F89648642919C4D32632 /* valid_44.1k.flac */; };
 		0D8303639FDFD6B43743AB5A /* corrupt_payload.wav in Resources */ = {isa = PBXBuildFile; fileRef = 0F4A9C2102D08A7F78425CF4 /* corrupt_payload.wav */; };
 		0DA4218A564AE9ED83B1FB28 /* PlaylistManagerBDDTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82E609E0D0AA1E6424EBF6C3 /* PlaylistManagerBDDTests.swift */; };
@@ -129,6 +132,12 @@
 		338AAE6A43BE64FBA889055F /* AudioCore.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = F3040189EB9AC8FE164A0AF7 /* AudioCore.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		341703B95C365DCF21221848 /* invalid_empty.opus in Resources */ = {isa = PBXBuildFile; fileRef = AA01EF2CE04E92F6F8692300 /* invalid_empty.opus */; };
 		34845CB8C3CD163D52C6B5C6 /* DeviceSyncManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A56F617AED6B050170649B52 /* DeviceSyncManagerTests.swift */; };
+			43417337CCCE4ABBB9DCFF1B /* DeviceSyncManagerTranscodingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CC0DA508DCD4DE39B285879 /* DeviceSyncManagerTranscodingTests.swift */; };
+			CD56CB27368E4287B1AC1A76 /* FFmpegTranscodeEngineIntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDFB30CC384148849C5E364F /* FFmpegTranscodeEngineIntegrationTests.swift */; };
+			25B57395138F4509B79CDBB5 /* MockFFmpegWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = D280A981127541E0A4721741 /* MockFFmpegWrapper.swift */; };
+			40672D7F7F4645489AB1C610 /* MockTranscodeQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = E19ABF3365614C96BFF9043D /* MockTranscodeQueue.swift */; };
+			F2C1C1DF82D543AE89BBFA11 /* MockTranscodeEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32F77EFD69AE4C07A4D21EA3 /* MockTranscodeEngine.swift */; };
+
 		348604ED94E2EEDA118B7461 /* invalid_no_audio_data.dsf in Resources */ = {isa = PBXBuildFile; fileRef = E3B3ADADC533D4B7DBF59507 /* invalid_no_audio_data.dsf */; };
 		34A48C6AAD1A161DF64B662F /* valid_176.4k.wav in Resources */ = {isa = PBXBuildFile; fileRef = DF348F57308243C190C17B7F /* valid_176.4k.wav */; };
 		34D9AA59523D5CE694EF0E8D /* DiscogsClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16E1545AF5DD2BA3BE0F14D8 /* DiscogsClient.swift */; };
@@ -161,6 +170,13 @@
 		45312EBBFD7174D469C865FA /* corrupt_middle.webm in Resources */ = {isa = PBXBuildFile; fileRef = 1A7D3EE37DA94E65E66A1CE0 /* corrupt_middle.webm */; };
 		45FD63B12D84535ADCCBBB9C /* valid_44.1k.wv in Resources */ = {isa = PBXBuildFile; fileRef = 4EA7B266F8FD30C99A85CE23 /* valid_44.1k.wv */; };
 		4631C58945EAAD6784EDC213 /* DeviceSyncComposer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C42B8A7821D83573DD6FCAFE /* DeviceSyncComposer.swift */; };
+			0003969EB514415DBB4388B6 /* FFmpegWrapperProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 732C47409AAA4D8EB8BE11E3 /* FFmpegWrapperProtocol.swift */; };
+			CEF620A7A5754AF6A104DAB1 /* RealFFmpegWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0AD17070AF245819234B6BF /* RealFFmpegWrapper.swift */; };
+			0B510CBA8D2E4541AF7730A8 /* TranscodingProtocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28C6D55C545843D7A5DEBE17 /* TranscodingProtocols.swift */; };
+			68E897A51DB14F389C2D4502 /* FFmpegTranscodeEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCCD1C0F5F0D42CBA185F60E /* FFmpegTranscodeEngine.swift */; };
+			DD3AA5E489DD4EC4ACCE05EB /* TranscodeQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACFA31D24AD6488F96F5D95F /* TranscodeQueue.swift */; };
+			95FD087DB32343D6A276A24B /* TranscodeProfileManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54505EAF6004461FAAF32973 /* TranscodeProfileManager.swift */; };
+
 		463B37EB0F704BF0AB256E64 /* valid_44.1k.caf in Resources */ = {isa = PBXBuildFile; fileRef = 838E57D7A61A78AB8F3A5760 /* valid_44.1k.caf */; };
 		46A911106AA03D4A214FDA2B /* corrupt_magic.alac in Resources */ = {isa = PBXBuildFile; fileRef = 9C97D0020E2E7CED20A94293 /* corrupt_magic.alac */; };
 		46E98F9A89CFB9CEA5A5F7C3 /* ReplayGainTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 267A644C98F5BA4393E8AB65 /* ReplayGainTests.swift */; };
@@ -1141,6 +1157,12 @@
 		A41D5405AE377C7B948E8086 /* AudioFeaturesVerificationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioFeaturesVerificationTests.swift; sourceTree = "<group>"; };
 		A521215F643B2ED8B2385B5D /* PlaylistBrowserViewBDDTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaylistBrowserViewBDDTests.swift; sourceTree = "<group>"; };
 		A56F617AED6B050170649B52 /* DeviceSyncManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceSyncManagerTests.swift; sourceTree = "<group>"; };
+		1CC0DA508DCD4DE39B285879 /* DeviceSyncManagerTranscodingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceSyncManagerTranscodingTests.swift; sourceTree = "<group>"; };
+		DDFB30CC384148849C5E364F /* FFmpegTranscodeEngineIntegrationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FFmpegTranscodeEngineIntegrationTests.swift; sourceTree = "<group>"; };
+		D280A981127541E0A4721741 /* MockFFmpegWrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockFFmpegWrapper.swift; sourceTree = "<group>"; };
+		E19ABF3365614C96BFF9043D /* MockTranscodeQueue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockTranscodeQueue.swift; sourceTree = "<group>"; };
+		32F77EFD69AE4C07A4D21EA3 /* MockTranscodeEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockTranscodeEngine.swift; sourceTree = "<group>"; };
+
 		A580E2C912F7C29AAB37815C /* corrupt_middle.wv */ = {isa = PBXFileReference; path = corrupt_middle.wv; sourceTree = "<group>"; };
 		A5E47EC5C92C466CD99E6CA1 /* DiscogsAdditionalTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiscogsAdditionalTests.swift; sourceTree = "<group>"; };
 		A6383FE2E7335226103D8692 /* invalid_no_audio_data.flv */ = {isa = PBXFileReference; path = invalid_no_audio_data.flv; sourceTree = "<group>"; };
@@ -1198,6 +1220,13 @@
 		C07FDE7B71ACCB1C1DB54229 /* corrupt_magic.dff */ = {isa = PBXFileReference; path = corrupt_magic.dff; sourceTree = "<group>"; };
 		C322C437FB3112964F0AB72B /* DeviceSyncViewBDDTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceSyncViewBDDTests.swift; sourceTree = "<group>"; };
 		C42B8A7821D83573DD6FCAFE /* DeviceSyncComposer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceSyncComposer.swift; sourceTree = "<group>"; };
+		732C47409AAA4D8EB8BE11E3 /* FFmpegWrapperProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FFmpegWrapperProtocol.swift; sourceTree = "<group>"; };
+		B0AD17070AF245819234B6BF /* RealFFmpegWrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RealFFmpegWrapper.swift; sourceTree = "<group>"; };
+		28C6D55C545843D7A5DEBE17 /* TranscodingProtocols.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TranscodingProtocols.swift; sourceTree = "<group>"; };
+		FCCD1C0F5F0D42CBA185F60E /* FFmpegTranscodeEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FFmpegTranscodeEngine.swift; sourceTree = "<group>"; };
+		ACFA31D24AD6488F96F5D95F /* TranscodeQueue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TranscodeQueue.swift; sourceTree = "<group>"; };
+		54505EAF6004461FAAF32973 /* TranscodeProfileManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TranscodeProfileManager.swift; sourceTree = "<group>"; };
+
 		C4314CECF89305C14FCC1F1B /* MockDeviceSyncManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockDeviceSyncManager.swift; sourceTree = "<group>"; };
 		C4820B72EA6F8E0356EACDAC /* MP4ParserTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MP4ParserTests.swift; sourceTree = "<group>"; };
 		C499A518787D6CBB09E5360A /* MetadataLookupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetadataLookupView.swift; sourceTree = "<group>"; };
@@ -1316,6 +1345,9 @@
 		FC269992AA92A4F1067B75E3 /* TagEditHistoryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagEditHistoryTests.swift; sourceTree = "<group>"; };
 		FC2771FB8EA4B0FA2106F98C /* invalid_header.dsf */ = {isa = PBXFileReference; path = invalid_header.dsf; sourceTree = "<group>"; };
 		FCA674D716E98316F444D945 /* DeviceSyncView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceSyncView.swift; sourceTree = "<group>"; };
+		8A3B2C1D4E5F6789ABCDEF01 /* TranscodeSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TranscodeSettingsView.swift; sourceTree = "<group>"; };
+		3C5D7E9F0A1B2C3D4E5F6A7B /* TranscodeProgressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TranscodeProgressView.swift; sourceTree = "<group>"; };
+
 		FD094D27BE36495923B8923A /* AudioGainControlView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioGainControlView.swift; sourceTree = "<group>"; };
 		FE62EDA5912465C3EDBBDDDB /* MetadataLookupViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetadataLookupViewModelTests.swift; sourceTree = "<group>"; };
 		FECC2FD5152499ECA954052F /* corrupt_middle.aac */ = {isa = PBXFileReference; path = corrupt_middle.aac; sourceTree = "<group>"; };
@@ -1581,6 +1613,13 @@
 				103E97C14663699557C2665B /* DeviceConfigurationStorage.swift */,
 				6C1E8C5598A29FA538705D05 /* DeviceDiscoveryService.swift */,
 				C42B8A7821D83573DD6FCAFE /* DeviceSyncComposer.swift */,
+						732C47409AAA4D8EB8BE11E3 /* FFmpegWrapperProtocol.swift */,
+						B0AD17070AF245819234B6BF /* RealFFmpegWrapper.swift */,
+						28C6D55C545843D7A5DEBE17 /* TranscodingProtocols.swift */,
+						FCCD1C0F5F0D42CBA185F60E /* FFmpegTranscodeEngine.swift */,
+						ACFA31D24AD6488F96F5D95F /* TranscodeQueue.swift */,
+						54505EAF6004461FAAF32973 /* TranscodeProfileManager.swift */,
+
 				0DB29F144B71E69EF7A539D6 /* DeviceSyncManager.swift */,
 				58D0BB32920141B46F1F093D /* DeviceSyncProtocols.swift */,
 				F7860E5F3594C899E8977DF3 /* DeviceSyncTrackProvider.swift */,
@@ -1926,6 +1965,9 @@
 				28191107A93DB99D9A9963E9 /* ConflictResolutionView.swift */,
 				6B9D710F16FE222704F6AB0E /* DeviceConfigurationWizardView.swift */,
 				FCA674D716E98316F444D945 /* DeviceSyncView.swift */,
+						8A3B2C1D4E5F6789ABCDEF01 /* TranscodeSettingsView.swift */,
+						3C5D7E9F0A1B2C3D4E5F6A7B /* TranscodeProgressView.swift */,
+
 				70B007D90B9B9E6E55DC05DC /* DeviceSyncViewModel.swift */,
 			);
 			name = DeviceSync;
@@ -2403,6 +2445,9 @@
 				8EB91143F3529A8015D3CD14 /* DeviceSyncFixtures.swift */,
 				211E02CCFB42C34DBC68E287 /* MockDeviceSyncDependencies.swift */,
 				4308936FAA395F725C3347FD /* MockMTPProtocol.swift */,
+								D280A981127541E0A4721741 /* MockFFmpegWrapper.swift */,
+								E19ABF3365614C96BFF9043D /* MockTranscodeQueue.swift */,
+								32F77EFD69AE4C07A4D21EA3 /* MockTranscodeEngine.swift */,
 			);
 			path = TestInfrastructure;
 			sourceTree = "<group>";
@@ -2546,6 +2591,9 @@
 				BD5E950C652BB5F99DE9A9AE /* DeviceSyncManagerBDDTests.swift */,
 				48DA5904146A9AB37C94B26A /* DeviceSyncManagerPersistentQueueTests.swift */,
 				A56F617AED6B050170649B52 /* DeviceSyncManagerTests.swift */,
+						1CC0DA508DCD4DE39B285879 /* DeviceSyncManagerTranscodingTests.swift */,
+						DDFB30CC384148849C5E364F /* FFmpegTranscodeEngineIntegrationTests.swift */,
+
 				658B3DE5EC6B3BB789B47BB8 /* FolderStructureBuilderTests.swift */,
 				AD637BF8630773618EC50A93 /* FullDeviceIntegrationTests.swift */,
 				F07735C36ABDB39FBAB9732D /* LocalDeviceConnectorFolderStructureBDDTests.swift */,
@@ -3480,6 +3528,8 @@
 				FF310349A19E7939EA3271BA /* ContentView.swift in Sources */,
 				24A645DEC3D86A113F9A977B /* DeviceConfigurationWizardView.swift in Sources */,
 				3C49D5154AFEFDA21E5C8273 /* DeviceSyncView.swift in Sources */,
+										2B4C6D8E0F1A3B5C7D9E0F2A /* TranscodeSettingsView.swift in Sources */,
+										4D6E8F0A1B2C3D4E5F6A7B8 /* TranscodeProgressView.swift in Sources */,
 				89E7A1A618D4B9794361507D /* DeviceSyncViewModel.swift in Sources */,
 				CE717985CCF6F4F198F48072 /* EQInterfaceView.swift in Sources */,
 				CCCE6BB562C4BAA22866B8F4 /* MergeConflictResolutionView.swift in Sources */,
@@ -3514,6 +3564,12 @@
 				7E258D3446BC0F5E114ADD32 /* DeviceSyncManagerBDDTests.swift in Sources */,
 				3AC0F9688306A6107D854906 /* DeviceSyncManagerPersistentQueueTests.swift in Sources */,
 				34845CB8C3CD163D52C6B5C6 /* DeviceSyncManagerTests.swift in Sources */,
+										43417337CCCE4ABBB9DCFF1B /* DeviceSyncManagerTranscodingTests.swift in Sources */,
+										CD56CB27368E4287B1AC1A76 /* FFmpegTranscodeEngineIntegrationTests.swift in Sources */,
+										25B57395138F4509B79CDBB5 /* MockFFmpegWrapper.swift in Sources */,
+										40672D7F7F4645489AB1C610 /* MockTranscodeQueue.swift in Sources */,
+										F2C1C1DF82D543AE89BBFA11 /* MockTranscodeEngine.swift in Sources */,
+
 				2C433E9BE0DFA567558562CA /* FolderStructureBuilderTests.swift in Sources */,
 				1E5F075969370C90F164E012 /* FullDeviceIntegrationTests.swift in Sources */,
 				B0F02E2D782D225B94F03C3E /* LibraryIndexerBDDTests.swift in Sources */,
@@ -3566,6 +3622,9 @@
 				3094410D4DED40791B1EBCCD /* ConflictResolutionView.swift in Sources */,
 				91E36195B883C270848274D1 /* DeviceConfigurationWizardView.swift in Sources */,
 				0D45FC4430D4CBCA18865244 /* DeviceSyncView.swift in Sources */,
+										2B4C6D8E0F1A3B5C7D9E0F2A /* TranscodeSettingsView.swift in Sources */,
+										4D6E8F0A1B2C3D4E5F6A7B8 /* TranscodeProgressView.swift in Sources */,
+
 				9A90A2674DED2E4144C8771A /* DeviceSyncViewBDDTests.swift in Sources */,
 				A9DFAA2FF58369162DAC3662 /* DeviceSyncViewModel.swift in Sources */,
 				A7A0332AA1D83557D07CFEE2 /* DeviceSyncViewModelTests.swift in Sources */,
@@ -3644,6 +3703,13 @@
 				4FB891D25B40E3E4E74A074E /* DeviceConfigurationStorage.swift in Sources */,
 				9C1B019C6DAD1C3E58436F8D /* DeviceDiscoveryService.swift in Sources */,
 				4631C58945EAAD6784EDC213 /* DeviceSyncComposer.swift in Sources */,
+										0003969EB514415DBB4388B6 /* FFmpegWrapperProtocol.swift in Sources */,
+										CEF620A7A5754AF6A104DAB1 /* RealFFmpegWrapper.swift in Sources */,
+										0B510CBA8D2E4541AF7730A8 /* TranscodingProtocols.swift in Sources */,
+										68E897A51DB14F389C2D4502 /* FFmpegTranscodeEngine.swift in Sources */,
+										DD3AA5E489DD4EC4ACCE05EB /* TranscodeQueue.swift in Sources */,
+										95FD087DB32343D6A276A24B /* TranscodeProfileManager.swift in Sources */,
+
 				D9FC8B538E279CF6D5F85B8C /* DeviceSyncManager.swift in Sources */,
 				D5F689EE6DCCFBDB853CDAE8 /* DeviceSyncProtocols.swift in Sources */,
 				F3CDD70D8E2DDD86C51E7003 /* DeviceSyncTrackProvider.swift in Sources */,

@@ -126,13 +126,14 @@ public actor MTPDeviceConnector: DeviceConnectorProtocol {
             }
             
             let devicePath = try await buildDevicePath(for: track, options: options)
-            try await uploadTrack(
+            let newCompleted = try await uploadTrack(
                 track: track,
                 devicePath: devicePath,
                 total: total,
-                completed: &completed,
+                currentCompleted: completed,
                 progress: progress
             )
+            completed = newCompleted
         }
     }
     
@@ -157,23 +158,24 @@ public actor MTPDeviceConnector: DeviceConnectorProtocol {
         track: Track,
         devicePath: String,
         total: Int,
-        completed: inout Int,
+        currentCompleted: Int,
         progress: @escaping (SyncProgress) -> Void
-    ) async throws {
+    ) async throws -> Int {
         do {
             try await mtpProtocol.uploadFile(
                 localPath: track.filePath,
                 devicePath: devicePath
             ) { uploadProgress in
                 // Calculate overall progress
-                let overallProgress = (Double(completed) + uploadProgress) / Double(total)
+                let overallProgress = (Double(currentCompleted) + uploadProgress) / Double(total)
                 progress(SyncProgress(
                     completed: Int(overallProgress * Double(total)),
                     total: total
                 ))
             }
-            completed += 1
-            progress(SyncProgress(completed: completed, total: total))
+            let newCompleted = currentCompleted + 1
+            progress(SyncProgress(completed: newCompleted, total: total))
+            return newCompleted
         } catch let error as MTPError {
             switch error {
             case .insufficientSpace:

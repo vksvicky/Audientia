@@ -27,10 +27,31 @@ public final class DeviceSyncViewModel: ObservableObject {
     let manager: DeviceSyncManagerProtocol
     private let logger = Logger.userInterface
     
+    // MARK: - Transcoding ViewModels
+    
+    public lazy var transcodeSettingsViewModel: TranscodeSettingsViewModel = {
+        TranscodeSettingsViewModel()
+    }()
+    
+    private var transcodeQueue: TranscodeQueueProtocol?
+    
+    public var transcodeProgressViewModel: TranscodeProgressViewModel {
+        // Create ViewModel with queue if available, otherwise create a default one
+        if let queue = transcodeQueue {
+            return TranscodeProgressViewModel(queue: queue)
+        } else {
+            // Fallback: create default queue
+            let engine = FFmpegTranscodeEngine()
+            let queue = TranscodeQueue(engine: engine)
+            return TranscodeProgressViewModel(queue: queue)
+        }
+    }
+    
     // MARK: - Init
     
-    public init(manager: DeviceSyncManagerProtocol) {
+    public init(manager: DeviceSyncManagerProtocol, transcodeQueue: TranscodeQueueProtocol? = nil) {
         self.manager = manager
+        self.transcodeQueue = transcodeQueue
     }
     
     // MARK: - Public API
@@ -54,7 +75,7 @@ public final class DeviceSyncViewModel: ObservableObject {
     public func startSync(
         tracks: [Track],
         direction: SyncDirection = .desktopToDevice,
-        options: SyncOptions = .default
+        options: SyncOptions? = nil
     ) async {
         guard let device = selectedDevice else {
             lastError = "Select a device before starting sync."
@@ -64,8 +85,15 @@ public final class DeviceSyncViewModel: ObservableObject {
         lastError = nil
         infoMessage = nil
         
+        // Get transcoding profile from settings if enabled
+        var syncOptions = options ?? .default
+        if transcodeSettingsViewModel.transcodeEnabled,
+           let profile = transcodeSettingsViewModel.selectedProfile {
+            syncOptions.transcodeProfile = profile
+        }
+        
         do {
-            let request = SyncRequest(device: device, tracks: tracks, direction: direction, options: options)
+            let request = SyncRequest(device: device, tracks: tracks, direction: direction, options: syncOptions)
             let job = try await manager.startSync(request: request)
             logger.info("Started sync job \(job.id.uuidString, privacy: .public) for \(device.name, privacy: .public)")
             await reloadJobs()

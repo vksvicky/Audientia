@@ -11,6 +11,8 @@ import Shared
 public struct DeviceSyncEnvironment {
     public let manager: DeviceSyncManager
     public let trackProvider: DeviceSyncTrackProvider
+    public let transcodeEngine: TranscodeEngineProtocol
+    public let transcodeQueue: TranscodeQueueProtocol
 }
 
 public enum DeviceSyncComposer {
@@ -44,11 +46,18 @@ public enum DeviceSyncComposer {
             queue = InMemorySyncJobQueue()
         }
         let conflictDetector = BasicSyncConflictDetector()
+        
+        // Create transcoding engine and queue
+        let transcodeEngine = FFmpegTranscodeEngine()
+        let transcodeQueue = TranscodeQueue(engine: transcodeEngine)
+        
         let manager = DeviceSyncManager(
             discovery: discovery,
             connector: connector,
             queue: queue,
-            conflictDetector: conflictDetector
+            conflictDetector: conflictDetector,
+            transcodeEngine: transcodeEngine,
+            transcodeQueue: transcodeQueue
         )
         
         // Restore jobs from persistent queue if using one
@@ -59,7 +68,12 @@ public enum DeviceSyncComposer {
         }
         
         let trackProvider = DeviceSyncTrackProvider()
-        return DeviceSyncEnvironment(manager: manager, trackProvider: trackProvider)
+        return DeviceSyncEnvironment(
+            manager: manager,
+            trackProvider: trackProvider,
+            transcodeEngine: transcodeEngine,
+            transcodeQueue: transcodeQueue
+        )
     }
     
     public static func makeDefaultManager() -> DeviceSyncManager {

@@ -18,6 +18,8 @@ public struct DeviceSyncView: View {
     @State private var isLoadingTracks = false
     @State private var showConfigurationWizard = false
     @State private var showConflictResolution: SyncJob?
+    @State private var showTranscodeSettings = false
+    @State private var showTranscodeProgress = false
     
     public init(
         viewModel: DeviceSyncViewModel,
@@ -64,6 +66,18 @@ public struct DeviceSyncView: View {
                 ),
                 job: job,
                 viewModel: ConflictResolutionViewModel(manager: viewModel.manager)
+            )
+        }
+        .sheet(isPresented: $showTranscodeSettings) {
+            TranscodeSettingsView(
+                isPresented: $showTranscodeSettings,
+                viewModel: viewModel.transcodeSettingsViewModel
+            )
+        }
+        .sheet(isPresented: $showTranscodeProgress) {
+            TranscodeProgressView(
+                isPresented: $showTranscodeProgress,
+                viewModel: viewModel.transcodeProgressViewModel
             )
         }
     }
@@ -164,6 +178,14 @@ public struct DeviceSyncView: View {
             .buttonStyle(.borderedProminent)
             .disabled(viewModel.selectedDevice == nil || tracks.isEmpty)
             
+            Button("Transcoding Settings") {
+                showTranscodeSettings = true
+            }
+            
+            Button("Transcoding Progress") {
+                showTranscodeProgress = true
+            }
+            
             Button("Reload Jobs") {
                 Task { await viewModel.reloadJobs() }
             }
@@ -222,14 +244,20 @@ public extension DeviceSyncView {
     
     init(trackProvider: @escaping () async -> [Track]) {
         let environment = DeviceSyncComposer.makeDefaultEnvironment()
-        let defaultViewModel = DeviceSyncViewModel(manager: environment.manager)
+        let defaultViewModel = DeviceSyncViewModel(
+            manager: environment.manager,
+            transcodeQueue: environment.transcodeQueue
+        )
         self.init(viewModel: defaultViewModel, trackProvider: trackProvider)
     }
     
     init() {
         let environment = DeviceSyncComposer.makeDefaultEnvironment()
         self.init(
-            viewModel: DeviceSyncViewModel(manager: environment.manager),
+            viewModel: DeviceSyncViewModel(
+                manager: environment.manager,
+                transcodeQueue: environment.transcodeQueue
+            ),
             trackProvider: { await environment.trackProvider.loadTracks() }
         )
     }

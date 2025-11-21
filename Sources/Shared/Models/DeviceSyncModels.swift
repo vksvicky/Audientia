@@ -65,6 +65,7 @@ public struct SyncOptions: Codable, Equatable, Sendable {
     public var deleteMissingFromDevice: Bool
     public var createFolderStructure: Bool
     public var folderStructure: FolderStructure
+    public var transcodeProfile: TranscodeProfile?
     
     public init(
         autoResolveConflicts: Bool = true,
@@ -72,7 +73,8 @@ public struct SyncOptions: Codable, Equatable, Sendable {
         enforceFreeSpace: Bool = true,
         deleteMissingFromDevice: Bool = false,
         createFolderStructure: Bool = true,
-        folderStructure: FolderStructure = .artistAlbum
+        folderStructure: FolderStructure = .artistAlbum,
+        transcodeProfile: TranscodeProfile? = nil
     ) {
         self.autoResolveConflicts = autoResolveConflicts
         self.verifyChecksums = verifyChecksums
@@ -80,6 +82,7 @@ public struct SyncOptions: Codable, Equatable, Sendable {
         self.deleteMissingFromDevice = deleteMissingFromDevice
         self.createFolderStructure = createFolderStructure
         self.folderStructure = folderStructure
+        self.transcodeProfile = transcodeProfile
     }
     
     public static let `default` = SyncOptions()
@@ -269,6 +272,53 @@ public enum FolderStructure: String, Codable, CaseIterable, Sendable {
     case albumArtist = "album_artist"
     case genreArtistAlbum = "genre_artist_album"
     case flat = "flat"
+}
+
+// MARK: - Transcoding
+
+/// Quality presets for transcoding
+public enum TranscodeQuality: String, Codable, CaseIterable, Sendable {
+    case low = "low"           // 128 kbps
+    case standard = "standard" // 192 kbps
+    case high = "high"         // 256 kbps
+    case veryHigh = "very_high" // 320 kbps
+    case lossless = "lossless" // FLAC/ALAC
+    
+    public var defaultBitrate: Int {
+        switch self {
+        case .low: return 128
+        case .standard: return 192
+        case .high: return 256
+        case .veryHigh: return 320
+        case .lossless: return 0 // Lossless has no bitrate
+        }
+    }
+}
+
+/// Represents a transcoding profile with format, quality, and bitrate settings
+public struct TranscodeProfile: Codable, Equatable, Hashable, Sendable {
+    public let id: UUID
+    public let name: String
+    public let format: AudioFormat
+    public let bitrate: Int // kbps
+    public let sampleRate: Int? // Hz, nil means preserve original
+    public let quality: TranscodeQuality
+    
+    public init(
+        id: UUID = UUID(),
+        name: String,
+        format: AudioFormat,
+        bitrate: Int,
+        sampleRate: Int? = nil,
+        quality: TranscodeQuality = .standard
+    ) {
+        self.id = id
+        self.name = name
+        self.format = format
+        self.bitrate = bitrate
+        self.sampleRate = sampleRate
+        self.quality = quality
+    }
 }
 
 public enum AudioFormat: String, Codable, CaseIterable, Sendable {

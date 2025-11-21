@@ -17,6 +17,8 @@ public actor DeviceSyncManager: DeviceSyncManagerProtocol {
     private let connector: DeviceConnectorProtocol
     private let queue: SyncJobQueueProtocol
     private let conflictDetector: SyncConflictDetectorProtocol
+    private let transcodeEngine: TranscodeEngineProtocol?
+    private let transcodeQueue: TranscodeQueueProtocol?
     
     // MARK: - State
     
@@ -32,12 +34,16 @@ public actor DeviceSyncManager: DeviceSyncManagerProtocol {
         discovery: DeviceDiscoveryProtocol,
         connector: DeviceConnectorProtocol,
         queue: SyncJobQueueProtocol = InMemorySyncJobQueue(),
-        conflictDetector: SyncConflictDetectorProtocol
+        conflictDetector: SyncConflictDetectorProtocol,
+        transcodeEngine: TranscodeEngineProtocol? = nil,
+        transcodeQueue: TranscodeQueueProtocol? = nil
     ) {
         self.discovery = discovery
         self.connector = connector
         self.queue = queue
         self.conflictDetector = conflictDetector
+        self.transcodeEngine = transcodeEngine
+        self.transcodeQueue = transcodeQueue
     }
     
     // MARK: - Job Restoration
@@ -54,10 +60,10 @@ public actor DeviceSyncManager: DeviceSyncManagerProtocol {
             if !jobOrder.contains(job.id) {
                 jobOrder.append(job.id)
             }
-            logger.info(
-                "Restored job \(job.id.uuidString, privacy: .public) " +
-                "with status \(String(describing: job.status), privacy: .public)"
-            )
+        let statusString = String(describing: job.status)
+        let jobIdString = job.id.uuidString
+        let message = "Restored job \(jobIdString) with status \(statusString)"
+        logger.info("\(message, privacy: .public)")
         }
         
         // Resume processing if there are queued jobs
@@ -219,9 +225,16 @@ public actor DeviceSyncManager: DeviceSyncManagerProtocol {
             job.conflicts = conflicts.isEmpty ? nil : conflicts
             jobsStorage[job.id] = job
             
+            // Transcode tracks if needed
+            let tracksToTransfer = try await transcodeTracksIfNeeded(
+                tracks: job.request.tracks,
+                profile: job.request.options.transcodeProfile,
+                jobId: job.id
+            )
+            
             let jobId = job.id
             try await connector.transfer(
-                tracks: job.request.tracks,
+                tracks: tracksToTransfer,
                 to: job.request.device,
                 jobId: jobId,
                 options: job.request.options
@@ -275,5 +288,79 @@ public actor DeviceSyncManager: DeviceSyncManagerProtocol {
                 throw DeviceSyncError.insufficientSpace
             }
         }
+    }
+    
+    // MARK: - Transcoding
+    
+    private func transcodeTracksIfNeeded(
+        tracks: [Track],
+        profile: TranscodeProfile?,
+        jobId: UUID
+    ) async throws -> [Track] {
+        guard let profile = profile,
+              let engine = transcodeEngine else {
+            // No transcoding needed or engine not available
+            return tracks
+        }
+        
+        var transcodedTracks: [Track] = []
+        let tempDir = FileManager.default.temporaryDirectory
+            .appendingPathComponent("transcode_\(jobId.uuidString)")
+        
+        // Create temp directory
+        try? FileManager.default.createDirectory(at: tempDir, withIntermediateDirectories: true)
+        
+        for track in tracks {
+            // Check if transcoding is needed
+            let needsTranscoding = await engine.needsTranscoding(track: track, profile: profile)
+            
+            if needsTranscoding {
+                // Generate output path
+                let outputExtension = profile.format.rawValue
+                let outputFileName = (track.filePath as NSString).lastPathComponent
+                    .replacingOccurrences(of: (track.filePath as NSString).pathExtension, with: outputExtension)
+                let outputPath = tempDir.appendingPathComponent(outputFileName).path
+                
+                // Transcode
+                do {
+                    let transcodedPath = try await engine.transcode(
+                        inputPath: track.filePath,
+                        outputPath: outputPath,
+                        profile: profile,
+                        progress: { _ in } // Progress is tracked at sync level
+                    )
+                    
+                    // Create new track with transcoded path
+                    let fileSize = (try? FileManager.default.attributesOfItem(
+                        atPath: transcodedPath
+                    )[.size] as? Int64) ?? track.fileSize
+                    
+                    let transcodedTrack = Track(
+                        title: track.title,
+                        artist: track.artist,
+                        album: track.album,
+                        duration: track.duration,
+                        filePath: transcodedPath,
+                        fileSize: fileSize,
+                        bitrate: profile.bitrate,
+                        sampleRate: profile.sampleRate ?? track.sampleRate
+                    )
+                    transcodedTracks.append(transcodedTrack)
+                } catch {
+                    let errorMessage = error.localizedDescription
+                    logger.error(
+                        "Failed to transcode \(track.filePath, privacy: .public): \(errorMessage, privacy: .public)"
+                    )
+                    throw DeviceSyncError.transferFailed(
+                        "Transcoding failed: \(errorMessage)"
+                    )
+                }
+            } else {
+                // No transcoding needed, use original track
+                transcodedTracks.append(track)
+            }
+        }
+        
+        return transcodedTracks
     }
 }

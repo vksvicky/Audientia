@@ -29,17 +29,36 @@ enum DeviceSyncFixtures {
         )
     }
     
+    static func track(
+        id: UUID = UUID(),
+        title: String = "Test Track",
+        artist: String = "Test Artist",
+        album: String = "Test Album",
+        duration: TimeInterval = 180.0,
+        filePath: String = "/Music/test.flac",
+        fileSize: Int64 = 5 * 1024 * 1024,
+        bitrate: Int = 320,
+        sampleRate: Int = 44_100
+    ) -> Track {
+        Track(
+            id: id,
+            title: title,
+            artist: artist,
+            album: album,
+            duration: duration,
+            filePath: filePath,
+            fileSize: fileSize,
+            bitrate: bitrate,
+            sampleRate: sampleRate
+        )
+    }
+    
     static func tracks(count: Int = 3) -> [Track] {
         (0..<count).map { index in
-            Track(
+            track(
                 title: "Track \(index)",
                 artist: "Artist \(index)",
-                album: "Album",
-                duration: 180,
-                filePath: "/Music/track\(index).flac",
-                fileSize: 5 * 1024 * 1024,
-                bitrate: 320,
-                sampleRate: 44_100
+                filePath: "/Music/track\(index).flac"
             )
         }
     }
