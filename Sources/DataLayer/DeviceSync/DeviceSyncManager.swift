@@ -40,6 +40,34 @@ public actor DeviceSyncManager: DeviceSyncManagerProtocol {
         self.conflictDetector = conflictDetector
     }
     
+    // MARK: - Job Restoration
+    
+    public func restoreJobsFromQueue() async {
+        // Get snapshot BEFORE starting processor to ensure we capture all jobs
+        let snapshot = await queue.snapshot()
+        logger.info("Restoring \(snapshot.count) jobs from queue")
+        
+        // Add all jobs to storage first, before starting processor
+        for job in snapshot {
+            // Always update jobsStorage with the restored job, preserving its status
+            jobsStorage[job.id] = job
+            if !jobOrder.contains(job.id) {
+                jobOrder.append(job.id)
+            }
+            logger.info(
+                "Restored job \(job.id.uuidString, privacy: .public) " +
+                "with status \(String(describing: job.status), privacy: .public)"
+            )
+        }
+        
+        // Resume processing if there are queued jobs
+        // Only process jobs that are in a processable state (not waitingForConflictResolution)
+        // Note: Jobs are already in jobsStorage, so even if they're dequeued, they'll remain in storage
+        if !snapshot.isEmpty {
+            ensureProcessorRunning()
+        }
+    }
+    
     // MARK: - DeviceSyncManagerProtocol
     
     public func availableDevices() async -> [Device] {
@@ -61,7 +89,9 @@ public actor DeviceSyncManager: DeviceSyncManagerProtocol {
         jobsStorage[job.id] = job
         jobOrder.append(job.id)
         await queue.enqueue(job)
-        logger.info("Queued sync job \(job.id.uuidString, privacy: .public) for device \(request.device.name, privacy: .public)")
+        logger.info(
+            "Queued sync job \(job.id.uuidString, privacy: .public) for device \(request.device.name, privacy: .public)"
+        )
         ensureProcessorRunning()
         return job
     }
@@ -137,12 +167,32 @@ public actor DeviceSyncManager: DeviceSyncManagerProtocol {
                 break
             }
             
-            guard let job = await queue.dequeue() else {
+            guard let dequeuedJob = await queue.dequeue() else {
                 // Queue became empty between isEmpty() check and dequeue()
                 break
             }
             
-            guard var currentJob = jobsStorage[job.id], currentJob.status != .cancelled else {
+            // Use the job from jobsStorage (which may have been updated) rather than the dequeued copy
+            // This ensures we process jobs with their current state, including restored statuses
+            // If job not found in storage, add the dequeued job to storage (shouldn't happen after restoration)
+            if jobsStorage[dequeuedJob.id] == nil {
+                jobsStorage[dequeuedJob.id] = dequeuedJob
+                if !jobOrder.contains(dequeuedJob.id) {
+                    jobOrder.append(dequeuedJob.id)
+                }
+            }
+            
+            guard var currentJob = jobsStorage[dequeuedJob.id], currentJob.status != .cancelled else {
+                // If job is cancelled, skip it but keep it in storage and jobOrder
+                continue
+            }
+            
+            // Only process jobs that are ready to be processed
+            // Jobs in .waitingForConflictResolution should not be processed until conflicts are resolved
+            // They remain in jobsStorage but are not re-enqueued to avoid infinite loops
+            if currentJob.status == .waitingForConflictResolution {
+                // Skip processing - job will be re-enqueued when conflicts are resolved via resolveConflicts()
+                // Job remains in jobsStorage and jobOrder
                 continue
             }
             
@@ -173,7 +223,8 @@ public actor DeviceSyncManager: DeviceSyncManagerProtocol {
             try await connector.transfer(
                 tracks: job.request.tracks,
                 to: job.request.device,
-                jobId: jobId
+                jobId: jobId,
+                options: job.request.options
             ) { [weak self] progress in
                 Task {
                     await self?.updateProgress(jobId: jobId, progress: progress)
