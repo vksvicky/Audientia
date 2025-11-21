@@ -45,6 +45,7 @@ actor MockDeviceConnector: DeviceConnectorProtocol {
         tracks: [Track],
         to device: Device,
         jobId: UUID,
+        options: SyncOptions,
         progress: @escaping (SyncProgress) -> Void
     ) async throws {
         if shouldThrowTransferError {

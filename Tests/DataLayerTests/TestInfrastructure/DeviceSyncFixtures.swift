@@ -84,4 +84,22 @@ enum DeviceSyncFixtures {
             isPresentOnDevice: isPresent
         )
     }
+    
+    static func syncJob(
+        id: UUID = UUID(),
+        request: SyncRequest? = nil,
+        status: SyncJobStatus = .queued,
+        progress: SyncProgress = SyncProgress(),
+        conflicts: [SyncConflict]? = nil,
+        errorDescription: String? = nil
+    ) -> SyncJob {
+        SyncJob(
+            id: id,
+            request: request ?? syncRequest(),
+            status: status,
+            progress: progress,
+            conflicts: conflicts,
+            errorDescription: errorDescription
+        )
+    }
 }

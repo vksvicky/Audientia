@@ -24,7 +24,7 @@ public final class DeviceSyncViewModel: ObservableObject {
     
     // MARK: - Dependencies
     
-    private let manager: DeviceSyncManagerProtocol
+    let manager: DeviceSyncManagerProtocol
     private let logger = Logger.userInterface
     
     // MARK: - Init

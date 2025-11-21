@@ -136,6 +136,7 @@ identifier_name:
     - i
     - j
     - k
+    - SQLITE_TRANSIENT
 
 # Type name
 type_name:

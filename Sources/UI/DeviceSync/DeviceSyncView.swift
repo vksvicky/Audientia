@@ -16,6 +16,8 @@ public struct DeviceSyncView: View {
     
     @State private var tracks: [Track] = []
     @State private var isLoadingTracks = false
+    @State private var showConfigurationWizard = false
+    @State private var showConflictResolution: SyncJob?
     
     public init(
         viewModel: DeviceSyncViewModel,
@@ -44,6 +46,25 @@ public struct DeviceSyncView: View {
                     await viewModel.reloadJobs()
                 }
             }
+        }
+        .sheet(isPresented: $showConfigurationWizard) {
+            if let device = viewModel.selectedDevice {
+                DeviceConfigurationWizardView(
+                    isPresented: $showConfigurationWizard,
+                    device: device,
+                    viewModel: DeviceConfigurationViewModel(deviceId: device.id)
+                )
+            }
+        }
+        .sheet(item: $showConflictResolution) { job in
+            ConflictResolutionView(
+                isPresented: Binding(
+                    get: { showConflictResolution != nil },
+                    set: { if !$0 { showConflictResolution = nil } }
+                ),
+                job: job,
+                viewModel: ConflictResolutionViewModel(manager: viewModel.manager)
+            )
         }
     }
     
@@ -83,6 +104,10 @@ public struct DeviceSyncView: View {
                     .onTapGesture {
                         viewModel.selectedDevice = device
                     }
+                    Button("Configure") {
+                        showConfigurationWizard = true
+                    }
+                    .buttonStyle(.borderless)
                     Divider()
                 }
             }
@@ -117,13 +142,9 @@ public struct DeviceSyncView: View {
                             
                             if job.status == .waitingForConflictResolution, let conflicts = job.conflicts {
                                 Button("Resolve (\(conflicts.count))") {
-                                    Task {
-                                        let resolutions = conflicts.map {
-                                            SyncConflictResolution(conflictId: $0.id, action: .keepLibraryVersion)
-                                        }
-                                        await viewModel.resolve(job: job, with: resolutions)
-                                    }
+                                    showConflictResolution = job
                                 }
+                                .buttonStyle(.borderedProminent)
                             }
                         }
                     }

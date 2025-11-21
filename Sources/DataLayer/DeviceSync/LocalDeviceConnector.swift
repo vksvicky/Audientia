@@ -50,6 +50,7 @@ public actor LocalDeviceConnector: DeviceConnectorProtocol {
     
     private let fileManager: FileManager
     private let hasher: FileHashing
+    private let folderBuilder: FolderStructureBuilderProtocol
     private let copyDelayNanoseconds: UInt64
     private var cancelledJobs: Set<UUID> = []
     
@@ -59,10 +60,12 @@ public actor LocalDeviceConnector: DeviceConnectorProtocol {
     public init(
         fileManager: FileManager = .default,
         hasher: FileHashing = SHA256FileHasher(),
+        folderBuilder: FolderStructureBuilderProtocol = FolderStructureBuilder(),
         copyDelayNanoseconds: UInt64 = 0
     ) {
         self.fileManager = fileManager
         self.hasher = hasher
+        self.folderBuilder = folderBuilder
         self.copyDelayNanoseconds = copyDelayNanoseconds
     }
     
@@ -93,6 +96,7 @@ public actor LocalDeviceConnector: DeviceConnectorProtocol {
         tracks: [Track],
         to device: Device,
         jobId: UUID,
+        options: SyncOptions,
         progress: @escaping (SyncProgress) -> Void
     ) async throws {
         guard let mountPath = device.mountPath else {
@@ -116,13 +120,14 @@ public actor LocalDeviceConnector: DeviceConnectorProtocol {
                 throw CancellationError()
             }
             
-            let relativeDirectory = track.id.uuidString
-            let destinationDirectory = libraryRoot.appendingPathComponent(relativeDirectory, isDirectory: true)
-            try fileManager.createDirectory(at: destinationDirectory, withIntermediateDirectories: true, attributes: nil)
-            
+            // Determine destination path based on folder structure option
             let sourceURL = URL(fileURLWithPath: track.filePath)
-            let destinationURL = destinationDirectory.appendingPathComponent(sourceURL.lastPathComponent)
-            let relativePath = destinationURL.path.replacingOccurrences(of: rootURL.path + "/", with: "")
+            let (destinationURL, relativePath) = try buildDestinationPath(
+                for: track,
+                options: options,
+                libraryRoot: libraryRoot,
+                rootURL: rootURL
+            )
             
             if fileManager.fileExists(atPath: destinationURL.path) {
                 try fileManager.removeItem(at: destinationURL)
@@ -146,6 +151,58 @@ public actor LocalDeviceConnector: DeviceConnectorProtocol {
     
     public func cancel(jobId: UUID) async {
         cancelledJobs.insert(jobId)
+    }
+    
+    // MARK: - Private Helpers
+    
+    private func buildDestinationPath(
+        for track: Track,
+        options: SyncOptions,
+        libraryRoot: URL,
+        rootURL: URL
+    ) throws -> (destinationURL: URL, relativePath: String) {
+        let sourceURL = URL(fileURLWithPath: track.filePath)
+        let fileName = sourceURL.lastPathComponent
+        
+        let destinationURL: URL
+        let relativePath: String
+        
+        if options.createFolderStructure {
+            // Use folder structure builder to create organized paths
+            // The builder returns a path like "Artist/Album/Track Title"
+            // We need to replace the last component (track title) with the actual filename
+            let folderPath = folderBuilder.buildPath(for: track, structure: options.folderStructure)
+            let directoryPath = libraryRoot.appendingPathComponent(
+                (folderPath as NSString).deletingLastPathComponent,
+                isDirectory: true
+            )
+            
+            try fileManager.createDirectory(
+                at: directoryPath,
+                withIntermediateDirectories: true,
+                attributes: nil
+            )
+            
+            destinationURL = directoryPath.appendingPathComponent(fileName)
+            relativePath = destinationURL.path.replacingOccurrences(of: rootURL.path + "/", with: "")
+        } else {
+            // Use UUID-based flat structure (legacy behavior)
+            let relativeDirectory = track.id.uuidString
+            let destinationDirectory = libraryRoot.appendingPathComponent(
+                relativeDirectory,
+                isDirectory: true
+            )
+            try fileManager.createDirectory(
+                at: destinationDirectory,
+                withIntermediateDirectories: true,
+                attributes: nil
+            )
+            
+            destinationURL = destinationDirectory.appendingPathComponent(fileName)
+            relativePath = destinationURL.path.replacingOccurrences(of: rootURL.path + "/", with: "")
+        }
+        
+        return (destinationURL, relativePath)
     }
     
     // MARK: - Manifest Utilities

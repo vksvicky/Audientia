@@ -188,7 +188,7 @@ final class DeviceSyncManagerTests: XCTestCase {
             let jobs = await manager.jobs()
             if let job = jobs.first(where: { $0.id == jobId }) {
                 if predicate(job) {
-                    return job
+                return job
                 }
             }
             try await Task.sleep(nanoseconds: 50_000_000)

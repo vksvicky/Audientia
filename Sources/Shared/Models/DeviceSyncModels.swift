@@ -63,17 +63,23 @@ public struct SyncOptions: Codable, Equatable, Sendable {
     public var verifyChecksums: Bool
     public var enforceFreeSpace: Bool
     public var deleteMissingFromDevice: Bool
+    public var createFolderStructure: Bool
+    public var folderStructure: FolderStructure
     
     public init(
         autoResolveConflicts: Bool = true,
         verifyChecksums: Bool = false,
         enforceFreeSpace: Bool = true,
-        deleteMissingFromDevice: Bool = false
+        deleteMissingFromDevice: Bool = false,
+        createFolderStructure: Bool = true,
+        folderStructure: FolderStructure = .artistAlbum
     ) {
         self.autoResolveConflicts = autoResolveConflicts
         self.verifyChecksums = verifyChecksums
         self.enforceFreeSpace = enforceFreeSpace
         self.deleteMissingFromDevice = deleteMissingFromDevice
+        self.createFolderStructure = createFolderStructure
+        self.folderStructure = folderStructure
     }
     
     public static let `default` = SyncOptions()
@@ -247,4 +253,27 @@ public enum DeviceSyncError: LocalizedError, Equatable, Sendable {
             return "Conflicts must be resolved before syncing."
         }
     }
+}
+
+// MARK: - Device Configuration Types
+
+public enum ConflictResolutionStrategy: String, Codable, CaseIterable, Sendable {
+    case keepLibrary = "keep_library"
+    case keepDevice = "keep_device"
+    case keepNewer = "keep_newer"
+    case keepLarger = "keep_larger"
+}
+
+public enum FolderStructure: String, Codable, CaseIterable, Sendable {
+    case artistAlbum = "artist_album"
+    case albumArtist = "album_artist"
+    case genreArtistAlbum = "genre_artist_album"
+    case flat = "flat"
+}
+
+public enum AudioFormat: String, Codable, CaseIterable, Sendable {
+    case mp3
+    case aac
+    case flac
+    case original
 }

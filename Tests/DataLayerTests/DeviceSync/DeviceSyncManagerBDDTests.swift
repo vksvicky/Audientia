@@ -98,6 +98,6 @@ final class DeviceSyncManagerBDDTests: XCTestCase {
             XCTAssertEqual(error, .insufficientSpace, "Should throw insufficientSpace error during validation")
         } catch {
             XCTFail("Unexpected error type: \(error)")
-        }
     }
+}
 }

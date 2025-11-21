@@ -39,7 +39,7 @@ final class LocalDeviceConnectorTests: XCTestCase {
         let track = try makeSampleTrack(index: 1)
         let jobId = UUID()
         
-        try await connector.transfer(tracks: [track], to: device, jobId: jobId) { _ in }
+        try await connector.transfer(tracks: [track], to: device, jobId: jobId, options: .default) { _ in }
         
         let snapshots = try await connector.fetchDeviceTracks(device: device)
         XCTAssertEqual(snapshots.count, 1)
@@ -53,7 +53,7 @@ final class LocalDeviceConnectorTests: XCTestCase {
         let track = try makeSampleTrack(index: 2)
         let jobId = UUID()
         
-        try await connector.transfer(tracks: [track], to: device, jobId: jobId) { _ in }
+        try await connector.transfer(tracks: [track], to: device, jobId: jobId, options: .default) { _ in }
         
         // Remove file manually
         let snapshots = try await connector.fetchDeviceTracks(device: device)
@@ -70,7 +70,7 @@ final class LocalDeviceConnectorTests: XCTestCase {
         let track = try makeSampleTrack(index: 3)
         let jobId = UUID()
         
-        async let transferTask: Void = connector.transfer(tracks: [track], to: device, jobId: jobId) { _ in }
+        async let transferTask: Void = connector.transfer(tracks: [track], to: device, jobId: jobId, options: .default) { _ in }
         
         try await Task.sleep(nanoseconds: 50_000_000)
         await connector.cancel(jobId: jobId)

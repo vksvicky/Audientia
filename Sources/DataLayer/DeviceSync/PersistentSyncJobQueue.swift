@@ -11,7 +11,6 @@ import SQLite3
 
 // SQLITE_TRANSIENT tells SQLite to make its own copy of the data
 // This is critical for async operations where the original buffer might be deallocated
-// swiftlint:disable:next identifier_name
 private let SQLITE_TRANSIENT = unsafeBitCast(-1, to: sqlite3_destructor_type.self)
 
 public actor PersistentSyncJobQueue: SyncJobQueueProtocol {

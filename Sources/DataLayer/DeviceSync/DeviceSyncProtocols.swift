@@ -22,6 +22,7 @@ public protocol DeviceConnectorProtocol: Sendable {
         tracks: [Track],
         to device: Device,
         jobId: UUID,
+        options: SyncOptions,
         progress: @escaping (SyncProgress) -> Void
     ) async throws
     func cancel(jobId: UUID) async
