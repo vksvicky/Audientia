@@ -41,6 +41,7 @@
 - [x] Transcoding - **✅ Feature 4.2 complete: FFmpeg wrapper, transcode engine, profile system, quality presets, background transcoding queue, UI integration (settings and progress views), DeviceSyncManager integration. All components follow TDD/BDD practices with comprehensive Right-BICEP test coverage.**
 - [x] Build & Distribution System - **✅ Complete build script system with 4 build configurations (universal/silicon, with/without libraries), automated DMG creation, dependency checking system (pre-installation script, runtime checker, first-launch checks), installation instructions, and comprehensive documentation. All build scripts support optional DMG creation and include dependency verification tools.**
 - [x] ML Classification & Recommendations - **✅ Feature 5.2 complete: Core ML model integration (CoreMLClassifier with full prediction pipeline), audio feature extraction (AVFoundationFeatureExtractor with spectral features), genre/mood classification, embedding generation, similarity calculation (SimilarityEngine), recommendation engine (similarity-based, history-based, context-aware with ListeningHistoryProtocol). All components follow TDD/BDD practices with comprehensive Right-BICEP test coverage. Ready for Core ML model integration (models need to be added to Resources folder).**
+- [ ] Enhanced UI & Settings Management - **Feature 5.3: MediaMonkey-style multi-pane layout, enhanced library browser, settings persistence, theme management, window state management. Pending implementation.**
 - [ ] Plugin system (including audio visualizer plugins)
 
 ---
@@ -556,7 +557,7 @@ See [`Scripts/build_guide.md`](../Scripts/build_guide.md) for detailed build ins
 
 ---
 
-### Phase 5: ML & AI Features (Weeks 37-44)
+### Phase 5: ML & AI Features & UI Enhancement (Weeks 37-48)
 
 #### 5.1 Acoustic Fingerprinting (Weeks 37-40)
 
@@ -614,11 +615,44 @@ See [`Scripts/build_guide.md`](../Scripts/build_guide.md) for detailed build ins
 - [x] **[P]**: Classification < 500ms, recommendations < 200ms - **✅ Performance tests verify classification operations complete efficiently, similarity calculations are fast, recommendation generation meets performance targets. Feature extraction performance tests verify extraction completes within reasonable time (< 5 seconds). Mock implementations enable performance testing without actual ML model overhead.**
 - [x] **Edge**: Mixed genres, experimental music, very short tracks - **✅ Tests handle edge cases: multiple genre classifications, low confidence classifications, empty or invalid embeddings, tracks with no similar matches, very large embedding vectors, concurrent classification requests. Feature extraction tests handle various audio formats, special characters in paths, Unicode paths, corrupt files, very short/long audio files. History-based recommendations handle insufficient listening history, tracks with no play history, context-aware recommendations with no contextual matches. Actor-based implementations ensure thread safety for concurrent operations.**
 
----
+#### 5.3 Enhanced UI & Settings Management (Weeks 45-48)
 
-### Phase 6: Plugin System (Weeks 45-52)
+**Backend:**
+- [ ] Settings persistence system - **Settings storage protocol and UserDefaults-based implementation for saving/loading user preferences**
+- [ ] Layout configuration system - **Multi-pane layout configuration with customizable panel visibility, sizes, and positions**
+- [ ] Theme management system - **Theme protocol and implementation for light/dark/custom themes with color scheme persistence**
+- [ ] Window state management - **Window position, size, and layout state persistence across app restarts**
+- [ ] Library view configuration - **Configurable library views (list/grid, sort order, column visibility, grouping options)**
 
-#### 6.1 Plugin Runtime (Weeks 45-48)
+**UI:**
+- [ ] Multi-pane layout system - **MediaMonkey-style multi-pane interface with resizable panels: library browser, playlist panel, now playing panel, track details panel**
+- [ ] Enhanced library browser - **Advanced library views with multiple view modes (by artist, album, genre, year, rating), customizable columns, sorting, filtering, and grouping options**
+- [ ] Track details panel - **Comprehensive track information panel with metadata, artwork, ML classification results, recommendations, and fingerprint status**
+- [ ] Playlist panel - **Dedicated playlist panel with drag-and-drop, queue management, and playlist operations**
+- [ ] Settings/preferences UI - **Comprehensive settings interface with categories: General, Library, Playback, Audio/DSP, Appearance, Advanced**
+- [ ] Settings persistence - **Save/load all user preferences including layout, theme, library views, playback settings, audio settings**
+- [ ] Layout customization - **User-configurable panel layouts, split views, panel visibility toggles, panel size persistence**
+- [ ] Theme selector - **Theme selection UI with preview, light/dark mode toggle, custom color scheme support**
+- [ ] Window management - **Window state persistence, multiple window support, window layout presets**
+
+**Tests:**
+- [ ] **TDD**: Settings persistence, layout configuration, theme management - **TDD tests for settings storage, layout configuration, theme switching, window state management following Right-BICEP principles**
+- [ ] **Unit**: Settings save/load, layout calculations, theme application - **Unit tests verify settings persistence, layout panel calculations, theme color application, window state restoration**
+- [ ] **Integration**: Change settings, restart app, verify persistence - **Integration tests verify settings persist across app restarts, layout state restoration, theme persistence**
+- [ ] **BDD**: "As a user, I want to customize my library view and have it saved" - **BDD scenarios for settings management, layout customization, theme selection, library view configuration, window management**
+
+**Right-BICEP:**
+- [ ] **[Right]**: Verify settings saved correctly, layouts render properly, themes apply correctly - **Tests verify settings values match saved values, layout panels display correctly, theme colors applied accurately**
+- [ ] **[B]**: Empty settings, maximum settings values, very large layouts, many panels - **Tests cover default settings, edge values, maximum panel counts, extreme layout configurations**
+- [ ] **[I]**: Change setting → Save → Restart → Verify restored - **Tests verify settings roundtrip (save → load → verify), layout state roundtrip, theme roundtrip**
+- [ ] **[C]**: Compare settings with UserDefaults directly, compare layouts with manual calculations - **Settings persistence verified against UserDefaults, layout calculations cross-checked with manual calculations**
+- [ ] **[E]**: Corrupt settings file, invalid layout configuration, missing theme files - **Error handling for corrupted settings, invalid layout configurations, missing theme resources, permission errors**
+- [ ] **[P]**: Settings load < 100ms, layout render < 50ms, theme switch < 200ms - **Performance tests verify settings load quickly, layout calculations are efficient, theme switching is smooth**
+- [ ] **Edge**: Unicode in settings, very large library views, multiple windows, concurrent settings changes - **Tests handle Unicode characters in settings, large library views (10k+ tracks), multiple window management, concurrent settings updates**
+
+### Phase 6: Plugin System (Weeks 49-56)
+
+#### 6.1 Plugin Runtime (Weeks 49-52)
 
 **Backend (PluginSystem):**
 - JavaScriptCore runtime setup
@@ -646,7 +680,7 @@ See [`Scripts/build_guide.md`](../Scripts/build_guide.md) for detailed build ins
 - **[P]**: Plugin execution < 100ms, no main thread blocking
 - **Edge**: Async plugins, error handling, resource cleanup
 
-#### 6.2 Plugin SDK & Examples (Weeks 49-52)
+#### 6.2 Plugin SDK & Examples (Weeks 53-56)
 
 **Backend:**
 - Plugin SDK documentation
@@ -677,7 +711,7 @@ See [`Scripts/build_guide.md`](../Scripts/build_guide.md) for detailed build ins
 
 ---
 
-### Phase 7: Polish & Optimization (Weeks 53-60)
+### Phase 7: Polish & Optimization (Weeks 57-64)
 
 #### 7.1 UI/UX Refinement
 - Accessibility (VoiceOver, keyboard navigation)
@@ -702,7 +736,7 @@ See [`Scripts/build_guide.md`](../Scripts/build_guide.md) for detailed build ins
 
 ---
 
-### Phase 8: Winamp-Inspired Features & Verification (Weeks 61-68)
+### Phase 8: Winamp-Inspired Features & Verification (Weeks 65-72)
 
 **Reference**: [Winamp Source](https://github.com/mgreenwood1001/winamp) - Proven audio player features for verification and enhancement
 
