@@ -11,15 +11,17 @@ import os.log
 @preconcurrency import Shared
 
 /// Core ML-based classifier implementation
-/// Note: This is a placeholder implementation that will work with actual Core ML models
+/// Uses Core ML models for genre/mood classification and embedding generation
 public actor CoreMLClassifier: MLClassifierProtocol {
     private let logger = Logger(subsystem: "club.cycleruncode.audientia", category: "MLClassifier")
+    private let featureExtractor: AudioFeatureExtractorProtocol
     private var genreModel: MLModel?
     private var moodModel: MLModel?
     private var embeddingModel: MLModel?
     private var modelsLoaded = false
     
-    public init() {
+    public init(featureExtractor: AudioFeatureExtractorProtocol = AVFoundationFeatureExtractor()) {
+        self.featureExtractor = featureExtractor
         // Models will be loaded lazily when needed
     }
     
@@ -38,19 +40,20 @@ public actor CoreMLClassifier: MLClassifierProtocol {
             throw MLClassificationError.modelNotAvailable
         }
         
-        // Extract audio features (placeholder - will use actual feature extraction)
-        _ = try await extractAudioFeatures(from: track)
+        // Extract audio features
+        let features = try await featureExtractor.extractFeatures(from: track)
         
-        // Create model input (placeholder - actual structure depends on model)
-        // For now, return a mock classification until actual Core ML model is integrated
-        logger.debug("Classifying genre for track: \(track.title)")
+        logger.debug("Classifying genre for track: \(track.title) with \(features.count) features")
         
-        // NOTE: Placeholder implementation - Replace with actual Core ML prediction
-        // When Core ML model is available, use:
-        // let input = try createGenreModelInput(features: features)
-        // let prediction = try await model.prediction(from: input)
-        // return GenreClassification(from: prediction)
-        throw MLClassificationError.modelNotAvailable
+        // Create model input and get prediction
+        guard let model = genreModel else {
+            throw MLClassificationError.modelNotAvailable
+        }
+        
+        let input = try createGenreModelInput(features: features)
+        let prediction = try await model.prediction(from: input)
+        
+        return try parseGenreClassification(from: prediction)
     }
     
     public func classifyMood(for track: Track) async throws -> MoodClassification {
@@ -67,13 +70,19 @@ public actor CoreMLClassifier: MLClassifierProtocol {
         }
         
         // Extract audio features
-        _ = try await extractAudioFeatures(from: track)
+        let features = try await featureExtractor.extractFeatures(from: track)
         
-        logger.debug("Classifying mood for track: \(track.title)")
+        logger.debug("Classifying mood for track: \(track.title) with \(features.count) features")
         
-        // NOTE: Placeholder implementation - Replace with actual Core ML prediction
-        // When Core ML model is available, implement mood classification
-        throw MLClassificationError.modelNotAvailable
+        // Create model input and get prediction
+        guard let model = moodModel else {
+            throw MLClassificationError.modelNotAvailable
+        }
+        
+        let input = try createMoodModelInput(features: features)
+        let prediction = try await model.prediction(from: input)
+        
+        return try parseMoodClassification(from: prediction)
     }
     
     public func generateEmbedding(for track: Track) async throws -> [Float] {
@@ -90,13 +99,19 @@ public actor CoreMLClassifier: MLClassifierProtocol {
         }
         
         // Extract audio features
-        _ = try await extractAudioFeatures(from: track)
+        let features = try await featureExtractor.extractFeatures(from: track)
         
-        logger.debug("Generating embedding for track: \(track.title)")
+        logger.debug("Generating embedding for track: \(track.title) with \(features.count) features")
         
-        // NOTE: Placeholder implementation - Replace with actual Core ML prediction
-        // When Core ML model is available, implement mood classification
-        throw MLClassificationError.modelNotAvailable
+        // Create model input and get prediction
+        guard let model = embeddingModel else {
+            throw MLClassificationError.modelNotAvailable
+        }
+        
+        let input = try createEmbeddingModelInput(features: features)
+        let prediction = try await model.prediction(from: input)
+        
+        return try parseEmbedding(from: prediction)
     }
     
     public func isAvailable() async -> Bool {
@@ -145,21 +160,177 @@ public actor CoreMLClassifier: MLClassifierProtocol {
         modelsLoaded = true
     }
     
-    private func extractAudioFeatures(from track: Track) async throws -> [Float] {
-        // Placeholder: Extract audio features from track
-        // In real implementation, this would:
-        // 1. Load audio file
-        // 2. Extract spectrogram or other features
-        // 3. Return feature vector
-        
-        // For now, validate file exists
-        guard FileManager.default.fileExists(atPath: track.filePath) else {
-            throw MLClassificationError.audioProcessingFailed
+    // MARK: - Model Input Creation
+    
+    private func createGenreModelInput(features: [Float]) throws -> MLFeatureProvider {
+        // Create MLMultiArray from features
+        // The exact structure depends on the model, but typically it's a 1D array
+        let shape = [NSNumber(value: features.count)]
+        guard let multiArray = try? MLMultiArray(shape: shape, dataType: .float32) else {
+            throw MLClassificationError.invalidModel
         }
         
-        // NOTE: Placeholder implementation - Implement actual feature extraction
-        // This would use AVFoundation or FFmpeg to extract audio features
-        // such as MFCC, spectral features, or other audio descriptors
-        throw MLClassificationError.audioProcessingFailed
+        for (index, value) in features.enumerated() {
+            multiArray[index] = NSNumber(value: value)
+        }
+        
+        // Create feature provider
+        // Model input name is typically "features" or "input" - adjust based on actual model
+        let inputName = "features" // This should match the model's input name
+        let featureValue = MLFeatureValue(multiArray: multiArray)
+        
+        return try MLDictionaryFeatureProvider(dictionary: [inputName: featureValue])
+    }
+    
+    private func createMoodModelInput(features: [Float]) throws -> MLFeatureProvider {
+        // Same structure as genre model
+        try createGenreModelInput(features: features)
+    }
+    
+    private func createEmbeddingModelInput(features: [Float]) throws -> MLFeatureProvider {
+        // Same structure as genre model
+        try createGenreModelInput(features: features)
+    }
+    
+    // MARK: - Prediction Parsing
+    
+    private func parseGenreClassification(from prediction: MLFeatureProvider) throws -> GenreClassification {
+        // Parse prediction output
+        // Model output structure depends on the model, but typically:
+        // - Output name: "genre" or "output" or "classLabelProbs"
+        // - Format: Dictionary of genre -> probability or MLMultiArray
+        
+        // Try common output names
+        let possibleOutputNames = ["genre", "output", "classLabelProbs", "probabilities"]
+        
+        for outputName in possibleOutputNames {
+            if let featureValue = prediction.featureValue(for: outputName) {
+                // Check if the feature value is a dictionary type
+                if featureValue.type == .dictionary {
+                    let dictionary = featureValue.dictionaryValue
+                    // Dictionary format: ["Rock": 0.85, "Jazz": 0.10, ...]
+                    // dictionaryValue returns [AnyHashable: NSNumber]
+                    var probabilities: [String: Double] = [:]
+                    for (key, value) in dictionary {
+                        // Convert AnyHashable key to String
+                        guard let stringKey = key as? String else {
+                            continue
+                        }
+                        // NSNumber can be converted to Double
+                        probabilities[stringKey] = value.doubleValue
+                    }
+                    
+                    // Find genre with highest probability
+                    guard let (genre, confidence) = probabilities.max(by: { $0.value < $1.value }) else {
+                        throw MLClassificationError.classificationFailed("No genre probabilities found")
+                    }
+                    
+                    return GenreClassification(
+                        genre: genre,
+                        confidence: confidence,
+                        allProbabilities: probabilities
+                    )
+                } else if let multiArray = featureValue.multiArrayValue {
+                    // MultiArray format: Need to map indices to genre names
+                    // This requires model metadata - for now, use generic approach
+                    let probabilities = try parseMultiArrayToProbabilities(multiArray)
+                    
+                    guard let (genre, confidence) = probabilities.max(by: { $0.value < $1.value }) else {
+                        throw MLClassificationError.classificationFailed("No genre probabilities found")
+                    }
+                    
+                    return GenreClassification(
+                        genre: genre,
+                        confidence: confidence,
+                        allProbabilities: probabilities
+                    )
+                }
+            }
+        }
+        
+        throw MLClassificationError.classificationFailed("Could not parse genre prediction")
+    }
+    
+    private func parseMoodClassification(from prediction: MLFeatureProvider) throws -> MoodClassification {
+        // Similar to genre classification
+        let possibleOutputNames = ["mood", "output", "classLabelProbs", "probabilities"]
+        
+        for outputName in possibleOutputNames {
+            if let featureValue = prediction.featureValue(for: outputName) {
+                // Check if the feature value is a dictionary type
+                if featureValue.type == .dictionary {
+                    let dictionary = featureValue.dictionaryValue
+                    // dictionaryValue returns [AnyHashable: NSNumber]
+                    var probabilities: [String: Double] = [:]
+                    for (key, value) in dictionary {
+                        // Convert AnyHashable key to String
+                        guard let stringKey = key as? String else {
+                            continue
+                        }
+                        // NSNumber can be converted to Double
+                        probabilities[stringKey] = value.doubleValue
+                    }
+                    
+                    guard let (mood, confidence) = probabilities.max(by: { $0.value < $1.value }) else {
+                        throw MLClassificationError.classificationFailed("No mood probabilities found")
+                    }
+                    
+                    return MoodClassification(
+                        mood: mood,
+                        confidence: confidence,
+                        allProbabilities: probabilities
+                    )
+                } else if let multiArray = featureValue.multiArrayValue {
+                    let probabilities = try parseMultiArrayToProbabilities(multiArray)
+                    
+                    guard let (mood, confidence) = probabilities.max(by: { $0.value < $1.value }) else {
+                        throw MLClassificationError.classificationFailed("No mood probabilities found")
+                    }
+                    
+                    return MoodClassification(
+                        mood: mood,
+                        confidence: confidence,
+                        allProbabilities: probabilities
+                    )
+                }
+            }
+        }
+        
+        throw MLClassificationError.classificationFailed("Could not parse mood prediction")
+    }
+    
+    private func parseEmbedding(from prediction: MLFeatureProvider) throws -> [Float] {
+        // Parse embedding output
+        // Typically a 1D MLMultiArray
+        let possibleOutputNames = ["embedding", "output", "features"]
+        
+        for outputName in possibleOutputNames {
+            if let featureValue = prediction.featureValue(for: outputName),
+               let multiArray = featureValue.multiArrayValue {
+                var embedding: [Float] = []
+                for i in 0..<multiArray.count {
+                    embedding.append(Float(truncating: multiArray[i]))
+                }
+                return embedding
+            }
+        }
+        
+        throw MLClassificationError.classificationFailed("Could not parse embedding")
+    }
+    
+    private func parseMultiArrayToProbabilities(_ multiArray: MLMultiArray) throws -> [String: Double] {
+        // Map multiArray indices to genre/mood names
+        // In a real implementation, this would use model metadata
+        // For now, use generic labels
+        let labels = ["Rock", "Jazz", "Classical", "Electronic", "Pop", "Hip-Hop", "Country", "Blues"]
+        var probabilities: [String: Double] = [:]
+        
+        let count = min(multiArray.count, labels.count)
+        for i in 0..<count {
+            let value = Double(truncating: multiArray[i])
+            probabilities[labels[i]] = value
+        }
+        
+        return probabilities
     }
 }

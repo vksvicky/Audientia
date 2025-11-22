@@ -29,6 +29,9 @@
 		04E260593E3FA70593885F33 /* MockFFmpegWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = A512901D58EBE126DA5F5559 /* MockFFmpegWrapper.swift */; };
 		05375E5315551E37259483A7 /* valid_44.1k.flv in Resources */ = {isa = PBXBuildFile; fileRef = 5E2EEA65D428BC3A513F36DB /* valid_44.1k.flv */; };
 		053CEB01D7E5FACAD5353AD0 /* MLClassificationProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCB0817C491CBB6D65E1E3EC /* MLClassificationProtocol.swift */; };
+		053CEB02D7E5FACAD5353AD1 /* AudioFeatureExtractorProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = A88335DFE017407DA5B263CF /* AudioFeatureExtractorProtocol.swift */; };
+		053CEB03D7E5FACAD5353AD2 /* AVFoundationFeatureExtractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0F312B69BCF468DA61EBBBD /* AVFoundationFeatureExtractor.swift */; };
+		053CEB04D7E5FACAD5353AD3 /* ListeningHistoryProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0991B362CE34D6ABA984AB8 /* ListeningHistoryProtocol.swift */; };
 		054DEC7271C21023EB927ACA /* PlaylistEditorViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5EAD142DB89920FFB8EBC8C /* PlaylistEditorViewModel.swift */; };
 		055CB107E5129B1A823AF359 /* MockTranscodeEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F3C9924B20D0482490B83CC /* MockTranscodeEngine.swift */; };
 		060BE296B1B1AA1DEAC80083 /* AudioSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CCB1272CF8447C630938156 /* AudioSettingsView.swift */; };
@@ -1073,8 +1076,17 @@
 		557D2EFE00833919CA6B4655 /* TagWriterCoordinatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagWriterCoordinatorTests.swift; sourceTree = "<group>"; };
 		5774CE249AA77FDC57048765 /* AudioEngineMocks.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioEngineMocks.swift; sourceTree = "<group>"; };
 		57CB8BC5FAE8D3F858E6B6F4 /* MLClassificationBDDTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MLClassificationBDDTests.swift; sourceTree = "<group>"; };
+		5F6BE153065B4994B958EC01 /* CoreMLClassifierFeatureExtractionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreMLClassifierFeatureExtractionTests.swift; sourceTree = "<group>"; };
+		02AF5C4CFB244C9BA389A014 /* CoreMLClassifierIntegrationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreMLClassifierIntegrationTests.swift; sourceTree = "<group>"; };
+		E46241A3B45046288B7B74F3 /* CoreMLClassifierBDDTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreMLClassifierBDDTests.swift; sourceTree = "<group>"; };
+		075D13B07564466C90C42369 /* RecommendationEngineHistoryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecommendationEngineHistoryTests.swift; sourceTree = "<group>"; };
+		6C11BF5B0A9F4DEB9A224A7C /* RecommendationEngineContextTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecommendationEngineContextTests.swift; sourceTree = "<group>"; };
+		73B8E8A6F06A48299254C2AD /* RecommendationEngineHistoryBDDTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecommendationEngineHistoryBDDTests.swift; sourceTree = "<group>"; };
 		5822D905AD76E3B7007429AE /* CoreMLClassifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreMLClassifier.swift; sourceTree = "<group>"; };
 		589BDBF55676BBC233099907 /* CrossfadeBDDTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CrossfadeBDDTests.swift; sourceTree = "<group>"; };
+		A88335DFE017407DA5B263CF /* AudioFeatureExtractorProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioFeatureExtractorProtocol.swift; sourceTree = "<group>"; };
+		D0F312B69BCF468DA61EBBBD /* AVFoundationFeatureExtractor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AVFoundationFeatureExtractor.swift; sourceTree = "<group>"; };
+		D0991B362CE34D6ABA984AB8 /* ListeningHistoryProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListeningHistoryProtocol.swift; sourceTree = "<group>"; };
 		58B09C0A7399EBD595073F68 /* RecommendationEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecommendationEngine.swift; sourceTree = "<group>"; };
 		58D0BB32920141B46F1F093D /* DeviceSyncProtocols.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceSyncProtocols.swift; sourceTree = "<group>"; };
 		595646096456ABC6D381E0FC /* AudioEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioEngine.swift; sourceTree = "<group>"; };
@@ -1876,12 +1888,15 @@
 			children = (
 				88B431651A55BB297D13ACDD /* AcoustIDProtocol.swift */,
 				F4CE3535F8D64CAD5D8EC305 /* AcoustIDService.swift */,
+				A88335DFE017407DA5B263CF /* AudioFeatureExtractorProtocol.swift */,
+				D0F312B69BCF468DA61EBBBD /* AVFoundationFeatureExtractor.swift */,
 				CC254C65C299FCE9ED7E81BB /* ChromaprintFingerprintGenerator.swift */,
 				5822D905AD76E3B7007429AE /* CoreMLClassifier.swift */,
 				16E1545AF5DD2BA3BE0F14D8 /* DiscogsClient.swift */,
 				B31359643BCC90C3CA3D33A8 /* DiscogsProtocol.swift */,
 				EA251F406A11E926BB6E7D11 /* ExecutableFinder.swift */,
 				0BEA25A5AAFC8A4E07366D02 /* FingerprintCacheProtocol.swift */,
+				D0991B362CE34D6ABA984AB8 /* ListeningHistoryProtocol.swift */,
 				CAA5053D78F6004BC10BD1F9 /* MetadataMergeProtocol.swift */,
 				CD3BF3201BC2BB2B678DA85A /* MetadataMerger.swift */,
 				6A5C25C57EBDB1E00C405778 /* MetadataMerger+Helpers.swift */,
@@ -2746,6 +2761,9 @@
 				7A96C32B114E4DB8CB83C111 /* MetadataMergeTests.swift */,
 				57CB8BC5FAE8D3F858E6B6F4 /* MLClassificationBDDTests.swift */,
 				5F72D3B4BC8D2E0FD2CB0401 /* MLClassificationTests.swift */,
+				5F6BE153065B4994B958EC01 /* CoreMLClassifierFeatureExtractionTests.swift */,
+				02AF5C4CFB244C9BA389A014 /* CoreMLClassifierIntegrationTests.swift */,
+				E46241A3B45046288B7B74F3 /* CoreMLClassifierBDDTests.swift */,
 				168A18B40ED2354219473B4D /* MockMLClassifier.swift */,
 				C002B3475AB6F8257C6711CF /* MockRecommendationEngine.swift */,
 				4C8FE97E728630B2B55C5740 /* MockSimilarityEngine.swift */,
@@ -2754,6 +2772,9 @@
 				FABA729D68670036A0224B4F /* MusicBrainzTests.swift */,
 				DDF27738976BC477EAD6E6D7 /* RecommendationBDDTests.swift */,
 				F2A1CC90267E9F7583E00E49 /* RecommendationEngineTests.swift */,
+				075D13B07564466C90C42369 /* RecommendationEngineHistoryTests.swift */,
+				6C11BF5B0A9F4DEB9A224A7C /* RecommendationEngineContextTests.swift */,
+				73B8E8A6F06A48299254C2AD /* RecommendationEngineHistoryBDDTests.swift */,
 				714ED018A05F2489C8D1DA9A /* SimilarityEngineTests.swift */,
 			);
 			path = Enhancement;
@@ -3504,12 +3525,24 @@
 				F862F6B81299C3D7E3C54ED6 /* ID3v2TagWriterTests.swift in Sources */,
 				9A3FB2467B51F7DD635DC74C /* MLClassificationBDDTests.swift in Sources */,
 				A8B4A3B44F70D494D9BFCA8D /* MLClassificationTests.swift in Sources */,
+				A8B4A3B44F70D494D9BFCA8E /* CoreMLClassifierFeatureExtractionTests.swift in Sources */,
+				A8B4A3B44F70D494D9BFCA8F /* CoreMLClassifierIntegrationTests.swift in Sources */,
+				A8B4A3B44F70D494D9BFCA90 /* CoreMLClassifierBDDTests.swift in Sources */,
+				A8B4A3B44F70D494D9BFCA91 /* RecommendationEngineHistoryTests.swift in Sources */,
+				A8B4A3B44F70D494D9BFCA92 /* RecommendationEngineContextTests.swift in Sources */,
+				A8B4A3B44F70D494D9BFCA93 /* RecommendationEngineHistoryBDDTests.swift in Sources */,
 				639282683F87094307B03F0E /* MP4ParserTests.swift in Sources */,
 				900E41D8C1631A308627C72B /* MP4TagWriterTests.swift in Sources */,
 				2E556E0BA66E7F8C3F278BEB /* MetadataMergeAdditionalTests.swift in Sources */,
 				1B874A8DC280929100F973F9 /* MetadataMergeBDDTests.swift in Sources */,
 				21A97AD2BDE80703D8F85AB4 /* MetadataMergeTests.swift in Sources */,
 				1FB8986633D61F27D0766339 /* MockMLClassifier.swift in Sources */,
+				A8B4A3B44F70D494D9BFCA8E /* CoreMLClassifierFeatureExtractionTests.swift in Sources */,
+				A8B4A3B44F70D494D9BFCA8F /* CoreMLClassifierIntegrationTests.swift in Sources */,
+				A8B4A3B44F70D494D9BFCA90 /* CoreMLClassifierBDDTests.swift in Sources */,
+				A8B4A3B44F70D494D9BFCA91 /* RecommendationEngineHistoryTests.swift in Sources */,
+				A8B4A3B44F70D494D9BFCA92 /* RecommendationEngineContextTests.swift in Sources */,
+				A8B4A3B44F70D494D9BFCA93 /* RecommendationEngineHistoryBDDTests.swift in Sources */,
 				431B92A2DACD73B911031077 /* MockRecommendationEngine.swift in Sources */,
 				C5DD590E5B905D5F8FF32721 /* MockSimilarityEngine.swift in Sources */,
 				AA7BE2E6320591A8ECDF157D /* MusicBrainzAdditionalTests.swift in Sources */,
@@ -3632,6 +3665,9 @@
 				E4DFF85552F7C1A8E048A2A8 /* BatchTagOperations.swift in Sources */,
 				8C2F1E98E72C79ADABC42F6F /* ChromaprintFingerprintGenerator.swift in Sources */,
 				697C7BC93DD278AC389218D5 /* CoreMLClassifier.swift in Sources */,
+				053CEB02D7E5FACAD5353AD1 /* AudioFeatureExtractorProtocol.swift in Sources */,
+				053CEB03D7E5FACAD5353AD2 /* AVFoundationFeatureExtractor.swift in Sources */,
+				053CEB04D7E5FACAD5353AD3 /* ListeningHistoryProtocol.swift in Sources */,
 				34D9AA59523D5CE694EF0E8D /* DiscogsClient.swift in Sources */,
 				19D96350E869C989EFC38E21 /* DiscogsProtocol.swift in Sources */,
 				188F86D63B5731473199B63D /* ExecutableFinder.swift in Sources */,
