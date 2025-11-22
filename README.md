@@ -55,6 +55,10 @@ Audientia/
   - Required codecs: FLAC, OGG, Opus, ALAC, APE, WebM, FLV, AC3, DTS, WavPack
   - Integration: Dynamically linked library bundled in app bundle
   - License: LGPL-2.1 (compliance via dynamic linking)
+- **chromaprint**: Optional, for acoustic fingerprinting
+  - Install with: `brew install chromaprint`
+
+See [`Scripts/dependencies.md`](Scripts/dependencies.md) for detailed dependency information and version requirements.
 
 ## Quick Start
 
@@ -78,6 +82,29 @@ Audientia/
 4. **Build and run:**
    - Press ⌘B to build
    - Press ⌘R to run
+
+## Building for Distribution
+
+Audientia provides multiple build scripts for different distribution scenarios:
+
+- **Universal app (x86_64 + arm64)**: Works on both Intel and Apple Silicon Macs
+- **Apple Silicon-only (arm64)**: Optimized for Apple Silicon Macs
+- **With libraries bundled**: FFmpeg included in app (no user installation needed)
+- **Without libraries**: Users install FFmpeg and chromaprint separately
+
+**Quick build examples:**
+```bash
+# Universal app with libraries (recommended for distribution)
+./Scripts/build_universal_with_libs.sh --dmg
+
+# Apple Silicon app with libraries (for App Store)
+./Scripts/build_silicon_with_libs.sh --dmg
+
+# Universal app without libraries (for development/testing)
+./Scripts/build_universal_without_libs.sh
+```
+
+See [`Scripts/build_guide.md`](Scripts/build_guide.md) for comprehensive build instructions, options, and troubleshooting.
 
 ## Development
 
@@ -200,6 +227,11 @@ See [`Documentation/04-architecture.md`](Documentation/04-architecture.md) for d
   - Dynamically linked (LGPL-2.1 compliant)
   - See [`Documentation/10-integration-open-source-reuse.md`](Documentation/10-integration-open-source-reuse.md) for integration details
   - See [`Documentation/13-ffmpeg-integration.md`](Documentation/13-ffmpeg-integration.md) for detailed integration guide
+- **chromaprint**: Acoustic fingerprinting library (optional)
+  - Required for AcoustID track identification
+  - Users can install with: `brew install chromaprint`
+
+See [`Scripts/dependencies.md`](Scripts/dependencies.md) for complete dependency information, version requirements, and installation instructions.
 
 ## Documentation
 
@@ -222,6 +254,10 @@ See [`Documentation/04-architecture.md`](Documentation/04-architecture.md) for d
 - [`Documentation/10-integration-open-source-reuse.md`](Documentation/10-integration-open-source-reuse.md) - Open source integration
 - [`Documentation/13-ffmpeg-integration.md`](Documentation/13-ffmpeg-integration.md) - FFmpeg integration and deployment guide
 - [`Documentation/11-versioning-system.md`](Documentation/11-versioning-system.md) - Version management
+
+### Build & Distribution
+- [`Scripts/build_guide.md`](Scripts/build_guide.md) - Comprehensive build guide with all build options
+- [`Scripts/dependencies.md`](Scripts/dependencies.md) - Mandatory libraries and version requirements
 
 See [`Documentation/README.md`](Documentation/README.md) for complete documentation index.
 

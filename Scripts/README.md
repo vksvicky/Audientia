@@ -86,3 +86,32 @@ Audientia/
 ```
 
 This structure ensures that the file system matches what you see in Xcode, making navigation and development more intuitive.
+
+## Documentation
+
+### `dependencies.md`
+Detailed information about mandatory external libraries (FFmpeg, chromaprint) and their requirements.
+
+### `build_guide.md`
+Comprehensive guide for building Audientia with different configurations (universal/silicon, with/without libraries).
+
+### `check_dependencies.sh`
+Dependency checker script that verifies FFmpeg and chromaprint are installed.
+
+**Usage:**
+```bash
+# Check dependencies with notifications
+./Scripts/check_dependencies.sh --notify
+
+# Check dependencies (console output only)
+./Scripts/check_dependencies.sh
+```
+
+This script is automatically included in DMG files for builds without libraries.
+
+### `INSTALL_INSTRUCTIONS.md`
+Installation instructions for end users, including dependency requirements and troubleshooting.
+
+This file is automatically included in:
+- DMG files for builds without libraries
+- App bundle Resources (for first-launch dependency checks)
