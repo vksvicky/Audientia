@@ -54,7 +54,8 @@ extension FingerprintCacheTests {
         try await cache.store(entry)
         let retrieved = try await cache.get(filePath: filePath)
         XCTAssertNil(retrieved)
-        XCTAssertFalse(try await cache.isCached(filePath: filePath))
+        let isCached = try await cache.isCached(filePath: filePath)
+        XCTAssertFalse(isCached)
     }
     
     func testNonExpiredEntryIsReturned() async throws {

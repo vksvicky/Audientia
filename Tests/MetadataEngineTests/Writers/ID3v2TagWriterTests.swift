@@ -344,7 +344,13 @@ final class ID3v2TagWriterTests: XCTestCase {
         // Given - Track to write
         let track = createTrack()
         let fileURL = createTempMP3File()
-        defer { try? FileManager.default.removeItem(at: fileURL) }
+        defer {
+            // Ignore errors when cleaning up - file may be locked or already removed
+            // Use a more robust cleanup that handles permission errors
+            if FileManager.default.fileExists(atPath: fileURL.path) {
+                try? FileManager.default.removeItem(at: fileURL)
+            }
+        }
         
         // When/Then - Write should complete < 100ms
         let startTime = Date()

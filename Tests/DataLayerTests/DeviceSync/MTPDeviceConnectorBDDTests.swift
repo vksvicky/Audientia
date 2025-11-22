@@ -76,7 +76,7 @@ final class MTPDeviceConnectorBDDTests: XCTestCase {
     func testGivenMTPDeviceWhenSyncingTracksThenTracksAreTransferredToDevice() async throws {
         // Scenario: As a user, I want to sync music tracks to my Android device via MTP
         // Given: An MTP device and tracks to sync
-        _ = try await mockMTP.connect(deviceId: device.id.uuidString)
+        // Note: transfer() connects internally, so we don't need to connect beforehand
         let options = SyncOptions(createFolderStructure: true, folderStructure: .artistAlbum)
         
         // When: I sync tracks to the device
@@ -91,6 +91,8 @@ final class MTPDeviceConnectorBDDTests: XCTestCase {
         }
         
         // Then: The tracks should be on the device
+        // Note: transfer() disconnects after completion, so we need to reconnect to check files
+        _ = try await mockMTP.connect(deviceId: device.id.uuidString)
         let deviceFiles = try await mockMTP.listFiles()
         XCTAssertGreaterThan(deviceFiles.count, 0, "Device should have files after sync")
         XCTAssertTrue(deviceFiles.contains { $0.contains("bohemian") }, "Should contain bohemian track")
@@ -101,7 +103,7 @@ final class MTPDeviceConnectorBDDTests: XCTestCase {
     func testGivenMTPDeviceWithFolderStructureWhenSyncingThenTracksAreOrganized() async throws {
         // Scenario: As a user, I want my music organized by artist and album on my Android device
         // Given: An MTP device and tracks with folder structure enabled
-        _ = try await mockMTP.connect(deviceId: device.id.uuidString)
+        // Note: transfer() connects internally, so we don't need to connect beforehand
         let options = SyncOptions(
             createFolderStructure: true,
             folderStructure: .artistAlbum
@@ -116,6 +118,8 @@ final class MTPDeviceConnectorBDDTests: XCTestCase {
         ) { _ in }
         
         // Then: Tracks should be organized in Artist/Album folders
+        // Note: transfer() disconnects after completion, so we need to reconnect to check files
+        _ = try await mockMTP.connect(deviceId: device.id.uuidString)
         let deviceFiles = try await mockMTP.listFiles()
         let queenPath = deviceFiles.first { $0.contains("Queen") && $0.contains("A Night at the Opera") }
         let zeppelinPath = deviceFiles.first { $0.contains("Led Zeppelin") && $0.contains("Led Zeppelin IV") }

@@ -39,7 +39,7 @@ final class FingerprintCacheTests: XCTestCase {
     
     // MARK: - Helper Methods
     
-    private func requireCache() throws -> any FingerprintCacheProtocol {
+    func requireCache() throws -> any FingerprintCacheProtocol {
         guard let cache = cache else {
             throw XCTSkip("Cache not initialized")
         }
