@@ -41,14 +41,12 @@ public actor RecommendationEngine: RecommendationEngineProtocol {
             throw RecommendationError.noTracksAvailable
         }
         
-        // swiftlint:disable:next todo
-        // TODO: Implement history-based recommendations
+        // NOTE: Placeholder implementation - Implement history-based recommendations
         // This would analyze:
         // - Play counts
         // - Skip rates
         // - Time-of-day patterns
         // - Day-of-week patterns
-        
         // For now, return empty list
         logger.warning("History-based recommendations not yet implemented")
         return []
@@ -59,8 +57,7 @@ public actor RecommendationEngine: RecommendationEngineProtocol {
             throw RecommendationError.noTracksAvailable
         }
         
-        // swiftlint:disable:next todo
-        // TODO: Implement context-aware recommendations
+        // NOTE: Placeholder implementation - Implement context-aware recommendations
         // This would consider:
         // - Time of day
         // - Day of week

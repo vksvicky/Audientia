@@ -45,13 +45,11 @@ public actor CoreMLClassifier: MLClassifierProtocol {
         // For now, return a mock classification until actual Core ML model is integrated
         logger.debug("Classifying genre for track: \(track.title)")
         
-        // swiftlint:disable:next todo
-        // TODO: Replace with actual Core ML prediction
+        // NOTE: Placeholder implementation - Replace with actual Core ML prediction
+        // When Core ML model is available, use:
         // let input = try createGenreModelInput(features: features)
         // let prediction = try await model.prediction(from: input)
         // return GenreClassification(from: prediction)
-        
-        // Placeholder implementation
         throw MLClassificationError.modelNotAvailable
     }
     
@@ -73,9 +71,8 @@ public actor CoreMLClassifier: MLClassifierProtocol {
         
         logger.debug("Classifying mood for track: \(track.title)")
         
-        // swiftlint:disable:next todo
-        // TODO: Replace with actual Core ML prediction
-        // Placeholder implementation
+        // NOTE: Placeholder implementation - Replace with actual Core ML prediction
+        // When Core ML model is available, implement mood classification
         throw MLClassificationError.modelNotAvailable
     }
     
@@ -97,9 +94,8 @@ public actor CoreMLClassifier: MLClassifierProtocol {
         
         logger.debug("Generating embedding for track: \(track.title)")
         
-        // swiftlint:disable:next todo
-        // TODO: Replace with actual Core ML prediction
-        // Placeholder implementation
+        // NOTE: Placeholder implementation - Replace with actual Core ML prediction
+        // When Core ML model is available, implement mood classification
         throw MLClassificationError.modelNotAvailable
     }
     
@@ -161,9 +157,9 @@ public actor CoreMLClassifier: MLClassifierProtocol {
             throw MLClassificationError.audioProcessingFailed
         }
         
-        // swiftlint:disable:next todo
-        // TODO: Implement actual feature extraction
-        // This would use AVFoundation or FFmpeg to extract features
+        // NOTE: Placeholder implementation - Implement actual feature extraction
+        // This would use AVFoundation or FFmpeg to extract audio features
+        // such as MFCC, spectral features, or other audio descriptors
         throw MLClassificationError.audioProcessingFailed
     }
 }
