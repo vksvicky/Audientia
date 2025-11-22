@@ -59,7 +59,9 @@ public actor AVFoundationFeatureExtractor: AudioFeatureExtractorProtocol {
         return computeSpectralFeatures(from: samples)
     }
     
-    private func extractAudioFormat(from description: CMAudioFormatDescription) throws -> (sampleRate: Int, channelCount: Int) {
+    private func extractAudioFormat(
+        from description: CMAudioFormatDescription
+    ) throws -> (sampleRate: Int, channelCount: Int) {
         let basicDescription = CMAudioFormatDescriptionGetStreamBasicDescription(description)
         guard let streamDescription = basicDescription?.pointee else {
             throw AudioFeatureExtractionError.unsupportedFormat
