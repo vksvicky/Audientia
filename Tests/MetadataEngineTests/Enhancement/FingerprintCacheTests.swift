@@ -286,5 +286,3 @@ final class FingerprintCacheTests: XCTestCase {
         try await cache.remove(filePath: filePath)
     }
 }
-
-
