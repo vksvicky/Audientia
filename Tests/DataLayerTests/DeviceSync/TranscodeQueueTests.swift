@@ -32,8 +32,8 @@ final class TranscodeQueueTests: XCTestCase {
         // Given
         let track = DeviceSyncFixtures.track()
         let profile = TranscodeProfile(name: "MP3", format: .mp3, bitrate: 192)
-        engine.shouldSucceed = true
-        engine.mockOutputPath = "/tmp/output.mp3"
+        await engine.setShouldSucceed(true)
+        await engine.setMockOutputPath("/tmp/output.mp3")
         
         // When
         let jobId = await queue.enqueue(track: track, profile: profile, outputPath: "/tmp/output.mp3")
@@ -53,8 +53,8 @@ final class TranscodeQueueTests: XCTestCase {
         // Given
         let track = DeviceSyncFixtures.track()
         let profile = TranscodeProfile(name: "MP3", format: .mp3, bitrate: 192)
-        engine.shouldSucceed = true
-        engine.mockOutputPath = "/tmp/output.mp3"
+        await engine.setShouldSucceed(true)
+        await engine.setMockOutputPath("/tmp/output.mp3")
         
         // When
         let jobId = await queue.enqueue(track: track, profile: profile, outputPath: "/tmp/output.mp3")
@@ -86,8 +86,8 @@ final class TranscodeQueueTests: XCTestCase {
         // Given
         let tracks = DeviceSyncFixtures.tracks(count: 5)
         let profile = TranscodeProfile(name: "MP3", format: .mp3, bitrate: 192)
-        engine.shouldSucceed = true
-        engine.mockOutputPath = "/tmp/output.mp3"
+        await engine.setShouldSucceed(true)
+        await engine.setMockOutputPath("/tmp/output.mp3")
         
         // When
         var jobIds: [UUID] = []
@@ -117,8 +117,8 @@ final class TranscodeQueueTests: XCTestCase {
         // Given
         let track = DeviceSyncFixtures.track()
         let profile = TranscodeProfile(name: "MP3", format: .mp3, bitrate: 192)
-        engine.shouldSucceed = true
-        engine.mockOutputPath = "/tmp/output.mp3"
+        await engine.setShouldSucceed(true)
+        await engine.setMockOutputPath("/tmp/output.mp3")
         
         // When
         let jobId = await queue.enqueue(track: track, profile: profile, outputPath: "/tmp/output.mp3")
@@ -149,8 +149,7 @@ final class TranscodeQueueTests: XCTestCase {
         // Given
         let track = DeviceSyncFixtures.track()
         let profile = TranscodeProfile(name: "MP3", format: .mp3, bitrate: 192)
-        engine.shouldSucceed = false
-        engine.mockError = .transcodingFailed("Test error")
+        await engine.setMockError(.transcodingFailed("Test error"))
         
         // When
         let jobId = await queue.enqueue(track: track, profile: profile, outputPath: "/tmp/output.mp3")
@@ -179,8 +178,8 @@ final class TranscodeQueueTests: XCTestCase {
         // Given
         let tracks = DeviceSyncFixtures.tracks(count: 10)
         let profile = TranscodeProfile(name: "MP3", format: .mp3, bitrate: 192)
-        engine.shouldSucceed = true
-        engine.mockOutputPath = "/tmp/output.mp3"
+        await engine.setShouldSucceed(true)
+        await engine.setMockOutputPath("/tmp/output.mp3")
         
         // When
         let startTime = CFAbsoluteTimeGetCurrent()

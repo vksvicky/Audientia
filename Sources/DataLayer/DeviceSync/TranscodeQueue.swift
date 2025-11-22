@@ -88,7 +88,7 @@ public actor TranscodeQueue: TranscodeQueueProtocol {
         }
         
         // Update status to transcoding
-        var updatedJob = TranscodeJob(
+        let updatedJob = TranscodeJob(
             id: job.id,
             track: job.track,
             profile: job.profile,
@@ -101,14 +101,11 @@ public actor TranscodeQueue: TranscodeQueueProtocol {
         // Create processing task
         let task = Task {
             do {
-                var lastProgress: Double = 0.0
-                
                 let outputPath = try await engine.transcode(
                     inputPath: job.track.filePath,
                     outputPath: job.outputPath,
                     profile: job.profile,
                     progress: { progress in
-                        lastProgress = progress
                         // Update job status with progress
                         Task {
                             await self.updateJobProgress(jobId: jobId, progress: progress)

@@ -35,6 +35,18 @@ actor MockTranscodeEngine: TranscodeEngineProtocol {
         shouldSucceed = value
     }
     
+    func setMockOutputPath(_ path: String?) {
+        mockOutputPath = path
+    }
+    
+    func setMockNeedsTranscoding(_ value: Bool) {
+        mockNeedsTranscoding = value
+    }
+    
+    func setMockEstimatedSize(_ size: Int64) {
+        mockEstimatedSize = size
+    }
+    
     func setShouldNeedTranscoding(_ value: Bool) {
         shouldNeedTranscoding = value
     }

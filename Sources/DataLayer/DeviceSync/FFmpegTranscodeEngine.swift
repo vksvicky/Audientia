@@ -125,7 +125,7 @@ public actor FFmpegTranscodeEngine: TranscodeEngineProtocol {
             return // Can't check, proceed anyway
         }
         
-        let estimatedSize = try await estimateOutputSize(
+        let estimatedSize = await estimateOutputSize(
             track: Track(
                 title: "",
                 artist: "",

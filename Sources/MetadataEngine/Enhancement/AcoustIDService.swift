@@ -12,17 +12,21 @@ import Foundation
 public final class AcoustIDService: @unchecked Sendable {
     private let fingerprintGenerator: FingerprintGeneratorProtocol
     private let lookupService: AcoustIDLookupProtocol
+    private let fingerprintCache: (any FingerprintCacheProtocol)?
     
     /// Initialize with fingerprint generator and lookup service
     /// - Parameters:
     ///   - fingerprintGenerator: Service for generating audio fingerprints
     ///   - lookupService: Service for AcoustID lookup
+    ///   - fingerprintCache: Optional fingerprint cache for performance optimization
     public init(
         fingerprintGenerator: FingerprintGeneratorProtocol,
-        lookupService: AcoustIDLookupProtocol
+        lookupService: AcoustIDLookupProtocol,
+        fingerprintCache: (any FingerprintCacheProtocol)? = nil
     ) {
         self.fingerprintGenerator = fingerprintGenerator
         self.lookupService = lookupService
+        self.fingerprintCache = fingerprintCache
     }
     
     /// Identify a track by generating a fingerprint and looking it up
@@ -30,8 +34,8 @@ public final class AcoustIDService: @unchecked Sendable {
     /// - Returns: Array of potential matches with metadata, sorted by confidence score (highest first)
     /// - Throws: Error if fingerprinting or lookup fails
     public func identifyTrack(fileURL: URL) async throws -> [AcoustIDMatch] {
-        // Generate fingerprint
-        let fingerprint = try await fingerprintGenerator.generateFingerprint(fileURL: fileURL)
+        // Get fingerprint (from cache or generate)
+        let fingerprint = try await getFingerprint(fileURL: fileURL)
         
         // Get track duration (required for lookup)
         // Note: In a real implementation, this would extract duration from the audio file
@@ -54,8 +58,8 @@ public final class AcoustIDService: @unchecked Sendable {
     public func identifyTrack(_ track: Track) async throws -> [AcoustIDMatch] {
         let fileURL = URL(fileURLWithPath: track.filePath)
         
-        // Generate fingerprint
-        let fingerprint = try await fingerprintGenerator.generateFingerprint(fileURL: fileURL)
+        // Get fingerprint (from cache or generate)
+        let fingerprint = try await getFingerprint(fileURL: fileURL)
         
         // Use track duration
         let duration = track.duration
@@ -67,6 +71,51 @@ public final class AcoustIDService: @unchecked Sendable {
         matches.sort { $0.score > $1.score }
         
         return matches
+    }
+    
+    // MARK: - Private Methods
+    
+    /// Get fingerprint from cache or generate new one
+    private func getFingerprint(fileURL: URL) async throws -> String {
+        let filePath = fileURL.path
+        
+        // Check cache first if available
+        if let cache = fingerprintCache {
+            // Get file modification time
+            let fileAttributes = try? FileManager.default.attributesOfItem(atPath: filePath)
+            let modificationTime = (fileAttributes?[.modificationDate] as? Date) ?? Date()
+            
+            // Check cache
+            if let cachedEntry = try await cache.get(filePath: filePath) {
+                // Verify file hasn't changed
+                if cachedEntry.fileModificationTime == modificationTime {
+                    // Cache hit - return cached fingerprint
+                    return cachedEntry.fingerprint
+                } else {
+                    // File has changed - remove from cache
+                    try? await cache.remove(filePath: filePath)
+                }
+            }
+        }
+        
+        // Cache miss or no cache - generate fingerprint
+        let fingerprint = try await fingerprintGenerator.generateFingerprint(fileURL: fileURL)
+        
+        // Store in cache if available
+        if let cache = fingerprintCache {
+            let fileAttributes = try? FileManager.default.attributesOfItem(atPath: filePath)
+            let modificationTime = (fileAttributes?[.modificationDate] as? Date) ?? Date()
+            
+            let entry = FingerprintCacheEntry(
+                filePath: filePath,
+                fileModificationTime: modificationTime,
+                fingerprint: fingerprint
+            )
+            
+            try? await cache.store(entry)
+        }
+        
+        return fingerprint
     }
 }
 

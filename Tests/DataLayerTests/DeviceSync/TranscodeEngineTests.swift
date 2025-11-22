@@ -34,8 +34,8 @@ final class TranscodeEngineTests: XCTestCase {
             bitrate: 192
         )
         let outputPath = "/tmp/test_output.mp3"
-        engine.shouldSucceed = true
-        engine.mockOutputPath = outputPath
+        await engine.setShouldSucceed(true)
+        await engine.setMockOutputPath(outputPath)
         
         // When
         let result = try await engine.transcode(
@@ -47,9 +47,12 @@ final class TranscodeEngineTests: XCTestCase {
         
         // Then
         XCTAssertEqual(result, outputPath)
-        XCTAssertTrue(await engine.transcodeCalled)
-        XCTAssertEqual(await engine.lastInputPath, track.filePath)
-        XCTAssertEqual(await engine.lastProfile?.format, .mp3)
+        let transcodeCalled = await engine.transcodeCalled
+        XCTAssertTrue(transcodeCalled)
+        let lastInputPath = await engine.lastInputPath
+        XCTAssertEqual(lastInputPath, track.filePath)
+        let lastProfile = await engine.lastProfile
+        XCTAssertEqual(lastProfile?.format, .mp3)
     }
     
     func testNeedsTranscodingReturnsTrueWhenFormatDiffers() async {
@@ -60,7 +63,7 @@ final class TranscodeEngineTests: XCTestCase {
             format: .mp3,
             bitrate: 192
         )
-        engine.mockNeedsTranscoding = true
+        await engine.setMockNeedsTranscoding(true)
         
         // When
         let needsTranscoding = await engine.needsTranscoding(track: track, profile: profile)
@@ -77,7 +80,7 @@ final class TranscodeEngineTests: XCTestCase {
             format: .mp3,
             bitrate: 192
         )
-        engine.mockNeedsTranscoding = false
+        await engine.setMockNeedsTranscoding(false)
         
         // When
         let needsTranscoding = await engine.needsTranscoding(track: track, profile: profile)
@@ -96,7 +99,7 @@ final class TranscodeEngineTests: XCTestCase {
         )
         // 192 kbps * 180 seconds = 34,560 kilobits = 4,320,000 bytes
         let expectedSize: Int64 = 4_320_000
-        engine.mockEstimatedSize = expectedSize
+        await engine.setMockEstimatedSize(expectedSize)
         
         // When
         let estimatedSize = await engine.estimateOutputSize(track: track, profile: profile)
@@ -111,8 +114,8 @@ final class TranscodeEngineTests: XCTestCase {
         // Given
         let track = DeviceSyncFixtures.track(duration: 1.0) // 1 second
         let profile = TranscodeProfile(name: "MP3", format: .mp3, bitrate: 192)
-        engine.shouldSucceed = true
-        engine.mockOutputPath = "/tmp/short.mp3"
+        await engine.setShouldSucceed(true)
+        await engine.setMockOutputPath("/tmp/short.mp3")
         
         // When/Then: Should not crash
         _ = try await engine.transcode(
@@ -127,8 +130,8 @@ final class TranscodeEngineTests: XCTestCase {
         // Given
         let track = DeviceSyncFixtures.track(duration: 10800.0) // 3 hours
         let profile = TranscodeProfile(name: "MP3", format: .mp3, bitrate: 192)
-        engine.shouldSucceed = true
-        engine.mockOutputPath = "/tmp/long.mp3"
+        await engine.setShouldSucceed(true)
+        await engine.setMockOutputPath("/tmp/long.mp3")
         
         // When/Then: Should handle long files
         _ = try await engine.transcode(
@@ -146,8 +149,8 @@ final class TranscodeEngineTests: XCTestCase {
         let track = DeviceSyncFixtures.track()
         let profile = TranscodeProfile(name: "MP3", format: .mp3, bitrate: 192)
         let outputPath = "/tmp/test.mp3"
-        engine.shouldSucceed = true
-        engine.mockOutputPath = outputPath
+        await engine.setShouldSucceed(true)
+        await engine.setMockOutputPath(outputPath)
         
         // When
         let result = try await engine.transcode(
@@ -158,7 +161,8 @@ final class TranscodeEngineTests: XCTestCase {
         
         // Then
         XCTAssertEqual(result, outputPath)
-        XCTAssertTrue(await engine.transcodeCalled)
+        let transcodeCalled = await engine.transcodeCalled
+        XCTAssertTrue(transcodeCalled)
     }
     
     // MARK: - C: Cross-check Tests
@@ -168,9 +172,9 @@ final class TranscodeEngineTests: XCTestCase {
         let track = DeviceSyncFixtures.track(duration: 180.0)
         let profile = TranscodeProfile(name: "MP3", format: .mp3, bitrate: 192)
         let estimatedSize: Int64 = 4_320_000
-        engine.mockEstimatedSize = estimatedSize
-        engine.shouldSucceed = true
-        engine.mockOutputPath = "/tmp/test.mp3"
+        await engine.setMockEstimatedSize(estimatedSize)
+        await engine.setShouldSucceed(true)
+        await engine.setMockOutputPath("/tmp/test.mp3")
         
         // When
         let estimated = await engine.estimateOutputSize(track: track, profile: profile)
@@ -191,8 +195,7 @@ final class TranscodeEngineTests: XCTestCase {
     func testTranscodeThrowsErrorForInvalidInputFile() async {
         // Given
         let profile = TranscodeProfile(name: "MP3", format: .mp3, bitrate: 192)
-        engine.shouldSucceed = false
-        engine.mockError = .invalidInputFile
+        await engine.setMockError(.invalidInputFile)
         
         // When/Then
         do {
@@ -213,8 +216,7 @@ final class TranscodeEngineTests: XCTestCase {
     func testTranscodeThrowsErrorForUnsupportedFormat() async {
         // Given
         let profile = TranscodeProfile(name: "MP3", format: .mp3, bitrate: 192)
-        engine.shouldSucceed = false
-        engine.mockError = .unsupportedFormat
+        await engine.setMockError(.unsupportedFormat)
         
         // When/Then
         do {
@@ -235,8 +237,7 @@ final class TranscodeEngineTests: XCTestCase {
     func testTranscodeThrowsErrorForInsufficientSpace() async {
         // Given
         let profile = TranscodeProfile(name: "MP3", format: .mp3, bitrate: 192)
-        engine.shouldSucceed = false
-        engine.mockError = .insufficientSpace
+        await engine.setMockError(.insufficientSpace)
         
         // When/Then
         do {
@@ -260,8 +261,8 @@ final class TranscodeEngineTests: XCTestCase {
         // Given
         let track = DeviceSyncFixtures.track(duration: 180.0)
         let profile = TranscodeProfile(name: "MP3", format: .mp3, bitrate: 192)
-        engine.shouldSucceed = true
-        engine.mockOutputPath = "/tmp/test.mp3"
+        await engine.setShouldSucceed(true)
+        await engine.setMockOutputPath("/tmp/test.mp3")
         
         // When/Then: Measure transcoding time
         let iterations = 10
@@ -292,8 +293,8 @@ final class TranscodeEngineTests: XCTestCase {
         // Given
         let track = DeviceSyncFixtures.track(filePath: "/test.ape")
         let profile = TranscodeProfile(name: "MP3", format: .mp3, bitrate: 192)
-        engine.shouldSucceed = true
-        engine.mockOutputPath = "/tmp/test.mp3"
+        await engine.setShouldSucceed(true)
+        await engine.setMockOutputPath("/tmp/test.mp3")
         
         // When/Then: Should handle unusual formats
         _ = try await engine.transcode(
@@ -308,8 +309,8 @@ final class TranscodeEngineTests: XCTestCase {
         // Given
         let track = DeviceSyncFixtures.track(bitrate: 0) // VBR
         let profile = TranscodeProfile(name: "MP3", format: .mp3, bitrate: 192)
-        engine.shouldSucceed = true
-        engine.mockOutputPath = "/tmp/test.mp3"
+        await engine.setShouldSucceed(true)
+        await engine.setMockOutputPath("/tmp/test.mp3")
         
         // When/Then: Should handle VBR sources
         _ = try await engine.transcode(

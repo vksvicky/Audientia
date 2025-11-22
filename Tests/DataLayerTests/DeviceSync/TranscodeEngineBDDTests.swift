@@ -38,9 +38,9 @@ final class TranscodeEngineBDDTests: XCTestCase {
             format: .mp3,
             bitrate: 320
         )
-        engine.shouldSucceed = true
-        engine.mockOutputPath = "/tmp/track.mp3"
-        engine.mockNeedsTranscoding = true
+        await engine.setShouldSucceed(true)
+        await engine.setMockOutputPath("/tmp/track.mp3")
+        await engine.setMockNeedsTranscoding(true)
         
         // When: I transcode it to MP3 320kbps
         let needsTranscoding = await engine.needsTranscoding(track: flacTrack, profile: mp3Profile)
@@ -58,9 +58,11 @@ final class TranscodeEngineBDDTests: XCTestCase {
         
         // Then: I get an MP3 file at 320kbps
         XCTAssertEqual(outputPath, "/tmp/track.mp3")
-        XCTAssertTrue(await engine.transcodeCalled)
-        XCTAssertEqual(await engine.lastProfile?.format, .mp3)
-        XCTAssertEqual(await engine.lastProfile?.bitrate, 320)
+        let transcodeCalled = await engine.transcodeCalled
+        XCTAssertTrue(transcodeCalled)
+        let lastProfile = await engine.lastProfile
+        XCTAssertEqual(lastProfile?.format, .mp3)
+        XCTAssertEqual(lastProfile?.bitrate, 320)
     }
     
     func testAsUserIWantToTranscodeHighQualityAACForSmallerFileSize() async throws {
@@ -69,17 +71,17 @@ final class TranscodeEngineBDDTests: XCTestCase {
         // Given: I have a high-bitrate MP3 file
         let highQualityTrack = DeviceSyncFixtures.track(
             filePath: "/Music/track.mp3",
-            bitrate: 320,
-            fileSize: 10 * 1024 * 1024 // 10MB
+            fileSize: 10 * 1024 * 1024, // 10MB
+            bitrate: 320
         )
         let aacProfile = TranscodeProfile(
             name: "AAC 256kbps",
             format: .aac,
             bitrate: 256
         )
-        engine.shouldSucceed = true
-        engine.mockOutputPath = "/tmp/track.m4a"
-        engine.mockEstimatedSize = 8 * 1024 * 1024 // Estimated 8MB
+        await engine.setShouldSucceed(true)
+        await engine.setMockOutputPath("/tmp/track.m4a")
+        await engine.setMockEstimatedSize(8 * 1024 * 1024) // Estimated 8MB
         
         // When: I transcode it to AAC 256kbps
         let estimatedSize = await engine.estimateOutputSize(track: highQualityTrack, profile: aacProfile)
@@ -95,7 +97,8 @@ final class TranscodeEngineBDDTests: XCTestCase {
         )
         
         XCTAssertEqual(outputPath, "/tmp/track.m4a")
-        XCTAssertEqual(await engine.lastProfile?.format, .aac)
+        let lastProfile = await engine.lastProfile
+        XCTAssertEqual(lastProfile?.format, .aac)
     }
     
     func testAsUserIWantToSeeTranscodingProgress() async throws {
@@ -104,8 +107,8 @@ final class TranscodeEngineBDDTests: XCTestCase {
         // Given: I'm transcoding a long audio file
         let longTrack = DeviceSyncFixtures.track(duration: 600.0) // 10 minutes
         let profile = TranscodeProfile(name: "MP3", format: .mp3, bitrate: 192)
-        engine.shouldSucceed = true
-        engine.mockOutputPath = "/tmp/long.mp3"
+        await engine.setShouldSucceed(true)
+        await engine.setMockOutputPath("/tmp/long.mp3")
         
         var progressValues: [Double] = []
         
@@ -121,8 +124,8 @@ final class TranscodeEngineBDDTests: XCTestCase {
         
         // Then: I see progress updates from 0.0 to 1.0
         XCTAssertGreaterThan(progressValues.count, 0, "Should receive progress updates")
-        XCTAssertEqual(progressValues.first, 0.0, accuracy: 0.01)
-        XCTAssertEqual(progressValues.last, 1.0, accuracy: 0.01)
+        XCTAssertEqual(progressValues.first ?? 0.0, 0.0, accuracy: 0.01)
+        XCTAssertEqual(progressValues.last ?? 0.0, 1.0, accuracy: 0.01)
         
         // Progress should be monotonically increasing
         for i in 1..<progressValues.count {
@@ -143,7 +146,7 @@ final class TranscodeEngineBDDTests: XCTestCase {
             format: .mp3,
             bitrate: 192
         )
-        engine.mockNeedsTranscoding = false
+        await engine.setMockNeedsTranscoding(false)
         
         // When: I check if transcoding is needed
         let needsTranscoding = await engine.needsTranscoding(track: mp3Track, profile: mp3Profile)
@@ -157,8 +160,7 @@ final class TranscodeEngineBDDTests: XCTestCase {
         
         // Given: I try to transcode a corrupted file
         let profile = TranscodeProfile(name: "MP3", format: .mp3, bitrate: 192)
-        engine.shouldSucceed = false
-        engine.mockError = .invalidInputFile
+        await engine.setMockError(.invalidInputFile)
         
         // When: I attempt to transcode
         // Then: I get a clear error message
@@ -193,7 +195,7 @@ final class TranscodeEngineBDDTests: XCTestCase {
         )
         // 192 kbps * 300 seconds = 57,600 kilobits = 7,200,000 bytes ≈ 7MB
         let expectedSize: Int64 = 7_200_000
-        engine.mockEstimatedSize = expectedSize
+        await engine.setMockEstimatedSize(expectedSize)
         
         // When: I estimate the output size
         let estimatedSize = await engine.estimateOutputSize(track: flacTrack, profile: mp3Profile)
