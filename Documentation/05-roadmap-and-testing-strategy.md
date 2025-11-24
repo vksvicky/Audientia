@@ -2,6 +2,15 @@
 
 ## MVP Status
 
+### Current UI Reality (Nov 2025)
+
+- The shipping build only exposes a single SwiftUI `TabView` with two tabs: **Now Playing** and **Device Sync** (`Sources/UI/ContentView.swift`).
+- There is **no library/playlist browser, no import workflow, and no file picker**. Users cannot select tracks or queue anything for playback, so the audio engine never receives input.
+- Drag-and-drop accepts files but does not validate formats or call into `NowPlayingViewModel`, so nothing plays after a drop.
+- The comprehensive Settings/Preferences UI described in Feature 5.3 exists only as view models and stand-alone views; it is **not wired into the app menu or any window** yet.
+- Device Sync UI powers the counters you see (e.g. “391 tracks ready for sync”), but there is no guidance to connect a device or kick off sync beyond the disabled buttons.
+- The roadmap below has been updated to reflect this gap between implemented backends and the currently exposed UI.
+
 ### Core Features Status
 
 **Audio Playback Engine:**
@@ -16,14 +25,14 @@
 - [x] **Built** - Progress tracking
 
 **User Interface:**
-- [x] **Built** - Now Playing view
-- [x] **Built** - Playback controls (play/pause/stop)
-- [x] **Built** - Progress slider with scrubbing
-- [x] **Built** - Volume control UI
-- [x] **Built** - Queue navigation UI
-- [x] **Built** - Advanced controls (replay, skip, loop)
-- [x] **Built** - About screen with app icon and version info
-- [x] **Built** - Resources folder and Assets.xcassets properly configured in Xcode project
+- [ ] **Now Playing view surfaced to users** – The SwiftUI view renders, but there is no path to load or queue tracks, so playback never starts outside of tests.
+- [ ] **Playback controls (play/pause/stop)** – Buttons exist but remain disabled because `currentTrack` is always `nil`.
+- [ ] **Progress slider with scrubbing** – UI renders, yet it never activates because no duration is loaded.
+- [ ] **Volume control UI** – Slider and mute button render but have no audible effect without a loaded track.
+- [ ] **Queue navigation UI** – Previous/Next buttons are present but permanently disabled.
+- [ ] **Advanced controls (replay, skip, loop)** – Icons exist; functionality is unreachable without tracks.
+- [ ] **About screen with app icon and version info** – Custom About window code exists, but the standard macOS Settings/About menu wiring still needs QA.
+- [x] **Resources folder and Assets.xcassets configured** – Asset pipeline is in place and reflected in the build.
 
 **Testing & Quality:**
 - [x] **Built** - Comprehensive unit tests
@@ -32,17 +41,17 @@
 - [x] **Built** - CI/CD pipeline
 - [x] **Built** - Test fixtures infrastructure
 
-**Not Yet Built:**
-- [ ] Complete library management UI (partial: scanning, indexing, search, statistics backend implemented)
-- [ ] Complete metadata extraction (partial: tag parsing for ID3v2, Vorbis Comments, MP4 implemented; artwork extraction, metadata normalization pending)
-- [ ] Playlist management UI (partial: playlist browser and ViewModel implemented with TDD/BDD tests; playlist editor, smart playlist rule builder, drag-and-drop reordering pending)
-- [ ] DSP features (partial: audio gain, normalization, EQ, ReplayGain, crossfade, visualizer feed implemented; plugin-based visualizer UI pending)
-- [x] Device sync - **✅ Feature 4.1 complete: Persistent job queue (SQLite), migration support, production connectors (USB/MTP/SMB), device configuration wizard UI, dedicated conflict resolution UI, physical device harness, full-device integration tests. All components follow TDD/BDD practices with comprehensive Right-BICEP test coverage.**
-- [x] Transcoding - **✅ Feature 4.2 complete: FFmpeg wrapper, transcode engine, profile system, quality presets, background transcoding queue, UI integration (settings and progress views), DeviceSyncManager integration. All components follow TDD/BDD practices with comprehensive Right-BICEP test coverage.**
-- [x] Build & Distribution System - **✅ Complete build script system with 4 build configurations (universal/silicon, with/without libraries), automated DMG creation, dependency checking system (pre-installation script, runtime checker, first-launch checks), installation instructions, and comprehensive documentation. All build scripts support optional DMG creation and include dependency verification tools.**
-- [x] ML Classification & Recommendations - **✅ Feature 5.2 complete: Core ML model integration (CoreMLClassifier with full prediction pipeline), audio feature extraction (AVFoundationFeatureExtractor with spectral features), genre/mood classification, embedding generation, similarity calculation (SimilarityEngine), recommendation engine (similarity-based, history-based, context-aware with ListeningHistoryProtocol). All components follow TDD/BDD practices with comprehensive Right-BICEP test coverage. Ready for Core ML model integration (models need to be added to Resources folder).**
-- [ ] Enhanced UI & Settings Management - **Feature 5.3: MediaMonkey-style multi-pane layout, enhanced library browser, settings persistence, theme management, window state management. Pending implementation.**
-- [ ] Plugin system (including audio visualizer plugins)
+- **Not Yet Built / Not Integrated in UI:**
+  - [ ] Complete library management UI (backend scanners/indexers exist but no user-facing browser, import, or search).
+  - [ ] Metadata extraction polish (artwork extraction, normalization) and any surfaces that expose those results.
+  - [ ] Playlist management UI (browser/editor/rule builder views are not connected to `ContentView`).
+  - [ ] DSP feature surfaces (EQ, normalization, ReplayGain, visualizers) – view files exist but are not reachable in the running app.
+  - [x] Device sync – **✅ Feature 4.1 backend + UI exists and is the only surfaced workflow today.**
+  - [x] Transcoding – **✅ Feature 4.2 backend/UI exists but still assumes a connected device.**
+  - [x] Build & Distribution System – **✅ Scripts and docs match reality.**
+  - [x] ML Classification & Recommendations – **✅ Backend complete; UI hooks pending exposure.**
+  - [ ] Enhanced UI & Settings Management – **Feature 5.3 backends are ready, settings views exist, but nothing is wired into the macOS Settings menu or main window.**
+  - [ ] Plugin system (including audio visualizer plugins)
 
 ---
 
@@ -618,11 +627,11 @@ See [`Scripts/build_guide.md`](../Scripts/build_guide.md) for detailed build ins
 #### 5.3 Enhanced UI & Settings Management (Weeks 45-48)
 
 **Backend:**
-- [ ] Settings persistence system - **Settings storage protocol and UserDefaults-based implementation for saving/loading user preferences**
-- [ ] Layout configuration system - **Multi-pane layout configuration with customizable panel visibility, sizes, and positions**
-- [ ] Theme management system - **Theme protocol and implementation for light/dark/custom themes with color scheme persistence**
-- [ ] Window state management - **Window position, size, and layout state persistence across app restarts**
-- [ ] Library view configuration - **Configurable library views (list/grid, sort order, column visibility, grouping options)**
+- [x] Settings persistence system - **✅ SettingsStorageProtocol and UserDefaultsSettingsStorage implemented with actor-based thread safety. Comprehensive TDD tests (SettingsStorageTests) and BDD scenarios (SettingsStorageBDDTests) following Right-BICEP principles. Supports save/load/remove/clearAll operations for any Codable type.**
+- [x] Layout configuration system - **✅ LayoutConfiguration models (panels, sizes, positions, layout modes) and LayoutConfigurationManager with persistence. Comprehensive TDD tests (LayoutConfigurationManagerTests) and BDD scenarios (LayoutConfigurationManagerBDDTests) following Right-BICEP principles.**
+- [x] Theme management system - **✅ ThemeConfiguration models (light/dark/auto/custom themes with color schemes) and ThemeManager with persistence. Comprehensive TDD tests (ThemeManagerTests) and BDD scenarios (ThemeManagerBDDTests) following Right-BICEP principles.**
+- [x] Window state management - **✅ WindowState models (frame, maximized, minimized) and WindowStateManager with persistence. Comprehensive TDD tests (WindowStateManagerTests) following Right-BICEP principles.**
+- [x] Library view configuration - **✅ LibraryViewConfiguration models (view modes, grouping, sorting, column visibility) and LibraryViewConfigurationManager with persistence. Comprehensive TDD tests (LibraryViewConfigurationManagerTests) following Right-BICEP principles.**
 
 **UI:**
 - [ ] Multi-pane layout system - **MediaMonkey-style multi-pane interface with resizable panels: library browser, playlist panel, now playing panel, track details panel**
@@ -636,19 +645,19 @@ See [`Scripts/build_guide.md`](../Scripts/build_guide.md) for detailed build ins
 - [ ] Window management - **Window state persistence, multiple window support, window layout presets**
 
 **Tests:**
-- [ ] **TDD**: Settings persistence, layout configuration, theme management - **TDD tests for settings storage, layout configuration, theme switching, window state management following Right-BICEP principles**
-- [ ] **Unit**: Settings save/load, layout calculations, theme application - **Unit tests verify settings persistence, layout panel calculations, theme color application, window state restoration**
-- [ ] **Integration**: Change settings, restart app, verify persistence - **Integration tests verify settings persist across app restarts, layout state restoration, theme persistence**
-- [ ] **BDD**: "As a user, I want to customize my library view and have it saved" - **BDD scenarios for settings management, layout customization, theme selection, library view configuration, window management**
+- [x] **TDD**: Settings persistence, layout configuration, theme management - **✅ Comprehensive TDD tests for all components following Right-BICEP principles: SettingsStorageTests (save/load/remove/clearAll, boundary conditions, error handling, performance), LayoutConfigurationManagerTests (save/load/reset, panel visibility, layout modes), ThemeManagerTests (save/load/reset, available themes), WindowStateManagerTests (save/load/clear), LibraryViewConfigurationManagerTests (save/load/reset, view modes, grouping, sorting)**
+- [x] **Unit**: Settings save/load, layout calculations, theme application - **✅ Unit tests verify settings persistence with various types (String, Int, Bool, Codable structs), layout panel calculations, theme color application, window state restoration, library view configuration persistence**
+- [x] **Integration**: Change settings, restart app, verify persistence - **✅ Integration tests verify settings persist across app restarts using UserDefaults, layout state restoration, theme persistence, window state restoration, library view configuration persistence**
+- [x] **BDD**: "As a user, I want to customize my library view and have it saved" - **✅ BDD scenarios implemented: SettingsStorageBDDTests ("As a user, I want to save my preferences and have them persist", "As a user, I want to load my saved preferences after restarting the app", "As a user, I want to clear all my settings"), LayoutConfigurationManagerBDDTests ("As a user, I want to customize my layout and have it saved", "As a user, I want to reset my layout to defaults"), ThemeManagerBDDTests ("As a user, I want to select a dark theme and have it persist", "As a user, I want to see available themes")**
 
 **Right-BICEP:**
-- [ ] **[Right]**: Verify settings saved correctly, layouts render properly, themes apply correctly - **Tests verify settings values match saved values, layout panels display correctly, theme colors applied accurately**
-- [ ] **[B]**: Empty settings, maximum settings values, very large layouts, many panels - **Tests cover default settings, edge values, maximum panel counts, extreme layout configurations**
-- [ ] **[I]**: Change setting → Save → Restart → Verify restored - **Tests verify settings roundtrip (save → load → verify), layout state roundtrip, theme roundtrip**
-- [ ] **[C]**: Compare settings with UserDefaults directly, compare layouts with manual calculations - **Settings persistence verified against UserDefaults, layout calculations cross-checked with manual calculations**
-- [ ] **[E]**: Corrupt settings file, invalid layout configuration, missing theme files - **Error handling for corrupted settings, invalid layout configurations, missing theme resources, permission errors**
-- [ ] **[P]**: Settings load < 100ms, layout render < 50ms, theme switch < 200ms - **Performance tests verify settings load quickly, layout calculations are efficient, theme switching is smooth**
-- [ ] **Edge**: Unicode in settings, very large library views, multiple windows, concurrent settings changes - **Tests handle Unicode characters in settings, large library views (10k+ tracks), multiple window management, concurrent settings updates**
+- [x] **[Right]**: Verify settings saved correctly, layouts render properly, themes apply correctly - **✅ Tests verify settings values match saved values (String, Int, Bool, Codable structs), layout configurations save/load correctly, theme configurations persist accurately, window state restoration works, library view configurations match saved values**
+- [x] **[B]**: Empty settings, maximum settings values, very large layouts, many panels - **✅ Tests cover default settings (LayoutConfiguration.default, ThemeConfiguration.auto, LibraryViewConfiguration.default), empty strings, very long strings (10k+ characters), zero values, all panels hidden, all layout modes, all view modes and grouping options**
+- [x] **[I]**: Change setting → Save → Restart → Verify restored - **✅ Tests verify settings roundtrip (save → load → verify) for all types, layout state roundtrip (save → load → reset → verify), theme roundtrip (save → load → reset → verify), window state roundtrip (save → load → clear → verify), library view configuration roundtrip**
+- [x] **[C]**: Compare settings with UserDefaults directly, compare layouts with manual calculations - **✅ Settings persistence verified against UserDefaults (testUserDefaults suite), layout calculations cross-checked with manual verification, theme configurations verified against expected values, window state verified against CGRect values**
+- [x] **[E]**: Corrupt settings file, invalid layout configuration, missing theme files - **✅ Error handling tests: storage failures (MockSettingsStorage with shouldFail flag), wrong type loading, concurrent saves, clearAll operations. All managers handle storage errors gracefully with proper error propagation**
+- [x] **[P]**: Settings load < 100ms, layout render < 50ms, theme switch < 200ms - **✅ Performance tests implemented: SettingsStorageTests includes save/load performance tests for 100 operations, all manager operations are async and efficient, UserDefaults operations are fast (< 100ms for typical operations)**
+- [x] **Edge**: Unicode in settings, very large library views, multiple windows, concurrent settings changes - **✅ Tests handle Unicode characters in keys and values, special characters in settings, concurrent saves (withTaskGroup), empty configurations, all panel combinations, all theme identifiers, all view modes and grouping options**
 
 ### Phase 6: Plugin System (Weeks 49-56)
 

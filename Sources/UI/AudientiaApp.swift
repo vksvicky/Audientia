@@ -29,6 +29,11 @@ struct AudientiaApp: App {
         .commands {
             // Add menu commands here
         }
+
+        Settings {
+            SettingsView()
+                .environmentObject(settings)
+        }
     }
 }
 
