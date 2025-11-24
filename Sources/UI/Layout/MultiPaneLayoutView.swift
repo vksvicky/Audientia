@@ -15,6 +15,7 @@ import SwiftUI
 @MainActor
 public struct MultiPaneLayoutView: View {
     @StateObject private var viewModel: MultiPaneLayoutViewModel
+    @StateObject private var libraryViewModel = LibraryBrowserViewModel()
     
     public init(viewModel: MultiPaneLayoutViewModel? = nil) {
         if let viewModel = viewModel {
@@ -77,7 +78,7 @@ public struct MultiPaneLayoutView: View {
         HSplitView {
             // Left panel: Library Browser
             if viewModel.currentLayout.panelVisibility[.libraryBrowser] ?? false {
-                LibraryBrowserPanel()
+                LibraryBrowserView(viewModel: libraryViewModel)
                     .frame(width: viewModel.currentLayout.panelSizes[.libraryBrowser] ?? 300)
             }
             
@@ -108,7 +109,7 @@ public struct MultiPaneLayoutView: View {
         VSplitView {
             // Top: Library Browser
             if viewModel.currentLayout.panelVisibility[.libraryBrowser] ?? false {
-                LibraryBrowserPanel()
+                LibraryBrowserView(viewModel: libraryViewModel)
                     .frame(height: viewModel.currentLayout.panelSizes[.libraryBrowser] ?? 300)
             }
             
@@ -137,7 +138,7 @@ public struct MultiPaneLayoutView: View {
     private var tabbedLayout: some View {
         TabView {
             if viewModel.currentLayout.panelVisibility[.libraryBrowser] ?? false {
-                LibraryBrowserPanel()
+                LibraryBrowserView(viewModel: libraryViewModel)
                     .tabItem {
                         Label("Library", systemImage: "music.note.list")
                     }
@@ -171,7 +172,7 @@ public struct MultiPaneLayoutView: View {
         ZStack {
             // Main content area
             if viewModel.currentLayout.panelVisibility[.libraryBrowser] ?? false {
-                LibraryBrowserPanel()
+                LibraryBrowserView(viewModel: libraryViewModel)
             }
             
             // Floating panels (would need additional positioning logic)
@@ -231,20 +232,6 @@ private extension MultiPaneLayoutView {
         }
         .padding(.horizontal)
         .padding(.vertical, 8)
-    }
-}
-
-@MainActor
-private struct LibraryBrowserPanel: View {
-    var body: some View {
-        VStack {
-            Text("Library Browser")
-                .font(.headline)
-            Text("Library content will appear here")
-                .foregroundColor(.secondary)
-        }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(Color(NSColor.controlBackgroundColor))
     }
 }
 
