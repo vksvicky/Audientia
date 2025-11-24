@@ -15,9 +15,9 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "AA6203CF5D9AD46AA19567F8"
-               BuildableName = "Audientia.app"
-               BlueprintName = "Audientia"
+               BlueprintIdentifier = "3F66AFB27086D6EDE602BBDC"
+               BuildableName = "MetadataEngine.framework"
+               BlueprintName = "MetadataEngine"
                ReferencedContainer = "container:Audientia.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -30,10 +30,21 @@
       shouldUseLaunchSchemeArgsEnv = "YES">
       <TestPlans>
          <TestPlanReference
-            reference = "container:Audientia.xctestplan"
-            default = "YES">
+            reference = "container:Audientia.xctestplan">
          </TestPlanReference>
       </TestPlans>
+      <Testables>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "81CB892C7C3B4F7A077CCF26"
+               BuildableName = "MetadataEngineTests.xctest"
+               BlueprintName = "MetadataEngineTests"
+               ReferencedContainer = "container:Audientia.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
+      </Testables>
    </TestAction>
    <LaunchAction
       buildConfiguration = "Debug"
@@ -45,16 +56,6 @@
       debugDocumentVersioning = "YES"
       debugServiceExtension = "internal"
       allowLocationSimulation = "YES">
-      <BuildableProductRunnable
-         runnableDebuggingMode = "0">
-         <BuildableReference
-            BuildableIdentifier = "primary"
-            BlueprintIdentifier = "AA6203CF5D9AD46AA19567F8"
-            BuildableName = "Audientia.app"
-            BlueprintName = "Audientia"
-            ReferencedContainer = "container:Audientia.xcodeproj">
-         </BuildableReference>
-      </BuildableProductRunnable>
    </LaunchAction>
    <ProfileAction
       buildConfiguration = "Release"
@@ -62,16 +63,15 @@
       savedToolIdentifier = ""
       useCustomWorkingDirectory = "NO"
       debugDocumentVersioning = "YES">
-      <BuildableProductRunnable
-         runnableDebuggingMode = "0">
+      <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "AA6203CF5D9AD46AA19567F8"
-            BuildableName = "Audientia.app"
-            BlueprintName = "Audientia"
+            BlueprintIdentifier = "3F66AFB27086D6EDE602BBDC"
+            BuildableName = "MetadataEngine.framework"
+            BlueprintName = "MetadataEngine"
             ReferencedContainer = "container:Audientia.xcodeproj">
          </BuildableReference>
-      </BuildableProductRunnable>
+      </MacroExpansion>
    </ProfileAction>
    <AnalyzeAction
       buildConfiguration = "Debug">
