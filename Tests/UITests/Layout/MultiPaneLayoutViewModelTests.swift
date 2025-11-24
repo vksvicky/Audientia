@@ -111,4 +111,41 @@ final class MultiPaneLayoutViewModelTests: XCTestCase {
         // Then: Should have error
         XCTAssertNotNil(viewModel.lastError)
     }
+    
+    func testSetLayoutModeUpdatesConfiguration() {
+        // Given: Default layout
+        // When: Changing mode
+        viewModel.setLayoutMode(.tabbed)
+        
+        // Then: Layout mode should update
+        XCTAssertEqual(viewModel.currentLayout.layoutMode, .tabbed)
+    }
+    
+    func testResetLayoutRestoresDefaults() async {
+        // Given: Modified state saved in manager
+        var layout = LayoutConfiguration.default
+        layout.layoutMode = .floating
+        await mockLayoutManager.setLayout(layout)
+        await viewModel.loadLayout()
+        viewModel.togglePanelVisibility(.trackDetails)
+        await viewModel.saveLayout()
+        
+        // When: Resetting layout
+        await viewModel.resetLayout()
+        
+        // Then: Layout should match defaults
+        XCTAssertEqual(viewModel.currentLayout.layoutMode, LayoutConfiguration.default.layoutMode)
+        XCTAssertFalse(viewModel.currentLayout.panelVisibility[.trackDetails] ?? true)
+    }
+    
+    func testClearMessages() async {
+        // Given: A success and error state
+        await viewModel.saveLayout()
+        viewModel.clearSuccessMessage()
+        viewModel.clearLastError()
+        
+        // Then: Both states should be cleared
+        XCTAssertNil(viewModel.successMessage)
+        XCTAssertNil(viewModel.lastError)
+    }
 }

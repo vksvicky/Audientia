@@ -22,6 +22,11 @@ struct ContentView: View {
                 .tabItem {
                     Label("Device Sync", systemImage: "externaldrive.connected.to.line.below")
                 }
+            
+            MultiPaneLayoutView()
+                .tabItem {
+                    Label("Workspace", systemImage: "rectangle.3.offgrid")
+                }
         }
         .frame(minWidth: 600, minHeight: 400)
     }

@@ -70,3 +70,18 @@ public enum LayoutMode: String, Codable, CaseIterable, Sendable {
     case tabbed
     case floating
 }
+
+public extension LayoutPanel {
+    var displayName: String {
+        switch self {
+        case .libraryBrowser:
+            return "Library Browser"
+        case .playlistPanel:
+            return "Playlist Panel"
+        case .nowPlaying:
+            return "Now Playing"
+        case .trackDetails:
+            return "Track Details"
+        }
+    }
+}

@@ -62,4 +62,18 @@ final class MultiPaneLayoutViewModelBDDTests: XCTestCase {
         let saved = await mockLayoutManager.getLayout()
         XCTAssertEqual(saved?.panelSizes[.libraryBrowser], 500)
     }
+    
+    func testAsAUserIWantToResetMyLayoutToDefaults() async {
+        // Given: I customized my layout
+        viewModel.togglePanelVisibility(.trackDetails)
+        await viewModel.saveLayout()
+        
+        // When: I reset the layout
+        await viewModel.resetLayout()
+        
+        // Then: It should match the defaults again
+        let saved = await mockLayoutManager.getLayout()
+        XCTAssertEqual(saved?.layoutMode, LayoutConfiguration.default.layoutMode)
+        XCTAssertFalse(saved?.panelVisibility[.trackDetails] ?? true)
+    }
 }

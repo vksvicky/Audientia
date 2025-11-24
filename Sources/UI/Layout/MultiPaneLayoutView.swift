@@ -25,6 +25,36 @@ public struct MultiPaneLayoutView: View {
     }
     
     public var body: some View {
+        VStack(spacing: 0) {
+            controlBar
+            Divider()
+            layoutContainer
+        }
+        .background(Color(NSColor.windowBackgroundColor))
+        .task {
+            await viewModel.loadLayout()
+        }
+        .alert("Success", isPresented: .constant(viewModel.successMessage != nil)) {
+            Button("OK") {
+                viewModel.clearSuccessMessage()
+            }
+        } message: {
+            if let message = viewModel.successMessage {
+                Text(message)
+            }
+        }
+        .alert("Error", isPresented: .constant(viewModel.lastError != nil)) {
+            Button("OK") {
+                viewModel.clearLastError()
+            }
+        } message: {
+            if let error = viewModel.lastError {
+                Text(error.localizedDescription)
+            }
+        }
+    }
+    
+    private var layoutContainer: some View {
         Group {
             switch viewModel.currentLayout.layoutMode {
             case .horizontalSplit:
@@ -37,9 +67,7 @@ public struct MultiPaneLayoutView: View {
                 floatingLayout
             }
         }
-        .task {
-            await viewModel.loadLayout()
-        }
+        .frame(minWidth: 800, minHeight: 500)
     }
     
     // MARK: - Layout Variants
@@ -154,6 +182,58 @@ public struct MultiPaneLayoutView: View {
 
 // MARK: - Panel Placeholders
 
+private extension MultiPaneLayoutView {
+    var controlBar: some View {
+        HStack(spacing: 12) {
+            Picker("Layout Mode", selection: Binding(
+                get: { viewModel.currentLayout.layoutMode },
+                set: { viewModel.setLayoutMode($0) }
+            )) {
+                ForEach(LayoutMode.allCases, id: \.self) { mode in
+                    Text(mode.displayTitle).tag(mode)
+                }
+            }
+            .pickerStyle(.segmented)
+            .frame(maxWidth: 320)
+            
+            Menu("Panels") {
+                ForEach(LayoutPanel.allCases, id: \.self) { panel in
+                    let isVisible = viewModel.currentLayout.panelVisibility[panel] ?? false
+                    Button {
+                        viewModel.togglePanelVisibility(panel)
+                    } label: {
+                        Label(panel.displayName, systemImage: isVisible ? "checkmark.circle.fill" : "circle")
+                    }
+                }
+            }
+            
+            Spacer()
+            
+            if viewModel.isSaving {
+                ProgressView()
+                    .controlSize(.small)
+            }
+            
+            Button("Save") {
+                Task {
+                    await viewModel.saveLayout()
+                }
+            }
+            .keyboardShortcut(.defaultAction)
+            .disabled(viewModel.isSaving)
+            
+            Button("Reset") {
+                Task {
+                    await viewModel.resetLayout()
+                }
+            }
+            .disabled(viewModel.isSaving)
+        }
+        .padding(.horizontal)
+        .padding(.vertical, 8)
+    }
+}
+
 @MainActor
 private struct LibraryBrowserPanel: View {
     var body: some View {
@@ -207,5 +287,20 @@ private struct TrackDetailsPanel: View {
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Color(NSColor.controlBackgroundColor))
+    }
+}
+
+private extension LayoutMode {
+    var displayTitle: String {
+        switch self {
+        case .horizontalSplit:
+            return "Horizontal"
+        case .verticalSplit:
+            return "Vertical"
+        case .tabbed:
+            return "Tabbed"
+        case .floating:
+            return "Floating"
+        }
     }
 }

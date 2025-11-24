@@ -93,4 +93,27 @@ public final class MultiPaneLayoutViewModel: ObservableObject {
     public func clearSuccessMessage() {
         successMessage = nil
     }
+
+    /// Clear the last error shown to the user
+    public func clearLastError() {
+        lastError = nil
+    }
+    
+    /// Reset the layout back to defaults
+    public func resetLayout() async {
+        isSaving = true
+        lastError = nil
+        
+        do {
+            try await layoutManager.resetToDefault()
+            currentLayout = await layoutManager.loadLayout()
+            successMessage = "Layout reset to defaults"
+            logger.info("Layout reset to defaults")
+        } catch {
+            lastError = error
+            logger.error("Failed to reset layout: \(error.localizedDescription)")
+        }
+        
+        isSaving = false
+    }
 }
