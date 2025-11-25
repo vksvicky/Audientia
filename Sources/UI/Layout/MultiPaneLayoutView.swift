@@ -16,6 +16,7 @@ import SwiftUI
 public struct MultiPaneLayoutView: View {
     @StateObject private var viewModel: MultiPaneLayoutViewModel
     @StateObject private var libraryViewModel = LibraryBrowserViewModel()
+    @StateObject private var playlistViewModel = PlaylistPanelViewModel()
     
     public init(viewModel: MultiPaneLayoutViewModel? = nil) {
         if let viewModel = viewModel {
@@ -92,7 +93,7 @@ public struct MultiPaneLayoutView: View {
                 
                 // Playlist Panel
                 if viewModel.currentLayout.panelVisibility[.playlistPanel] ?? false {
-                    PlaylistPanel()
+                    PlaylistPanelView(viewModel: playlistViewModel)
                 }
             }
             
@@ -122,7 +123,7 @@ public struct MultiPaneLayoutView: View {
                 
                 // Playlist Panel
                 if viewModel.currentLayout.panelVisibility[.playlistPanel] ?? false {
-                    PlaylistPanel()
+                    PlaylistPanelView(viewModel: playlistViewModel)
                 }
                 
                 // Track Details
@@ -234,21 +235,6 @@ private extension MultiPaneLayoutView {
         .padding(.vertical, 8)
     }
 }
-
-@MainActor
-private struct PlaylistPanel: View {
-    var body: some View {
-        VStack {
-            Text("Playlist Panel")
-                .font(.headline)
-            Text("Playlist content will appear here")
-                .foregroundColor(.secondary)
-        }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(Color(NSColor.controlBackgroundColor))
-    }
-}
-
 @MainActor
 private struct NowPlayingPanel: View {
     var body: some View {

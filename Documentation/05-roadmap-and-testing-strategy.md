@@ -4,12 +4,16 @@
 
 ### Current UI Reality (Nov 2025)
 
-- The shipping build only exposes a single SwiftUI `TabView` with two tabs: **Now Playing** and **Device Sync** (`Sources/UI/ContentView.swift`).
-- There is **no library/playlist browser, no import workflow, and no file picker**. Users cannot select tracks or queue anything for playback, so the audio engine never receives input.
+- The shipping build exposes a SwiftUI `TabView` with three tabs: **Now Playing**, **Device Sync**, and **Workspace** (`Sources/UI/ContentView.swift`).
+- **Workspace tab** provides a MediaMonkey-style multi-pane layout system with:
+  - **Library Browser**: Full library browsing with search, sorting, grouping, and multiple view modes (list/grid/compact). Tracks are loaded from the library indexer.
+  - **Playlist Panel**: Split-view playlist management with playlist list and track list. Users can create/delete playlists, select playlists, and add/remove tracks.
+  - **Layout Controls**: Control bar with layout mode picker (horizontal/vertical/tabbed/floating), panel visibility toggles, and save/reset functionality.
+- There is **no import workflow or file picker**. Users cannot import tracks or queue anything for playback from the UI, so the audio engine never receives input unless tracks are already indexed.
 - Drag-and-drop accepts files but does not validate formats or call into `NowPlayingViewModel`, so nothing plays after a drop.
-- The comprehensive Settings/Preferences UI described in Feature 5.3 exists only as view models and stand-alone views; it is **not wired into the app menu or any window** yet.
-- Device Sync UI powers the counters you see (e.g. “391 tracks ready for sync”), but there is no guidance to connect a device or kick off sync beyond the disabled buttons.
-- The roadmap below has been updated to reflect this gap between implemented backends and the currently exposed UI.
+- **Settings/Preferences UI** is accessible via the standard macOS Settings menu (⌘,). Settings views exist for layout customization, theme selection, and other preferences, with full persistence support.
+- Device Sync UI powers the counters you see (e.g. "391 tracks ready for sync"), but there is no guidance to connect a device or kick off sync beyond the disabled buttons.
+- The roadmap below has been updated to reflect the current state of UI implementation.
 
 ### Core Features Status
 
@@ -25,7 +29,11 @@
 - [x] **Built** - Progress tracking
 
 **User Interface:**
-- [ ] **Now Playing view surfaced to users** – The SwiftUI view renders, but there is no path to load or queue tracks, so playback never starts outside of tests.
+- [x] **Multi-pane Workspace** – ✅ Workspace tab with MediaMonkey-style multi-pane layout system, library browser, and playlist panel integrated and functional.
+- [x] **Library Browser** – ✅ Full library browsing with search, sorting, grouping, and multiple view modes. Tracks loaded from library indexer.
+- [x] **Playlist Panel** – ✅ Split-view playlist management with create/delete, track add/remove, and playlist selection.
+- [x] **Settings/Preferences UI** – ✅ Accessible via macOS Settings menu (⌘,). Layout customization, theme selection, and other preferences with full persistence.
+- [ ] **Now Playing view surfaced to users** – The SwiftUI view renders, but there is no path to load or queue tracks from the UI, so playback never starts outside of tests.
 - [ ] **Playback controls (play/pause/stop)** – Buttons exist but remain disabled because `currentTrack` is always `nil`.
 - [ ] **Progress slider with scrubbing** – UI renders, yet it never activates because no duration is loaded.
 - [ ] **Volume control UI** – Slider and mute button render but have no audible effect without a loaded track.
@@ -42,15 +50,18 @@
 - [x] **Built** - Test fixtures infrastructure
 
 - **Not Yet Built / Not Integrated in UI:**
-  - [ ] Complete library management UI (backend scanners/indexers exist but no user-facing browser, import, or search).
+  - [x] Library browser UI – **✅ LibraryBrowserView integrated into Workspace tab with full search, sorting, grouping, and view modes.**
+  - [x] Playlist management UI – **✅ PlaylistPanelView integrated into Workspace tab with playlist browsing and track management.**
+  - [x] Settings/Preferences UI – **✅ Settings accessible via macOS Settings menu (⌘,). Layout customization, theme selection, and other preferences fully functional.**
+  - [ ] Track import workflow (no file picker or drag-and-drop integration for playback).
   - [ ] Metadata extraction polish (artwork extraction, normalization) and any surfaces that expose those results.
-  - [ ] Playlist management UI (browser/editor/rule builder views are not connected to `ContentView`).
+  - [ ] Track details panel (placeholder exists in multi-pane layout).
   - [ ] DSP feature surfaces (EQ, normalization, ReplayGain, visualizers) – view files exist but are not reachable in the running app.
   - [x] Device sync – **✅ Feature 4.1 backend + UI exists and is the only surfaced workflow today.**
   - [x] Transcoding – **✅ Feature 4.2 backend/UI exists but still assumes a connected device.**
   - [x] Build & Distribution System – **✅ Scripts and docs match reality.**
   - [x] ML Classification & Recommendations – **✅ Backend complete; UI hooks pending exposure.**
-  - [ ] Enhanced UI & Settings Management – **Feature 5.3 backends are ready, settings views exist, but nothing is wired into the macOS Settings menu or main window.**
+  - [x] Enhanced UI & Settings Management – **✅ Feature 5.3 backends ready, settings views exist and accessible via macOS Settings menu, multi-pane layout system integrated.**
   - [ ] Plugin system (including audio visualizer plugins)
 
 ---
@@ -634,15 +645,15 @@ See [`Scripts/build_guide.md`](../Scripts/build_guide.md) for detailed build ins
 - [x] Library view configuration - **✅ LibraryViewConfiguration models (view modes, grouping, sorting, column visibility) and LibraryViewConfigurationManager with persistence. Comprehensive TDD tests (LibraryViewConfigurationManagerTests) following Right-BICEP principles.**
 
 **UI:**
-- [ ] Multi-pane layout system - **MediaMonkey-style multi-pane interface with resizable panels: library browser, playlist panel, now playing panel, track details panel**
-- [ ] Enhanced library browser - **Advanced library views with multiple view modes (by artist, album, genre, year, rating), customizable columns, sorting, filtering, and grouping options**
-- [ ] Track details panel - **Comprehensive track information panel with metadata, artwork, ML classification results, recommendations, and fingerprint status**
-- [ ] Playlist panel - **Dedicated playlist panel with drag-and-drop, queue management, and playlist operations**
-- [ ] Settings/preferences UI - **Comprehensive settings interface with categories: General, Library, Playback, Audio/DSP, Appearance, Advanced**
-- [ ] Settings persistence - **Save/load all user preferences including layout, theme, library views, playback settings, audio settings**
-- [ ] Layout customization - **User-configurable panel layouts, split views, panel visibility toggles, panel size persistence**
-- [ ] Theme selector - **Theme selection UI with preview, light/dark mode toggle, custom color scheme support**
-- [ ] Window management - **Window state persistence, multiple window support, window layout presets**
+- [x] Multi-pane layout system - **✅ MultiPaneLayoutView implemented with MediaMonkey-style multi-pane interface. Supports horizontal/vertical/tabbed/floating layout modes, resizable panels, panel visibility toggles, layout persistence, and control bar with save/reset functionality. Integrated into ContentView as "Workspace" tab.**
+- [x] Enhanced library browser - **✅ LibraryBrowserView implemented with multiple view modes (list/grid/compact), search functionality, sorting (title/artist/album/year/rating/duration/dateAdded), grouping options (none/artist/album/genre/year/rating), and configuration persistence. LibraryBrowserViewModel manages library data, search, filtering, sorting, and view configuration. Integrated into MultiPaneLayoutView. Comprehensive TDD tests (LibraryBrowserViewModelTests) and BDD scenarios (LibraryBrowserViewModelBDDTests) following Right-BICEP principles.**
+- [ ] Track details panel - **Comprehensive track information panel with metadata, artwork, ML classification results, recommendations, and fingerprint status (placeholder in MultiPaneLayoutView)**
+- [x] Playlist panel - **✅ PlaylistPanelView implemented with split view (playlist list + track list), create/delete playlists, add/remove tracks, playlist selection, and track management. PlaylistPanelViewModel manages playlist browsing, selection, and track operations. Integrated into MultiPaneLayoutView. Comprehensive TDD tests (PlaylistPanelViewModelTests) and BDD scenarios (PlaylistPanelViewModelBDDTests) following Right-BICEP principles.**
+- [x] Settings/preferences UI - **✅ SettingsView implemented with comprehensive settings interface. SettingsViewModel manages settings loading and state. LayoutCustomizationView, ThemeSelectorView, and other settings views exist. Settings scene added to AudientiaApp for standard macOS Settings menu access.**
+- [x] Settings persistence - **✅ Save/load all user preferences including layout, theme, library views, playback settings, audio settings. SettingsStorageProtocol and UserDefaultsSettingsStorage provide actor-based persistence. All configuration managers (LayoutConfigurationManager, ThemeManager, WindowStateManager, LibraryViewConfigurationManager) support persistence.**
+- [x] Layout customization - **✅ User-configurable panel layouts, split views, panel visibility toggles, panel size persistence. LayoutCustomizationView provides UI for customizing layout. LayoutConfigurationManager handles persistence.**
+- [x] Theme selector - **✅ ThemeSelectorView implemented with theme selection UI, light/dark/auto mode support, and custom color scheme support. ThemeManager handles persistence.**
+- [x] Window management - **✅ WindowStateManager implemented with window state persistence (frame, maximized, minimized). WindowState models and persistence system complete.**
 
 **Tests:**
 - [x] **TDD**: Settings persistence, layout configuration, theme management - **✅ Comprehensive TDD tests for all components following Right-BICEP principles: SettingsStorageTests (save/load/remove/clearAll, boundary conditions, error handling, performance), LayoutConfigurationManagerTests (save/load/reset, panel visibility, layout modes), ThemeManagerTests (save/load/reset, available themes), WindowStateManagerTests (save/load/clear), LibraryViewConfigurationManagerTests (save/load/reset, view modes, grouping, sorting)**
