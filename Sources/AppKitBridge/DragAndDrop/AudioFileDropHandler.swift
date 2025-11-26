@@ -51,4 +51,3 @@ public extension View {
         modifier(AudioFileDropHandler(onFilesDropped: onFilesDropped))
     }
 }
-

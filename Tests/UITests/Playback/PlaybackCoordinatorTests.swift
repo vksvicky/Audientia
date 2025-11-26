@@ -196,4 +196,3 @@ final class PlaybackCoordinatorTests: XCTestCase {
         )
     }
 }
-

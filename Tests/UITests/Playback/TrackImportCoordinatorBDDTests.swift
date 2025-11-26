@@ -103,4 +103,3 @@ final class TrackImportCoordinatorBDDTests: XCTestCase {
         XCTAssertEqual(mockAudioEngine.queue.count, 2)
     }
 }
-

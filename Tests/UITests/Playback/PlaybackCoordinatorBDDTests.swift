@@ -96,4 +96,3 @@ final class PlaybackCoordinatorBDDTests: XCTestCase {
         XCTAssertTrue(mockAudioEngine.queue.contains { $0.title == "Song 3" })
     }
 }
-

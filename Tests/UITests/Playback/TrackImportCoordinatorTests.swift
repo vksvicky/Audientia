@@ -146,7 +146,10 @@ final class TrackImportCoordinatorTests: XCTestCase {
         defer { try? FileManager.default.removeItem(at: url) }
 
         try await coordinator.importFile(url: url)
-        let track = mockAudioEngine.queue.first!
+        guard let track = mockAudioEngine.queue.first else {
+            XCTFail("Expected track to exist in queue after import")
+            return
+        }
 
         // When: Removing from queue
         mockAudioEngine.removeFromQueue(track)
@@ -215,4 +218,3 @@ final class TrackImportCoordinatorTests: XCTestCase {
     }
 
 }
-
