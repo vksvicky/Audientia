@@ -38,6 +38,25 @@ final class LibraryIndexerTests: XCTestCase {
         XCTAssertEqual(indexedCount, 3, "Should index all 3 tracks")
     }
     
+    func testTracksAreNormalizedBeforeIndexing() async throws {
+        // Given - A track with sloppy metadata
+        let track = createTrack(
+            title: "  weird   spacing ",
+            artist: "radiohead",
+            album: "  in  rainbows "
+        )
+        let indexer = LibraryIndexer(normalizer: MetadataNormalizer())
+        
+        // When - Index the track
+        try await indexer.index(tracks: [track])
+        
+        // Then - Stored track should be normalized
+        let stored = await indexer.getAllTracks().first
+        XCTAssertEqual(stored?.title, "weird spacing")
+        XCTAssertEqual(stored?.artist, "Radiohead")
+        XCTAssertEqual(stored?.album, "in rainbows", "Multiple spaces should be collapsed to single space")
+    }
+    
     /// Test that duplicate tracks are handled correctly
     func testDuplicateTracksAreHandledCorrectly() async throws {
         // Given - Tracks with duplicate file paths

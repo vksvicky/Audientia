@@ -33,17 +33,22 @@ public final class LibraryBrowserViewModel: ObservableObject {
     private let indexer: LibraryIndexerProtocol
     private let configurationManager: any LibraryViewConfigurationManagerProtocol
     private let searchService: LibrarySearch
+    private let artworkExtractor: ArtworkExtractorProtocol
     private let logger = Logger.userInterface
     
     // MARK: - Initialization
     
+    @Published public private(set) var artworkCache: [UUID: TrackArtwork] = [:]
+    
     public init(
         indexer: LibraryIndexerProtocol = LibraryIndexer(),
-        configurationManager: any LibraryViewConfigurationManagerProtocol = LibraryViewConfigurationManager()
+        configurationManager: any LibraryViewConfigurationManagerProtocol = LibraryViewConfigurationManager(),
+        artworkExtractor: ArtworkExtractorProtocol = HeuristicArtworkExtractor()
     ) {
         self.indexer = indexer
         self.configurationManager = configurationManager
         self.searchService = LibrarySearch(indexer: indexer)
+        self.artworkExtractor = artworkExtractor
     }
     
     // MARK: - Public API
@@ -68,6 +73,10 @@ public final class LibraryBrowserViewModel: ObservableObject {
         tracks = sort(tracks: indexedTracks)
         filteredTracks = tracks
         hasLoaded = true
+        
+        Task {
+            await preloadArtworks(for: tracks)
+        }
         
         isLoading = false
     }
@@ -127,6 +136,16 @@ public final class LibraryBrowserViewModel: ObservableObject {
         lastError = nil
     }
     
+    public func artwork(for track: Track) -> TrackArtwork? {
+        artworkCache[track.id]
+    }
+    
+    public func loadArtwork(for track: Track) async {
+        guard artworkCache[track.id] == nil else { return }
+        guard let artwork = await artworkExtractor.extractArtwork(for: track) else { return }
+        artworkCache[track.id] = artwork
+    }
+    
     // MARK: - Helpers
     
     private func apply(configuration: LibraryViewConfiguration) {
@@ -184,6 +203,23 @@ public final class LibraryBrowserViewModel: ObservableObject {
         } catch {
             lastError = error
             logger.error("Failed to save library configuration: \(error.localizedDescription)")
+        }
+    }
+    
+    private func preloadArtworks(for tracks: [Track]) async {
+        await withTaskGroup(of: (UUID, TrackArtwork?).self) { group in
+            for track in tracks {
+                group.addTask { [artworkExtractor] in
+                    let artwork = await artworkExtractor.extractArtwork(for: track)
+                    return (track.id, artwork)
+                }
+            }
+            
+            for await (trackID, artwork) in group {
+                if let artwork {
+                    artworkCache[trackID] = artwork
+                }
+            }
         }
     }
 }

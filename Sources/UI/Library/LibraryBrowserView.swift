@@ -7,6 +7,7 @@
 //  Copyright © 2025 CycleRunCode Club
 //
 
+import AppKit
 import Shared
 import SwiftUI
 
@@ -168,7 +169,11 @@ public struct LibraryBrowserView: View {
     private var listView: some View {
         List(selection: trackSelectionBinding) {
             ForEach(viewModel.filteredTracks) { track in
-                LibraryTrackRow(track: track, compact: viewModel.viewMode == .compact)
+                LibraryTrackRow(
+                    track: track,
+                    compact: viewModel.viewMode == .compact,
+                    artwork: artworkImage(for: track)
+                )
                     .tag(track as Track?)
                     .contentShape(Rectangle())
                     .onTapGesture {
@@ -199,6 +204,9 @@ public struct LibraryBrowserView: View {
                             Label("Add to Queue", systemImage: "plus.circle")
                         }
                     }
+                    .onAppear {
+                        Task { await viewModel.loadArtwork(for: track) }
+                    }
             }
         }
         .listStyle(.inset)
@@ -208,15 +216,56 @@ public struct LibraryBrowserView: View {
         ScrollView {
             LazyVGrid(columns: gridColumns, spacing: 16) {
                 ForEach(viewModel.filteredTracks) { track in
-                    gridItem(for: track)
+                    gridItem(for: track, artwork: artworkImage(for: track))
+                        .onAppear {
+                            Task { await viewModel.loadArtwork(for: track) }
+                        }
                 }
             }
             .padding()
         }
     }
 
-    private func gridItem(for track: Track) -> some View {
-        VStack(alignment: .leading, spacing: 4) {
+    private var footer: some View {
+        HStack {
+            Text("\(viewModel.filteredTracks.count) of \(viewModel.totalTrackCount) tracks")
+                .foregroundColor(.secondary)
+            Spacer()
+            if !viewModel.searchText.isEmpty {
+                Button("Clear Search") {
+                    Task { await viewModel.updateSearchText("") }
+                }
+            }
+        }
+        .padding([.horizontal, .bottom])
+    }
+    
+    private func artworkImage(for track: Track) -> NSImage? {
+        guard let artwork = viewModel.artwork(for: track) else {
+            return nil
+        }
+        return NSImage(data: artwork.data)
+    }
+    
+    private var trackSelectionBinding: Binding<Track?> {
+        Binding(
+            get: { trackSelection.selectedTrack },
+            set: { newValue in trackSelection.select(newValue) }
+        )
+    }
+    
+    private func formatDuration(_ duration: TimeInterval) -> String {
+        let minutes = Int(duration) / 60
+        let seconds = Int(duration) % 60
+        return String(format: "%d:%02d", minutes, seconds)
+    }
+}
+
+// MARK: - Grid View Helpers
+private extension LibraryBrowserView {
+    func gridItem(for track: Track, artwork: NSImage?) -> some View {
+        VStack(alignment: .leading, spacing: 8) {
+            artworkGridView(for: artwork)
             Text(track.title)
                 .font(.headline)
                 .lineLimit(2)
@@ -253,7 +302,7 @@ public struct LibraryBrowserView: View {
     }
 
     @ViewBuilder
-    private func gridItemContextMenu(for track: Track) -> some View {
+    func gridItemContextMenu(for track: Track) -> some View {
         Button {
             trackSelection.select(track)
             Task {
@@ -273,43 +322,36 @@ public struct LibraryBrowserView: View {
         }
     }
     
-    private var footer: some View {
-        HStack {
-            Text("\(viewModel.filteredTracks.count) of \(viewModel.totalTrackCount) tracks")
-                .foregroundColor(.secondary)
-            Spacer()
-            if !viewModel.searchText.isEmpty {
-                Button("Clear Search") {
-                    Task { await viewModel.updateSearchText("") }
+    func artworkGridView(for artwork: NSImage?) -> some View {
+        Group {
+            if let artwork {
+                Image(nsImage: artwork)
+                    .resizable()
+                    .scaledToFill()
+            } else {
+                ZStack {
+                    Color(NSColor.windowBackgroundColor)
+                    Image(systemName: "music.note")
+                        .font(.title)
+                        .foregroundColor(.secondary)
                 }
             }
         }
-        .padding([.horizontal, .bottom])
-    }
-    
-    private var trackSelectionBinding: Binding<Track?> {
-        Binding(
-            get: { trackSelection.selectedTrack },
-            set: { newValue in trackSelection.select(newValue) }
-        )
-    }
-    
-    private func formatDuration(_ duration: TimeInterval) -> String {
-        let minutes = Int(duration) / 60
-        let seconds = Int(duration) % 60
-        return String(format: "%d:%02d", minutes, seconds)
+        .frame(height: 120)
+        .clipped()
+        .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
     }
 }
+
 @MainActor
 private struct LibraryTrackRow: View {
     let track: Track
     let compact: Bool
+    let artwork: NSImage?
     
     var body: some View {
         HStack(spacing: 12) {
-            Image(systemName: "music.note")
-                .font(.title3)
-                .foregroundColor(.accentColor)
+            artworkThumbnail
             
             VStack(alignment: .leading, spacing: compact ? 2 : 4) {
                 Text(track.title)
@@ -337,6 +379,27 @@ private struct LibraryTrackRow: View {
                 .foregroundColor(.secondary)
         }
         .padding(.vertical, compact ? 2 : 6)
+    }
+
+    private var artworkThumbnail: some View {
+        Group {
+            if let artwork {
+                Image(nsImage: artwork)
+                    .resizable()
+                    .scaledToFill()
+            } else {
+                Image(systemName: "music.note")
+                    .font(.title3)
+                    .foregroundColor(.accentColor)
+            }
+        }
+        .frame(width: compact ? 32 : 44, height: compact ? 32 : 44)
+        .background(Color(NSColor.controlBackgroundColor))
+        .clipShape(RoundedRectangle(cornerRadius: 6, style: .continuous))
+        .overlay(
+            RoundedRectangle(cornerRadius: 6, style: .continuous)
+                .stroke(Color.gray.opacity(0.2))
+        )
     }
     
     private func formatDuration(_ duration: TimeInterval) -> String {

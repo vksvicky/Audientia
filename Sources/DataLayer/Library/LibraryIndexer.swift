@@ -15,10 +15,12 @@ import Foundation
 public final class LibraryIndexer: LibraryIndexerProtocol, @unchecked Sendable {
     
     /// Actor for thread-safe index operations
-    private let indexActor = IndexActor()
+    private let indexActor: IndexActor
     
     /// Initialize the indexer
-    public init() {}
+    public init(normalizer: MetadataNormalizerProtocol = MetadataNormalizer()) {
+        self.indexActor = IndexActor(normalizer: normalizer)
+    }
     
     /// Index a collection of tracks
     /// - Parameter tracks: Array of tracks to index
@@ -68,8 +70,16 @@ private actor IndexActor {
     /// In-memory index of tracks by file path (for duplicate detection)
     private var tracksByPath: [String: UUID] = [:]
     
+    /// Normalizer applied before storing tracks
+    private let normalizer: MetadataNormalizerProtocol
+    
+    init(normalizer: MetadataNormalizerProtocol) {
+        self.normalizer = normalizer
+    }
+    
     func index(tracks: [Track]) throws {
-        for track in tracks {
+        for original in tracks {
+            let track = normalizer.normalize(track: original)
             // Validate track has non-empty file path
             guard !track.filePath.isEmpty else {
                 throw LibraryIndexerError.invalidTrack

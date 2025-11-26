@@ -42,6 +42,28 @@ actor MockLibraryIndexer: LibraryIndexerProtocol {
     }
 }
 
+actor MockArtworkExtractor: ArtworkExtractorProtocol {
+    private(set) var requestedTrackIDs: [UUID] = []
+    private var artworkToReturn: TrackArtwork?
+
+    func extractArtwork(for track: Track) async -> TrackArtwork? {
+        requestedTrackIDs.append(track.id)
+        return artworkToReturn
+    }
+    
+    func setArtworkToReturn(_ artwork: TrackArtwork?) {
+        artworkToReturn = artwork
+    }
+    
+    func getRequestedTrackIDs() -> [UUID] {
+        requestedTrackIDs
+    }
+    
+    func clearRequestedTrackIDs() {
+        requestedTrackIDs.removeAll()
+    }
+}
+
 actor MockLibraryViewConfigurationManager: LibraryViewConfigurationManagerProtocol {
     private(set) var configuration: LibraryViewConfiguration = .default
     

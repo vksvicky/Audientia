@@ -292,6 +292,95 @@ final class LibrarySearchTests: XCTestCase {
         XCTAssertTrue(results.isEmpty, "Whitespace-only query should return empty results")
     }
     
+    // MARK: - Search Relevance
+    
+    /// Test that search results are ranked by relevance (title matches first)
+    func testSearchResultsRankedByRelevance() async throws {
+        // Given - Clear existing tracks and add tracks with "Jazz" in different fields
+        try await indexer.clear()
+        let titleMatch = createTrack(title: "Jazz Song", artist: "Other Artist", album: "Other Album")
+        let artistMatch = createTrack(title: "Other Song", artist: "Jazz Artist", album: "Other Album")
+        let albumMatch = createTrack(title: "Other Song", artist: "Other Artist", album: "Jazz Album")
+        
+        try await indexer.index(tracks: [titleMatch, artistMatch, albumMatch])
+        
+        // When - Search for "Jazz" across all fields
+        let results = try await search.search(query: "Jazz", field: .all)
+        
+        // Then - Title match should come first, then artist, then album
+        XCTAssertEqual(results.count, 3, "Should find all 3 tracks")
+        guard results.count >= 3 else {
+            XCTFail("Expected 3 results but got \(results.count): \(results.map { $0.title })")
+            return
+        }
+        XCTAssertEqual(results[0].id, titleMatch.id, "Title match should be ranked highest")
+        XCTAssertEqual(results[1].id, artistMatch.id, "Artist match should be ranked second")
+        XCTAssertEqual(results[2].id, albumMatch.id, "Album match should be ranked third")
+    }
+    
+    /// Test that exact matches are ranked higher than partial matches
+    func testExactMatchesRankedHigher() async throws {
+        // Given - Clear existing tracks and add tracks with exact and partial matches
+        try await indexer.clear()
+        let exactMatch = createTrack(title: "Jazz", artist: "Artist", album: "Album")
+        let partialMatch = createTrack(title: "Jazz Song", artist: "Artist", album: "Album")
+        
+        try await indexer.index(tracks: [exactMatch, partialMatch])
+        
+        // When - Search for "Jazz"
+        let results = try await search.search(query: "Jazz", field: .title)
+        
+        // Then - Exact match should come first
+        XCTAssertEqual(results.count, 2, "Should find both tracks")
+        guard results.count >= 2 else {
+            XCTFail("Expected 2 results but got \(results.count): \(results.map { $0.title })")
+            return
+        }
+        XCTAssertEqual(results[0].id, exactMatch.id, "Exact match should be ranked first")
+    }
+    
+    /// Test that "starts with" matches are ranked higher than "contains" matches
+    func testStartsWithMatchesRankedHigher() async throws {
+        // Given - Clear existing tracks and add tracks with "starts with" and "contains" matches
+        try await indexer.clear()
+        let startsWith = createTrack(title: "Jazz Collection", artist: "Artist", album: "Album")
+        let contains = createTrack(title: "The Jazz Collection", artist: "Artist", album: "Album")
+        
+        try await indexer.index(tracks: [startsWith, contains])
+        
+        // When - Search for "Jazz"
+        let results = try await search.search(query: "Jazz", field: .title)
+        
+        // Then - "Starts with" match should come first
+        XCTAssertEqual(results.count, 2, "Should find both tracks")
+        guard results.count >= 2 else {
+            XCTFail("Expected 2 results but got \(results.count): \(results.map { $0.title })")
+            return
+        }
+        XCTAssertEqual(results[0].id, startsWith.id, "Starts with match should be ranked first")
+    }
+    
+    /// Test relevance with multiple field matches
+    func testRelevanceWithMultipleFieldMatches() async throws {
+        // Given - Clear existing tracks and add tracks with "Jazz" in title and artist
+        try await indexer.clear()
+        let multiMatch = createTrack(title: "Jazz Song", artist: "Jazz Artist", album: "Other Album")
+        let singleMatch = createTrack(title: "Jazz Song", artist: "Other Artist", album: "Other Album")
+        
+        try await indexer.index(tracks: [multiMatch, singleMatch])
+        
+        // When - Search for "Jazz" across all fields
+        let results = try await search.search(query: "Jazz", field: .all)
+        
+        // Then - Multi-field match should be ranked higher
+        XCTAssertEqual(results.count, 2, "Should find both tracks")
+        guard results.count >= 2 else {
+            XCTFail("Expected 2 results but got \(results.count): \(results.map { $0.title })")
+            return
+        }
+        XCTAssertEqual(results[0].id, multiMatch.id, "Multi-field match should be ranked higher")
+    }
+    
     // MARK: - Helper Methods
     
     private func createTrack(
@@ -300,13 +389,14 @@ final class LibrarySearchTests: XCTestCase {
         album: String = "Unknown Album",
         filePath: String? = nil
     ) -> Track {
-        Track(
-            id: UUID(),
+        let trackId = UUID()
+        return Track(
+            id: trackId,
             title: title,
             artist: artist,
             album: album,
             duration: 180.0,
-            filePath: filePath ?? "/path/to/\(title.replacingOccurrences(of: " ", with: "_")).mp3",
+            filePath: filePath ?? "/path/to/\(title.replacingOccurrences(of: " ", with: "_"))_\(artist.replacingOccurrences(of: " ", with: "_"))_\(trackId.uuidString.prefix(8)).mp3",
             fileSize: 5000000,
             bitrate: 320,
             sampleRate: 44100,

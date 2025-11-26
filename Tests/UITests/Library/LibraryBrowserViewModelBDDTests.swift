@@ -18,14 +18,17 @@ final class LibraryBrowserViewModelBDDTests: XCTestCase {
     var viewModel: LibraryBrowserViewModel!
     var mockIndexer: MockLibraryIndexer!
     var mockConfigurationManager: MockLibraryViewConfigurationManager!
+    var mockArtworkExtractor: MockArtworkExtractor!
     
     override func setUp() async throws {
         try await super.setUp()
         mockIndexer = MockLibraryIndexer()
         mockConfigurationManager = MockLibraryViewConfigurationManager()
+        mockArtworkExtractor = MockArtworkExtractor()
         viewModel = LibraryBrowserViewModel(
             indexer: mockIndexer,
-            configurationManager: mockConfigurationManager
+            configurationManager: mockConfigurationManager,
+            artworkExtractor: mockArtworkExtractor
         )
         await mockIndexer.setTracks(sampleTracks())
     }
@@ -34,6 +37,7 @@ final class LibraryBrowserViewModelBDDTests: XCTestCase {
         viewModel = nil
         mockIndexer = nil
         mockConfigurationManager = nil
+        mockArtworkExtractor = nil
         try await super.tearDown()
     }
     
@@ -67,6 +71,24 @@ final class LibraryBrowserViewModelBDDTests: XCTestCase {
         XCTAssertEqual(viewModel.viewMode, .grid)
         let saved = await mockConfigurationManager.configuration
         XCTAssertEqual(saved.viewMode, .grid)
+    }
+    
+    func testAsAUserISeeAlbumArtworkWhenAvailable() async {
+        guard let track = sampleTracks().first else {
+            XCTFail("Sample tracks should not be empty")
+            return
+        }
+        await mockArtworkExtractor.setArtworkToReturn(
+            TrackArtwork(
+                data: Data([0x00, 0x01]),
+                mimeType: "image/png",
+                source: .sidecar(url: URL(fileURLWithPath: "/tmp/cover.png"))
+            )
+        )
+        
+        await viewModel.loadArtwork(for: track)
+        
+        XCTAssertNotNil(viewModel.artwork(for: track))
     }
     
     // MARK: - Helpers
