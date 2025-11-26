@@ -13,6 +13,8 @@ import SwiftUI
 @MainActor
 public struct LibraryBrowserView: View {
     @ObservedObject var viewModel: LibraryBrowserViewModel
+    @EnvironmentObject private var trackSelection: TrackSelectionStore
+    @EnvironmentObject private var playbackCoordinator: PlaybackCoordinator
     
     private let gridColumns = [
         GridItem(.adaptive(minimum: 180), spacing: 16, alignment: .top)
@@ -115,6 +117,16 @@ public struct LibraryBrowserView: View {
             }
             .buttonStyle(.bordered)
             .disabled(viewModel.isLoading)
+
+            Button {
+                Task {
+                    await playbackCoordinator.queueTracks(viewModel.filteredTracks)
+                }
+            } label: {
+                Label("Queue All", systemImage: "list.bullet.rectangle")
+            }
+            .buttonStyle(.bordered)
+            .disabled(viewModel.filteredTracks.isEmpty || viewModel.isLoading)
         }
         .padding()
     }
@@ -154,8 +166,40 @@ public struct LibraryBrowserView: View {
     }
     
     private var listView: some View {
-        List(viewModel.filteredTracks) { track in
-            LibraryTrackRow(track: track, compact: viewModel.viewMode == .compact)
+        List(selection: trackSelectionBinding) {
+            ForEach(viewModel.filteredTracks) { track in
+                LibraryTrackRow(track: track, compact: viewModel.viewMode == .compact)
+                    .tag(track as Track?)
+                    .contentShape(Rectangle())
+                    .onTapGesture {
+                        trackSelection.select(track)
+                    }
+                    .onTapGesture(count: 2) {
+                        trackSelection.select(track)
+                        Task {
+                            try? await playbackCoordinator.playSelectedTrack()
+                        }
+                    }
+                    .contextMenu {
+                        Button {
+                            trackSelection.select(track)
+                            Task {
+                                try? await playbackCoordinator.playSelectedTrack()
+                            }
+                        } label: {
+                            Label("Play", systemImage: "play.fill")
+                        }
+
+                        Button {
+                            trackSelection.select(track)
+                            Task {
+                                await playbackCoordinator.queueSelectedTrack()
+                            }
+                        } label: {
+                            Label("Add to Queue", systemImage: "plus.circle")
+                        }
+                    }
+            }
         }
         .listStyle(.inset)
     }
@@ -164,26 +208,68 @@ public struct LibraryBrowserView: View {
         ScrollView {
             LazyVGrid(columns: gridColumns, spacing: 16) {
                 ForEach(viewModel.filteredTracks) { track in
-                    VStack(alignment: .leading, spacing: 4) {
-                        Text(track.title)
-                            .font(.headline)
-                            .lineLimit(2)
-                        Text(track.artist)
-                            .font(.subheadline)
-                            .foregroundColor(.secondary)
-                        Text(track.album)
-                            .font(.caption)
-                            .foregroundColor(.secondary)
-                        Text(formatDuration(track.duration))
-                            .font(.caption2)
-                            .foregroundColor(.secondary)
-                    }
-                    .padding()
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .background(.thinMaterial, in: RoundedRectangle(cornerRadius: 12, style: .continuous))
+                    gridItem(for: track)
                 }
             }
             .padding()
+        }
+    }
+
+    private func gridItem(for track: Track) -> some View {
+        VStack(alignment: .leading, spacing: 4) {
+            Text(track.title)
+                .font(.headline)
+                .lineLimit(2)
+            Text(track.artist)
+                .font(.subheadline)
+                .foregroundColor(.secondary)
+            Text(track.album)
+                .font(.caption)
+                .foregroundColor(.secondary)
+            Text(formatDuration(track.duration))
+                .font(.caption2)
+                .foregroundColor(.secondary)
+        }
+        .padding()
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(.thinMaterial, in: RoundedRectangle(cornerRadius: 12, style: .continuous))
+        .overlay(
+            RoundedRectangle(cornerRadius: 12, style: .continuous)
+                .stroke(
+                    trackSelection.selectedTrack?.id == track.id ? Color.accentColor : Color.clear,
+                    lineWidth: 2
+                )
+        )
+        .onTapGesture {
+            trackSelection.select(track)
+        }
+        .onTapGesture(count: 2) {
+            trackSelection.select(track)
+            Task {
+                try? await playbackCoordinator.playSelectedTrack()
+            }
+        }
+        .contextMenu { gridItemContextMenu(for: track) }
+    }
+
+    @ViewBuilder
+    private func gridItemContextMenu(for track: Track) -> some View {
+        Button {
+            trackSelection.select(track)
+            Task {
+                try? await playbackCoordinator.playSelectedTrack()
+            }
+        } label: {
+            Label("Play", systemImage: "play.fill")
+        }
+
+        Button {
+            trackSelection.select(track)
+            Task {
+                await playbackCoordinator.queueSelectedTrack()
+            }
+        } label: {
+            Label("Add to Queue", systemImage: "plus.circle")
         }
     }
     
@@ -201,13 +287,19 @@ public struct LibraryBrowserView: View {
         .padding([.horizontal, .bottom])
     }
     
+    private var trackSelectionBinding: Binding<Track?> {
+        Binding(
+            get: { trackSelection.selectedTrack },
+            set: { newValue in trackSelection.select(newValue) }
+        )
+    }
+    
     private func formatDuration(_ duration: TimeInterval) -> String {
         let minutes = Int(duration) / 60
         let seconds = Int(duration) % 60
         return String(format: "%d:%02d", minutes, seconds)
     }
 }
-
 @MainActor
 private struct LibraryTrackRow: View {
     let track: Track

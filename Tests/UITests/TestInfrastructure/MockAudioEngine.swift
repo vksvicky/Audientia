@@ -77,6 +77,14 @@ final class MockAudioEngine: AudioEngineProtocol {
     
     // MARK: - Queue Navigation
     
+    public func addToQueue(_ track: Track) {
+        queue.append(track)
+    }
+    
+    public func removeFromQueue(_ track: Track) {
+        queue.removeAll { $0.id == track.id }
+    }
+    
     public func playNext() async throws {
         playNextCalled = true
         if queue.isEmpty {

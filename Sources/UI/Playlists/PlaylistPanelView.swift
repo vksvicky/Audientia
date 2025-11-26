@@ -17,6 +17,8 @@ import SwiftUI
 @MainActor
 public struct PlaylistPanelView: View {
     @StateObject private var viewModel: PlaylistPanelViewModel
+    @EnvironmentObject private var trackSelection: TrackSelectionStore
+    @EnvironmentObject private var playbackCoordinator: PlaybackCoordinator
     @State private var showingCreateDialog = false
     @State private var newPlaylistName = ""
     @State private var showingDeleteConfirmation = false
@@ -158,6 +160,16 @@ public struct PlaylistPanelView: View {
                     Text("\(playlist.trackCount) tracks")
                         .font(.caption)
                         .foregroundColor(.secondary)
+
+                    Button {
+                        Task {
+                            await playbackCoordinator.queueTracks(viewModel.tracks)
+                        }
+                    } label: {
+                        Label("Queue All", systemImage: "list.bullet.rectangle")
+                    }
+                    .buttonStyle(.bordered)
+                    .disabled(viewModel.tracks.isEmpty)
                 }
             }
             .padding()
@@ -190,10 +202,41 @@ public struct PlaylistPanelView: View {
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
             } else {
-                List {
+                List(selection: trackSelectionBinding) {
                     ForEach(viewModel.tracks) { track in
                         TrackRow(track: track)
+                            .tag(track as Track?)
+                            .contentShape(Rectangle())
+                            .onTapGesture {
+                                trackSelection.select(track)
+                            }
+                            .onTapGesture(count: 2) {
+                                trackSelection.select(track)
+                                Task {
+                                    try? await playbackCoordinator.playSelectedTrack()
+                                }
+                            }
                             .contextMenu {
+                                Button {
+                                    trackSelection.select(track)
+                                    Task {
+                                        try? await playbackCoordinator.playSelectedTrack()
+                                    }
+                                } label: {
+                                    Label("Play", systemImage: "play.fill")
+                                }
+
+                                Button {
+                                    trackSelection.select(track)
+                                    Task {
+                                        await playbackCoordinator.queueSelectedTrack()
+                                    }
+                                } label: {
+                                    Label("Add to Queue", systemImage: "plus.circle")
+                                }
+
+                                Divider()
+
                                 Button(role: .destructive, action: {
                                     Task {
                                         try? await viewModel.removeTrack(track)
@@ -207,6 +250,13 @@ public struct PlaylistPanelView: View {
                 .listStyle(.inset)
             }
         }
+    }
+
+    private var trackSelectionBinding: Binding<Track?> {
+        Binding(
+            get: { trackSelection.selectedTrack },
+            set: { newValue in trackSelection.select(newValue) }
+        )
     }
 
     // MARK: - Create Playlist Dialog

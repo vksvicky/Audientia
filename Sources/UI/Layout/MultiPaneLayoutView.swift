@@ -7,6 +7,8 @@
 //  Copyright © 2025 CycleRunCode Club. All rights reserved.
 //
 
+import AudioCore
+import DataLayer
 import Shared
 import SwiftUI
 
@@ -15,15 +17,40 @@ import SwiftUI
 @MainActor
 public struct MultiPaneLayoutView: View {
     @StateObject private var viewModel: MultiPaneLayoutViewModel
-    @StateObject private var libraryViewModel = LibraryBrowserViewModel()
+    @StateObject private var libraryViewModel: LibraryBrowserViewModel
     @StateObject private var playlistViewModel = PlaylistPanelViewModel()
-    
-    public init(viewModel: MultiPaneLayoutViewModel? = nil) {
+    @StateObject private var trackSelectionStore = TrackSelectionStore()
+    @StateObject private var playbackCoordinator: PlaybackCoordinator
+    private let trackDetailsDependencies: TrackDetailsDependencies
+
+    public init(
+        viewModel: MultiPaneLayoutViewModel? = nil,
+        libraryIndexer: LibraryIndexerProtocol = LibraryIndexer(),
+        trackDetailsDependencies: TrackDetailsDependencies? = nil,
+        audioEngine: (any AudioEngineProtocol)? = nil
+    ) {
+        self.trackDetailsDependencies = trackDetailsDependencies ?? TrackDetailsDependencies.live(
+            libraryIndexer: libraryIndexer
+        )
+
+        let engine = audioEngine ?? AudioEngine()
+        let selectionStore = TrackSelectionStore()
+        _trackSelectionStore = StateObject(wrappedValue: selectionStore)
+        _playbackCoordinator = StateObject(
+            wrappedValue: PlaybackCoordinator(
+                audioEngine: engine,
+                trackSelection: selectionStore
+            )
+        )
+
         if let viewModel = viewModel {
             _viewModel = StateObject(wrappedValue: viewModel)
         } else {
             _viewModel = StateObject(wrappedValue: MultiPaneLayoutViewModel())
         }
+        _libraryViewModel = StateObject(
+            wrappedValue: LibraryBrowserViewModel(indexer: libraryIndexer)
+        )
     }
     
     public var body: some View {
@@ -33,6 +60,8 @@ public struct MultiPaneLayoutView: View {
             layoutContainer
         }
         .background(Color(NSColor.windowBackgroundColor))
+        .environmentObject(trackSelectionStore)
+        .environmentObject(playbackCoordinator)
         .task {
             await viewModel.loadLayout()
         }
@@ -99,7 +128,7 @@ public struct MultiPaneLayoutView: View {
             
             // Right panel: Track Details
             if viewModel.currentLayout.panelVisibility[.trackDetails] ?? false {
-                TrackDetailsPanel()
+                TrackDetailsView(dependencies: trackDetailsDependencies)
                     .frame(width: viewModel.currentLayout.panelSizes[.trackDetails] ?? 300)
             }
         }
@@ -128,7 +157,7 @@ public struct MultiPaneLayoutView: View {
                 
                 // Track Details
                 if viewModel.currentLayout.panelVisibility[.trackDetails] ?? false {
-                    TrackDetailsPanel()
+                    TrackDetailsView(dependencies: trackDetailsDependencies)
                         .frame(width: viewModel.currentLayout.panelSizes[.trackDetails] ?? 300)
                 }
             }
@@ -146,7 +175,7 @@ public struct MultiPaneLayoutView: View {
             }
             
             if viewModel.currentLayout.panelVisibility[.playlistPanel] ?? false {
-                PlaylistPanel()
+                PlaylistPanelView(viewModel: playlistViewModel)
                     .tabItem {
                         Label("Playlist", systemImage: "list.bullet")
                     }
@@ -160,7 +189,7 @@ public struct MultiPaneLayoutView: View {
             }
             
             if viewModel.currentLayout.panelVisibility[.trackDetails] ?? false {
-                TrackDetailsPanel()
+                TrackDetailsView(dependencies: trackDetailsDependencies)
                     .tabItem {
                         Label("Details", systemImage: "info.circle")
                     }
@@ -242,20 +271,6 @@ private struct NowPlayingPanel: View {
             Text("Now Playing")
                 .font(.headline)
             Text("Now playing content will appear here")
-                .foregroundColor(.secondary)
-        }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(Color(NSColor.controlBackgroundColor))
-    }
-}
-
-@MainActor
-private struct TrackDetailsPanel: View {
-    var body: some View {
-        VStack {
-            Text("Track Details")
-                .font(.headline)
-            Text("Track details will appear here")
                 .foregroundColor(.secondary)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)

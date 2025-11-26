@@ -3,7 +3,9 @@
 //
 // Copyright © 2025 CycleRunCode Club. All rights reserved.
 
+import AppKitBridge
 import AudioCore
+import DataLayer
 import os.log
 import Shared
 import SwiftUI
@@ -18,12 +20,16 @@ public struct NowPlayingView: View {
     @StateObject private var viewModel: NowPlayingViewModel
     @State private var isSeeking = false
     @State private var seekPosition: TimeInterval = 0.0
-    
+    @State private var showingFilePicker = false
+    @State private var importError: Error?
+    private let audioEngine: (any AudioEngineProtocol)?
+
     // MARK: - Initialization
-    
+
     /// Initialize with AudioEngine
     /// - Parameter audioEngine: The audio engine to control (optional, creates default if not provided)
     public init(audioEngine: (any AudioEngineProtocol)? = nil) {
+        self.audioEngine = audioEngine
         if let audioEngine = audioEngine {
             _viewModel = StateObject(wrappedValue: NowPlayingViewModel(audioEngine: audioEngine))
         } else {
@@ -35,21 +41,24 @@ public struct NowPlayingView: View {
     
     public var body: some View {
         VStack(spacing: 20) {
+            // Import Button
+            importButtonView
+
             // Track Information
             trackInformationView
-            
+
             // Progress Slider
             progressSliderView
-            
+
             // Playback Controls
             playbackControlsView
-            
+
             // Advanced Controls (Replay, Skip, Loop)
             advancedControlsView
-            
+
             // Volume Control
             volumeControlView
-            
+
             // Playback State Indicator
             playbackStateIndicatorView
         }
@@ -61,11 +70,53 @@ public struct NowPlayingView: View {
         .onDisappear {
             Logger.userInterface.debug("NowPlayingView disappeared")
         }
+        .alert("Import Error", isPresented: .constant(importError != nil)) {
+            Button("OK") {
+                importError = nil
+            }
+        } message: {
+            if let error = importError {
+                Text(error.localizedDescription)
+            }
+        }
     }
+}
+
+private extension NowPlayingView {
+    // MARK: - Import Button View
     
+    var importButtonView: some View {
+        Button {
+            let urls = AudioFileDialog.showOpenPanel(allowsMultipleSelection: true)
+            if !urls.isEmpty {
+                Task {
+                    do {
+                        let engine = audioEngine ?? AudioEngine()
+                        let indexer = LibraryIndexer()
+                        let coordinator = TrackImportCoordinator(
+                            audioEngine: engine,
+                            indexer: indexer
+                        )
+                        try await coordinator.importFiles(urls: urls)
+                        // Auto-play first track if queue was empty
+                        if viewModel.currentTrack == nil, let firstTrack = engine.queue.first {
+                            try await viewModel.loadTrack(firstTrack)
+                            try await viewModel.play()
+                        }
+                    } catch {
+                        importError = error
+                    }
+                }
+            }
+        } label: {
+            Label("Import Files", systemImage: "folder.badge.plus")
+        }
+        .buttonStyle(.bordered)
+    }
+
     // MARK: - Track Information View
-    
-    private var trackInformationView: some View {
+
+    var trackInformationView: some View {
         VStack(spacing: 8) {
             if let track = viewModel.currentTrack {
                 Text(track.title)
@@ -93,7 +144,7 @@ public struct NowPlayingView: View {
     
     // MARK: - Progress Slider View
     
-    private var progressSliderView: some View {
+    var progressSliderView: some View {
         VStack(spacing: 4) {
             Slider(
                 value: isSeeking ? $seekPosition : Binding(
@@ -134,7 +185,7 @@ public struct NowPlayingView: View {
     
     // MARK: - Playback Controls View
     
-    private var playbackControlsView: some View {
+    var playbackControlsView: some View {
         HStack(spacing: 20) {
             // Previous button
             Button {
@@ -192,7 +243,7 @@ public struct NowPlayingView: View {
     
     // MARK: - Volume Control View
     
-    private var volumeControlView: some View {
+    var volumeControlView: some View {
         HStack(spacing: 12) {
             // Mute button
             Button {
@@ -219,7 +270,7 @@ public struct NowPlayingView: View {
     
     // MARK: - Advanced Controls View
     
-    private var advancedControlsView: some View {
+    var advancedControlsView: some View {
         HStack(spacing: 20) {
             // Replay button
             Button {
@@ -296,7 +347,7 @@ public struct NowPlayingView: View {
         }
     }
     
-    private var loopModeHelpText: String {
+    var loopModeHelpText: String {
         switch viewModel.loopMode {
         case .none:
             return "Loop: Off"
@@ -309,7 +360,7 @@ public struct NowPlayingView: View {
     
     // MARK: - Playback State Indicator View
     
-    private var playbackStateIndicatorView: some View {
+    var playbackStateIndicatorView: some View {
         HStack(spacing: 8) {
             if viewModel.isLoading {
                 ProgressView()
@@ -348,7 +399,7 @@ public struct NowPlayingView: View {
     
     // MARK: - Helper Methods
     
-    private func formatTime(_ time: TimeInterval) -> String {
+    func formatTime(_ time: TimeInterval) -> String {
         let minutes = Int(time) / 60
         let seconds = Int(time) % 60
         return String(format: "%d:%02d", minutes, seconds)

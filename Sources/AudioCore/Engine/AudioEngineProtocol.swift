@@ -47,6 +47,14 @@ public protocol AudioEngineProtocol {
     
     // MARK: - Queue Navigation
     
+    /// Add a track to the playback queue
+    /// - Parameter track: The track to add
+    func addToQueue(_ track: Track)
+    
+    /// Remove a track from the playback queue
+    /// - Parameter track: The track to remove
+    func removeFromQueue(_ track: Track)
+    
     /// Play next track in queue
     /// - Throws: AudioEngineError if no next track available
     func playNext() async throws

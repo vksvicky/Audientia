@@ -5,9 +5,9 @@
 //  Shared mocks for library browser tests
 //
 
-import Foundation
-
 @testable import Audientia
+@testable import DataLayer
+import Foundation
 @testable import Shared
 
 actor MockLibraryIndexer: LibraryIndexerProtocol {

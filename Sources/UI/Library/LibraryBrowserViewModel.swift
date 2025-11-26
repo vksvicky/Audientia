@@ -64,15 +64,10 @@ public final class LibraryBrowserViewModel: ObservableObject {
         let configuration = await configurationManager.loadConfiguration()
         apply(configuration: configuration)
         
-        do {
-            let indexedTracks = await indexer.getAllTracks()
-            tracks = sort(tracks: indexedTracks)
-            filteredTracks = tracks
-            hasLoaded = true
-        } catch {
-            lastError = error
-            logger.error("Failed to load library: \(error.localizedDescription)")
-        }
+        let indexedTracks = await indexer.getAllTracks()
+        tracks = sort(tracks: indexedTracks)
+        filteredTracks = tracks
+        hasLoaded = true
         
         isLoading = false
     }
@@ -145,11 +140,11 @@ public final class LibraryBrowserViewModel: ObservableObject {
         let sorted = tracks.sorted { lhs, rhs in
             switch sortOrder {
             case .title:
-                return lhs.title.localizedCaseInsensitiveCompare(rhs.title).isOrderedAscending
+                return lhs.title.localizedCaseInsensitiveCompare(rhs.title) == .orderedAscending
             case .artist:
-                return lhs.artist.localizedCaseInsensitiveCompare(rhs.artist).isOrderedAscending
+                return lhs.artist.localizedCaseInsensitiveCompare(rhs.artist) == .orderedAscending
             case .album:
-                return lhs.album.localizedCaseInsensitiveCompare(rhs.album).isOrderedAscending
+                return lhs.album.localizedCaseInsensitiveCompare(rhs.album) == .orderedAscending
             case .year:
                 return compareOptional(lhs.year, rhs.year)
             case .rating:
