@@ -226,6 +226,10 @@ private nonisolated final class CAudioEngineWrapper {
     }
 }
 
+// MARK: - NativeAudioEngineProtocol
+
+extension CAudioEngine: NativeAudioEngineProtocol {}
+
 // C interface declarations (implemented in CAudioEngineBridge.cpp)
 typealias CAudioEngineRef = OpaquePointer
 

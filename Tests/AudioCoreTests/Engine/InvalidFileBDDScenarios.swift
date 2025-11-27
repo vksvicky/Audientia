@@ -33,10 +33,7 @@ final class InvalidFileBDDScenarios: XCTestCase {
         let mockCoordinator = MockFormatDecodingCoordinator()
         mockCoordinator.shouldFail = true
         mockCoordinator.failureReason = "File is empty"
-        let engine = AudioEngine(
-            fileSystem: mockFileSystem,
-            formatCoordinator: mockCoordinator
-        )
+        let engine = makeEngine(fileSystem: mockFileSystem, coordinator: mockCoordinator)
         
         // When - User tries to play the empty file
         try await engine.loadTrack(track)
@@ -64,10 +61,7 @@ final class InvalidFileBDDScenarios: XCTestCase {
         let mockCoordinator = MockFormatDecodingCoordinator()
         mockCoordinator.shouldFail = true
         mockCoordinator.failureReason = "File is corrupted"
-        let engine = AudioEngine(
-            fileSystem: mockFileSystem,
-            formatCoordinator: mockCoordinator
-        )
+        let engine = makeEngine(fileSystem: mockFileSystem, coordinator: mockCoordinator)
         
         // When - User tries to play the corrupt file
         try await engine.loadTrack(track)
@@ -103,10 +97,7 @@ final class InvalidFileBDDScenarios: XCTestCase {
         let mockCoordinator = MockFormatDecodingCoordinator()
         mockCoordinator.shouldFail = true
         mockCoordinator.failureReason = "Invalid file header"
-        let engine = AudioEngine(
-            fileSystem: mockFileSystem,
-            formatCoordinator: mockCoordinator
-        )
+        let engine = makeEngine(fileSystem: mockFileSystem, coordinator: mockCoordinator)
         
         // When - User tries to play file with invalid header
         try await engine.loadTrack(track)
@@ -140,10 +131,7 @@ final class InvalidFileBDDScenarios: XCTestCase {
         let mockCoordinator = MockFormatDecodingCoordinator()
         mockCoordinator.shouldFail = true
         mockCoordinator.failureReason = "File is truncated or incomplete"
-        let engine = AudioEngine(
-            fileSystem: mockFileSystem,
-            formatCoordinator: mockCoordinator
-        )
+        let engine = makeEngine(fileSystem: mockFileSystem, coordinator: mockCoordinator)
         
         // When - User tries to play truncated file
         try await engine.loadTrack(track)
@@ -171,10 +159,7 @@ final class InvalidFileBDDScenarios: XCTestCase {
         let mockCoordinator = MockFormatDecodingCoordinator()
         mockCoordinator.shouldFail = true
         mockCoordinator.failureReason = "Invalid magic bytes"
-        let engine = AudioEngine(
-            fileSystem: mockFileSystem,
-            formatCoordinator: mockCoordinator
-        )
+        let engine = makeEngine(fileSystem: mockFileSystem, coordinator: mockCoordinator)
         
         // When - User tries to play file with corrupted magic bytes
         try await engine.loadTrack(track)
@@ -202,10 +187,7 @@ final class InvalidFileBDDScenarios: XCTestCase {
         let mockCoordinator = MockFormatDecodingCoordinator()
         mockCoordinator.shouldFail = true
         mockCoordinator.failureReason = "Corruption detected in audio data"
-        let engine = AudioEngine(
-            fileSystem: mockFileSystem,
-            formatCoordinator: mockCoordinator
-        )
+        let engine = makeEngine(fileSystem: mockFileSystem, coordinator: mockCoordinator)
         
         // When - User tries to play file with partial corruption
         try await engine.loadTrack(track)
@@ -233,10 +215,7 @@ final class InvalidFileBDDScenarios: XCTestCase {
         let mockCoordinator = MockFormatDecodingCoordinator()
         mockCoordinator.shouldFail = true
         mockCoordinator.failureReason = "File contains header but no audio data"
-        let engine = AudioEngine(
-            fileSystem: mockFileSystem,
-            formatCoordinator: mockCoordinator
-        )
+        let engine = makeEngine(fileSystem: mockFileSystem, coordinator: mockCoordinator)
         
         // When - User tries to play file with no audio data
         try await engine.loadTrack(track)
@@ -273,10 +252,7 @@ final class InvalidFileBDDScenarios: XCTestCase {
             let mockCoordinator = MockFormatDecodingCoordinator()
             mockCoordinator.shouldFail = true
             mockCoordinator.failureReason = "Invalid file: \(fileType)"
-            let engine = AudioEngine(
-                fileSystem: mockFileSystem,
-                formatCoordinator: mockCoordinator
-            )
+            let engine = makeEngine(fileSystem: mockFileSystem, coordinator: mockCoordinator)
             
             // When - User tries to play invalid file
             try await engine.loadTrack(track)
@@ -308,10 +284,7 @@ final class InvalidFileBDDScenarios: XCTestCase {
             let mockCoordinator = MockFormatDecodingCoordinator()
             mockCoordinator.shouldFail = true
             mockCoordinator.failureReason = "Invalid header"
-            let engine = AudioEngine(
-                fileSystem: mockFileSystem,
-                formatCoordinator: mockCoordinator
-            )
+            let engine = makeEngine(fileSystem: mockFileSystem, coordinator: mockCoordinator)
             
             // When - User tries to play invalid file in \(format) format
             try await engine.loadTrack(track)
@@ -322,5 +295,18 @@ final class InvalidFileBDDScenarios: XCTestCase {
                 "App should handle \(invalidType) \(format) file consistently"
             )
         }
+    }
+
+    // MARK: - Helpers
+
+    private func makeEngine(
+        fileSystem: MockFileSystem,
+        coordinator: MockFormatDecodingCoordinator
+    ) -> AudioEngine {
+        AudioEngine(
+            fileSystem: fileSystem,
+            formatCoordinator: coordinator,
+            nativeEngine: MockNativeAudioEngine()
+        )
     }
 }

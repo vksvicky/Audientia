@@ -17,15 +17,18 @@ enum AudioEngineTestHelpers {
     /// - Returns: AudioEngine configured for testing
     static func createMockEngine(
         withTracks tracks: [Shared.Track] = [],
-        formatCoordinator: FormatDecodingCoordinating = MockFormatDecodingCoordinator()
+        formatCoordinator: FormatDecodingCoordinating = MockFormatDecodingCoordinator(),
+        nativeEngine: NativeAudioEngineProtocol? = nil
     ) -> AudioEngine {
         let mockFileSystem = MockFileSystem()
         for track in tracks {
             mockFileSystem.addFile(track.filePath)
         }
+        let engineBridge = nativeEngine ?? MockNativeAudioEngine()
         return AudioEngine(
             fileSystem: mockFileSystem,
-            formatCoordinator: formatCoordinator
+            formatCoordinator: formatCoordinator,
+            nativeEngine: engineBridge
         )
     }
     

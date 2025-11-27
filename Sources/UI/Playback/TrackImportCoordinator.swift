@@ -58,6 +58,7 @@ public final class TrackImportCoordinator: ObservableObject {
         guard !urls.isEmpty else { return }
 
         var tracks: [Track] = []
+        let shouldAutoPlay = audioEngine.currentTrack == nil && audioEngine.queue.isEmpty
 
         for url in urls {
             // Validate file exists
@@ -91,6 +92,18 @@ public final class TrackImportCoordinator: ObservableObject {
         }
 
         logger.info("Queued \(tracks.count) tracks for playback")
+
+        // Auto-play first track when nothing is currently playing
+        if shouldAutoPlay, let firstTrack = tracks.first {
+            do {
+                try await audioEngine.loadTrack(firstTrack)
+                try await audioEngine.play()
+                logger.info("Auto-started playback for dropped track: \(firstTrack.title, privacy: .public)")
+            } catch {
+                logger.error("Failed to auto-play dropped track: \(error.localizedDescription)")
+                throw TrackImportError.importFailed("Playback failed: \(error.localizedDescription)")
+            }
+        }
     }
 
     /// Create a Track from a file URL

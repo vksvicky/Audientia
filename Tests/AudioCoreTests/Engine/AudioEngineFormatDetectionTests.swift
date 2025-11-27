@@ -27,9 +27,12 @@ final class AudioEngineFormatDetectionTests: XCTestCase {
         )
         let mockCoordinator = MockFormatDecodingCoordinator()
         mockCoordinator.result = expectedFormat
+        let nativeEngine = MockNativeAudioEngine()
+        nativeEngine.nextLoadDuration = expectedFormat.duration
         let engine = AudioEngineTestHelpers.createMockEngine(
             withTracks: [track],
-            formatCoordinator: mockCoordinator
+            formatCoordinator: mockCoordinator,
+            nativeEngine: nativeEngine
         )
 
         // When
@@ -53,7 +56,8 @@ final class AudioEngineFormatDetectionTests: XCTestCase {
         mockCoordinator.error = FormatDecoderError.decoderFailed(decoder: "Mock", reason: "Simulated failure")
         let engine = AudioEngineTestHelpers.createMockEngine(
             withTracks: [track],
-            formatCoordinator: mockCoordinator
+            formatCoordinator: mockCoordinator,
+            nativeEngine: MockNativeAudioEngine()
         )
 
         // When
@@ -77,9 +81,12 @@ final class AudioEngineFormatDetectionTests: XCTestCase {
         )
         let mockFileSystem = MockFileSystem()
         mockFileSystem.addFile(flacURL.path)
+        let nativeEngine = MockNativeAudioEngine()
+        nativeEngine.nextLoadDuration = 0.0
         let engine = AudioEngine(
             fileSystem: mockFileSystem,
-            formatCoordinator: DefaultFormatDecodingCoordinator()
+            formatCoordinator: DefaultFormatDecodingCoordinator(),
+            nativeEngine: nativeEngine
         )
 
         // When
@@ -94,5 +101,45 @@ final class AudioEngineFormatDetectionTests: XCTestCase {
         XCTAssertEqual(detectedFormat.channelCount, 2)
         XCTAssertGreaterThan(detectedFormat.duration, 1.9)
         XCTAssertEqual(engine.duration, detectedFormat.duration, accuracy: 0.0001)
+    }
+
+    /// Given detected metadata supplies duration, playback should run until that duration elapses
+    func testPlaybackUsesDetectedDurationBeforeCompleting() async throws {
+        // Given
+        let track = MockFactory.makeTrack(
+            title: "Detected Duration",
+            duration: 0,
+            filePath: "/tmp/detected-duration.flac"
+        )
+        let detectedFormat = DecodedAudioFormat(
+            codec: "MockFLAC",
+            sampleRate: 44_100,
+            channelCount: 2,
+            bitRate: 320_000,
+            duration: 1.0
+        )
+        let mockCoordinator = MockFormatDecodingCoordinator()
+        mockCoordinator.result = detectedFormat
+        let nativeEngine = MockNativeAudioEngine()
+        nativeEngine.nextLoadDuration = detectedFormat.duration
+        let engine = AudioEngineTestHelpers.createMockEngine(
+            withTracks: [track],
+            formatCoordinator: mockCoordinator,
+            nativeEngine: nativeEngine
+        )
+
+        // When
+        try await engine.loadTrack(track)
+        try await engine.play()
+
+        // Then - before metadata duration elapsed we should still be playing
+        nativeEngine.currentPosition = 0.2
+        try await Task.sleep(nanoseconds: 200_000_000) // 0.2s
+        XCTAssertEqual(engine.state, .playing, "Engine should keep playing until detected duration finishes")
+
+        // After detected duration we should transition to stopped
+        nativeEngine.currentPosition = 1.2
+        try await Task.sleep(nanoseconds: 200_000_000) // allow loop to observe completion
+        XCTAssertEqual(engine.state, .stopped, "Engine should stop once detected duration elapses")
     }
 }

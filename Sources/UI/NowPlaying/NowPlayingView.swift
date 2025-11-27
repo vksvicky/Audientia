@@ -147,10 +147,7 @@ private extension NowPlayingView {
     var progressSliderView: some View {
         VStack(spacing: 4) {
             Slider(
-                value: isSeeking ? $seekPosition : Binding(
-                    get: { viewModel.currentPosition },
-                    set: { _ in }
-                ),
+                value: $seekPosition,
                 in: 0...max(viewModel.duration, 1.0),
                 onEditingChanged: { editing in
                     isSeeking = editing
@@ -162,12 +159,25 @@ private extension NowPlayingView {
                     } else {
                         Task {
                             await viewModel.seek(to: seekPosition)
-                            Logger.userInterface.info("Seek completed to \(seekPosition, privacy: .public) seconds")
+                            Logger.userInterface.info(
+                                "Seek completed to \(seekPosition, privacy: .public) seconds"
+                            )
                         }
                     }
                 }
             )
             .disabled(viewModel.duration <= 0)
+            .onChange(of: viewModel.currentPosition) { _, newValue in
+                if !isSeeking {
+                    seekPosition = newValue
+                }
+            }
+            .onChange(of: viewModel.currentTrack?.id) { _ in
+                seekPosition = viewModel.currentPosition
+            }
+            .onAppear {
+                seekPosition = viewModel.currentPosition
+            }
             
             HStack {
                 Text(formatTime(viewModel.currentPosition))

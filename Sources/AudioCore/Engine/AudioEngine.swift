@@ -25,8 +25,11 @@ public final class AudioEngine: AudioEngineProtocol {
     /// Current playback position in seconds
     public private(set) var currentPosition: TimeInterval = 0.0
     
-    /// Track duration in seconds (prefers detected format metadata)
+    /// Track duration in seconds (prefers native or detected metadata)
     public var duration: TimeInterval {
+        if nativeEngine.duration > 0 {
+            return nativeEngine.duration
+        }
         if let detected = detectedFormat, detected.duration > 0 {
             return detected.duration
         }
@@ -45,11 +48,13 @@ public final class AudioEngine: AudioEngineProtocol {
     /// Current volume (0.0 to 1.0)
     public var volume: Float = 1.0 {
         didSet {
-            self.volume = max(0.0, min(1.0, self.volume))
-            if !self.isMuted {
-                // Volume will be applied to audio engine in future implementation
-                Logger.audio.debug("Volume set to \(self.volume)")
+            let clamped = max(0.0, min(1.0, volume))
+            if clamped != volume {
+                volume = clamped
+                return
             }
+            nativeEngine.setVolume(clamped)
+            Logger.audio.debug("Volume set to \(clamped)")
         }
     }
     
@@ -90,6 +95,7 @@ public final class AudioEngine: AudioEngineProtocol {
     private let positionUpdateInterval: TimeInterval = 0.1 // Update every 100ms
     private let fileSystem: FileSystemProtocol
     private let formatCoordinator: FormatDecodingCoordinating
+    private let nativeEngine: NativeAudioEngineProtocol
     private var currentQueueIndex: Int = -1 // Index of current track in queue history
     private var queueHistory: [Track] = [] // History of played tracks for previous navigation
     private var previousVolume: Float = 1.0 // Volume before muting
@@ -104,6 +110,7 @@ public final class AudioEngine: AudioEngineProtocol {
     public init() {
         self.fileSystem = RealFileSystem()
         self.formatCoordinator = DefaultFormatDecodingCoordinator()
+        self.nativeEngine = CAudioEngine()
         Logger.audio.debug("AudioEngine initialized")
     }
     
@@ -114,11 +121,25 @@ public final class AudioEngine: AudioEngineProtocol {
     @MainActor
     init(
         fileSystem: FileSystemProtocol,
-        formatCoordinator: FormatDecodingCoordinating = DefaultFormatDecodingCoordinator()
+        formatCoordinator: FormatDecodingCoordinating = DefaultFormatDecodingCoordinator(),
+        nativeEngine: NativeAudioEngineProtocol
     ) {
         self.fileSystem = fileSystem
         self.formatCoordinator = formatCoordinator
+        self.nativeEngine = nativeEngine
         Logger.audio.debug("AudioEngine initialized with custom dependencies")
+    }
+    
+    @MainActor
+    convenience init(
+        fileSystem: FileSystemProtocol,
+        formatCoordinator: FormatDecodingCoordinating = DefaultFormatDecodingCoordinator()
+    ) {
+        self.init(
+            fileSystem: fileSystem,
+            formatCoordinator: formatCoordinator,
+            nativeEngine: CAudioEngine()
+        )
     }
     
     deinit {
@@ -157,7 +178,14 @@ public final class AudioEngine: AudioEngineProtocol {
         }
         
         // Reset position
-        currentPosition = 0.0
+        guard await nativeEngine.loadFile(track.filePath) else {
+            let error = AudioEngineError.trackLoadFailed("Unable to open audio file: \(track.filePath)")
+            state = .error(error.localizedDescription)
+            Logger.audio.error("Failed to load track: \(error.localizedDescription)")
+            throw error
+        }
+        
+        currentPosition = nativeEngine.currentPosition
         currentTrack = track
         
         state = .stopped
@@ -192,6 +220,10 @@ public final class AudioEngine: AudioEngineProtocol {
         
         Logger.audio.info("Starting playback: \(track.title)")
         
+        guard await nativeEngine.play() else {
+            throw AudioEngineError.trackLoadFailed("Native audio engine failed to start playback")
+        }
+        
         // Start position tracking
         startPositionTracking()
         
@@ -209,6 +241,7 @@ public final class AudioEngine: AudioEngineProtocol {
         
         Logger.audio.info("Pausing playback")
         stopPositionTracking()
+        nativeEngine.pause()
         state = .paused
     }
     
@@ -228,6 +261,9 @@ public final class AudioEngine: AudioEngineProtocol {
         }
         
         Logger.audio.info("Resuming playback")
+        guard await nativeEngine.play() else {
+            throw AudioEngineError.trackLoadFailed("Native audio engine failed to resume playback")
+        }
         startPositionTracking()
         state = .playing
     }
@@ -237,6 +273,7 @@ public final class AudioEngine: AudioEngineProtocol {
     public func stop() async {
         Logger.audio.info("Stopping playback")
         stopPositionTracking()
+        nativeEngine.stop()
         currentPosition = 0.0
         state = .stopped
     }
@@ -297,18 +334,21 @@ public final class AudioEngine: AudioEngineProtocol {
     /// - Parameter position: Target position in seconds
     /// - Throws: AudioEngineError if seek fails
     public func seek(to position: TimeInterval) async throws {
-        guard let track = currentTrack else {
+        guard currentTrack != nil else {
             throw AudioEngineError.noTrackLoaded
         }
         
         // Clamp position to valid range
-        let clampedPosition = max(0.0, min(position, track.duration))
+        let clampedPosition = max(0.0, min(position, duration))
         
-        guard clampedPosition >= 0.0 && clampedPosition <= track.duration else {
+        guard clampedPosition >= 0.0 && clampedPosition <= duration else {
             throw AudioEngineError.invalidSeekPosition
         }
         
         Logger.audio.debug("Seeking to position: \(clampedPosition)s")
+        guard await nativeEngine.seek(to: clampedPosition) else {
+            throw AudioEngineError.trackLoadFailed("Native audio engine failed to seek to \(clampedPosition)")
+        }
         currentPosition = clampedPosition
     }
     
@@ -406,9 +446,11 @@ public final class AudioEngine: AudioEngineProtocol {
     public func toggleMute() {
         isMuted.toggle()
     }
-    
-    // MARK: - Advanced Playback
-    
+}
+
+// MARK: - Advanced Playback Extension
+
+extension AudioEngine {
     /// Replay current track from beginning
     /// - Throws: AudioEngineError if no track loaded
     public func replay() async throws {
@@ -465,7 +507,6 @@ public final class AudioEngine: AudioEngineProtocol {
         }
         Logger.audio.debug("Loop mode toggled to: \(self.loopMode)")
     }
-    
 }
 
 // MARK: - Position Tracking Extension
@@ -479,11 +520,14 @@ private extension AudioEngine {
                 guard let self = self else { break }
                 
                 if self.state == .playing {
-                    self.currentPosition += self.positionUpdateInterval
+                    self.currentPosition = self.nativeEngine.currentPosition
                     
-                    // Check if we've reached the end
-                    if let track = self.currentTrack,
-                       self.currentPosition >= track.duration {
+                    // Check if we've reached the end using detected duration when available
+                    let playbackDuration = self.duration
+                    if playbackDuration > 0,
+                       self.currentPosition >= playbackDuration {
+                        // Clamp position to avoid runaway values
+                        self.currentPosition = playbackDuration
                         // Auto-advance to next track or stop
                         await self.handleTrackCompletion()
                     }
@@ -539,7 +583,7 @@ private extension AudioEngine {
     }
     
     func handleQueueLoop() async -> Bool {
-        guard !queueHistory.isEmpty else { return false }
+        guard queue.isEmpty, !queueHistory.isEmpty else { return false }
         let firstTrack = queueHistory[0]
         queueHistory.removeAll()
         currentQueueIndex = -1
@@ -560,6 +604,17 @@ private extension AudioEngine {
         guard !self.queue.isEmpty else {
             await stop()
             Logger.audio.info("Queue empty, stopping playback")
+            return
+        }
+        
+        // Check if next track is the same as current track (prevents infinite loop when single track finishes)
+        if let currentTrack = self.currentTrack,
+           let nextTrack = self.queue.first,
+           currentTrack.id == nextTrack.id,
+           self.loopMode == .none {
+            // Same track in queue with no loop mode - stop instead of replaying
+            await stop()
+            Logger.audio.info("Track completed, same track in queue with loop mode off - stopping playback")
             return
         }
         

@@ -102,4 +102,63 @@ final class TrackImportCoordinatorBDDTests: XCTestCase {
         // Then: They should be queued and ready to play
         XCTAssertEqual(mockAudioEngine.queue.count, 2)
     }
+
+    func testAsAUserIDropFilesAndExpectPlaybackToStartWhenIdle() async throws {
+        // Given: The player is idle and I drop a single file
+        let url = URL(fileURLWithPath: "/tmp/autoplay.mp3")
+        FileManager.default.createFile(atPath: url.path, contents: Data("fake audio".utf8), attributes: nil)
+        defer { try? FileManager.default.removeItem(at: url) }
+
+        // Sanity check: engine has no track and empty queue
+        XCTAssertNil(mockAudioEngine.currentTrack)
+        XCTAssertTrue(mockAudioEngine.queue.isEmpty)
+
+        // When: I import the file via drag-and-drop
+        try await coordinator.importFiles(urls: [url])
+
+        // Then: It should be queued and playback should begin automatically
+        XCTAssertEqual(mockAudioEngine.queue.count, 1)
+        XCTAssertTrue(mockAudioEngine.loadTrackCalled, "Import should load the first track for playback")
+        XCTAssertTrue(mockAudioEngine.playCalled, "Import should auto-trigger playback when idle")
+        XCTAssertNotNil(mockAudioEngine.currentTrack, "Current track should be set after auto-play")
+        XCTAssertTrue(mockAudioEngine.currentTrack?.filePath.contains("autoplay") ?? false)
+    }
+
+    func testAsAUserIDropFilesWhileAlreadyPlayingAndExpectNoAutoPlay() async throws {
+        // Given: Playback is already active
+        mockAudioEngine.currentTrack = makeTrack(title: "currently-playing")
+        mockAudioEngine.queue = [makeTrack(title: "queued-track")]
+
+        let url = URL(fileURLWithPath: "/tmp/no-autoplay.flac")
+        FileManager.default.createFile(atPath: url.path, contents: Data("fake audio".utf8), attributes: nil)
+        defer { try? FileManager.default.removeItem(at: url) }
+
+        // When: I drop another file
+        try await coordinator.importFiles(urls: [url])
+
+        // Then: It should queue without interrupting ongoing playback
+        XCTAssertEqual(mockAudioEngine.queue.count, 2)
+        XCTAssertFalse(mockAudioEngine.loadTrackCalled, "Should not reload track when something is already playing")
+        XCTAssertFalse(mockAudioEngine.playCalled, "Should not auto-trigger playback when engine is busy")
+        XCTAssertEqual(mockAudioEngine.currentTrack?.title, "currently-playing")
+    }
+
+    // MARK: - Helpers
+
+    private func makeTrack(title: String) -> Track {
+        Track(
+            id: UUID(),
+            title: title,
+            artist: "Test Artist",
+            album: "Test Album",
+            duration: 180,
+            filePath: "/tmp/\(title).mp3",
+            fileSize: 1024,
+            bitrate: 320_000,
+            sampleRate: 44_100,
+            year: 2025,
+            trackNumber: 1,
+            discNumber: 1
+        )
+    }
 }
