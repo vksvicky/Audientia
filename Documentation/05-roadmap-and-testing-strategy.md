@@ -1,5 +1,42 @@
 # Roadmap and Testing Strategy
 
+## Current Development Phase: UI Wiring & Polish
+
+**Branch**: `19_ui-wiring-and-polish`  
+**Focus**: Complete UI/backend integration, wire all features, fix issues, and polish the user experience.
+
+### Goals
+- [ ] Complete UI/backend wiring for all implemented features
+- [ ] Fix all UI issues and inconsistencies
+- [ ] Ensure all features are accessible and functional from the UI
+- [ ] Polish user experience and interactions
+- [ ] Verify end-to-end workflows
+- [ ] Complete About screen menu wiring QA
+- [ ] Fix any remaining integration issues
+
+### Areas of Focus
+1. **UI/Backend Integration**
+   - Verify all ViewModels properly connect to backend services
+   - Ensure all UI actions trigger correct backend operations
+   - Fix any missing or broken connections
+
+2. **Feature Accessibility**
+   - Ensure all implemented features are accessible from UI
+   - Verify navigation flows work correctly
+   - Check that all settings and preferences are wired
+
+3. **Issue Resolution**
+   - Fix any UI bugs or inconsistencies
+   - Resolve integration issues between components
+   - Address any user experience problems
+
+4. **Polish & Refinement**
+   - Improve UI responsiveness
+   - Enhance visual feedback
+   - Optimize user workflows
+
+---
+
 ## MVP Status
 
 ### Current UI Reality (Nov 2025)
