@@ -27,5 +27,3 @@ struct AboutMenuConfigurator {
         return true
     }
 }
-
-
