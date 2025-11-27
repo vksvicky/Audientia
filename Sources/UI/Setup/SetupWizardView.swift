@@ -14,7 +14,6 @@ import SwiftUI
 /// Setup wizard view similar to MediaMonkey's design
 /// Shows on first launch and can be relaunched from menu
 @MainActor
-// swiftlint:disable:next type_body_length
 public struct SetupWizardView: View {
     @StateObject private var viewModel = SetupWizardViewModel()
     @Environment(\.dismiss) private var dismiss
@@ -55,9 +54,7 @@ public struct SetupWizardView: View {
     
     private var headerView: some View {
         HStack {
-            Text("Setup Wizard")
-                .font(.system(size: 18, weight: .semibold))
-                .foregroundColor(.orange)
+            Text("Setup Wizard").font(.system(size: 18, weight: .semibold)).foregroundColor(.orange)
             Spacer()
         }
         .padding(.horizontal, 20)
@@ -108,20 +105,16 @@ public struct SetupWizardView: View {
     
     private var welcomeStep: some View {
         VStack(alignment: .leading, spacing: 20) {
-            Text("Welcome to Audientia")
-                .font(.system(size: 24, weight: .bold))
-            
+            Text("Welcome to Audientia").font(.system(size: 24, weight: .bold))
             Text("To get started, let's configure your music library and preferences.")
                 .font(.system(size: 14))
                 .foregroundColor(.secondary)
-            
             VStack(alignment: .leading, spacing: 12) {
                 Label("Scan and organize your music library", systemImage: "music.note.list")
                 Label("Configure playback preferences", systemImage: "play.circle")
                 Label("Set up library locations", systemImage: "folder")
             }
             .padding(.top, 20)
-            
             Spacer()
         }
     }
@@ -130,9 +123,7 @@ public struct SetupWizardView: View {
     
     private var librarySetupStep: some View {
         VStack(alignment: .leading, spacing: 20) {
-            Text("Library Setup")
-                .font(.system(size: 24, weight: .bold))
-            
+            Text("Library Setup").font(.system(size: 24, weight: .bold))
             Text("Scan the following locations for media:")
                 .font(.system(size: 14))
                 .foregroundColor(.secondary)
@@ -167,7 +158,10 @@ public struct SetupWizardView: View {
                         .frame(maxWidth: .infinity)
                 } else {
                     ForEach(Array(viewModel.libraryLocations.enumerated()), id: \.element) { _, location in
-                        libraryLocationRow(location)
+                        VStack(spacing: 0) {
+                            libraryLocationRow(location)
+                            Divider()
+                        }
                     }
                 }
             }
@@ -187,47 +181,39 @@ public struct SetupWizardView: View {
         }
     }
     
+    @ViewBuilder
     private func libraryLocationRow(_ location: URL) -> some View {
-        VStack(spacing: 0) {
-            HStack {
-                Image(systemName: "checkmark.circle.fill")
-                    .foregroundColor(.orange)
-                Text(location.path)
-                    .font(.system(size: 12))
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .lineLimit(1)
-                    .truncationMode(.middle)
-                
-                Picker("", selection: Binding(
-                    get: { viewModel.scanSchedule },
-                    set: { viewModel.scanSchedule = $0 }
-                )) {
-                    ForEach(ScanSchedule.allCases, id: \.self) { schedule in
-                        Text(schedule.displayName).tag(schedule)
-                    }
+        HStack {
+            Image(systemName: "checkmark.circle.fill").foregroundColor(.orange)
+            Text(location.path)
+                .font(.system(size: 12))
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .lineLimit(1)
+                .truncationMode(.middle)
+            Picker("", selection: Binding(
+                get: { viewModel.scanSchedule },
+                set: { viewModel.scanSchedule = $0 }
+            )) {
+                ForEach(ScanSchedule.allCases, id: \.self) { schedule in
+                    Text(schedule.displayName).tag(schedule)
                 }
-                .pickerStyle(.menu)
-                .frame(width: 120)
-                
-                Text("Auto detection")
-                    .font(.system(size: 12))
-                    .foregroundColor(.secondary)
-                    .frame(width: 120)
-                
-                Button {
-                    viewModel.removeLibraryLocation(location)
-                } label: {
-                    Image(systemName: "minus.circle.fill")
-                        .foregroundColor(.red)
-                }
-                .buttonStyle(.plain)
-                .frame(width: 30)
             }
-            .padding(.horizontal, 12)
-            .padding(.vertical, 8)
-            
-            Divider()
+            .pickerStyle(.menu)
+            .frame(width: 120)
+            Text("Auto detection")
+                .font(.system(size: 12))
+                .foregroundColor(.secondary)
+                .frame(width: 120)
+            Button {
+                viewModel.removeLibraryLocation(location)
+            } label: {
+                Image(systemName: "minus.circle.fill").foregroundColor(.red)
+            }
+            .buttonStyle(.plain)
+            .frame(width: 30)
         }
+        .padding(.horizontal, 12)
+        .padding(.vertical, 8)
     }
     
     private func addLocation() {
@@ -246,13 +232,10 @@ public struct SetupWizardView: View {
     
     private var preferencesStep: some View {
         VStack(alignment: .leading, spacing: 20) {
-            Text("Preferences")
-                .font(.system(size: 24, weight: .bold))
-            
+            Text("Preferences").font(.system(size: 24, weight: .bold))
             VStack(alignment: .leading, spacing: 16) {
                 Toggle("Enable automatic library scanning", isOn: $viewModel.enableAutoScan)
                     .help("Automatically scan library locations for new music files")
-                
                 if viewModel.enableAutoScan {
                     Picker("Scan Schedule:", selection: $viewModel.scanSchedule) {
                         ForEach(ScanSchedule.allCases, id: \.self) { schedule in
@@ -263,7 +246,6 @@ public struct SetupWizardView: View {
                 }
             }
             .padding(.top, 20)
-            
             Spacer()
         }
     }
@@ -272,9 +254,7 @@ public struct SetupWizardView: View {
     
     private var supportStep: some View {
         VStack(alignment: .leading, spacing: 20) {
-            Text("Support Audientia")
-                .font(.system(size: 24, weight: .bold))
-            
+            Text("Support Audientia").font(.system(size: 24, weight: .bold))
             Text("Audientia is free and open source. If you find it useful, consider supporting the project:")
                 .font(.system(size: 14))
                 .foregroundColor(.secondary)
@@ -340,47 +320,30 @@ public struct SetupWizardView: View {
     // MARK: - Image Loading Helpers
     
     private func loadQRImage() {
-        // Try multiple paths to find the image
-        // Try with subdirectory first
-        if let url = Bundle.main.url(forResource: "qr-code", withExtension: "png", subdirectory: "images"),
-           let image = NSImage(contentsOf: url) {
-            qrImage = image
-            return
-        }
-        // Try without subdirectory (if copied to bundle root)
-        if let url = Bundle.main.url(forResource: "qr-code", withExtension: "png"),
-           let image = NSImage(contentsOf: url) {
-            qrImage = image
-            return
-        }
-        // Try in Resources/images/ directly
-        if let url = Bundle.main.resourceURL?.appendingPathComponent("images/qr-code.png"),
-           let image = NSImage(contentsOf: url) {
-            qrImage = image
-            return
-        }
+        qrImage = loadImage(named: "qr-code")
     }
     
     private func loadBMACImage() {
-        // Try multiple paths to find the image
+        bmacImage = loadImage(named: "bmac")
+    }
+    
+    private func loadImage(named name: String) -> NSImage? {
         // Try with subdirectory first
-        if let url = Bundle.main.url(forResource: "bmac", withExtension: "png", subdirectory: "images"),
+        if let url = Bundle.main.url(forResource: name, withExtension: "png", subdirectory: "images"),
            let image = NSImage(contentsOf: url) {
-            bmacImage = image
-            return
+            return image
         }
-        // Try without subdirectory (if copied to bundle root)
-        if let url = Bundle.main.url(forResource: "bmac", withExtension: "png"),
+        // Try without subdirectory
+        if let url = Bundle.main.url(forResource: name, withExtension: "png"),
            let image = NSImage(contentsOf: url) {
-            bmacImage = image
-            return
+            return image
         }
         // Try in Resources/images/ directly
-        if let url = Bundle.main.resourceURL?.appendingPathComponent("images/bmac.png"),
+        if let url = Bundle.main.resourceURL?.appendingPathComponent("images/\(name).png"),
            let image = NSImage(contentsOf: url) {
-            bmacImage = image
-            return
+            return image
         }
+        return nil
     }
     
     // MARK: - Footer
