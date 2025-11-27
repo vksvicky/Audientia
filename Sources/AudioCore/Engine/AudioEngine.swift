@@ -449,7 +449,6 @@ public final class AudioEngine: AudioEngineProtocol {
 }
 
 // MARK: - Advanced Playback Extension
-
 extension AudioEngine {
     /// Replay current track from beginning
     /// - Throws: AudioEngineError if no track loaded
@@ -510,7 +509,6 @@ extension AudioEngine {
 }
 
 // MARK: - Position Tracking Extension
-
 private extension AudioEngine {
     func startPositionTracking() {
         stopPositionTracking()
