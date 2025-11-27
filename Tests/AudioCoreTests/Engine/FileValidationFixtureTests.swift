@@ -9,6 +9,7 @@
 //
 
 @testable import AudioCore
+import os.log
 @testable import Shared
 import XCTest
 
@@ -61,7 +62,7 @@ final class FileValidationFixtureTests: XCTestCase {
             XCTFail("No valid file fixtures found for any format. Missing fixtures for: \(failedFormats.joined(separator: ", ")). Run: Scripts/generate_audio_test_fixtures.sh")
         } else if !failedFormats.isEmpty {
             // Log warning about missing fixtures but don't fail the test
-            print("⚠️  Warning: Missing fixtures for formats: \(failedFormats.joined(separator: ", ")). Run: Scripts/generate_audio_test_fixtures.sh")
+            Logger.testing.warning("Missing fixtures for formats: \(failedFormats.joined(separator: ", "), privacy: .public). Run: Scripts/generate_audio_test_fixtures.sh")
         }
     }
     

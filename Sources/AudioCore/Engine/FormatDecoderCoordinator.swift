@@ -9,7 +9,7 @@
 import AVFoundation
 import Foundation
 import os.log
-@preconcurrency import Shared
+import Shared
 
 // MARK: - Audio Format Model
 

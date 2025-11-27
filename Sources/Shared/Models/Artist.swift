@@ -4,7 +4,9 @@
 // Copyright © 2025 CycleRunCode Club. All rights reserved.
 
 import Foundation
-import os.log
+import os
+
+private let artistLogger = Logger(subsystem: Bundle.main.bundleIdentifier ?? "Audientia", category: "ArtistModel")
 
 /// Represents an artist in the library
 public struct Artist: Codable, Equatable, Hashable, Identifiable {
@@ -44,7 +46,7 @@ public struct Artist: Codable, Equatable, Hashable, Identifiable {
 
         // Log after initialization to avoid capturing mutating self
         let artistName = name
-        Logger.shared.debug("Artist created: \(artistName)")
+        artistLogger.debug("Artist created: \(artistName)")
     }
 
     // MARK: - Hashable

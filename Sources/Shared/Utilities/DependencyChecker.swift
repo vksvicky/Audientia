@@ -43,7 +43,7 @@ public struct DependencyInfo {
 
 /// Utility to check for required external dependencies
 public actor DependencyChecker {
-    private let logger = Logger(subsystem: "club.cycleruncode.audientia", category: "DependencyChecker")
+    private let logger = Logger.shared
     
     public init() {}
     

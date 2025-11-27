@@ -70,6 +70,9 @@ public final class NowPlayingViewModel: ObservableObject {
         audioEngine.duration
     }
     
+    /// Playback queue
+    @Published public private(set) var queue: [Shared.Track] = []
+    
     // MARK: - Private Properties
     
     private let audioEngine: AudioEngineProtocol
@@ -128,6 +131,7 @@ public final class NowPlayingViewModel: ObservableObject {
         currentTrack = audioEngine.currentTrack
         playbackState = audioEngine.state
         currentPosition = audioEngine.currentPosition
+        queue = audioEngine.queue
         
         // Calculate progress
         let duration = self.duration

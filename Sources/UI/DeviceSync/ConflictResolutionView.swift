@@ -6,6 +6,7 @@
 //
 
 import DataLayer
+import os.log
 import Shared
 import SwiftUI
 
@@ -245,7 +246,7 @@ public class ConflictResolutionViewModel: ObservableObject {
             _ = try await manager.resolveConflicts(jobId: job.id, resolutions: syncResolutions)
         } catch {
             // Handle error
-            print("Failed to apply resolutions: \(error)")
+            Logger.deviceSync.error("Failed to apply resolutions: \(error.localizedDescription)")
         }
     }
 }

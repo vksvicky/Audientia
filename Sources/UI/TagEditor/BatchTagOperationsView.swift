@@ -8,7 +8,6 @@
 //
 
 import MetadataEngine
-import os.log
 import Shared
 import SwiftUI
 

@@ -61,6 +61,11 @@ public struct NowPlayingView: View {
 
             // Playback State Indicator
             playbackStateIndicatorView
+            
+            // Queue Display
+            if !viewModel.queue.isEmpty {
+                queueView
+            }
         }
         .padding()
         .frame(minWidth: 400, minHeight: 300)
@@ -366,6 +371,58 @@ private extension NowPlayingView {
         case .queue:
             return "Loop: Queue"
         }
+    }
+    
+    // MARK: - Queue View
+    
+    var queueView: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            HStack {
+                Text("Queue (\(viewModel.queue.count))")
+                    .font(.headline)
+                Spacer()
+            }
+            
+            Divider()
+            
+            List {
+                ForEach(Array(viewModel.queue.enumerated()), id: \.element.id) { index, track in
+                    HStack {
+                        Text("\(index + 1).")
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                            .frame(width: 30, alignment: .trailing)
+                        
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text(track.title)
+                                .font(.body)
+                                .lineLimit(1)
+                            
+                            Text(track.artist)
+                                .font(.caption)
+                                .foregroundColor(.secondary)
+                                .lineLimit(1)
+                        }
+                        
+                        Spacer()
+                        
+                        Button {
+                            viewModel.removeFromQueue(track)
+                        } label: {
+                            Image(systemName: "xmark.circle.fill")
+                                .foregroundColor(.secondary)
+                        }
+                        .buttonStyle(.plain)
+                        .help("Remove from queue")
+                    }
+                    .padding(.vertical, 2)
+                }
+            }
+            .frame(maxHeight: 200)
+        }
+        .padding()
+        .background(Color(NSColor.controlBackgroundColor))
+        .cornerRadius(8)
     }
     
     // MARK: - Playback State Indicator View

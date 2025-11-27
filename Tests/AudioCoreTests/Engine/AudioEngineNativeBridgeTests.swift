@@ -186,54 +186,6 @@ final class AudioEngineNativeBridgeTests: XCTestCase {
         try await Task.sleep(nanoseconds: 200_000_000)
         XCTAssertEqual(engine.currentTrack?.id, track1.id)
     }
-}
-
-// MARK: - Helpers
-
-private struct EngineTestFixture {
-    let engine: AudioEngine
-    let nativeEngine: MockNativeAudioEngine
-    let track: Track
-}
-
-private extension AudioEngineNativeBridgeTests {
-    func makeLoadedEngine(
-        title: String,
-        duration: TimeInterval,
-        path: String
-    ) async throws -> EngineTestFixture {
-        let track = MockFactory.makeTrack(title: title, duration: duration, filePath: path)
-        let fileSystem = MockFileSystem()
-        fileSystem.addFile(track.filePath)
-        let nativeEngine = MockNativeAudioEngine()
-        nativeEngine.duration = duration
-        nativeEngine.nextLoadDuration = duration
-        let engine = AudioEngine(
-            fileSystem: fileSystem,
-            formatCoordinator: MockFormatDecodingCoordinator(),
-            nativeEngine: nativeEngine
-        )
-        try await engine.loadTrack(track)
-        return EngineTestFixture(engine: engine, nativeEngine: nativeEngine, track: track)
-    }
-
-    func makePlayingEngine(
-        title: String,
-        duration: TimeInterval = 120
-    ) async throws -> EngineTestFixture {
-        let fixture = try await makeLoadedEngine(
-            title: title,
-            duration: duration,
-            path: "/tmp/\(UUID()).mp3"
-        )
-        try await fixture.engine.play()
-        return fixture
-    }
-
-    func simulateCompletion(nativeEngine: MockNativeAudioEngine) async {
-        nativeEngine.currentPosition = nativeEngine.duration
-        try? await Task.sleep(nanoseconds: 300_000_000)
-    }
 
     // MARK: - Single Track Completion Tests
 
@@ -313,5 +265,53 @@ private extension AudioEngineNativeBridgeTests {
         // Loop mode handling happens before normal completion, so we check that replay was called
         // The replay() method calls seek(to: 0.0) and play(), which we can verify
         XCTAssertGreaterThanOrEqual(nativeEngine.seekCalls.count, 1, "Should seek to beginning for replay")
+    }
+}
+
+// MARK: - Helpers
+
+private struct EngineTestFixture {
+    let engine: AudioEngine
+    let nativeEngine: MockNativeAudioEngine
+    let track: Track
+}
+
+private extension AudioEngineNativeBridgeTests {
+    func makeLoadedEngine(
+        title: String,
+        duration: TimeInterval,
+        path: String
+    ) async throws -> EngineTestFixture {
+        let track = MockFactory.makeTrack(title: title, duration: duration, filePath: path)
+        let fileSystem = MockFileSystem()
+        fileSystem.addFile(track.filePath)
+        let nativeEngine = MockNativeAudioEngine()
+        nativeEngine.duration = duration
+        nativeEngine.nextLoadDuration = duration
+        let engine = AudioEngine(
+            fileSystem: fileSystem,
+            formatCoordinator: MockFormatDecodingCoordinator(),
+            nativeEngine: nativeEngine
+        )
+        try await engine.loadTrack(track)
+        return EngineTestFixture(engine: engine, nativeEngine: nativeEngine, track: track)
+    }
+
+    func makePlayingEngine(
+        title: String,
+        duration: TimeInterval = 120
+    ) async throws -> EngineTestFixture {
+        let fixture = try await makeLoadedEngine(
+            title: title,
+            duration: duration,
+            path: "/tmp/\(UUID()).mp3"
+        )
+        try await fixture.engine.play()
+        return fixture
+    }
+
+    func simulateCompletion(nativeEngine: MockNativeAudioEngine) async {
+        nativeEngine.currentPosition = nativeEngine.duration
+        try? await Task.sleep(nanoseconds: 300_000_000)
     }
 }

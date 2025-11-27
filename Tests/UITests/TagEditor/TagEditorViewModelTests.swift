@@ -8,6 +8,7 @@
 //
 
 @testable import MetadataEngine
+import os.log
 @testable import Shared
 import XCTest
 
@@ -327,7 +328,7 @@ final class TagEditorViewModelTests: XCTestCase {
         }
         
         let average = times.reduce(0, +) / Double(times.count)
-        print("Average save time: \(String(format: "%.2f", average * 1000))ms")
+        Logger.testing.info("Average save time: \(String(format: "%.2f", average * 1000), privacy: .public)ms")
         
         // Then - Should complete quickly
         XCTAssertLessThan(average, 0.1, "Save should complete in reasonable time")

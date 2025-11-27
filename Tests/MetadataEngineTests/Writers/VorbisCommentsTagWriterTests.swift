@@ -8,6 +8,7 @@
 //
 
 @testable import MetadataEngine
+import os.log
 @testable import Shared
 import XCTest
 
@@ -380,7 +381,7 @@ final class VorbisCommentsTagWriterTests: XCTestCase {
         }
         
         let average = times.reduce(0, +) / Double(times.count)
-        print("Average Vorbis Comments write time: \(String(format: "%.2f", average * 1000))ms")
+        Logger.testing.info("Average Vorbis Comments write time: \(String(format: "%.2f", average * 1000), privacy: .public)ms")
         
         // Verify performance is reasonable (< 100ms per write)
         XCTAssertLessThan(average, 0.1, "Tag write should complete in reasonable time")

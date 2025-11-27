@@ -20,7 +20,7 @@ public final class FingerprintStatusViewModel: ObservableObject {
     
     private let acoustIDService: any AcoustIDServicing
     private let fingerprintCache: (any FingerprintCacheProtocol)?
-    private let logger = Logger(subsystem: "club.cycleruncode.audientia", category: "FingerprintStatus")
+    private let logger = Logger.userInterface
     
     public enum FingerprintStatus: Equatable {
         case unknown

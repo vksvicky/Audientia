@@ -8,6 +8,7 @@
 //
 
 @testable import MetadataEngine
+import os.log
 @testable import Shared
 import XCTest
 
@@ -318,7 +319,7 @@ final class BatchTagOperationsTests: XCTestCase {
         }
         
         let average = times.reduce(0, +) / Double(times.count)
-        print("Average batch update time for 50 tracks: \(String(format: "%.2f", average * 1000))ms")
+        Logger.testing.info("Average batch update time for 50 tracks: \(String(format: "%.2f", average * 1000), privacy: .public)ms")
         
         // Verify performance is reasonable (< 5 seconds for 50 tracks)
         XCTAssertLessThan(average, 5.0, "Batch update should complete in reasonable time")

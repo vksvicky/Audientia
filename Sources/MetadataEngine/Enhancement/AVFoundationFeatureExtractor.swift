@@ -9,12 +9,12 @@ import AVFoundation
 import CoreMedia
 import Foundation
 import os.log
-@preconcurrency import Shared
+import Shared
 
 /// AVFoundation-based audio feature extractor
 /// Extracts basic audio features (spectral features, RMS, etc.) for ML classification
 public actor AVFoundationFeatureExtractor: AudioFeatureExtractorProtocol {
-    private let logger = Logger(subsystem: "club.cycleruncode.audientia", category: "FeatureExtractor")
+    private let logger = Logger.metadata
     
     public init() {}
     

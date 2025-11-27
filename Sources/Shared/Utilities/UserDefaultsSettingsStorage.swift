@@ -15,7 +15,6 @@ import os.log
 public actor UserDefaultsSettingsStorage: SettingsStorageProtocol {
     private let userDefaults: UserDefaults
     private let keyPrefix: String
-    private let logger = Logger.shared
     
     public init(userDefaults: UserDefaults = .standard, keyPrefix: String = "audientia.settings.") {
         self.userDefaults = userDefaults
@@ -40,7 +39,9 @@ public actor UserDefaultsSettingsStorage: SettingsStorageProtocol {
         do {
             return try decoder.decode(type, from: data)
         } catch {
-            logger.error("Failed to decode type \(String(describing: type)) for key \(key, privacy: .public): \(error.localizedDescription)")
+            Logger.shared.error(
+                "Failed to decode type \(String(describing: type)) for key \(key): \(error.localizedDescription)"
+            )
             return nil
         }
     }

@@ -7,12 +7,11 @@
 
 import Foundation
 import os.log
-@preconcurrency import Shared
-
+import Shared
 /// Real implementation of FingerprintGeneratorProtocol using FFmpeg's chromaprint filter or fpcalc
 public actor ChromaprintFingerprintGenerator: FingerprintGeneratorProtocol {
     
-    private let logger = Logger(subsystem: "club.cycleruncode.audientia", category: "Chromaprint")
+    private let logger = Logger.metadata
     private var ffmpegPath: String?
     private var fpcalcPath: String?
     private var availabilityChecked = false

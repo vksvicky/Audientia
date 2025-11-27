@@ -17,7 +17,7 @@ public struct SplashScreenView: View {
     @ObservedObject private var settings: AppSettings
     @State private var isVisible = true
     
-    private let splashDuration: TimeInterval = 15.0 // Show for 15 seconds
+    private let splashDuration: TimeInterval = 5.0 // Show for 5 seconds
     
     public init(settings: AppSettings = AppSettings.shared) {
         self.settings = settings

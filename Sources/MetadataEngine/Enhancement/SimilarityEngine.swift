@@ -11,7 +11,7 @@ import os.log
 
 /// Similarity calculation engine implementation
 public actor SimilarityEngine: SimilarityEngineProtocol {
-    private let logger = Logger(subsystem: "club.cycleruncode.audientia", category: "SimilarityEngine")
+    private let logger = Logger.metadata
     private let classifier: any MLClassifierProtocol
     private var embeddingCache: [UUID: [Float]] = [:]
     

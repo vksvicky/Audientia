@@ -7,6 +7,7 @@
 //
 
 @testable import DataLayer
+import os.log
 @testable import Shared
 import XCTest
 
@@ -271,7 +272,7 @@ final class PersistentSyncJobQueueTests: XCTestCase {
         }
         
         let average = times.reduce(0, +) / Double(times.count)
-        print("Average enqueue time for 100 jobs: \(String(format: "%.4f", average * 1000))ms")
+        Logger.testing.info("Average enqueue time for 100 jobs: \(String(format: "%.4f", average * 1000), privacy: .public)ms")
         
         // Verify performance is reasonable (< 1 second for 100 enqueues)
         XCTAssertLessThan(average, 1.0, "Enqueue should complete in reasonable time")
@@ -304,7 +305,7 @@ final class PersistentSyncJobQueueTests: XCTestCase {
         }
         
         let average = times.reduce(0, +) / Double(times.count)
-        print("Average dequeue time for 100 jobs: \(String(format: "%.4f", average * 1000))ms")
+        Logger.testing.info("Average dequeue time for 100 jobs: \(String(format: "%.4f", average * 1000), privacy: .public)ms")
         
         // Verify performance is reasonable (< 1 second for 100 dequeues)
         XCTAssertLessThan(average, 1.0, "Dequeue should complete in reasonable time")

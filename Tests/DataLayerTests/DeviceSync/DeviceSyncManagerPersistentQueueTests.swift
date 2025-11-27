@@ -6,6 +6,7 @@
 //
 
 @testable import DataLayer
+import os.log
 @testable import Shared
 import XCTest
 
@@ -24,7 +25,7 @@ final class DeviceSyncManagerPersistentQueueTests: XCTestCase {
         dbURL = tempDir.appendingPathComponent("test_queue_\(UUID().uuidString).db")
         queue = PersistentSyncJobQueue(databaseURL: dbURL)
         let persistedCount = await queue.debugJobCount()
-        print("debug count after reopening queue = \(persistedCount)")
+        Logger.testing.debug("debug count after reopening queue = \(persistedCount, privacy: .public)")
         discovery = MockDeviceDiscovery()
         connector = MockDeviceConnector()
         conflictDetector = MockConflictDetector()

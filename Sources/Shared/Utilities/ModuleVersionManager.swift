@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import os.log
 
 /// Represents a module with its version and file path
 public struct ModuleInfo: Codable, Equatable {
@@ -77,12 +78,12 @@ public class ModuleVersionManager {
         let olderVersions = Array(allVersions[1...])
 
         // Log warning about conflicts
-        print("⚠️ WARNING: Multiple versions of \(moduleName) detected:")
-        print("   Latest: \(latest.version) at \(latest.filePath)")
+        Logger.shared.warning("Multiple versions of \(moduleName) detected")
+        Logger.shared.info("Latest: \(latest.version.description) at \(latest.filePath)")
         for oldVersion in olderVersions {
-            print("   Older: \(oldVersion.version) at \(oldVersion.filePath)")
+            Logger.shared.info("Older: \(oldVersion.version.description) at \(oldVersion.filePath)")
         }
-        print("   Removing older versions and keeping: \(latest.version)")
+        Logger.shared.info("Removing older versions and keeping: \(latest.version.description)")
 
         // Delete older version files
         for oldVersion in olderVersions {
@@ -114,13 +115,13 @@ public class ModuleVersionManager {
 
         // Check if file exists
         guard fileManager.fileExists(atPath: filePath) else {
-            print("   File not found: \(filePath), skipping deletion")
+            Logger.shared.warning("File not found: \(filePath), skipping deletion")
             return
         }
 
         // Delete the file
         try fileManager.removeItem(atPath: filePath)
-        print("   ✓ Deleted: \(filePath)")
+        Logger.shared.info("Deleted: \(filePath)")
 
         // Also try to delete associated files (e.g., .dSYM, headers, etc.)
         let basePath = (filePath as NSString).deletingLastPathComponent

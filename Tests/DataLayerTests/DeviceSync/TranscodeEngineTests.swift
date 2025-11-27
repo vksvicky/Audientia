@@ -6,6 +6,7 @@
 //
 
 @testable import DataLayer
+import os.log
 @testable import Shared
 import XCTest
 
@@ -281,7 +282,7 @@ final class TranscodeEngineTests: XCTestCase {
         }
         
         let average = times.reduce(0, +) / Double(times.count)
-        print("Average transcode time: \(String(format: "%.4f", average * 1000))ms")
+        Logger.testing.info("Average transcode time: \(String(format: "%.4f", average * 1000), privacy: .public)ms")
         
         // Real-time factor should be < 0.5x (transcode 3 min file in < 1.5 min)
         XCTAssertLessThan(average, 90.0, "Transcoding should complete in reasonable time")

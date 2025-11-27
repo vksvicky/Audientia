@@ -76,5 +76,3 @@ updateVersions()
 // Write to output file
 let outputFile = "\(projectRoot)/Shared/Utilities/AutoVersionUpdate.swift"
 try? swiftCode.write(toFile: outputFile, atomically: true, encoding: .utf8)
-
-print("Version update code generated at: \(outputFile)")

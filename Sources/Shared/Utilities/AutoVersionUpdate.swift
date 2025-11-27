@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import os.log
 
 /// Auto-updates app version from build files
 public func updateAppVersionFromBuild() {
@@ -69,7 +70,7 @@ public func scanAndRegisterModules() {
         do {
             try moduleManager.scanAndRegisterModules(in: path)
         } catch {
-            print("Failed to scan modules in \(path): \(error)")
+            Logger.shared.error("Failed to scan and register modules in \(path): \(error.localizedDescription)")
         }
     }
 }

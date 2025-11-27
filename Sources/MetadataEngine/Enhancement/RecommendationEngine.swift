@@ -11,7 +11,7 @@ import os.log
 
 /// Recommendation engine implementation
 public actor RecommendationEngine: RecommendationEngineProtocol {
-    private let logger = Logger(subsystem: "club.cycleruncode.audientia", category: "RecommendationEngine")
+    private let logger = Logger.metadata
     private let similarityEngine: any SimilarityEngineProtocol
     private let listeningHistory: ListeningHistoryProtocol?
     private var allTracks: [Track] = []

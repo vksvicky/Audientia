@@ -13,7 +13,7 @@ import os.log
 /// Core ML-based classifier implementation
 /// Uses Core ML models for genre/mood classification and embedding generation
 public actor CoreMLClassifier: MLClassifierProtocol {
-    private let logger = Logger(subsystem: "club.cycleruncode.audientia", category: "MLClassifier")
+    private let logger = Logger.metadata
     private let featureExtractor: AudioFeatureExtractorProtocol
     private var genreModel: MLModel?
     private var moodModel: MLModel?
