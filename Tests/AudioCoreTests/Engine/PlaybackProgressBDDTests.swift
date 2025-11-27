@@ -22,7 +22,7 @@ final class PlaybackProgressBDDTests: XCTestCase {
     func testUserPlaysTrackAndSeesProgressUpdate() async throws {
         // Given - User has a track loaded
         let track = MockFactory.makeTrack(title: "Test Song", duration: 180.0)
-        let engine = try await AudioEngineTestHelpers.createEngineWithTrack(track)
+        let (engine, nativeEngine) = try await AudioEngineTestHelpers.createEngineWithTrackAndNativeEngine(track)
         
         // When - User plays the track
         try await engine.play()
@@ -31,7 +31,8 @@ final class PlaybackProgressBDDTests: XCTestCase {
         XCTAssertEqual(engine.progress, 0.0, accuracy: 0.01, "Progress should start at 0")
         XCTAssertEqual(engine.currentPosition, 0.0, accuracy: 0.01, "Position should start at 0")
         
-        // Wait a short time for position tracking to update
+        // Simulate position advancement (mock doesn't auto-advance)
+        nativeEngine.currentPosition = 0.1
         try await Task.sleep(nanoseconds: 200_000_000) // 200ms
         
         // Then - Progress should have advanced
@@ -44,10 +45,11 @@ final class PlaybackProgressBDDTests: XCTestCase {
     func testUserPausesTrackAndProgressStops() async throws {
         // Given - User has a playing track
         let track = MockFactory.makeTrack(duration: 180.0)
-        let engine = try await AudioEngineTestHelpers.createEngineWithTrack(track)
+        let (engine, nativeEngine) = try await AudioEngineTestHelpers.createEngineWithTrackAndNativeEngine(track)
         try await engine.play()
         
-        // Wait for position to advance
+        // Simulate position advancement
+        nativeEngine.currentPosition = 5.0
         try await Task.sleep(nanoseconds: 200_000_000) // 200ms
         let positionBeforePause = engine.currentPosition
         XCTAssertGreaterThan(positionBeforePause, 0.0, "Position should have advanced")
@@ -55,7 +57,7 @@ final class PlaybackProgressBDDTests: XCTestCase {
         // When - User pauses the track
         await engine.pause()
         
-        // Wait a bit more
+        // Position should not advance when paused (don't update nativeEngine.currentPosition)
         try await Task.sleep(nanoseconds: 200_000_000) // 200ms
         
         // Then - Position should remain the same (not advancing)
@@ -69,8 +71,9 @@ final class PlaybackProgressBDDTests: XCTestCase {
     func testUserResumesTrackAndProgressContinues() async throws {
         // Given - User has a paused track
         let track = MockFactory.makeTrack(duration: 180.0)
-        let engine = try await AudioEngineTestHelpers.createEngineWithTrack(track)
+        let (engine, nativeEngine) = try await AudioEngineTestHelpers.createEngineWithTrackAndNativeEngine(track)
         try await engine.play()
+        nativeEngine.currentPosition = 5.0
         try await Task.sleep(nanoseconds: 200_000_000) // 200ms
         await engine.pause()
         let positionAtPause = engine.currentPosition
@@ -78,7 +81,8 @@ final class PlaybackProgressBDDTests: XCTestCase {
         // When - User resumes the track
         try await engine.resume()
         
-        // Wait for position to advance
+        // Simulate position advancement after resume
+        nativeEngine.currentPosition = 7.0
         try await Task.sleep(nanoseconds: 200_000_000) // 200ms
         
         // Then - Position should have advanced from pause position
@@ -105,19 +109,14 @@ final class PlaybackProgressBDDTests: XCTestCase {
     func testUserPlaysTrackToCompletionAndProgressReaches100() async throws {
         // Given - User has a short track (1 second for testing)
         let track = MockFactory.makeTrack(title: "Short Track", duration: 1.0)
-        let engine = try await AudioEngineTestHelpers.createEngineWithTrack(track)
+        let (engine, nativeEngine) = try await AudioEngineTestHelpers.createEngineWithTrackAndNativeEngine(track)
         
         // When - User plays the track
         try await engine.play()
         
-        // Wait for track to be near completion with polling (more robust in CI)
-        // Poll until progress reaches at least 85% or track completes
-        var attempts = 0
-        let maxAttempts = 15 // 1.5 seconds max wait
-        while engine.progress < 0.85 && engine.state == .playing && attempts < maxAttempts {
-            try await Task.sleep(nanoseconds: 100_000_000) // 100ms
-            attempts += 1
-        }
+        // Simulate track approaching completion
+        nativeEngine.currentPosition = 0.9 // 90% of 1.0 second track
+        try await Task.sleep(nanoseconds: 200_000_000) // 200ms
         
         // Then - Progress should be at or near 100% before completion
         // Note: After completion, the engine resets position to 0.0, so we check before completion
@@ -180,10 +179,11 @@ final class PlaybackProgressBDDTests: XCTestCase {
     func testUserSeeksWhilePlayingAndProgressUpdates() async throws {
         // Given - User has a playing track
         let track = MockFactory.makeTrack(duration: 180.0)
-        let engine = try await AudioEngineTestHelpers.createEngineWithTrack(track)
+        let (engine, nativeEngine) = try await AudioEngineTestHelpers.createEngineWithTrackAndNativeEngine(track)
         try await engine.play()
         
-        // Wait for some playback
+        // Simulate some playback
+        nativeEngine.currentPosition = 5.0
         try await Task.sleep(nanoseconds: 200_000_000) // 200ms
         let positionBeforeSeek = engine.currentPosition
         XCTAssertGreaterThan(positionBeforeSeek, 0.0, "Position should have advanced")
@@ -258,14 +258,18 @@ final class PlaybackProgressBDDTests: XCTestCase {
     func testUserPlaysTrackAndProgressUpdatesSmoothly() async throws {
         // Given - User has a playing track
         let track = MockFactory.makeTrack(duration: 180.0)
-        let engine = try await AudioEngineTestHelpers.createEngineWithTrack(track)
+        let (engine, nativeEngine) = try await AudioEngineTestHelpers.createEngineWithTrackAndNativeEngine(track)
         try await engine.play()
         
         // When - User monitors progress over time
         var previousProgress = engine.progress
         var progressDeltas: [Double] = []
         
-        for _ in 0..<5 {
+        // Simulate smooth position advancement
+        var currentPosition: TimeInterval = 0.0
+        for i in 0..<5 {
+            currentPosition += 2.0 // Advance by 2 seconds each iteration
+            nativeEngine.currentPosition = currentPosition
             try await Task.sleep(nanoseconds: 200_000_000) // 200ms between checks
             let currentProgress = engine.progress
             let delta = currentProgress - previousProgress

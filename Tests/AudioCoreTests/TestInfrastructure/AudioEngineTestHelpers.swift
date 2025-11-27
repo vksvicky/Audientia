@@ -42,7 +42,10 @@ enum AudioEngineTestHelpers {
     /// - Parameter track: Track to load
     /// - Returns: AudioEngine with track loaded
     static func createEngineWithTrack(_ track: Shared.Track) async throws -> AudioEngine {
-        let engine = createMockEngine(withTracks: [track])
+        let nativeEngine = MockNativeAudioEngine()
+        // Set native engine duration to match track duration for accurate testing
+        nativeEngine.nextLoadDuration = track.duration > 0 ? track.duration : nil
+        let engine = createMockEngine(withTracks: [track], nativeEngine: nativeEngine)
         try await engine.loadTrack(track)
         return engine
     }
@@ -56,5 +59,33 @@ enum AudioEngineTestHelpers {
             engine.addToQueue(track)
         }
         return engine
+    }
+    
+    /// Create an AudioEngine with mock file system and tracks already in queue, returning both engine and native engine
+    /// - Parameter tracks: Array of tracks to add to queue and mock file system
+    /// - Returns: Tuple with AudioEngine and MockNativeAudioEngine for position manipulation in tests
+    static func createMockEngineWithQueueAndNativeEngine(_ tracks: [Shared.Track]) -> (engine: AudioEngine, nativeEngine: MockNativeAudioEngine) {
+        let nativeEngine = MockNativeAudioEngine()
+        // Set duration for each track when loaded
+        if let firstTrack = tracks.first {
+            nativeEngine.nextLoadDuration = firstTrack.duration
+        }
+        let engine = createMockEngine(withTracks: tracks, nativeEngine: nativeEngine)
+        for track in tracks {
+            engine.addToQueue(track)
+        }
+        return (engine, nativeEngine)
+    }
+    
+    /// Create an AudioEngine with a track already loaded, returning both engine and native engine
+    /// - Parameter track: Track to load
+    /// - Returns: Tuple with AudioEngine and MockNativeAudioEngine for position manipulation in tests
+    static func createEngineWithTrackAndNativeEngine(_ track: Shared.Track) async throws -> (engine: AudioEngine, nativeEngine: MockNativeAudioEngine) {
+        let nativeEngine = MockNativeAudioEngine()
+        // Set native engine duration to match track duration for accurate testing
+        nativeEngine.nextLoadDuration = track.duration > 0 ? track.duration : nil
+        let engine = createMockEngine(withTracks: [track], nativeEngine: nativeEngine)
+        try await engine.loadTrack(track)
+        return (engine, nativeEngine)
     }
 }

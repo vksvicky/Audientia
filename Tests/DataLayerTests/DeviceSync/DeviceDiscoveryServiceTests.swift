@@ -24,7 +24,15 @@ final class DeviceDiscoveryServiceTests: XCTestCase {
             isSystemVolume: false
         )
         let provider = StubVolumeProvider(volumes: [volume])
-        let service = DeviceDiscoveryService(provider: provider)
+        let validator = MockWritabilityValidator(isWritable: true)
+        let service = DeviceDiscoveryService(
+            provider: provider,
+            writabilityValidator: DeviceWritabilityValidatorWithSpaceCheck(
+                baseValidator: validator,
+                volumeProvider: provider,
+                minimumRequiredSpace: 0
+            )
+        )
         
         let devices = await service.currentDevices()
         
@@ -56,8 +64,17 @@ final class DeviceDiscoveryServiceTests: XCTestCase {
             )
         ]
         let provider = StubVolumeProvider(volumes: volumes)
+        let validator = MockWritabilityValidator(isWritable: true)
         let config = DeviceDiscoveryService.Config(ignoredVolumeNames: ["Macintosh HD"], includeSystemVolumes: false)
-        let service = DeviceDiscoveryService(provider: provider, config: config)
+        let service = DeviceDiscoveryService(
+            provider: provider,
+            writabilityValidator: DeviceWritabilityValidatorWithSpaceCheck(
+                baseValidator: validator,
+                volumeProvider: provider,
+                minimumRequiredSpace: 0
+            ),
+            config: config
+        )
         
         let devices = await service.currentDevices()
         
@@ -78,13 +95,137 @@ final class DeviceDiscoveryServiceTests: XCTestCase {
                 )
             ]
         )
+        let validator = MockWritabilityValidator(isWritable: true)
         let config = DeviceDiscoveryService.Config(ignoredVolumeNames: [], includeSystemVolumes: true)
-        let service = DeviceDiscoveryService(provider: provider, config: config)
+        let service = DeviceDiscoveryService(
+            provider: provider,
+            writabilityValidator: DeviceWritabilityValidatorWithSpaceCheck(
+                baseValidator: validator,
+                volumeProvider: provider,
+                minimumRequiredSpace: 0
+            ),
+            config: config
+        )
         
         let devices = await service.currentDevices()
         
         XCTAssertEqual(devices.count, 1)
         XCTAssertEqual(devices.first?.name, "Internal")
+    }
+    
+    // MARK: - Writability Validation Tests
+    
+    func testFiltersOutNonWritableDevices() async {
+        // Given - A writable and a non-writable device
+        let writableVolume = MountedVolumeInfo(
+            id: UUID(),
+            name: "Writable USB",
+            path: "/Volumes/Writable",
+            capacity: 1000,
+            available: 500,
+            type: .usb,
+            isSystemVolume: false
+        )
+        let nonWritableVolume = MountedVolumeInfo(
+            id: UUID(),
+            name: "Read-Only Disk",
+            path: "/Volumes/ReadOnly",
+            capacity: 1000,
+            available: 0, // Zero space = non-writable
+            type: .usb,
+            isSystemVolume: false
+        )
+        let provider = StubVolumeProvider(volumes: [writableVolume, nonWritableVolume])
+        let validator = MockWritabilityValidator(isWritable: true) // Base validator passes
+        let service = DeviceDiscoveryService(
+            provider: provider,
+            writabilityValidator: DeviceWritabilityValidatorWithSpaceCheck(
+                baseValidator: validator,
+                volumeProvider: provider,
+                minimumRequiredSpace: 0
+            )
+        )
+        
+        // When - Getting devices
+        let devices = await service.currentDevices()
+        
+        // Then - Only writable device should be returned
+        XCTAssertEqual(devices.count, 1, "Should filter out non-writable device")
+        XCTAssertEqual(devices.first?.name, "Writable USB", "Should only return writable device")
+    }
+    
+    func testFiltersOutDevicesWithZeroAvailableSpace() async {
+        // Given - A device with zero available space
+        let zeroSpaceVolume = MountedVolumeInfo(
+            id: UUID(),
+            name: "Full Disk",
+            path: "/Volumes/Full",
+            capacity: 1000,
+            available: 0,
+            type: .usb,
+            isSystemVolume: false
+        )
+        let provider = StubVolumeProvider(volumes: [zeroSpaceVolume])
+        let service = DeviceDiscoveryService(provider: provider)
+        
+        // When - Getting devices
+        let devices = await service.currentDevices()
+        
+        // Then - Device should be filtered out
+        XCTAssertEqual(devices.count, 0, "Device with zero space should be filtered out")
+    }
+    
+    func testIncludesWritableDevices() async {
+        // Given - A writable device with available space
+        let writableVolume = MountedVolumeInfo(
+            id: UUID(),
+            name: "USB Drive",
+            path: "/Volumes/USB",
+            capacity: 1000,
+            available: 500,
+            type: .usb,
+            isSystemVolume: false
+        )
+        let provider = StubVolumeProvider(volumes: [writableVolume])
+        let validator = MockWritabilityValidator(isWritable: true)
+        let service = DeviceDiscoveryService(
+            provider: provider,
+            writabilityValidator: DeviceWritabilityValidatorWithSpaceCheck(
+                baseValidator: validator,
+                volumeProvider: provider,
+                minimumRequiredSpace: 0
+            )
+        )
+        
+        // When - Getting devices
+        let devices = await service.currentDevices()
+        
+        // Then - Writable device should be included
+        XCTAssertEqual(devices.count, 1, "Writable device should be included")
+        XCTAssertEqual(devices.first?.name, "USB Drive")
+    }
+    
+    func testCanDisableWritabilityValidation() async {
+        // Given - A non-writable device and validation disabled
+        let nonWritableVolume = MountedVolumeInfo(
+            id: UUID(),
+            name: "Read-Only",
+            path: "/Volumes/ReadOnly",
+            capacity: 1000,
+            available: 0,
+            type: .usb,
+            isSystemVolume: false
+        )
+        let provider = StubVolumeProvider(volumes: [nonWritableVolume])
+        let config = DeviceDiscoveryService.Config(validateWritability: false)
+        let service = DeviceDiscoveryService(provider: provider, config: config)
+        
+        // When - Getting devices
+        let devices = await service.currentDevices()
+        
+        // Then - Device should be included when validation is disabled
+        XCTAssertEqual(devices.count, 1, "Device should be included when validation is disabled")
+        XCTAssertEqual(devices.first?.name, "Read-Only")
     }
 }
 
@@ -97,5 +238,17 @@ private final class StubVolumeProvider: MountedVolumeProvider {
     
     func mountedVolumes() -> [MountedVolumeInfo] {
         volumes
+    }
+}
+
+private final class MockWritabilityValidator: DeviceWritabilityValidator {
+    private let isWritableResult: Bool
+    
+    init(isWritable: Bool) {
+        self.isWritableResult = isWritable
+    }
+    
+    func isWritable(path: String) -> Bool {
+        isWritableResult
     }
 }

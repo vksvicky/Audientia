@@ -27,7 +27,7 @@ final class PlaybackEdgeCaseTests: XCTestCase {
             duration: 180.0,
             filePath: "/tmp/vbr-track.mp3"
         )
-        let engine = try await AudioEngineTestHelpers.createEngineWithTrack(track)
+        let (engine, nativeEngine) = try await AudioEngineTestHelpers.createEngineWithTrackAndNativeEngine(track)
         
         // When - Load and play the VBR track
         try await engine.play()
@@ -36,7 +36,8 @@ final class PlaybackEdgeCaseTests: XCTestCase {
         // VBR files should play without issues, position tracking should work
         XCTAssertEqual(engine.state, .playing, "VBR file should play correctly")
         
-        // Wait a bit and verify position tracking works
+        // Simulate position advancement (mock doesn't auto-advance)
+        nativeEngine.currentPosition = 0.1
         try await Task.sleep(nanoseconds: 200_000_000) // 200ms
         XCTAssertGreaterThan(
             engine.currentPosition, 0.0,
@@ -84,19 +85,18 @@ final class PlaybackEdgeCaseTests: XCTestCase {
             duration: 1.0,
             filePath: "/tmp/track2.mp3"
         )
-        let engine = AudioEngineTestHelpers.createMockEngineWithQueue([track1, track2])
+        let (engine, nativeEngine) = AudioEngineTestHelpers.createMockEngineWithQueueAndNativeEngine([track1, track2])
         
         // When - Play first track
         try await engine.play()
         XCTAssertEqual(engine.currentTrack?.id, track1.id, "Should be playing first track")
         
-        // Wait for first track to complete with polling (more robust in CI)
-        var attempts = 0
-        let maxAttempts = 30 // 3 seconds max wait
-        while engine.currentTrack?.id == track1.id && attempts < maxAttempts {
-            try await Task.sleep(nanoseconds: 100_000_000) // 100ms
-            attempts += 1
-        }
+        // Simulate first track completing by advancing position to duration
+        nativeEngine.currentPosition = track1.duration
+        // Update duration for next track when it loads
+        nativeEngine.nextLoadDuration = track2.duration
+        // Wait for position tracking to detect completion
+        try await Task.sleep(nanoseconds: 300_000_000) // 300ms to ensure position tracking runs
         
         // Then - Second track should start automatically (gapless transition)
         // Note: In real implementation, there should be no audible gap
@@ -117,13 +117,22 @@ final class PlaybackEdgeCaseTests: XCTestCase {
                 filePath: "/tmp/track\(index + 1).mp3"
             )
         }
-        let engine = AudioEngineTestHelpers.createMockEngineWithQueue(tracks)
+        let (engine, nativeEngine) = AudioEngineTestHelpers.createMockEngineWithQueueAndNativeEngine(tracks)
         
         // When - Play through all tracks
         try await engine.play()
         
-        // Wait for all tracks to complete
-        try await Task.sleep(nanoseconds: 2_000_000_000) // 2 seconds
+        // Simulate each track completing and advancing to the next
+        for (index, track) in tracks.enumerated() {
+            // Advance position to track duration to trigger completion
+            nativeEngine.currentPosition = track.duration
+            // Set duration for next track if not last
+            if index < tracks.count - 1 {
+                nativeEngine.nextLoadDuration = tracks[index + 1].duration
+            }
+            // Wait for position tracking to detect completion and advance
+            try await Task.sleep(nanoseconds: 300_000_000) // 300ms
+        }
         
         // Then - All tracks should have played in sequence
         // Queue should be empty (all tracks played)
@@ -291,19 +300,18 @@ final class PlaybackEdgeCaseTests: XCTestCase {
             duration: 1.0,
             filePath: "/tmp/vbr-track2.mp3"
         )
-        let engine = AudioEngineTestHelpers.createMockEngineWithQueue([track1, track2])
+        let (engine, nativeEngine) = AudioEngineTestHelpers.createMockEngineWithQueueAndNativeEngine([track1, track2])
         
         // When - Play through VBR tracks
         try await engine.play()
         XCTAssertEqual(engine.currentTrack?.id, track1.id, "Should start with first track")
         
-        // Wait for first track to complete with polling (more robust in CI)
-        var attempts = 0
-        let maxAttempts = 30 // 3 seconds max wait
-        while engine.currentTrack?.id == track1.id && attempts < maxAttempts {
-            try await Task.sleep(nanoseconds: 100_000_000) // 100ms
-            attempts += 1
-        }
+        // Simulate first track completing by advancing position to duration
+        nativeEngine.currentPosition = track1.duration
+        // Update duration for next track when it loads
+        nativeEngine.nextLoadDuration = track2.duration
+        // Wait for position tracking to detect completion
+        try await Task.sleep(nanoseconds: 300_000_000) // 300ms to ensure position tracking runs
         
         // Then - Second track should start automatically (gapless)
         XCTAssertEqual(

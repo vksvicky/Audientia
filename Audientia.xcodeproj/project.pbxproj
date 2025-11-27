@@ -383,6 +383,7 @@
 		8AAFADFAFCD7BB1021CF82AA /* AutoTaggingProgressViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 821843A6052640936967DD71 /* AutoTaggingProgressViewModel.swift */; };
 		8AFE06598A3152B581752FB4 /* NowPlayingBDDScenarios.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6712F19508546ACDFFE74B6D /* NowPlayingBDDScenarios.swift */; };
 		8B144D52AB01DBD80814C8B8 /* DeviceDiscoveryServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E207DAC8956ECCBA97F28A44 /* DeviceDiscoveryServiceTests.swift */; };
+		C3D4E5F6A7B8C9D0E1F2A3B4 /* DeviceWritabilityValidatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4E5F6A7B8C9D0E1F2A3B4C5 /* DeviceWritabilityValidatorTests.swift */; };
 		8B1CCCDB845EF8EB2D678139 /* invalid_zero_size.dts in Resources */ = {isa = PBXBuildFile; fileRef = F5C343E1A2D5F2358BE0543C /* invalid_zero_size.dts */; };
 		8C2F1E98E72C79ADABC42F6F /* ChromaprintFingerprintGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC254C65C299FCE9ED7E81BB /* ChromaprintFingerprintGenerator.swift */; };
 		8C4AE668A66D61134C65C30F /* FingerprintCacheProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BEA25A5AAFC8A4E07366D02 /* FingerprintCacheProtocol.swift */; };
@@ -441,6 +442,7 @@
 		9AF22C6AA87D7C01D7E557D7 /* LibraryStatisticsBDDTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E8CE0DE280E99B64B4A91D4 /* LibraryStatisticsBDDTests.swift */; };
 		9BB4D501AF7779329D54197A /* invalid_header.aac in Resources */ = {isa = PBXBuildFile; fileRef = E4600DD1000CE61D29AC2C96 /* invalid_header.aac */; };
 		9C1B019C6DAD1C3E58436F8D /* DeviceDiscoveryService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C1E8C5598A29FA538705D05 /* DeviceDiscoveryService.swift */; };
+		A1B2C3D4E5F6A7B8C9D0E1F2 /* DeviceWritabilityValidator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2C3D4E5F6A7B8C9D0E1F2A3 /* DeviceWritabilityValidator.swift */; };
 		9C21D95984E4FD5861E98792 /* AudioNormalizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2EE21413E43E6232AED6F87 /* AudioNormalizer.swift */; };
 		9CAF7A9DEA9502C98C6E69AC /* AudioGainControlViewBDDTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B4CD14BE823AD63A75F8AA0 /* AudioGainControlViewBDDTests.swift */; };
 		9CBE8613AF2A5D99AC6AA0C5 /* TagEditorViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E688064755C1A0D99730D672 /* TagEditorViewModelTests.swift */; };
@@ -1222,6 +1224,7 @@
 		6B9D710F16FE222704F6AB0E /* DeviceConfigurationWizardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceConfigurationWizardView.swift; sourceTree = "<group>"; };
 		6C11BF5B0A9F4DEB9A224A7C /* RecommendationEngineContextTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecommendationEngineContextTests.swift; sourceTree = "<group>"; };
 		6C1E8C5598A29FA538705D05 /* DeviceDiscoveryService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceDiscoveryService.swift; sourceTree = "<group>"; };
+		B2C3D4E5F6A7B8C9D0E1F2A3 /* DeviceWritabilityValidator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceWritabilityValidator.swift; sourceTree = "<group>"; };
 		6C4CD8C81A38F5E217E7C269 /* valid_44.1k.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; path = valid_44.1k.m4a; sourceTree = "<group>"; };
 		6C755DC6ED77590EEA7CC371 /* corrupt_magic.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = corrupt_magic.mp3; sourceTree = "<group>"; };
 		6CD430FA1AB81D95DE918CF4 /* invalid_zero_size.wma */ = {isa = PBXFileReference; lastKnownFileType = text; path = invalid_zero_size.wma; sourceTree = "<group>"; };
@@ -1511,6 +1514,7 @@
 		E1843111CFA2062ED2D85557 /* MusicBrainzBDDTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MusicBrainzBDDTests.swift; sourceTree = "<group>"; };
 		E18FA5329094BA717068A4CF /* ArtistTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArtistTests.swift; sourceTree = "<group>"; };
 		E207DAC8956ECCBA97F28A44 /* DeviceDiscoveryServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceDiscoveryServiceTests.swift; sourceTree = "<group>"; };
+		D4E5F6A7B8C9D0E1F2A3B4C5 /* DeviceWritabilityValidatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceWritabilityValidatorTests.swift; sourceTree = "<group>"; };
 		E2407FA82ED70A210054F668 /* PlaylistPanelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaylistPanelView.swift; sourceTree = "<group>"; };
 		E2407FA92ED70A210054F668 /* PlaylistPanelViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaylistPanelViewModel.swift; sourceTree = "<group>"; };
 		E2407FAE2ED70A500054F668 /* TrackDetailsDependencies.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackDetailsDependencies.swift; sourceTree = "<group>"; };
@@ -1853,6 +1857,7 @@
 				8F309250373354F94C50B6D5 /* BasicSyncConflictDetector.swift */,
 				103E97C14663699557C2665B /* DeviceConfigurationStorage.swift */,
 				6C1E8C5598A29FA538705D05 /* DeviceDiscoveryService.swift */,
+				B2C3D4E5F6A7B8C9D0E1F2A3 /* DeviceWritabilityValidator.swift */,
 				C42B8A7821D83573DD6FCAFE /* DeviceSyncComposer.swift */,
 				0DB29F144B71E69EF7A539D6 /* DeviceSyncManager.swift */,
 				58D0BB32920141B46F1F093D /* DeviceSyncProtocols.swift */,
@@ -2950,6 +2955,7 @@
 				B6AF46D32BA24B2B34056690 /* DeviceConfigurationStorageBDDTests.swift */,
 				7A2EF37B2B0821BB2FB6D9CA /* DeviceConfigurationStorageTests.swift */,
 				E207DAC8956ECCBA97F28A44 /* DeviceDiscoveryServiceTests.swift */,
+				D4E5F6A7B8C9D0E1F2A3B4C5 /* DeviceWritabilityValidatorTests.swift */,
 				BD5E950C652BB5F99DE9A9AE /* DeviceSyncManagerBDDTests.swift */,
 				48DA5904146A9AB37C94B26A /* DeviceSyncManagerPersistentQueueTests.swift */,
 				A56F617AED6B050170649B52 /* DeviceSyncManagerTests.swift */,
@@ -4068,6 +4074,7 @@
 				AF55E6444F62E8770A15046D /* DeviceConfigurationStorageBDDTests.swift in Sources */,
 				C9BDB028A5666F1BD7FA3C60 /* DeviceConfigurationStorageTests.swift in Sources */,
 				8B144D52AB01DBD80814C8B8 /* DeviceDiscoveryServiceTests.swift in Sources */,
+				C3D4E5F6A7B8C9D0E1F2A3B4 /* DeviceWritabilityValidatorTests.swift in Sources */,
 				C8B4C019C2484694FA2C9BFB /* DeviceSyncFixtures.swift in Sources */,
 				7E258D3446BC0F5E114ADD32 /* DeviceSyncManagerBDDTests.swift in Sources */,
 				3AC0F9688306A6107D854906 /* DeviceSyncManagerPersistentQueueTests.swift in Sources */,
@@ -4267,6 +4274,7 @@
 				0BEB9F460FA04C2FD00A7E1B /* DataLayer.swift in Sources */,
 				4FB891D25B40E3E4E74A074E /* DeviceConfigurationStorage.swift in Sources */,
 				9C1B019C6DAD1C3E58436F8D /* DeviceDiscoveryService.swift in Sources */,
+				A1B2C3D4E5F6A7B8C9D0E1F2 /* DeviceWritabilityValidator.swift in Sources */,
 				4631C58945EAAD6784EDC213 /* DeviceSyncComposer.swift in Sources */,
 				D9FC8B538E279CF6D5F85B8C /* DeviceSyncManager.swift in Sources */,
 				D5F689EE6DCCFBDB853CDAE8 /* DeviceSyncProtocols.swift in Sources */,

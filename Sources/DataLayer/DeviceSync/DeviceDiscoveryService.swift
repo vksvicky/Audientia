@@ -116,42 +116,67 @@ public actor DeviceDiscoveryService: DeviceDiscoveryProtocol {
     public struct Config {
         public var ignoredVolumeNames: Set<String>
         public var includeSystemVolumes: Bool
+        public var validateWritability: Bool
         
         public init(
             ignoredVolumeNames: Set<String> = ["Macintosh HD", "Recovery"],
-            includeSystemVolumes: Bool = false
+            includeSystemVolumes: Bool = false,
+            validateWritability: Bool = true
         ) {
             self.ignoredVolumeNames = ignoredVolumeNames
             self.includeSystemVolumes = includeSystemVolumes
+            self.validateWritability = validateWritability
         }
     }
     
     private let provider: MountedVolumeProvider
+    private let writabilityValidator: DeviceWritabilityValidator
     private let config: Config
     
     public init(
         provider: MountedVolumeProvider = FileManagerVolumeProvider(),
+        writabilityValidator: DeviceWritabilityValidator? = nil,
         config: Config = Config()
     ) {
         self.provider = provider
+        self.writabilityValidator = writabilityValidator ?? DeviceWritabilityValidatorWithSpaceCheck(
+            volumeProvider: provider,
+            minimumRequiredSpace: 0
+        )
         self.config = config
     }
     
     public func currentDevices() async -> [Device] {
-        provider
+        let volumes = provider
             .mountedVolumes()
             .filter { config.includeSystemVolumes || !$0.isSystemVolume }
             .filter { !config.ignoredVolumeNames.contains($0.name) }
-            .map {
-                Device(
-                    id: $0.id,
-                    name: $0.name,
-                    type: $0.type,
-                    capacity: max(0, $0.capacity),
-                    availableSpace: max(0, $0.available),
-                    mountPath: $0.path,
-                    status: .ready
-                )
+        
+        // Filter out non-writable devices if validation is enabled
+        let writableVolumes: [MountedVolumeInfo]
+        if config.validateWritability {
+            writableVolumes = volumes.filter { volume in
+                // Check available space first (quick check)
+                guard volume.available > 0 else {
+                    return false
+                }
+                // Then check actual writability
+                return writabilityValidator.isWritable(path: volume.path)
             }
+        } else {
+            writableVolumes = volumes
+        }
+        
+        return writableVolumes.map {
+            Device(
+                id: $0.id,
+                name: $0.name,
+                type: $0.type,
+                capacity: max(0, $0.capacity),
+                availableSpace: max(0, $0.available),
+                mountPath: $0.path,
+                status: .ready
+            )
+        }
     }
 }
