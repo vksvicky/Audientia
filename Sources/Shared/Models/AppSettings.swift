@@ -27,12 +27,24 @@ public class AppSettings: ObservableObject {
     }
 
     @Published public var moduleConflictWarnings: [String: ModuleConflictWarning] = [:]
+    
+    // MARK: - UI Preferences
+    
+    @Published public var showSplashScreen: Bool {
+        didSet {
+            UserDefaults.standard.set(showSplashScreen, forKey: "audientia.settings.showSplashScreen")
+        }
+    }
 
     // MARK: - Initialization
 
     private init() {
         self.appVersion = VersionManager.shared.appVersion
         self.activeModuleVersions = ModuleVersionManager.shared.getAllActiveVersions()
+        
+        // Load splash screen preference (default: true)
+        let splashScreenKey = "audientia.settings.showSplashScreen"
+        self.showSplashScreen = UserDefaults.standard.object(forKey: splashScreenKey) as? Bool ?? true
 
         // Listen for module conflict notifications
         NotificationCenter.default.addObserver(

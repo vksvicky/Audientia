@@ -87,6 +87,19 @@
 - [x] **Built** - CI/CD pipeline
 - [x] **Built** - Test fixtures infrastructure
 
+**Test Statistics:**
+- **Total Tests**: ~1,539 tests across 5 test targets
+- **Test Files**: ~188 files
+- **Test Types**: ~1,156 TDD tests, ~375 BDD tests
+- **Breakdown by Target**:
+  - MetadataEngineTests: ~389 tests
+  - AudioCoreTests: ~347 tests
+  - DataLayerTests: ~320 tests
+  - SharedTests: ~118 tests
+  - UITests: ~365 tests
+
+To view current test counts, run: `./Scripts/count_tests.sh`
+
 - **Not Yet Built / Not Integrated in UI:**
   - [x] Library browser UI – **✅ LibraryBrowserView integrated into Workspace tab with full search, sorting, grouping, and view modes.**
   - [x] Playlist management UI – **✅ PlaylistPanelView integrated into Workspace tab with playlist browsing and track management.**

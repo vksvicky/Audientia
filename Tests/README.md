@@ -82,6 +82,31 @@ xcodebuild test -project Audientia.xcodeproj -scheme Audientia -only-testing:Sha
 - Use Test Navigator (⌘6) to run specific tests
 - Enable parallel test execution in scheme settings
 
+## Test Statistics
+
+### Viewing Test Counts
+
+To see the total number of tests and breakdown by target:
+
+```bash
+./Scripts/count_tests.sh
+```
+
+This script provides:
+- Test count per target (MetadataEngineTests, AudioCoreTests, DataLayerTests, SharedTests, UITests)
+- Total test count across all targets
+- Number of test files
+- Breakdown by test type (TDD vs BDD)
+
+### Current Test Statistics
+
+As of the latest count:
+- **Total Tests**: ~1,539 tests
+- **Test Files**: ~188 files
+- **Test Types**: ~1,156 TDD tests, ~375 BDD tests
+
+You can also view test counts in Xcode's Test Navigator (⌘6), which shows the count for each test target. The script provides a more detailed breakdown including totals and test type distribution.
+
 ## Test Coverage Goals
 
 - **Unit Tests**: 80%+ coverage for core logic

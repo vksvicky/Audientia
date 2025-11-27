@@ -14,6 +14,7 @@ import SwiftUI
 struct AudientiaApp: App {
     @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
     @StateObject private var settings = AppSettings.shared
+    @State private var showSplashScreen = false
 
     init() {
         // Update versions on app launch
@@ -23,8 +24,31 @@ struct AudientiaApp: App {
 
     var body: some Scene {
         WindowGroup {
-            ContentView()
-                .environmentObject(settings)
+            ZStack {
+                ContentView()
+                    .environmentObject(settings)
+                
+                if showSplashScreen && settings.showSplashScreen {
+                    SplashScreenView(settings: settings)
+                        .transition(.opacity)
+                        .zIndex(1000) // Ensure splash is on top
+                }
+            }
+            .onAppear {
+                // Show splash screen on app launch if enabled
+                if settings.showSplashScreen {
+                    showSplashScreen = true
+                    // Auto-dismiss after 2 seconds
+                    Task {
+                        try? await Task.sleep(nanoseconds: 2_000_000_000)
+                        await MainActor.run {
+                            withAnimation(.easeOut(duration: 0.3)) {
+                                showSplashScreen = false
+                            }
+                        }
+                    }
+                }
+            }
         }
         .commands {
             // Add menu commands here
@@ -48,6 +72,11 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         
         // Check dependencies on first launch (only once)
         checkDependenciesOnFirstLaunch()
+    }
+    
+    func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool {
+        // Quit the app when the main window is closed
+        true
     }
     
     private func checkDependenciesOnFirstLaunch() {

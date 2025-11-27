@@ -267,7 +267,7 @@ final class PlaybackProgressBDDTests: XCTestCase {
         
         // Simulate smooth position advancement
         var currentPosition: TimeInterval = 0.0
-        for i in 0..<5 {
+        for _ in 0..<5 {
             currentPosition += 2.0 // Advance by 2 seconds each iteration
             nativeEngine.currentPosition = currentPosition
             try await Task.sleep(nanoseconds: 200_000_000) // 200ms between checks

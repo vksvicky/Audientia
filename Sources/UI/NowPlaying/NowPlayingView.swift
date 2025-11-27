@@ -172,7 +172,7 @@ private extension NowPlayingView {
                     seekPosition = newValue
                 }
             }
-            .onChange(of: viewModel.currentTrack?.id) { _ in
+            .onChange(of: viewModel.currentTrack?.id) {
                 seekPosition = viewModel.currentPosition
             }
             .onAppear {

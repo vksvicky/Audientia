@@ -103,9 +103,20 @@ enum SettingsCategory: String, CaseIterable {
 @MainActor
 private struct GeneralSettingsView: View {
     @ObservedObject var viewModel: SettingsViewModel
+    @ObservedObject var settings: AppSettings
+    
+    init(viewModel: SettingsViewModel) {
+        self.viewModel = viewModel
+        self.settings = AppSettings.shared
+    }
     
     var body: some View {
         Form {
+            Section("Startup") {
+                Toggle("Show splash screen on startup", isOn: $settings.showSplashScreen)
+                    .help("Display the splash screen when the application launches")
+            }
+            
             Section("Window") {
                 // Window settings will go here
                 Text("Window management settings")
