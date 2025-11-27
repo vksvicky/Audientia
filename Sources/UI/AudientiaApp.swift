@@ -40,6 +40,7 @@ struct AudientiaApp: App {
 class AppDelegate: NSObject, NSApplicationDelegate {
     private let dependencyChecker = DependencyChecker()
     private let hasCheckedDependenciesKey = "hasCheckedDependencies"
+    private let aboutMenuConfigurator = AboutMenuConfigurator()
     
     func applicationDidFinishLaunching(_ notification: Notification) {
         // Customize About panel to show only our version format
@@ -113,17 +114,11 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         // Replace the default About menu item with a custom one
         DispatchQueue.main.async { [weak self] in
             guard let self = self else { return }
-            
-            if let mainMenu = NSApplication.shared.mainMenu,
-               let appMenu = mainMenu.item(at: 0),
-               let appMenuMenu = appMenu.submenu {
-                
-                // Find the About menu item
-                if let aboutItem = appMenuMenu.item(withTitle: "About Audientia") {
-                    aboutItem.target = self
-                    aboutItem.action = #selector(self.showCustomAbout)
-                }
-            }
+            _ = self.aboutMenuConfigurator.configure(
+                mainMenu: NSApplication.shared.mainMenu,
+                target: self,
+                action: #selector(AppDelegate.showCustomAbout)
+            )
         }
     }
     

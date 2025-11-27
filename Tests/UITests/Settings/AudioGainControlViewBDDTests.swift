@@ -8,6 +8,7 @@
 //
 
 import Foundation
+import SwiftUI
 import XCTest
 
 @testable import Audientia
@@ -25,7 +26,7 @@ final class AudioGainControlViewBDDTests: XCTestCase {
         let view = AudioGainControlView()
         
         // Then - The view should be created successfully
-        _ = view.body // Verify view compiles and can be created
+        SwiftUIViewTestHelpers.verifyViewCreation(view)
         XCTAssertNotNil(view, "Audio gain control view should be created")
     }
     
@@ -35,11 +36,9 @@ final class AudioGainControlViewBDDTests: XCTestCase {
         let view = AudioGainControlView()
         
         // When - I view the interface
-        let body = view.body
-        
         // Then - The view should display global gain controls
         // Note: Since the view model is private, we verify the view can be rendered
-        XCTAssertNotNil(body, "View body should be accessible")
+        SwiftUIViewTestHelpers.verifyViewCreation(view)
     }
     
     /// BDD: As a user, I want to see track-specific gain controls so that I can adjust volume for individual tracks
@@ -48,11 +47,9 @@ final class AudioGainControlViewBDDTests: XCTestCase {
         let view = AudioGainControlView()
         
         // When - I view the interface
-        let body = view.body
-        
         // Then - The view should be able to display track gain controls
         // Note: Track gain section is conditionally displayed based on currentTrack
-        XCTAssertNotNil(body, "View body should be accessible")
+        SwiftUIViewTestHelpers.verifyViewCreation(view)
     }
     
     /// BDD: As a user, I want to see effective gain information so that I understand total volume adjustment
@@ -61,10 +58,8 @@ final class AudioGainControlViewBDDTests: XCTestCase {
         let view = AudioGainControlView()
         
         // When - I view the interface
-        let body = view.body
-        
         // Then - The view should display effective gain information
-        XCTAssertNotNil(body, "View body should be accessible")
+        SwiftUIViewTestHelpers.verifyViewCreation(view)
     }
     
     // MARK: - Boundary Conditions
@@ -79,8 +74,8 @@ final class AudioGainControlViewBDDTests: XCTestCase {
         // Then - Both views should be created successfully
         XCTAssertNotNil(view1, "First view should be created")
         XCTAssertNotNil(view2, "Second view should be created")
-        _ = view1.body
-        _ = view2.body
+        SwiftUIViewTestHelpers.verifyViewCreation(view1)
+        SwiftUIViewTestHelpers.verifyViewCreation(view2)
     }
     
     /// Test that the view can be rendered without errors
@@ -91,7 +86,7 @@ final class AudioGainControlViewBDDTests: XCTestCase {
         // When - I access the view body
         // Then - The view should render without throwing errors
         XCTAssertNoThrow({
-            _ = view.body
+            SwiftUIViewTestHelpers.verifyViewCreation(view)
         }, "View should render without errors")
     }
 }

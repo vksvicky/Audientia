@@ -8,6 +8,7 @@
 //
 
 import Foundation
+import SwiftUI
 import XCTest
 
 @testable import Audientia
@@ -24,7 +25,7 @@ final class ReplayGainSettingsBDDTests: XCTestCase {
         let view = ReplayGainSettingsView()
         
         // Then - The view should be created successfully
-        _ = view.body // Verify view compiles and can be created
+        SwiftUIViewTestHelpers.verifyViewCreation(view)
         XCTAssertNotNil(view, "ReplayGain settings view should be created")
     }
     
@@ -34,10 +35,8 @@ final class ReplayGainSettingsBDDTests: XCTestCase {
         let view = ReplayGainSettingsView()
         
         // When - I view the interface
-        let body = view.body
-        
         // Then - The view should display an enable/disable toggle
-        XCTAssertNotNil(body, "View body should be accessible")
+        SwiftUIViewTestHelpers.verifyViewCreation(view)
     }
     
     /// BDD: As a user, I want to select ReplayGain mode so that I can choose track or album gain
@@ -46,10 +45,8 @@ final class ReplayGainSettingsBDDTests: XCTestCase {
         let view = ReplayGainSettingsView()
         
         // When - I view the interface
-        let body = view.body
-        
         // Then - The view should display mode selection (track/album gain)
-        XCTAssertNotNil(body, "View body should be accessible")
+        SwiftUIViewTestHelpers.verifyViewCreation(view)
     }
     
     /// BDD: As a user, I want to see ReplayGain information so that I understand how it works
@@ -58,10 +55,8 @@ final class ReplayGainSettingsBDDTests: XCTestCase {
         let view = ReplayGainSettingsView()
         
         // When - I view the interface
-        let body = view.body
-        
         // Then - The view should display information about ReplayGain
-        XCTAssertNotNil(body, "View body should be accessible")
+        SwiftUIViewTestHelpers.verifyViewCreation(view)
     }
     
     // MARK: - Boundary Conditions
@@ -76,8 +71,8 @@ final class ReplayGainSettingsBDDTests: XCTestCase {
         // Then - Both views should be created successfully
         XCTAssertNotNil(view1, "First view should be created")
         XCTAssertNotNil(view2, "Second view should be created")
-        _ = view1.body
-        _ = view2.body
+        SwiftUIViewTestHelpers.verifyViewCreation(view1)
+        SwiftUIViewTestHelpers.verifyViewCreation(view2)
     }
     
     /// Test that the view can be rendered without errors
@@ -88,7 +83,7 @@ final class ReplayGainSettingsBDDTests: XCTestCase {
         // When - I access the view body
         // Then - The view should render without throwing errors
         XCTAssertNoThrow({
-            _ = view.body
+            SwiftUIViewTestHelpers.verifyViewCreation(view)
         }, "View should render without errors")
     }
 }

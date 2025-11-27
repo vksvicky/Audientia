@@ -8,6 +8,7 @@
 //
 
 import Foundation
+import SwiftUI
 import XCTest
 
 @testable import Audientia
@@ -24,7 +25,7 @@ final class NormalizationSettingsBDDTests: XCTestCase {
         let view = NormalizationSettingsView()
         
         // Then - The view should be created successfully
-        _ = view.body // Verify view compiles and can be created
+        SwiftUIViewTestHelpers.verifyViewCreation(view)
         XCTAssertNotNil(view, "Normalization settings view should be created")
     }
     
@@ -34,10 +35,8 @@ final class NormalizationSettingsBDDTests: XCTestCase {
         let view = NormalizationSettingsView()
         
         // When - I view the interface
-        let body = view.body
-        
         // Then - The view should display mode selection (peak/RMS/loudness)
-        XCTAssertNotNil(body, "View body should be accessible")
+        SwiftUIViewTestHelpers.verifyViewCreation(view)
     }
     
     /// BDD: As a user, I want to adjust target level so that I can set the normalization target
@@ -46,10 +45,8 @@ final class NormalizationSettingsBDDTests: XCTestCase {
         let view = NormalizationSettingsView()
         
         // When - I view the interface
-        let body = view.body
-        
         // Then - The view should display target level controls
-        XCTAssertNotNil(body, "View body should be accessible")
+        SwiftUIViewTestHelpers.verifyViewCreation(view)
     }
     
     /// BDD: As a user, I want to see normalization information so that I understand how normalization works
@@ -58,10 +55,8 @@ final class NormalizationSettingsBDDTests: XCTestCase {
         let view = NormalizationSettingsView()
         
         // When - I view the interface
-        let body = view.body
-        
         // Then - The view should display information about normalization modes
-        XCTAssertNotNil(body, "View body should be accessible")
+        SwiftUIViewTestHelpers.verifyViewCreation(view)
     }
     
     // MARK: - Boundary Conditions
@@ -76,8 +71,8 @@ final class NormalizationSettingsBDDTests: XCTestCase {
         // Then - Both views should be created successfully
         XCTAssertNotNil(view1, "First view should be created")
         XCTAssertNotNil(view2, "Second view should be created")
-        _ = view1.body
-        _ = view2.body
+        SwiftUIViewTestHelpers.verifyViewCreation(view1)
+        SwiftUIViewTestHelpers.verifyViewCreation(view2)
     }
     
     /// Test that the view can be rendered without errors
@@ -88,7 +83,7 @@ final class NormalizationSettingsBDDTests: XCTestCase {
         // When - I access the view body
         // Then - The view should render without throwing errors
         XCTAssertNoThrow({
-            _ = view.body
+            SwiftUIViewTestHelpers.verifyViewCreation(view)
         }, "View should render without errors")
     }
 }

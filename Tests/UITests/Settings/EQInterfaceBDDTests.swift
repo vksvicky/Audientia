@@ -25,7 +25,7 @@ final class EQInterfaceBDDTests: XCTestCase {
         let view = EQInterfaceView()
         
         // Then - The view should be created successfully
-        _ = view.body // Verify view compiles and can be created
+        SwiftUIViewTestHelpers.verifyViewCreation(view)
         XCTAssertNotNil(view, "Equalizer interface view should be created")
     }
     
@@ -35,10 +35,8 @@ final class EQInterfaceBDDTests: XCTestCase {
         let view = EQInterfaceView()
         
         // When - I view the interface
-        let body = view.body
-        
         // Then - The view should display 10-band EQ controls
-        XCTAssertNotNil(body, "View body should be accessible")
+        SwiftUIViewTestHelpers.verifyViewCreation(view)
     }
     
     /// BDD: As a user, I want to apply EQ presets so that I can quickly adjust audio for different music styles
@@ -47,11 +45,9 @@ final class EQInterfaceBDDTests: XCTestCase {
         let view = EQInterfaceView()
         
         // When - I view the interface
-        let body = view.body
-        
         // Then - The view should display preset options
         // Note: Presets are available in the view (Flat, Bass Boost, Treble Boost, etc.)
-        XCTAssertNotNil(body, "View body should be accessible")
+        SwiftUIViewTestHelpers.verifyViewCreation(view)
     }
     
     /// BDD: As a user, I want to enable or disable the equalizer so that I can toggle audio processing
@@ -60,10 +56,8 @@ final class EQInterfaceBDDTests: XCTestCase {
         let view = EQInterfaceView()
         
         // When - I view the interface
-        let body = view.body
-        
         // Then - The view should display an enable/disable toggle
-        XCTAssertNotNil(body, "View body should be accessible")
+        SwiftUIViewTestHelpers.verifyViewCreation(view)
     }
     
     /// BDD: As a user, I want to reset the equalizer so that I can return to flat settings
@@ -72,10 +66,8 @@ final class EQInterfaceBDDTests: XCTestCase {
         let view = EQInterfaceView()
         
         // When - I view the interface
-        let body = view.body
-        
         // Then - The view should display a reset button
-        XCTAssertNotNil(body, "View body should be accessible")
+        SwiftUIViewTestHelpers.verifyViewCreation(view)
     }
     
     // MARK: - Boundary Conditions
@@ -90,8 +82,8 @@ final class EQInterfaceBDDTests: XCTestCase {
         // Then - Both views should be created successfully
         XCTAssertNotNil(view1, "First view should be created")
         XCTAssertNotNil(view2, "Second view should be created")
-        _ = view1.body
-        _ = view2.body
+        SwiftUIViewTestHelpers.verifyViewCreation(view1)
+        SwiftUIViewTestHelpers.verifyViewCreation(view2)
     }
     
     /// Test that the view can be rendered without errors
@@ -102,7 +94,7 @@ final class EQInterfaceBDDTests: XCTestCase {
         // When - I access the view body
         // Then - The view should render without throwing errors
         XCTAssertNoThrow({
-            _ = view.body
+            SwiftUIViewTestHelpers.verifyViewCreation(view)
         }, "View should render without errors")
     }
 }

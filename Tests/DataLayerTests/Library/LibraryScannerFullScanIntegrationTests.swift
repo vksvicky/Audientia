@@ -52,13 +52,13 @@ final class LibraryScannerFullScanIntegrationTests: XCTestCase {
     func testFullLibraryScanWithVariousFileTypes() async throws {
         // Given - Create test files of various types (simulated)
         // Note: In a real test, we'd create actual audio files or use fixtures
-        let testFiles = [
-            createTestFile(name: "song1.mp3"),
-            createTestFile(name: "song2.flac"),
-            createTestFile(name: "song3.m4a"),
-            createTestFile(name: "song4.ogg"),
-            createTestFile(name: "song5.wav")
-        ]
+        [
+            "song1.mp3",
+            "song2.flac",
+            "song3.m4a",
+            "song4.ogg",
+            "song5.wav"
+        ].forEach { _ = createTestFile(name: $0) }
         
         // When - Scan the directory
         let scannedTracks = try await scanner.scan(directory: tempDirectory)

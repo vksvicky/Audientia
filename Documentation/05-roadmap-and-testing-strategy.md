@@ -55,9 +55,9 @@
   - [x] Playlist management UI – **✅ PlaylistPanelView integrated into Workspace tab with playlist browsing and track management.**
   - [x] Settings/Preferences UI – **✅ Settings accessible via macOS Settings menu (⌘,). Layout customization, theme selection, and other preferences fully functional.**
   - [x] Track import workflow – **✅ File picker + drag-and-drop wired through `TrackImportCoordinator` validate formats, index tracks, and queue or auto-play selections.**
-  - [ ] Metadata extraction polish (artwork extraction, normalization) and any surfaces that expose those results.
+  - [x] Metadata extraction polish (artwork extraction, normalization) and any surfaces that expose those results. – **✅ Artwork extraction and metadata normalization implemented with TDD tests. Artwork displayed in LibraryBrowserView (list/grid views). Normalization applied during indexing via LibraryIndexer.**
   - [x] Track details panel – **✅ TrackDetailsView surfaces metadata, ML insights, recommendations, and fingerprint status synced to shared selection.**
-  - [ ] DSP feature surfaces (EQ, normalization, ReplayGain, visualizers) – view files exist but are not reachable in the running app.
+  - [x] DSP feature surfaces (EQ, normalization, ReplayGain, visualizers) – **✅ AudioSettingsView integrated into SettingsView, accessible via macOS Settings menu (⌘,). All DSP features (EQ, ReplayGain, Gain Control, Normalization, Visualizer) accessible through Settings → Audio/DSP tab.**
   - [x] Device sync – **✅ Feature 4.1 backend + UI exists and is the only surfaced workflow today.**
   - [x] Transcoding – **✅ Feature 4.2 backend/UI exists but still assumes a connected device.**
   - [x] Build & Distribution System – **✅ Scripts and docs match reality.**

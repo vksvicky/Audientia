@@ -36,6 +36,10 @@
 		055CB107E5129B1A823AF359 /* MockTranscodeEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F3C9924B20D0482490B83CC /* MockTranscodeEngine.swift */; };
 		05ACE05B0E7F4A34B42E6087 /* SettingsStorageTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05ACE05B0E7F4A34B42E6086 /* SettingsStorageTests.swift */; };
 		060BE296B1B1AA1DEAC80083 /* AudioSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CCB1272CF8447C630938156 /* AudioSettingsView.swift */; };
+		4C3E93C129D0A6C700F80E1A /* AboutMenuConfigurator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C3E93C029D0A6C700F80E1A /* AboutMenuConfigurator.swift */; };
+		4C3E93C329D0A6C700F80E1A /* AboutMenuWiringTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C3E93C229D0A6C700F80E1A /* AboutMenuWiringTests.swift */; };
+		4C3E93C529D0A6C700F80E1B /* SwiftUIViewTestHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C3E93C429D0A6C700F80E1B /* SwiftUIViewTestHelpers.swift */; };
+		4C3E93C629D0A6C700F80E1C /* AboutMenuConfigurator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C3E93C029D0A6C700F80E1A /* AboutMenuConfigurator.swift */; };
 		0653A13F1018A87FC9F06EDF /* SeekAndPositionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 697713E962D8432B6FF4FCA4 /* SeekAndPositionTests.swift */; };
 		0816627FF28915FB1CCB72CB /* FileValidationFixtureTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53A4DA471A171AE64EC8D82B /* FileValidationFixtureTests.swift */; };
 		094F19F37CBA7F2E057C96DB /* AutoVersionUpdate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF37385F89190A08A4A8E87F /* AutoVersionUpdate.swift */; };
@@ -1129,6 +1133,8 @@
 		494AA9ECB3EAC4CCE08EA7CF /* PlaybackState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaybackState.swift; sourceTree = "<group>"; };
 		4983D978C43F6869F93DA86E /* invalid_no_audio_data.aac */ = {isa = PBXFileReference; lastKnownFileType = text; path = invalid_no_audio_data.aac; sourceTree = "<group>"; };
 		4BBF844609A0E19DAEFF5500 /* SmartPlaylistRuleBuilderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmartPlaylistRuleBuilderView.swift; sourceTree = "<group>"; };
+		4C3E93C029D0A6C700F80E1A /* AboutMenuConfigurator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutMenuConfigurator.swift; sourceTree = "<group>"; };
+		4C3E93C429D0A6C700F80E1B /* SwiftUIViewTestHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftUIViewTestHelpers.swift; sourceTree = "<group>"; };
 		4C8FE97E728630B2B55C5740 /* MockSimilarityEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockSimilarityEngine.swift; sourceTree = "<group>"; };
 		4CCB1272CF8447C630938156 /* AudioSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioSettingsView.swift; sourceTree = "<group>"; };
 		4DF5EAFCC0A18110AB29B685 /* SmartPlaylistRuleEngineTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmartPlaylistRuleEngineTests.swift; sourceTree = "<group>"; };
@@ -1332,6 +1338,7 @@
 		9AE961674CE3FF2BF02BA0BB /* AudioEqualizerProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioEqualizerProtocol.swift; sourceTree = "<group>"; };
 		9B492EC159DCD8E412A68CF7 /* invalid_truncated.dts */ = {isa = PBXFileReference; lastKnownFileType = text; path = invalid_truncated.dts; sourceTree = "<group>"; };
 		9B4CD14BE823AD63A75F8AA0 /* AudioGainControlViewBDDTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioGainControlViewBDDTests.swift; sourceTree = "<group>"; };
+		4C3E93C229D0A6C700F80E1A /* AboutMenuWiringTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutMenuWiringTests.swift; sourceTree = "<group>"; };
 		9BFFD5821808FF9FA86827F7 /* TranscodeQueueTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TranscodeQueueTests.swift; sourceTree = "<group>"; };
 		9C97D0020E2E7CED20A94293 /* corrupt_magic.alac */ = {isa = PBXFileReference; lastKnownFileType = file; path = corrupt_magic.alac; sourceTree = "<group>"; };
 		9D3EB512A96B7766CD441DCD /* valid_96k.wv */ = {isa = PBXFileReference; lastKnownFileType = file; path = valid_96k.wv; sourceTree = "<group>"; };
@@ -2089,6 +2096,7 @@
 			isa = PBXGroup;
 			children = (
 				213CAB8A4CF849FC41B2B920 /* AboutView.swift */,
+				4C3E93C029D0A6C700F80E1A /* AboutMenuConfigurator.swift */,
 				FD094D27BE36495923B8923A /* AudioGainControlView.swift */,
 				4CCB1272CF8447C630938156 /* AudioSettingsView.swift */,
 				0EAD7C9615B39138DB90A5A9 /* EQInterfaceView.swift */,
@@ -2817,6 +2825,7 @@
 				C4314CECF89305C14FCC1F1B /* MockDeviceSyncManager.swift */,
 				7C3576B3BA36D904FF9E8B0F /* MockDSPComponents.swift */,
 				F7FD267EE89BDCD64931E3C8 /* MockPlaylistComponents.swift */,
+				4C3E93C429D0A6C700F80E1B /* SwiftUIViewTestHelpers.swift */,
 			);
 			path = TestInfrastructure;
 			sourceTree = "<group>";
@@ -2885,6 +2894,7 @@
 		E4A669C12C2E1E716251E48A /* Settings */ = {
 			isa = PBXGroup;
 			children = (
+				4C3E93C229D0A6C700F80E1A /* AboutMenuWiringTests.swift */,
 				9B4CD14BE823AD63A75F8AA0 /* AudioGainControlViewBDDTests.swift */,
 				0E1C383521D1C7A26CCFC845 /* EQInterfaceBDDTests.swift */,
 				3BC63312E3F1585D74CBE01E /* NormalizationSettingsBDDTests.swift */,
@@ -3974,6 +3984,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				65F71DE70674A9C8ACCF2593 /* AboutView.swift in Sources */,
+				4C3E93C129D0A6C700F80E1A /* AboutMenuConfigurator.swift in Sources */,
 				627A747C85731416F911FA8D /* AudientiaApp.swift in Sources */,
 				C3BC5FF49B74CD80543062B6 /* AudioGainControlView.swift in Sources */,
 				F916F40EF44567ACE491F5BD /* AudioSettingsView.swift in Sources */,
@@ -4097,6 +4108,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				75A09F420AB8FA93EF5C0052 /* AboutView.swift in Sources */,
+				4C3E93C629D0A6C700F80E1C /* AboutMenuConfigurator.swift in Sources */,
+				4C3E93C529D0A6C700F80E1B /* SwiftUIViewTestHelpers.swift in Sources */,
+				4C3E93C329D0A6C700F80E1A /* AboutMenuWiringTests.swift in Sources */,
 				1903077E5D4F75B71B889B20 /* AudioGainControlView.swift in Sources */,
 				9CAF7A9DEA9502C98C6E69AC /* AudioGainControlViewBDDTests.swift in Sources */,
 				060BE296B1B1AA1DEAC80083 /* AudioSettingsView.swift in Sources */,
