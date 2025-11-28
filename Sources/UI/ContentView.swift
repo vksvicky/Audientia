@@ -11,11 +11,13 @@ import DataLayer
 import Shared
 import SwiftUI
 
+@MainActor
 struct ContentView: View {
     @EnvironmentObject var settings: AppSettings
     @State private var sharedAudioEngine = AudioEngine()
     @StateObject private var importCoordinator: TrackImportCoordinator
     @State private var importError: Error?
+    @State private var showImportError = false
 
     init() {
         let engine = AudioEngine()
@@ -29,41 +31,27 @@ struct ContentView: View {
     }
 
     var body: some View {
-        TabView {
-            NowPlayingView(audioEngine: sharedAudioEngine)
-                .tabItem {
-                    Label("Now Playing", systemImage: "music.note.house")
-                }
-
-            DeviceSyncView()
-                .tabItem {
-                    Label("Device Sync", systemImage: "externaldrive.connected.to.line.below")
-                }
-
-            MultiPaneLayoutView(audioEngine: sharedAudioEngine)
-                .tabItem {
-                    Label("Workspace", systemImage: "rectangle.3.offgrid")
-                }
-        }
-        .frame(minWidth: 600, minHeight: 400)
-        .onAudioFilesDropped { urls in
-            Task {
-                do {
-                    try await importCoordinator.importFiles(urls: urls)
-                } catch {
-                    importError = error
+        MainWindowLayoutView(audioEngine: sharedAudioEngine)
+            .onAudioFilesDropped { urls in
+                Task {
+                    do {
+                        try await importCoordinator.importFiles(urls: urls)
+                    } catch {
+                        importError = error
+                        showImportError = true
+                    }
                 }
             }
-        }
-        .alert("Import Error", isPresented: .constant(importError != nil)) {
-            Button("OK") {
-                importError = nil
+            .alert("Import Error", isPresented: $showImportError) {
+                Button("OK") {
+                    importError = nil
+                    showImportError = false
+                }
+            } message: {
+                if let error = importError {
+                    Text(error.localizedDescription)
+                }
             }
-        } message: {
-            if let error = importError {
-                Text(error.localizedDescription)
-            }
-        }
     }
 }
 

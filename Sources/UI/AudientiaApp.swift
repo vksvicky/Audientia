@@ -15,6 +15,7 @@ struct AudientiaApp: App {
     @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
     @StateObject private var settings = AppSettings.shared
     @State private var showSplashScreen = false
+    @State private var showMainWindow = false
 
     init() {
         // Update versions on app launch
@@ -25,13 +26,18 @@ struct AudientiaApp: App {
     var body: some Scene {
         WindowGroup {
             ZStack {
-                ContentView()
-                    .environmentObject(settings)
+                // Main content - only visible when splash is dismissed
+                if showMainWindow {
+                    ContentView()
+                        .environmentObject(settings)
+                }
                 
+                // Splash screen - covers everything when visible
                 if showSplashScreen && settings.showSplashScreen {
                     SplashScreenView(settings: settings)
                         .transition(.opacity)
-                        .zIndex(1000) // Ensure splash is on top
+                        .zIndex(1000)
+                        .allowsHitTesting(true)
                 }
             }
             .onAppear {
@@ -39,13 +45,23 @@ struct AudientiaApp: App {
                 // Show splash screen on app launch if enabled
                 if settings.showSplashScreen {
                     showSplashScreen = true
-                    // Auto-dismiss after 10 seconds, then show setup wizard if needed
+                    showMainWindow = false
+                    // Hide main window and disable shortcuts while splash is showing
+                    appDelegate.hideMainWindow()
+                    appDelegate.disableKeyboardShortcuts()
+                    
+                    // Auto-dismiss after 10 seconds, then show main window and setup wizard if needed
                     Task {
                         try? await Task.sleep(nanoseconds: 10_000_000_000)
                         await MainActor.run {
                             withAnimation(.easeOut(duration: 0.3)) {
                                 showSplashScreen = false
                             }
+                            // Show main window and re-enable shortcuts
+                            showMainWindow = true
+                            appDelegate.showMainWindow()
+                            appDelegate.enableKeyboardShortcuts()
+                            
                             // Show setup wizard after splash screen dismisses
                             if SetupWizardViewModel.shouldShowWizard() {
                                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
@@ -55,7 +71,9 @@ struct AudientiaApp: App {
                         }
                     }
                 } else {
-                    // If splash is disabled, show setup wizard immediately if needed
+                    // If splash is disabled, show main window immediately
+                    showMainWindow = true
+                    // Show setup wizard immediately if needed
                     if SetupWizardViewModel.shouldShowWizard() {
                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                             appDelegate.showSetupWizard()
@@ -64,6 +82,9 @@ struct AudientiaApp: App {
                 }
             }
         }
+        .defaultSize(width: 1200, height: 800)
+        .windowResizability(.contentSize)
+        .windowStyle(.automatic)
         .commands {
             // Replace "New Window" with "Setup Wizard" in File menu
             // This is the proper SwiftUI way and won't be overwritten
@@ -73,6 +94,7 @@ struct AudientiaApp: App {
                     appDelegate.showSetupWizard()
                 }
                 .keyboardShortcut("s", modifiers: [.command, .shift])
+                .disabled(showSplashScreen && settings.showSplashScreen)
             }
         }
 
@@ -89,6 +111,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     private let aboutMenuConfigurator = AboutMenuConfigurator()
     private let setupWizardMenuConfigurator = SetupWizardMenuConfigurator()
     private var setupWizardWindow: NSWindow?
+    private var mainWindow: NSWindow?
+    private var shortcutsDisabled = false
     
     func applicationDidFinishLaunching(_ notification: Notification) {
         // Customize About panel to show only our version format
@@ -100,7 +124,70 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         // Check dependencies on first launch (only once)
         checkDependenciesOnFirstLaunch()
         
+        // Store reference to main window and configure it
+        DispatchQueue.main.async { [weak self] in
+            if let window = NSApplication.shared.windows.first {
+                self?.mainWindow = window
+                // Configure window: minimum size, allow maximize/minimize
+                window.minSize = NSSize(width: 1000, height: 600)
+                window.styleMask.insert(.resizable)
+                window.styleMask.insert(.miniaturizable)
+                window.collectionBehavior = [.fullScreenPrimary, .fullScreenAllowsTiling]
+            }
+        }
+        
         // Note: Setup wizard is now shown after splash screen dismisses (handled in onAppear)
+    }
+    
+    @MainActor
+    func hideMainWindow() {
+        mainWindow?.orderOut(nil)
+        setupWizardWindow?.orderOut(nil)
+    }
+    
+    @MainActor
+    func showMainWindow() {
+        mainWindow?.makeKeyAndOrderFront(nil)
+    }
+    
+    @MainActor
+    func disableKeyboardShortcuts() {
+        shortcutsDisabled = true
+        // Disable menu items that have keyboard shortcuts
+        if let mainMenu = NSApplication.shared.mainMenu {
+            disableMenuShortcuts(menu: mainMenu)
+        }
+    }
+    
+    @MainActor
+    func enableKeyboardShortcuts() {
+        shortcutsDisabled = false
+        // Re-enable menu items
+        if let mainMenu = NSApplication.shared.mainMenu {
+            enableMenuShortcuts(menu: mainMenu)
+        }
+    }
+    
+    private func disableMenuShortcuts(menu: NSMenu) {
+        for item in menu.items {
+            if !item.keyEquivalent.isEmpty {
+                item.isEnabled = false
+            }
+            if let submenu = item.submenu {
+                disableMenuShortcuts(menu: submenu)
+            }
+        }
+    }
+    
+    private func enableMenuShortcuts(menu: NSMenu) {
+        for item in menu.items {
+            if !item.keyEquivalent.isEmpty {
+                item.isEnabled = true
+            }
+            if let submenu = item.submenu {
+                enableMenuShortcuts(menu: submenu)
+            }
+        }
     }
     
     func applicationDidBecomeActive(_ notification: Notification) {
@@ -239,6 +326,12 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
     
     @objc func showSetupWizard() {
+        // Don't show setup wizard if splash screen is visible
+        guard !shortcutsDisabled else {
+            Logger.userInterface.info("Setup Wizard requested but splash screen is visible")
+            return
+        }
+        
         Logger.userInterface.info("showSetupWizard() called")
         Task { @MainActor in
             Logger.userInterface.info("Creating Setup Wizard window")

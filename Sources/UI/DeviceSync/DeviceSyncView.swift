@@ -41,14 +41,6 @@ public struct DeviceSyncView: View {
         .task {
             await refreshDevicesAndTracks()
         }
-        .toolbar {
-            Button("Refresh") {
-                Task {
-                    await viewModel.refreshDevices()
-                    await viewModel.reloadJobs()
-                }
-            }
-        }
         .sheet(isPresented: $showConfigurationWizard) {
             if let device = viewModel.selectedDevice {
                 DeviceConfigurationWizardView(

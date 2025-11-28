@@ -625,6 +625,7 @@
 		E2969B422ED99275006755EB /* LibraryScanCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2969B402ED99275006755EB /* LibraryScanCoordinator.swift */; };
 		E2969B432ED99275006755EB /* ScanResultsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2969B412ED99275006755EB /* ScanResultsView.swift */; };
 		E2969B442EDA2910006755EB /* NotificationPermissionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2F4A1B22EDA9B0000123456 /* NotificationPermissionManager.swift */; };
+		E2969B462EDA48C9006755EB /* MainWindowLayoutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2969B452EDA48C9006755EB /* MainWindowLayoutView.swift */; };
 		E2A033A62ED45DED0061ED5A /* LayoutCustomizationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42F479DF3EFF4ACFBE2DEB82 /* LayoutCustomizationViewModel.swift */; };
 		E2A033A72ED45DED0061ED5A /* LayoutCustomizationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 157EBEA365F34BC682C9C899 /* LayoutCustomizationView.swift */; };
 		E2A033A82ED45DED0061ED5A /* SettingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEC45DE7D4F241F7BD50FE95 /* SettingsViewModel.swift */; };
@@ -1538,6 +1539,7 @@
 		E2969B3E2ED903FA006755EB /* SetupWizardMenuConfigurator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetupWizardMenuConfigurator.swift; sourceTree = "<group>"; };
 		E2969B402ED99275006755EB /* LibraryScanCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LibraryScanCoordinator.swift; sourceTree = "<group>"; };
 		E2969B412ED99275006755EB /* ScanResultsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanResultsView.swift; sourceTree = "<group>"; };
+		E2969B452EDA48C9006755EB /* MainWindowLayoutView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainWindowLayoutView.swift; sourceTree = "<group>"; };
 		E2A033AC2ED465330061ED5A /* Audientia.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = Audientia.xctestplan; sourceTree = "<group>"; };
 		E2AC80702ED2278700DDFEE7 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		E2AC80712ED2278700DDFEE7 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
@@ -2436,6 +2438,7 @@
 		6F17A4986829475581B23BE4 /* Layout */ = {
 			isa = PBXGroup;
 			children = (
+				E2969B452EDA48C9006755EB /* MainWindowLayoutView.swift */,
 				142E7A87FD9447BAAEA552D4 /* MultiPaneLayoutView.swift */,
 				36AF83CDA509423396503014 /* MultiPaneLayoutViewModel.swift */,
 			);
@@ -4104,6 +4107,7 @@
 				1F8D7B34FA77813B6FFEE350 /* MetadataLookupSheetView.swift in Sources */,
 				2875D622762312EF925CAE5D /* MetadataLookupView.swift in Sources */,
 				1FE66CF45D95C628D3F442A5 /* MetadataLookupViewModel.swift in Sources */,
+				E2969B462EDA48C9006755EB /* MainWindowLayoutView.swift in Sources */,
 				EB25E6251AFAC67B6AD8AA97 /* ModuleVersionConflictView.swift in Sources */,
 				FAC8CFB314FC0D31B1104DCD /* NormalizationSettingsView.swift in Sources */,
 				7C8899F7A93F2701F400201E /* NowPlayingView.swift in Sources */,
