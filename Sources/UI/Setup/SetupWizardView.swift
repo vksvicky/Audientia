@@ -8,12 +8,14 @@
 //
 
 import AppKit
+import DataLayer
 import Shared
 import SwiftUI
 
 /// Setup wizard view similar to MediaMonkey's design
 /// Shows on first launch and can be relaunched from menu
 @MainActor
+// swiftlint:disable:next type_body_length
 public struct SetupWizardView: View {
     @StateObject private var viewModel = SetupWizardViewModel()
     @Environment(\.dismiss) private var dismiss
@@ -24,30 +26,51 @@ public struct SetupWizardView: View {
     public init() {}
     
     public var body: some View {
-        VStack(spacing: 0) {
-            // Header
-            headerView
-            
-            // Content area
-            HStack(spacing: 0) {
-                // Left navigation pane
-                navigationPane
-                    .frame(width: 200)
-                    .background(Color(NSColor.controlBackgroundColor))
+        ZStack {
+            VStack(spacing: 0) {
+                // Header
+                headerView
                 
-                Divider()
+                // Content area
+                HStack(spacing: 0) {
+                    // Left navigation pane
+                    navigationPane
+                        .frame(width: 200)
+                        .background(Color(NSColor.controlBackgroundColor))
+                    
+                    Divider()
+                    
+                    // Right content pane
+                    contentPane
+                        .frame(maxWidth: .infinity)
+                        .padding(30)
+                }
                 
-                // Right content pane
-                contentPane
-                    .frame(maxWidth: .infinity)
-                    .padding(30)
+                // Footer
+                footerView
             }
+            .frame(width: 700, height: 550)
+            .background(Color(NSColor.windowBackgroundColor))
             
-            // Footer
-            footerView
+            // Progress overlay when scanning
+            if let coordinator = viewModel.scanCoordinator, coordinator.isScanning {
+                scanProgressOverlay(coordinator: coordinator)
+            }
         }
-        .frame(width: 700, height: 550)
-        .background(Color(NSColor.windowBackgroundColor))
+        .sheet(isPresented: Binding(
+            get: { viewModel.scanCoordinator?.showResults ?? false },
+            set: { viewModel.scanCoordinator?.showResults = $0 }
+        )) {
+            if let coordinator = viewModel.scanCoordinator {
+                ScanResultsView(
+                    coordinator: coordinator,
+                    isPresented: Binding(
+                        get: { coordinator.showResults },
+                        set: { coordinator.showResults = $0 }
+                    )
+                )
+            }
+        }
     }
     
     // MARK: - Header
@@ -65,22 +88,28 @@ public struct SetupWizardView: View {
     // MARK: - Navigation Pane
     
     private var navigationPane: some View {
-        List(SetupWizardStep.allCases, id: \.id, selection: Binding(
-            get: { viewModel.currentStep },
-            set: { _ in } // Prevent manual selection
-        )) { step in
-            HStack {
-                if step == viewModel.currentStep {
-                    Image(systemName: "checkmark.circle.fill")
-                        .foregroundColor(.orange)
-                } else {
-                    Image(systemName: "circle")
-                        .foregroundColor(.secondary)
+        List(SetupWizardStep.allCases, id: \.id) { step in
+            Button(
+                action: {
+                    viewModel.goToStep(step)
+                },
+                label: {
+                    HStack {
+                        if step == viewModel.currentStep {
+                            Image(systemName: "checkmark.circle.fill")
+                                .foregroundColor(.orange)
+                        } else {
+                            Image(systemName: "circle")
+                                .foregroundColor(.secondary)
+                        }
+                        Text(step.displayName)
+                            .foregroundColor(step == viewModel.currentStep ? .primary : .secondary)
+                    }
+                    .padding(.vertical, 4)
+                    .frame(maxWidth: .infinity, alignment: .leading)
                 }
-                Text(step.displayName)
-                    .foregroundColor(step == viewModel.currentStep ? .primary : .secondary)
-            }
-            .padding(.vertical, 4)
+            )
+            .buttonStyle(.plain)
         }
         .listStyle(.sidebar)
     }
@@ -171,7 +200,7 @@ public struct SetupWizardView: View {
             )
             
             // Add location button
-            Button("ADD LOCATION >>") {
+            Button("Add Location >>") {
                 addLocation()
             }
             .buttonStyle(.bordered)
@@ -320,14 +349,18 @@ public struct SetupWizardView: View {
     // MARK: - Image Loading Helpers
     
     private func loadQRImage() {
-        qrImage = loadImage(named: "qr-code")
+        qrImage = loadImage(named: "SupportQRCode")
     }
     
     private func loadBMACImage() {
-        bmacImage = loadImage(named: "bmac")
+        bmacImage = loadImage(named: "SupportBMAC")
     }
     
     private func loadImage(named name: String) -> NSImage? {
+        // Try asset catalog first
+        if let assetImage = NSImage(named: name) {
+            return assetImage
+        }
         // Try with subdirectory first
         if let url = Bundle.main.url(forResource: name, withExtension: "png", subdirectory: "images"),
            let image = NSImage(contentsOf: url) {
@@ -346,6 +379,30 @@ public struct SetupWizardView: View {
         return nil
     }
     
+    // MARK: - Scan Progress Overlay
+
+    @ViewBuilder
+    private func scanProgressOverlay(coordinator: LibraryScanCoordinator) -> some View {
+        Color.black.opacity(0.3)
+            .ignoresSafeArea()
+            .overlay {
+                VStack(spacing: 20) {
+                    ProgressView(value: coordinator.progress, total: 1.0)
+                        .progressViewStyle(.linear)
+                        .frame(width: 400)
+                    Text(coordinator.currentStatus)
+                        .font(.system(size: 14))
+                        .foregroundColor(.white)
+                    Text("\(Int(coordinator.progress * 100))%")
+                        .font(.system(size: 12))
+                        .foregroundColor(.white.opacity(0.8))
+                }
+                .padding(30)
+                .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 12))
+                .frame(width: 500)
+            }
+    }
+
     // MARK: - Footer
     
     private var footerView: some View {

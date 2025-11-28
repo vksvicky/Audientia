@@ -218,7 +218,12 @@ private extension MultiPaneLayoutView {
         HStack(spacing: 12) {
             Picker("Layout Mode", selection: Binding(
                 get: { viewModel.currentLayout.layoutMode },
-                set: { viewModel.setLayoutMode($0) }
+                set: { newMode in
+                    guard viewModel.currentLayout.layoutMode != newMode else { return }
+                    Task { @MainActor in
+                        viewModel.setLayoutMode(newMode)
+                    }
+                }
             )) {
                 ForEach(LayoutMode.allCases, id: \.self) { mode in
                     Text(mode.displayTitle).tag(mode)
@@ -231,7 +236,9 @@ private extension MultiPaneLayoutView {
                 ForEach(LayoutPanel.allCases, id: \.self) { panel in
                     let isVisible = viewModel.currentLayout.panelVisibility[panel] ?? false
                     Button {
-                        viewModel.togglePanelVisibility(panel)
+                        Task { @MainActor in
+                            viewModel.togglePanelVisibility(panel)
+                        }
                     } label: {
                         Label(panel.displayName, systemImage: isVisible ? "checkmark.circle.fill" : "circle")
                     }

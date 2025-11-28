@@ -6,13 +6,13 @@
 **Focus**: Complete UI/backend integration, wire all features, fix issues, and polish the user experience.
 
 ### Goals
-- [ ] Complete UI/backend wiring for all implemented features
-- [ ] Fix all UI issues and inconsistencies
-- [ ] Ensure all features are accessible and functional from the UI
-- [ ] Polish user experience and interactions
-- [ ] Verify end-to-end workflows
+- [x] Complete UI/backend wiring for all implemented features - **✅ Setup wizard, library scanning, and notification permissions fully integrated**
+- [x] Fix all UI issues and inconsistencies - **✅ Setup wizard navigation, notification formatting, and scan triggering logic fixed**
+- [x] Ensure all features are accessible and functional from the UI - **✅ Setup wizard accessible via File menu (⇧⌘S), notification settings in Settings → General**
+- [ ] Polish user experience and interactions - **In progress: Setup wizard improvements, notification system**
+- [x] Verify end-to-end workflows - **✅ Setup wizard → library scan → notification flow verified**
 - [ ] Complete About screen menu wiring QA
-- [ ] Fix any remaining integration issues
+- [x] Fix any remaining integration issues - **✅ Notification permission flow, library scan notifications, duplicate scan prevention**
 
 ### Areas of Focus
 1. **UI/Backend Integration**
@@ -70,13 +70,15 @@
 - [x] **Multi-pane Workspace** – ✅ Workspace tab with MediaMonkey-style multi-pane layout system, library browser, and playlist panel integrated and functional.
 - [x] **Library Browser** – ✅ Full library browsing with search, sorting, grouping, and multiple view modes. Tracks loaded from library indexer.
 - [x] **Playlist Panel** – ✅ Split-view playlist management with create/delete, track add/remove, and playlist selection.
-- [x] **Settings/Preferences UI** – ✅ Accessible via macOS Settings menu (⌘,). Layout customization, theme selection, and other preferences with full persistence.
+- [x] **Settings/Preferences UI** – ✅ Accessible via macOS Settings menu (⌘,). Layout customization, theme selection, notification permissions, and other preferences with full persistence.
 - [x] **Now Playing view surfaced to users** – ✅ Users can import/drag-and-drop audio, double-click library/playlist entries, and immediately hear playback through the shared `AudioEngine`.
 - [x] **Playback controls (play/pause/stop)** – ✅ Controls are live; state follows the audio engine and surfaces errors when operations fail.
 - [x] **Progress slider with scrubbing** – ✅ The slider now reflects real durations and supports scrubbing/seek via `NowPlayingViewModel`.
 - [x] **Volume control UI** – ✅ Slider + mute toggle manipulate engine volume and show mute state.
 - [x] **Queue navigation UI** – ✅ Previous/Next wire into queue history; buttons enable when navigation is possible.
 - [x] **Advanced controls (replay, skip, loop)** – ✅ Replay, skip ±10s, and loop mode toggles interact with the engine and expose loop state.
+- [x] **Setup Wizard** – ✅ First-launch wizard with library location setup, preferences configuration, and support information. Features clickable navigation between steps, library scanning with progress bar, background scan notifications with sound, and scan results display. Integrated with `LibraryScanCoordinator` for automatic scanning after wizard completion and when library locations change.
+- [x] **Notification Permission Management** – ✅ `NotificationPermissionManager` for centralized notification permission handling. Settings UI for viewing permission status, requesting permissions, and opening System Settings. Integrated with library scanning for background scan completion notifications.
 - [ ] **About screen with app icon and version info** – Custom About window code exists, but the standard macOS Settings/About menu wiring still needs QA.
 - [x] **Resources folder and Assets.xcassets configured** – Asset pipeline is in place and reflected in the build.
 
@@ -392,9 +394,11 @@ See [`Scripts/build_guide.md`](../Scripts/build_guide.md) for detailed build ins
 - [x] Search interface - **✅ Search field in toolbar with real-time filtering. Enhanced with relevance ranking (title > artist > album, exact matches first).**
 - [x] Library statistics view - **✅ LibraryStatisticsView component created with ViewModel, displays total tracks, unique artists/albums, total duration, and file size. All compilation errors fixed, proper error handling implemented.**
 - [x] Import/scan progress - **✅ ImportProgressView component created with progress indicator and status text. ViewModel ready for scanner integration. All compilation errors fixed, optional type syntax corrected.**
+- [x] Setup Wizard with library scanning - **✅ SetupWizardView with clickable navigation between steps. LibraryScanCoordinator manages scanning with progress tracking, notifications, and results display. Automatic scanning after wizard completion and when library locations are added. Background scans trigger macOS notifications with sound (or fallback alerts if notifications denied). Scan results show new/updated/failed/skipped file counts with duration.**
+- [x] Notification permission UI - **✅ NotificationPermissionManager for centralized permission management. Settings UI (General → Notifications) displays permission status, rationale, and controls to request permission or open System Settings. Integrated with app lifecycle for initial permission prompt.**
 
 **Tests:**
-- [x] **TDD**: Scanner, indexer, search algorithms - **✅ LibraryScannerBDDTests with basic BDD scenarios (scan music folder, empty folder, mixed files). LibraryScannerMetadataTests with comprehensive TDD tests for metadata extraction integration following Right-BICEP principles (metadata delegation, error handling, empty directories, nested directories, consistent results, performance characteristics). LibraryIndexerTests with comprehensive TDD tests for indexing (Right-BICEP: boundary conditions, inverse relationships, error handling, performance, edge cases). LibrarySearchTests with comprehensive TDD tests for search functionality (case-insensitive, partial matching, field-specific search, performance). LibraryStatisticsTests with comprehensive TDD tests for statistics calculation (Right-BICEP: boundary conditions, inverse relationships, cross-checking, error handling, performance, edge cases)**
+- [x] **TDD**: Scanner, indexer, search algorithms - **✅ LibraryScannerBDDTests with basic BDD scenarios (scan music folder, empty folder, mixed files). LibraryScannerMetadataTests with comprehensive TDD tests for metadata extraction integration following Right-BICEP principles (metadata delegation, error handling, empty directories, nested directories, consistent results, performance characteristics). LibraryIndexerTests with comprehensive TDD tests for indexing (Right-BICEP: boundary conditions, inverse relationships, error handling, performance, edge cases). LibrarySearchTests with comprehensive TDD tests for search functionality (case-insensitive, partial matching, field-specific search, performance). LibraryStatisticsTests with comprehensive TDD tests for statistics calculation (Right-BICEP: boundary conditions, inverse relationships, cross-checking, error handling, performance, edge cases). NotificationPermissionStatusFormatterTests with comprehensive TDD tests for notification status formatting (all UNAuthorizationStatus cases including provisional/ephemeral).**
 - [x] **TDD**: Tag parsing accuracy - **✅ ID3v2ParserTests with comprehensive TDD tests covering Right-BICEP principles (valid tags, boundary conditions, inverse relationships, error conditions, performance, edge cases). VorbisCommentsParserTests with comprehensive TDD tests covering Right-BICEP principles (valid Vorbis Comments, boundary conditions, inverse relationships, error conditions, performance, edge cases). MP4ParserTests with comprehensive TDD tests covering Right-BICEP principles (valid MP4/M4A tags, boundary conditions, inverse relationships, error conditions, performance, edge cases). All test suites include tests for various encodings, missing tags, corrupted tags, and special characters.**
 - [x] **TDD**: Tag parser coordinator - **✅ TagParserCoordinatorTests with comprehensive TDD tests covering Right-BICEP principles (routing to correct parsers, boundary conditions, error handling, performance, edge cases). Tests verify correct parser selection based on file extension, case-insensitive matching, unsupported format handling, and default parser initialization.**
 - [x] **Unit**: Search relevance - **✅ LibrarySearchTests extended with relevance ranking tests: title matches ranked higher than artist/album, exact matches ranked higher than partial, "starts with" ranked higher than "contains", multi-field matches ranked higher. All tests passing, test isolation fixed (indexer clearing), file path deduplication resolved.**

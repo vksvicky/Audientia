@@ -7,7 +7,9 @@
 //  Copyright © 2025 CycleRunCode Club. All rights reserved.
 //
 
+import DataLayer
 import Foundation
+import os.log
 import Shared
 import SwiftUI
 
@@ -21,11 +23,15 @@ public final class SetupWizardViewModel: ObservableObject {
     @Published public var libraryLocations: [URL] = []
     @Published public var enableAutoScan: Bool = true
     @Published public var scanSchedule: ScanSchedule = .manual
+    @Published public var scanCoordinator: LibraryScanCoordinator?
     
     // MARK: - Private Properties
     
     private static let hasCompletedWizardKey = "audientia.setup.hasCompletedWizard"
     private static let libraryLocationsKey = "audientia.setup.libraryLocations"
+    private var previousLocations: [URL] = []
+    private var backgroundScanTask: Task<Void, Never>?
+    private let logger = Logger.userInterface
     
     // MARK: - Computed Properties
     
@@ -45,6 +51,7 @@ public final class SetupWizardViewModel: ObservableObject {
     
     public init() {
         loadLibraryLocations()
+        previousLocations = libraryLocations
     }
     
     // MARK: - Public Methods
@@ -72,21 +79,89 @@ public final class SetupWizardViewModel: ObservableObject {
         currentStep = SetupWizardStep.allCases[currentIndex - 1]
     }
     
+    /// Jump to a specific step
+    public func goToStep(_ step: SetupWizardStep) {
+        currentStep = step
+    }
+    
     /// Complete the wizard and mark as completed
     public func completeWizard() {
+        let isFirstRun = !hasCompletedWizard
+        let locationsChanged = libraryLocations != previousLocations
         saveLibraryLocations()
         UserDefaults.standard.set(true, forKey: Self.hasCompletedWizardKey)
+        
+        // Only trigger scan if locations changed or it's the first run
+        if isFirstRun || locationsChanged {
+            let coordinator = LibraryScanCoordinator(
+                libraryLocations: libraryLocations,
+                isFirstRun: isFirstRun
+            )
+            
+            if isFirstRun {
+                scanCoordinator = coordinator
+                Task { await coordinator.startScan() }
+            } else {
+                // Cancel any pending scan from triggerScanIfNeeded
+                backgroundScanTask?.cancel()
+                backgroundScanTask = Task { await coordinator.startScan() }
+            }
+        }
+        
+        previousLocations = libraryLocations
     }
     
     /// Add a library location
     public func addLibraryLocation(_ url: URL) {
         guard !libraryLocations.contains(url) else { return }
         libraryLocations.append(url)
+        // Don't trigger scan during wizard - will be triggered on completion
+        if hasCompletedWizard {
+            triggerScanIfNeeded()
+        }
     }
     
     /// Remove a library location
     public func removeLibraryLocation(_ url: URL) {
         libraryLocations.removeAll { $0 == url }
+        // Update previous locations to prevent scan on next add
+        // Don't trigger scan when removing - only when adding locations
+        if hasCompletedWizard {
+            previousLocations = libraryLocations
+        }
+    }
+    
+    /// Trigger scan if folders changed (for subsequent runs)
+    /// Only scans when locations are added, not when they're removed
+    private func triggerScanIfNeeded() {
+        guard hasCompletedWizard else { return }
+        guard libraryLocations != previousLocations else { return }
+        
+        // Only trigger scan if locations were added (not removed)
+        // Check if current locations contain all previous locations plus new ones
+        let previousSet = Set(previousLocations)
+        let currentSet = Set(libraryLocations)
+        let addedLocations = currentSet.subtracting(previousSet)
+        
+        // Only scan if there are new locations added
+        guard !addedLocations.isEmpty else {
+            // Locations were removed, just update previousLocations without scanning
+            previousLocations = libraryLocations
+            return
+        }
+        
+        logger.info("Library locations changed. Scheduling background scan.")
+        previousLocations = libraryLocations
+        backgroundScanTask?.cancel()
+        let locationsSnapshot = libraryLocations
+        backgroundScanTask = Task { [logger] in
+            let coordinator = LibraryScanCoordinator(
+                libraryLocations: locationsSnapshot,
+                isFirstRun: false
+            )
+            await coordinator.startScan()
+            logger.info("Background scan finished.")
+        }
     }
     
     // MARK: - Private Methods

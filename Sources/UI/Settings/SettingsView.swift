@@ -7,8 +7,14 @@
 //  Copyright © 2025 CycleRunCode Club. All rights reserved.
 //
 
+import AppKit
 import Shared
 import SwiftUI
+
+// Force compiler to see NotificationPermissionManager type
+// This helps resolve build order issues
+private let _notificationManagerTypeCheck: NotificationPermissionManager.Type =
+    NotificationPermissionManager.self
 
 /// Main settings view with categories: General, Library, Playback, Audio/DSP, Appearance, Advanced
 /// BDD: As a user, I want to access all application settings in one place
@@ -104,6 +110,9 @@ enum SettingsCategory: String, CaseIterable {
 private struct GeneralSettingsView: View {
     @ObservedObject var viewModel: SettingsViewModel
     @ObservedObject var settings: AppSettings
+    // Use type inference to avoid explicit type annotation that causes build issues
+    @ObservedObject private var notificationManager =
+        NotificationPermissionManager.shared
     
     init(viewModel: SettingsViewModel) {
         self.viewModel = viewModel
@@ -117,10 +126,40 @@ private struct GeneralSettingsView: View {
                     .help("Display the splash screen when the application launches")
             }
             
+            Section("Notifications") {
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("Status: \(notificationManager.statusDescription)")
+                        .fontWeight(.semibold)
+                    Text(
+                        """
+                        Audientia sends notifications when background library scans finish.
+                        You can review newly added files right away.
+                        """
+                    )
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                }
+                
+                HStack {
+                    Button("Request Permission") {
+                        Task { await notificationManager.requestPermissionFromSettings() }
+                    }
+                    Button("Open System Settings") {
+                        notificationManager.openSystemSettings()
+                    }
+                }
+            }
+            
             Section("Window") {
                 // Window settings will go here
                 Text("Window management settings")
             }
+        }
+        .task {
+            await notificationManager.refreshAuthorizationStatus()
+        }
+        .onReceive(NotificationCenter.default.publisher(for: NSApplication.didBecomeActiveNotification)) { _ in
+            Task { await notificationManager.refreshAuthorizationStatus() }
         }
         .padding()
     }

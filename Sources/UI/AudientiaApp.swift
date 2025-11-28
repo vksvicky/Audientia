@@ -35,6 +35,7 @@ struct AudientiaApp: App {
                 }
             }
             .onAppear {
+                Task { await NotificationPermissionManager.shared.ensureInitialPromptIfNeeded() }
                 // Show splash screen on app launch if enabled
                 if settings.showSplashScreen {
                     showSplashScreen = true
