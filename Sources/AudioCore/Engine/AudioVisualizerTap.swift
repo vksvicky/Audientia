@@ -19,7 +19,7 @@ import Shared
 /// Processes audio samples and feeds them to the visualizer
 @MainActor
 public final class AudioVisualizerTap {
-    private var audioEngine: AVAudioEngine?
+    var audioEngine: AVAudioEngine?
     private var playerNode: AVAudioPlayerNode?
     private var audioFile: AVAudioFile?
     private let visualizer: any AudioVisualizerProtocol
@@ -192,69 +192,25 @@ public final class AudioVisualizerTap {
             return false
         }
         
-        // Ensure engine is running
-        guard engine.isRunning else {
-            Logger.audio.warning("AudioVisualizerTap: Engine is not running")
+        // Ensure engine is running - restart if it stopped (e.g., after stop())
+        guard ensureEngineRunning(engine: engine, playerNode: playerNode, audioFile: audioFile) else {
             return false
         }
         
-        // Schedule the entire file to be processed through the tap
-        // The tap will capture audio data for visualization
-        // We need to schedule the file before playing to ensure audio flows
-        // Use AVAudioTime to schedule immediately at the current engine time
-        // If engine hasn't rendered yet, use nil to schedule immediately
-        let startTime: AVAudioTime?
-        if let renderTime = engine.outputNode.lastRenderTime {
-            startTime = AVAudioTime(sampleTime: renderTime.sampleTime, atRate: audioFile.fileFormat.sampleRate)
-        } else {
-            // Schedule immediately (nil means "now")
-            startTime = nil
-        }
+        // Schedule file if needed and start playback
+        let schedulingResult = scheduleFileIfNeeded(
+            playerNode: playerNode,
+            audioFile: audioFile,
+            engine: engine,
+            startPosition: startPosition
+        )
         
-        // Capture references before the closure to avoid MainActor isolation issues
-        let fileToReschedule = audioFile
-        let nodeToReschedule = playerNode
-        let engineToCheck = engine
-        
-        // Only schedule the full file if we didn't already schedule a segment
-        if startPosition == nil || startPosition == 0 {
-            playerNode.scheduleFile(audioFile, at: startTime) {
-                // File playback completed - reschedule to loop for continuous visualization
-                // This ensures we keep getting audio data throughout playback
-                // Note: This closure runs on the audio thread, not MainActor
-                guard engineToCheck.isRunning,
-                      nodeToReschedule.isPlaying else {
-                    return
-                }
-                
-                // Reschedule to continue processing
-                let nextStartTime: AVAudioTime?
-                if let renderTime = engineToCheck.outputNode.lastRenderTime {
-                    nextStartTime = AVAudioTime(sampleTime: renderTime.sampleTime, atRate: fileToReschedule.fileFormat.sampleRate)
-                } else {
-                    nextStartTime = nil // Schedule immediately
-                }
-                nodeToReschedule.scheduleFile(fileToReschedule, at: nextStartTime, completionHandler: nil)
-                Logger.audio.debug("AudioVisualizerTap: File rescheduled for continuous visualization")
-            }
-        }
-        
-        // Start playing - this will feed audio through the tap
-        // The engine must be running and the file must be scheduled
-        playerNode.play()
-        
-        // Verify playerNode is actually playing and log status
-        // Note: isPlaying might not be true immediately, so we check after a brief delay
-        Task { @MainActor in
-            try? await Task.sleep(nanoseconds: 50_000_000) // 50ms delay to allow engine to start
-            if playerNode.isPlaying {
-                Logger.audio.info("AudioVisualizerTap: playerNode is playing, audio should flow through tap")
-            } else {
-                Logger.audio.warning("AudioVisualizerTap: playerNode.play() called but node is not playing after delay - audio may not flow")
-            }
-        }
-        
-        Logger.audio.info("AudioVisualizerTap: Started processing audio file for visualization - file length: \(audioFile.length) frames, format: \(audioFile.processingFormat)")
+        startPlayback(
+            playerNode: playerNode,
+            engine: engine,
+            audioFile: audioFile,
+            schedulingResult: schedulingResult
+        )
         
         return true
     }
@@ -265,8 +221,15 @@ public final class AudioVisualizerTap {
     }
     
     /// Stop playback
+    /// NOTE: We use pause() instead of stop() to keep the engine/node state consistent
+    /// When play() is called after stop() with startPosition: nil, we'll reschedule from beginning
+    /// This approach works the same as pause/resume but allows position reset
     public func stop() {
-        playerNode?.stop()
+        // Use pause() to keep node state consistent (like pause/resume)
+        // When we play again, if startPosition is nil/0, we'll reschedule from beginning
+        // This avoids the issues with stop() clearing buffers and engine restart problems
+        playerNode?.pause()
+        Logger.audio.info("AudioVisualizerTap: Player node paused (will reschedule from beginning on next play if needed)")
     }
     
     /// Remove tap and cleanup
@@ -286,4 +249,50 @@ public final class AudioVisualizerTap {
         // The cleanup() method should be called explicitly before deallocation
         // This is a safety fallback that may not execute if properties are already deallocated
     }
+    
+    // MARK: - Private Helper Methods
+    
+    /// Ensure engine is running, restarting if needed
+    /// - Parameters:
+    ///   - engine: The audio engine
+    ///   - playerNode: The player node
+    ///   - audioFile: The audio file
+    /// - Returns: True if engine is running, false if restart failed
+    private func ensureEngineRunning(
+        engine: AVAudioEngine,
+        playerNode: AVAudioPlayerNode,
+        audioFile: AVAudioFile
+    ) -> Bool {
+        guard !engine.isRunning else {
+            Logger.audio.debug("AudioVisualizerTap: Engine is already running")
+            return true
+        }
+        
+        Logger.audio.info("AudioVisualizerTap: Engine not running, restarting...")
+        do {
+            // Verify tap is still installed before restarting
+            if !isTapped {
+                Logger.audio.warning("AudioVisualizerTap: Tap not installed, cannot restart")
+                return false
+            }
+            
+            // Verify playerNode is still attached and connected
+            if engine.attachedNodes.contains(playerNode) {
+                Logger.audio.debug("AudioVisualizerTap: PlayerNode is still attached")
+            } else {
+                Logger.audio.warning("AudioVisualizerTap: PlayerNode is not attached, reattaching...")
+                engine.attach(playerNode)
+                engine.connect(playerNode, to: engine.mainMixerNode, format: audioFile.processingFormat)
+            }
+            
+            try engine.start()
+            engine.mainMixerNode.outputVolume = self.volume
+            Logger.audio.info("AudioVisualizerTap: Engine restarted successfully, mixer volume set to \(self.volume), tap should resume receiving callbacks")
+            return true
+        } catch {
+            Logger.audio.error("AudioVisualizerTap: Failed to restart engine: \(error.localizedDescription)")
+            return false
+        }
+    }
+    
 }

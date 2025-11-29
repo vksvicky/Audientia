@@ -322,6 +322,15 @@ public final class AudioEngine: AudioEngineProtocol {
         guard await nativeEngine.play() else {
             throw AudioEngineError.trackLoadFailed("Native audio engine failed to resume playback")
         }
+        
+        // Restart visualizer tap for real-time audio data (runs in parallel, no audio output)
+        // This ensures visualization continues after resume
+        // Sync with current playback position if available
+        let currentPos = currentPosition
+        if visualizerTap?.play(startPosition: currentPos > 0 ? currentPos : nil) == false {
+            Logger.audio.warning("Failed to restart visualizer tap on resume, visualization may not work")
+        }
+        
         startPositionTracking()
         state = .playing
     }
