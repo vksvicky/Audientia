@@ -106,15 +106,41 @@ struct AudientiaApp: App {
 }
 
 class AppDelegate: NSObject, NSApplicationDelegate {
+    // Static reference to the AppDelegate instance
+    private static var _sharedInstance: AppDelegate?
+    
+    static var shared: AppDelegate? {
+        // Try static instance first
+        if let instance = _sharedInstance {
+            return instance
+        }
+        // Fallback to NSApplication delegate
+        return NSApplication.shared.delegate as? AppDelegate
+    }
+    
     private let dependencyChecker = DependencyChecker()
     private let hasCheckedDependenciesKey = "hasCheckedDependencies"
     private let aboutMenuConfigurator = AboutMenuConfigurator()
     private let setupWizardMenuConfigurator = SetupWizardMenuConfigurator()
     private var setupWizardWindow: NSWindow?
-    private var mainWindow: NSWindow?
+    var mainWindow: NSWindow?
+    var minimizedPlayerWindow: NSWindow?
     private var shortcutsDisabled = false
+    var isMinimized = false
+    
+    override init() {
+        super.init()
+        // Store this instance as the shared delegate
+        AppDelegate._sharedInstance = self
+        // Ensure NSApplication knows about it
+        // @NSApplicationDelegateAdaptor should set this, but we ensure it's set
+        NSApplication.shared.delegate = self
+    }
     
     func applicationDidFinishLaunching(_ notification: Notification) {
+        // Ensure we're set as the delegate (reassigning is safe and ensures correctness)
+        NSApplication.shared.delegate = self
+        
         // Customize About panel to show only our version format
         setupCustomAboutMenu()
         
@@ -360,5 +386,85 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             setupWizardWindow = wizardWindow
             Logger.userInterface.info("Setup Wizard window created and shown")
         }
+    }
+    
+    @MainActor
+    func minimizeToPlayer(nowPlayingViewModel: NowPlayingViewModel) {
+        guard !isMinimized else { return }
+        
+        // Get main window frame before hiding it (for centering)
+        let mainWindowFrame = mainWindow?.frame ?? NSRect.zero
+        
+        // Hide main window
+        mainWindow?.orderOut(nil)
+        
+        // Create minimized player window
+        let playerWindow = NSWindow(
+            contentRect: NSRect(x: 0, y: 0, width: 400, height: 80),
+            styleMask: [.borderless, .fullSizeContentView],
+            backing: .buffered,
+            defer: false
+        )
+        playerWindow.title = "Audientia Player"
+        playerWindow.level = .floating
+        playerWindow.isMovableByWindowBackground = true
+        playerWindow.backgroundColor = NSColor.controlBackgroundColor
+        playerWindow.hasShadow = true
+        playerWindow.isReleasedWhenClosed = false
+        playerWindow.isOpaque = true
+        
+        // Position window centered on screen (or centered relative to main window if available)
+        if let screen = NSScreen.main {
+            let screenRect = screen.visibleFrame
+            let windowWidth: CGFloat = 400
+            let windowHeight: CGFloat = 80
+            
+            let centerX: CGFloat
+            let centerY: CGFloat
+            
+            if mainWindowFrame != NSRect.zero {
+                // Center relative to where the main window was
+                centerX = mainWindowFrame.midX - windowWidth / 2
+                centerY = mainWindowFrame.midY - windowHeight / 2
+            } else {
+                // Center on screen
+                centerX = screenRect.midX - windowWidth / 2
+                centerY = screenRect.midY - windowHeight / 2
+            }
+            
+            playerWindow.setFrameOrigin(NSPoint(x: centerX, y: centerY))
+        }
+        
+        // Create minimized player view
+        let playerView = MinimizedPlayerView(
+            nowPlayingViewModel: nowPlayingViewModel,
+            onRestore: { [weak self] in
+                self?.restoreFromPlayer()
+            }
+        )
+        let hostingView = NSHostingView(rootView: playerView)
+        hostingView.frame = NSRect(x: 0, y: 0, width: 400, height: 80)
+        
+        playerWindow.contentView = hostingView
+        playerWindow.makeKeyAndOrderFront(nil)
+        
+        minimizedPlayerWindow = playerWindow
+        isMinimized = true
+        Logger.userInterface.info("Minimized to player window")
+    }
+    
+    @MainActor
+    func restoreFromPlayer() {
+        guard isMinimized else { return }
+        
+        // Close minimized window
+        minimizedPlayerWindow?.close()
+        minimizedPlayerWindow = nil
+        
+        // Show main window
+        mainWindow?.makeKeyAndOrderFront(nil)
+        
+        isMinimized = false
+        Logger.userInterface.info("Restored from player window")
     }
 }

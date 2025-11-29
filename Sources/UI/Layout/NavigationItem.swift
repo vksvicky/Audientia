@@ -9,7 +9,7 @@
 
 import Foundation
 
-enum NavigationItem: String, CaseIterable {
+public enum NavigationItem: String, CaseIterable {
     case home
     case playing
     case entireLibrary
@@ -20,7 +20,7 @@ enum NavigationItem: String, CaseIterable {
     case web
     case pinned
     
-    var displayName: String {
+    public var displayName: String {
         switch self {
         case .home: return "Home"
         case .playing: return "Playing"
@@ -34,7 +34,7 @@ enum NavigationItem: String, CaseIterable {
         }
     }
     
-    var iconName: String {
+    public var iconName: String {
         switch self {
         case .home: return "house.fill"
         case .playing: return "music.note"

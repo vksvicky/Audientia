@@ -588,6 +588,21 @@ targets:
       - path: Sources/UI/DeviceSync
         group: Sources
         target: UITests
+      - path: Sources/UI/AudientiaApp.swift
+        group: Sources
+        target: UITests
+      - path: Sources/UI/Layout
+        group: Sources
+        target: UITests
+      - path: Sources/UI/Layout/NavigationItem.swift
+        group: Sources
+        target: UITests
+      - path: Sources/UI/Setup
+        group: Sources
+        target: UITests
+      - path: Sources/UI/Settings/SetupWizardMenuConfigurator.swift
+        group: Sources
+        target: UITests
     dependencies:
       - target: AudioCore
       - target: Shared

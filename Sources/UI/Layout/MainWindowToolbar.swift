@@ -11,10 +11,14 @@ import AppKit
 import SwiftUI
 
 struct MainWindowToolbar: View {
+    @Binding var selectedNavigationItem: NavigationItem
+    
     var body: some View {
         HStack(spacing: 12) {
             // Left side: App-specific icons
-            Button(action: {}, label: {
+            Button(action: {
+                selectedNavigationItem = .home
+            }, label: {
                 Image(systemName: "music.note.house.fill")
                     .foregroundColor(.orange)
                     .font(.system(size: 16))

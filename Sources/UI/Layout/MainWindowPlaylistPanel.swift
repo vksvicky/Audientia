@@ -8,6 +8,8 @@
 //
 
 import AppKit
+import DataLayer
+import Shared
 import SwiftUI
 
 struct MainWindowPlaylistPanel: View {
@@ -24,10 +26,14 @@ struct MainWindowPlaylistPanel: View {
                 Menu {
                     Button("Selected") {}
                 } label: {
-                    Image(systemName: "chevron.down")
-                        .font(.system(size: 10))
+                    Text("")
                 }
                 .menuStyle(.borderlessButton)
+                .frame(width: 16, height: 16)
+                .overlay(
+                    Image(systemName: "chevron.down")
+                        .font(.system(size: 10))
+                )
             }
             .padding(.horizontal, 12)
             .padding(.vertical, 8)

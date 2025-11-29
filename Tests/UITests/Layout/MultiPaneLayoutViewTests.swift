@@ -40,7 +40,7 @@ final class MultiPaneLayoutViewTests: XCTestCase {
     
     func testViewLoadsLayoutOnAppear() async {
         // Given: A view
-        let view = MultiPaneLayoutView(viewModel: viewModel)
+        _ = MultiPaneLayoutView(viewModel: viewModel)
         
         // When: View appears (task runs)
         await viewModel.loadLayout()

@@ -50,6 +50,43 @@ final class MainWindowLayoutViewTests: XCTestCase {
         // Note: Actual size constraints are set via .frame(minWidth:minHeight:)
     }
     
+    func testViewHasMinimizeButton() {
+        // Given: A MainWindowLayoutView
+        let view = MainWindowLayoutView(audioEngine: mockAudioEngine)
+        
+        // When: Accessing the view
+        let body = view.body
+        
+        // Then: View should have a title bar with minimize button
+        _ = body // Verify compilation
+        // Note: Title bar is part of mainLayout structure
+    }
+    
+    func testMinimizeButtonTriggersMinimize() {
+        // Given: A MainWindowLayoutView and AppDelegate
+        _ = MainWindowLayoutView(audioEngine: mockAudioEngine)
+        let appDelegate = AppDelegate()
+        let window = NSWindow(
+            contentRect: NSRect(x: 0, y: 0, width: 1200, height: 800),
+            styleMask: [.titled, .closable],
+            backing: .buffered,
+            defer: false
+        )
+        appDelegate.mainWindow = window
+        
+        // When: Minimize button is clicked (simulated via AppDelegate)
+        // Note: nowPlayingViewModel is private, so we create a new one for testing
+        let testViewModel = NowPlayingViewModel(audioEngine: mockAudioEngine)
+        appDelegate.minimizeToPlayer(nowPlayingViewModel: testViewModel)
+        
+        // Then: App should be minimized
+        XCTAssertTrue(appDelegate.isMinimized)
+        XCTAssertNotNil(appDelegate.minimizedPlayerWindow)
+        
+        // Cleanup
+        appDelegate.restoreFromPlayer()
+    }
+    
     // MARK: - Boundary Conditions
     
     func testViewWithNilCurrentTrack() {
@@ -121,10 +158,14 @@ final class MainWindowLayoutViewTests: XCTestCase {
         let longTitle = String(repeating: "A", count: 1000)
         let track = Track(
             id: UUID(),
-            filePath: URL(fileURLWithPath: "/test/track.mp3"),
             title: longTitle,
             artist: "Artist",
-            album: "Album"
+            album: "Album",
+            duration: 180.0,
+            filePath: "/test/track.mp3",
+            fileSize: 5_000_000,
+            bitrate: 320,
+            sampleRate: 44100
         )
         mockAudioEngine.currentTrack = track
         mockAudioEngine.queue = [track]
@@ -140,10 +181,14 @@ final class MainWindowLayoutViewTests: XCTestCase {
         // Given: A track with Unicode characters
         let track = Track(
             id: UUID(),
-            filePath: URL(fileURLWithPath: "/test/track.mp3"),
             title: "🎵 音楽 🎶",
             artist: "アーティスト",
-            album: "アルバム"
+            album: "アルバム",
+            duration: 180.0,
+            filePath: "/test/track.mp3",
+            fileSize: 5_000_000,
+            bitrate: 320,
+            sampleRate: 44100
         )
         mockAudioEngine.currentTrack = track
         mockAudioEngine.queue = [track]

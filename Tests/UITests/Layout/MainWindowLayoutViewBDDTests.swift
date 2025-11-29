@@ -69,10 +69,14 @@ final class MainWindowLayoutViewBDDTests: XCTestCase {
         // Given: A track is currently playing
         let track = Track(
             id: UUID(),
-            filePath: URL(fileURLWithPath: "/test/track.mp3"),
             title: "Test Track",
             artist: "Test Artist",
-            album: "Test Album"
+            album: "Test Album",
+            duration: 180.0,
+            filePath: "/test/track.mp3",
+            fileSize: 5_000_000,
+            bitrate: 320,
+            sampleRate: 44100
         )
         mockAudioEngine.currentTrack = track
         mockAudioEngine.queue = [track]
@@ -97,10 +101,14 @@ final class MainWindowLayoutViewBDDTests: XCTestCase {
         // Given: A track is loaded
         let track = Track(
             id: UUID(),
-            filePath: URL(fileURLWithPath: "/test/track.mp3"),
             title: "Test Track",
             artist: "Test Artist",
-            album: "Test Album"
+            album: "Test Album",
+            duration: 180.0,
+            filePath: "/test/track.mp3",
+            fileSize: 5_000_000,
+            bitrate: 320,
+            sampleRate: 44100
         )
         mockAudioEngine.currentTrack = track
         mockAudioEngine.queue = [track]
@@ -146,5 +154,20 @@ final class MainWindowLayoutViewBDDTests: XCTestCase {
         
         // Then: The window should have a minimum size of 1000x600
         _ = view.body // Verify view compiles with minimum size constraints
+    }
+    
+    // MARK: - BDD Scenario: Minimize to Player
+    
+    /// BDD: As a user, when I click the minimize button in the title bar, then the app should minimize to a floating player
+    func testUserClicksMinimizeButton() {
+        // Given - I have the main window open
+        let view = MainWindowLayoutView(audioEngine: mockAudioEngine)
+        
+        // When - I access the view (minimize button is in title bar)
+        let body = view.body
+        
+        // Then - The view should have a minimize button
+        _ = body // Verify compilation
+        // Note: Actual button interaction is tested in MinimizePlayerBDDTests
     }
 }

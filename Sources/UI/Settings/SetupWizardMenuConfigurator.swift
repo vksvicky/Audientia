@@ -12,7 +12,7 @@ import os.log
 import Shared
 
 /// Configures the "Setup Wizard" menu item
-struct SetupWizardMenuConfigurator {
+public struct SetupWizardMenuConfigurator {
     /// Wires the Setup Wizard menu item to the provided target/action pair
     /// - Parameters:
     ///   - mainMenu: The main application menu
@@ -20,7 +20,7 @@ struct SetupWizardMenuConfigurator {
     ///   - action: Selector for the action
     /// - Returns: `true` when the item was found and updated, `false` otherwise
     @discardableResult
-    func configure(mainMenu: NSMenu?, target: AnyObject, action: Selector) -> Bool {
+    public func configure(mainMenu: NSMenu?, target: AnyObject, action: Selector) -> Bool {
         guard let mainMenu = mainMenu else {
             Logger.userInterface.error("mainMenu is nil")
             return false
