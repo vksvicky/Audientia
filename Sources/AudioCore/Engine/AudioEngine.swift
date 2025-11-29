@@ -386,7 +386,129 @@ public final class AudioEngine: AudioEngineProtocol {
             "Moved track in queue: from=\(sourceIndex), to=\(destinationIndex)"
         )
     }
+}
+
+// MARK: - Queue Navigation Extension
+extension AudioEngine {
+    /// Play next track in queue
+    /// - Throws: AudioEngineError if no next track available
+    public func playNext() async throws {
+        Logger.audio.info("Play next requested")
+        
+        // Check if we have a next track in queue
+        if !queue.isEmpty {
+            let nextTrack = queue.removeFirst()
+            // Ensure current track is in history (should already be there from play() or previous playNext())
+            if let current = currentTrack {
+                // Only add if not already the last item in history
+                if queueHistory.isEmpty || queueHistory.last?.id != current.id {
+                    queueHistory.append(current)
+                    currentQueueIndex = queueHistory.count - 1
+                }
+            }
+            try await loadTrack(nextTrack)
+            // Add the next track to history
+            queueHistory.append(nextTrack)
+            currentQueueIndex = queueHistory.count - 1
+            try await play()
+            Logger.audio.info("Advanced to next track: \(nextTrack.title)")
+            return
+        }
+        
+        // Check loop mode
+        if loopMode == .queue && !queueHistory.isEmpty {
+            // Restart from beginning of history
+            let firstTrack = queueHistory[0]
+            queueHistory.removeAll()
+            currentQueueIndex = -1
+            try await loadTrack(firstTrack)
+            try await play()
+            Logger.audio.info("Looped to first track in queue")
+            return
+        }
+        
+        throw AudioEngineError.queueEmpty
+    }
     
+    /// Play previous track in queue
+    /// - Throws: AudioEngineError if no previous track available
+    public func playPrevious() async throws {
+        Logger.audio.info("Play previous requested")
+        
+        // Check if we have history to go back to
+        guard currentQueueIndex > 0 else {
+            throw AudioEngineError.queueEmpty
+        }
+        
+        // Get previous track from history
+        let previousIndex = currentQueueIndex - 1
+        let previousTrack = queueHistory[previousIndex]
+        
+        // Move current track back to queue if it exists
+        if let current = currentTrack {
+            queue.insert(current, at: 0)
+        }
+        
+        // Update index before loading previous track
+        currentQueueIndex = previousIndex
+        try await loadTrack(previousTrack)
+        try await play()
+        Logger.audio.info("Went back to previous track: \(previousTrack.title)")
+    }
+}
+
+// MARK: - Volume Control Extension
+extension AudioEngine {
+    /// Set volume level
+    /// - Parameter volume: Volume level (0.0 to 1.0)
+    public func setVolume(_ volume: Float) {
+        self.volume = volume
+    }
+    
+    /// Set muted state
+    /// - Parameter muted: Whether to mute
+    public func setMuted(_ muted: Bool) {
+        self.isMuted = muted
+    }
+    
+    /// Toggle mute state
+    public func toggleMute() {
+        isMuted.toggle()
+    }
+}
+
+// MARK: - Seek and Position Extension
+extension AudioEngine {
+    /// Seek to a specific position
+    /// - Parameter position: Target position in seconds
+    /// - Throws: AudioEngineError if seek fails
+    public func seek(to position: TimeInterval) async throws {
+        guard currentTrack != nil else {
+            throw AudioEngineError.noTrackLoaded
+        }
+        
+        // Clamp position to valid range
+        let clampedPosition = max(0.0, min(position, duration))
+        
+        guard clampedPosition >= 0.0 && clampedPosition <= duration else {
+            throw AudioEngineError.invalidSeekPosition
+        }
+        
+        Logger.audio.debug("Seeking to position: \(clampedPosition)s")
+        guard await nativeEngine.seek(to: clampedPosition) else {
+            throw AudioEngineError.trackLoadFailed("Native audio engine failed to seek to \(clampedPosition)")
+        }
+        // Update position from native engine (it may have clamped the value)
+        currentPosition = nativeEngine.currentPosition
+    }
+    
+    /// Seek by a relative amount
+    /// - Parameter offset: Amount to seek (positive = forward, negative = backward)
+    /// - Throws: AudioEngineError if seek fails
+    public func seek(by offset: TimeInterval) async throws {
+        let newPosition = currentPosition + offset
+        try await seek(to: newPosition)
+    }
 }
 
 // MARK: - Advanced Playback Extension
