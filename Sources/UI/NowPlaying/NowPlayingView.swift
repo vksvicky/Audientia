@@ -443,7 +443,7 @@ private extension NowPlayingView {
                     .foregroundColor(.secondary)
             } else if viewModel.isPaused {
                 Image(systemName: "pause.circle")
-                    .foregroundColor(.orange)
+                    .foregroundColor(Color("AccentColor"))
                 Text("Paused")
                     .font(.caption)
                     .foregroundColor(.secondary)

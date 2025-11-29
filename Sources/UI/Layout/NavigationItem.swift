@@ -36,7 +36,7 @@ public enum NavigationItem: String, CaseIterable {
     
     public var iconName: String {
         switch self {
-        case .home: return "house.fill"
+        case .home: return "music.note.house.fill"
         case .playing: return "music.note"
         case .entireLibrary: return "building.2.fill"
         case .music: return "headphones"
@@ -45,6 +45,16 @@ public enum NavigationItem: String, CaseIterable {
         case .folders: return "folder.fill"
         case .web: return "globe"
         case .pinned: return "pin.fill"
+        }
+    }
+    
+    /// Whether this navigation item should be displayed
+    public var isVisible: Bool {
+        switch self {
+        case .web, .pinned:
+            return false // Hide Web and Pinned as per user request
+        default:
+            return true
         }
     }
 }

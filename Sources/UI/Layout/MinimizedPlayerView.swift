@@ -102,8 +102,8 @@ public struct MinimizedPlayerView: View {
                         }
                     }, label: {
                         Image(systemName: nowPlayingViewModel.isPlaying ? "pause.fill" : "play.fill")
-                            .font(.system(size: 16))
-                            .foregroundColor(.orange)
+                            .font(.system(size: 16, weight: .semibold))
+                            .foregroundColor(Color("AccentColor"))
                     })
                     .buttonStyle(.plain)
                     
@@ -147,7 +147,7 @@ public struct MinimizedPlayerView: View {
                     LinearGradient(
                         colors: [
                             Color(NSColor.controlBackgroundColor),
-                            Color.orange.opacity(0.1)
+                            Color("AccentColor").opacity(0.1)
                         ],
                         startPoint: .topLeading,
                         endPoint: .bottomTrailing
@@ -161,7 +161,7 @@ public struct MinimizedPlayerView: View {
                 .stroke(
                     nowPlayingViewModel.currentTrack != nil
                         ? Color.white.opacity(0.1)
-                        : Color.orange.opacity(0.3),
+                        : Color("AccentColor").opacity(0.3),
                     lineWidth: 1
                 )
         )

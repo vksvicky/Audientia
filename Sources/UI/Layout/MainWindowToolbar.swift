@@ -20,8 +20,8 @@ struct MainWindowToolbar: View {
                 selectedNavigationItem = .home
             }, label: {
                 Image(systemName: "music.note.house.fill")
-                    .foregroundColor(.orange)
-                    .font(.system(size: 16))
+                    .foregroundColor(Color("AccentColor"))
+                    .font(.system(size: 16, weight: .semibold))
             })
             .buttonStyle(.plain)
             .help("Home")

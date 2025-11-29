@@ -109,7 +109,7 @@ public struct TagEditorView: View {
                     ForEach(viewModel.validationErrors, id: \.localizedDescription) { error in
                         HStack {
                             Image(systemName: "exclamationmark.triangle.fill")
-                                .foregroundColor(.orange)
+                                .foregroundColor(Color("AccentColor"))
                             Text(error.localizedDescription)
                                 .foregroundColor(.secondary)
                         }

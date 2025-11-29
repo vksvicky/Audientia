@@ -41,7 +41,7 @@ public struct ScanResultsView: View {
                 }
                 .padding(.horizontal, 16)
                 .padding(.vertical, 10)
-                .background(Color.orange)
+                .background(Color("AccentColor"))
                 
                 // Dark gray body
                 VStack(alignment: .leading, spacing: 16) {
@@ -66,7 +66,7 @@ public struct ScanResultsView: View {
                             .font(.system(size: 13))
                             .foregroundColor(.primary)
                         Text("Library settings")
-                            .foregroundColor(.orange)
+                            .foregroundColor(Color("AccentColor"))
                             .font(.system(size: 13))
                             .underline()
                         Text(")")

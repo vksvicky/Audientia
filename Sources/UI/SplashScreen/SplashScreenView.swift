@@ -77,21 +77,21 @@ public struct SplashScreenView: View {
                         Circle()
                             .stroke(
                                 LinearGradient(
-                                    colors: [.orange, .orange.opacity(0.6)],
+                                    colors: [Color("AccentColor"), Color("AccentColor").opacity(0.6)],
                                     startPoint: .topLeading,
                                     endPoint: .bottomTrailing
                                 ),
                                 lineWidth: 4
                             )
                     )
-                    .shadow(color: .orange.opacity(0.5), radius: 10, x: 0, y: 5)
+                    .shadow(color: Color("AccentColor").opacity(0.5), radius: 10, x: 0, y: 5)
             } else {
                 // Fallback: Music note icon with gradient background
                 ZStack {
                     Circle()
                         .fill(
                             LinearGradient(
-                                colors: [.orange, .orange.opacity(0.6)],
+                                colors: [Color("AccentColor"), Color("AccentColor").opacity(0.6)],
                                 startPoint: .topLeading,
                                 endPoint: .bottomTrailing
                             )
@@ -102,7 +102,7 @@ public struct SplashScreenView: View {
                         .font(.system(size: 48, weight: .medium))
                         .foregroundColor(.white)
                 }
-                .shadow(color: .orange.opacity(0.5), radius: 10, x: 0, y: 5)
+                .shadow(color: Color("AccentColor").opacity(0.5), radius: 10, x: 0, y: 5)
             }
         }
         .padding(.top, 60)

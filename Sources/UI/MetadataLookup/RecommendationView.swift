@@ -143,7 +143,7 @@ private struct RecommendationRow: View {
         } else if recommendation.score > 0.6 {
             return .yellow
         } else {
-            return .orange
+            return Color("AccentColor")
         }
     }
 }

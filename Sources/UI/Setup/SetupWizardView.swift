@@ -77,12 +77,12 @@ public struct SetupWizardView: View {
     
     private var headerView: some View {
         HStack {
-            Text("Setup Wizard").font(.system(size: 18, weight: .semibold)).foregroundColor(.orange)
+            Text("Setup Wizard").font(.system(size: 18, weight: .semibold)).foregroundColor(Color("AccentColor"))
             Spacer()
         }
         .padding(.horizontal, 20)
         .padding(.vertical, 12)
-        .background(Color.orange.opacity(0.1))
+        .background(Color("AccentColor").opacity(0.1))
     }
     
     // MARK: - Navigation Pane
@@ -97,7 +97,7 @@ public struct SetupWizardView: View {
                     HStack {
                         if step == viewModel.currentStep {
                             Image(systemName: "checkmark.circle.fill")
-                                .foregroundColor(.orange)
+                                .foregroundColor(Color("AccentColor"))
                         } else {
                             Image(systemName: "circle")
                                 .foregroundColor(.secondary)
@@ -213,7 +213,7 @@ public struct SetupWizardView: View {
     @ViewBuilder
     private func libraryLocationRow(_ location: URL) -> some View {
         HStack {
-            Image(systemName: "checkmark.circle.fill").foregroundColor(.orange)
+            Image(systemName: "checkmark.circle.fill").foregroundColor(Color("AccentColor"))
             Text(location.path)
                 .font(.system(size: 12))
                 .frame(maxWidth: .infinity, alignment: .leading)
@@ -326,7 +326,7 @@ public struct SetupWizardView: View {
                         if let coffeeURL = URL(string: "https://buymeacoffee.com/vksvicky") {
                             Link("buymeacoffee.com/vksvicky", destination: coffeeURL)
                                 .font(.system(size: 14))
-                                .foregroundColor(.orange)
+                                .foregroundColor(Color("AccentColor"))
                         }
                     }
                     
@@ -424,19 +424,19 @@ public struct SetupWizardView: View {
                     viewModel.nextStep()
                 }
                 .buttonStyle(.borderedProminent)
-                .tint(.orange)
+                .tint(Color("AccentColor"))
             } else {
                 Button("Done") {
                     viewModel.completeWizard()
                     dismiss()
                 }
                 .buttonStyle(.borderedProminent)
-                .tint(.orange)
+                .tint(Color("AccentColor"))
             }
         }
         .padding(.horizontal, 20)
         .padding(.vertical, 12)
-        .background(Color.orange.opacity(0.1))
+        .background(Color("AccentColor").opacity(0.1))
     }
 }
 

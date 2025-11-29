@@ -17,7 +17,7 @@ struct ModuleVersionConflictView: View {
             VStack(alignment: .leading, spacing: 8) {
                 HStack {
                     Image(systemName: "exclamationmark.triangle.fill")
-                        .foregroundColor(.orange)
+                        .foregroundColor(Color("AccentColor"))
                     Text("Module Version Conflicts")
                         .font(.headline)
                     Spacer()
@@ -57,17 +57,17 @@ struct ModuleVersionConflictView: View {
                         }
                         .padding(.vertical, 4)
                         .padding(.horizontal, 8)
-                        .background(Color.orange.opacity(0.1))
+                        .background(Color("AccentColor").opacity(0.1))
                         .cornerRadius(6)
                     }
                 }
             }
             .padding()
-            .background(Color.orange.opacity(0.05))
+            .background(Color("AccentColor").opacity(0.05))
             .cornerRadius(8)
             .overlay(
                 RoundedRectangle(cornerRadius: 8)
-                    .stroke(Color.orange.opacity(0.3), lineWidth: 1)
+                    .stroke(Color("AccentColor").opacity(0.3), lineWidth: 1)
             )
         }
     }

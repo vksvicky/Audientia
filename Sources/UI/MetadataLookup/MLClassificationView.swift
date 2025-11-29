@@ -158,7 +158,7 @@ private struct ClassificationSection: View {
         } else if confidence > 0.6 {
             return .yellow
         } else {
-            return .orange
+            return Color("AccentColor")
         }
     }
 }

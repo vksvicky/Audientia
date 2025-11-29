@@ -60,8 +60,8 @@ struct MainWindowPlayerControls: View {
                     }
                 }, label: {
                     Image(systemName: nowPlayingViewModel.isPlaying ? "pause.fill" : "play.fill")
-                        .font(.system(size: 18))
-                        .foregroundColor(.orange)
+                        .font(.system(size: 18, weight: .semibold))
+                        .foregroundColor(Color("AccentColor"))
                 })
                 .buttonStyle(.plain)
                 
