@@ -15,7 +15,6 @@ import SwiftUI
 /// Setup wizard view similar to MediaMonkey's design
 /// Shows on first launch and can be relaunched from menu
 @MainActor
-// swiftlint:disable:next type_body_length
 public struct SetupWizardView: View {
     @StateObject private var viewModel = SetupWizardViewModel()
     @Environment(\.dismiss) private var dismiss
@@ -130,24 +129,6 @@ public struct SetupWizardView: View {
         }
     }
     
-    // MARK: - Welcome Step
-    
-    private var welcomeStep: some View {
-        VStack(alignment: .leading, spacing: 20) {
-            Text("Welcome to Audientia").font(.system(size: 24, weight: .bold))
-            Text("To get started, let's configure your music library and preferences.")
-                .font(.system(size: 14))
-                .foregroundColor(.secondary)
-            VStack(alignment: .leading, spacing: 12) {
-                Label("Scan and organize your music library", systemImage: "music.note.list")
-                Label("Configure playback preferences", systemImage: "play.circle")
-                Label("Set up library locations", systemImage: "folder")
-            }
-            .padding(.top, 20)
-            Spacer()
-        }
-    }
-    
     // MARK: - Library Setup Step
     
     private var librarySetupStep: some View {
@@ -257,28 +238,6 @@ public struct SetupWizardView: View {
         }
     }
     
-    // MARK: - Preferences Step
-    
-    private var preferencesStep: some View {
-        VStack(alignment: .leading, spacing: 20) {
-            Text("Preferences").font(.system(size: 24, weight: .bold))
-            VStack(alignment: .leading, spacing: 16) {
-                Toggle("Enable automatic library scanning", isOn: $viewModel.enableAutoScan)
-                    .help("Automatically scan library locations for new music files")
-                if viewModel.enableAutoScan {
-                    Picker("Scan Schedule:", selection: $viewModel.scanSchedule) {
-                        ForEach(ScanSchedule.allCases, id: \.self) { schedule in
-                            Text(schedule.displayName).tag(schedule)
-                        }
-                    }
-                    .pickerStyle(.menu)
-                }
-            }
-            .padding(.top, 20)
-            Spacer()
-        }
-    }
-    
     // MARK: - Support Step
     
     private var supportStep: some View {
@@ -346,63 +305,6 @@ public struct SetupWizardView: View {
         }
     }
     
-    // MARK: - Image Loading Helpers
-    
-    private func loadQRImage() {
-        qrImage = loadImage(named: "SupportQRCode")
-    }
-    
-    private func loadBMACImage() {
-        bmacImage = loadImage(named: "SupportBMAC")
-    }
-    
-    private func loadImage(named name: String) -> NSImage? {
-        // Try asset catalog first
-        if let assetImage = NSImage(named: name) {
-            return assetImage
-        }
-        // Try with subdirectory first
-        if let url = Bundle.main.url(forResource: name, withExtension: "png", subdirectory: "images"),
-           let image = NSImage(contentsOf: url) {
-            return image
-        }
-        // Try without subdirectory
-        if let url = Bundle.main.url(forResource: name, withExtension: "png"),
-           let image = NSImage(contentsOf: url) {
-            return image
-        }
-        // Try in Resources/images/ directly
-        if let url = Bundle.main.resourceURL?.appendingPathComponent("images/\(name).png"),
-           let image = NSImage(contentsOf: url) {
-            return image
-        }
-        return nil
-    }
-    
-    // MARK: - Scan Progress Overlay
-
-    @ViewBuilder
-    private func scanProgressOverlay(coordinator: LibraryScanCoordinator) -> some View {
-        Color.black.opacity(0.3)
-            .ignoresSafeArea()
-            .overlay {
-                VStack(spacing: 20) {
-                    ProgressView(value: coordinator.progress, total: 1.0)
-                        .progressViewStyle(.linear)
-                        .frame(width: 400)
-                    Text(coordinator.currentStatus)
-                        .font(.system(size: 14))
-                        .foregroundColor(.white)
-                    Text("\(Int(coordinator.progress * 100))%")
-                        .font(.system(size: 12))
-                        .foregroundColor(.white.opacity(0.8))
-                }
-                .padding(30)
-                .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 12))
-                .frame(width: 500)
-            }
-    }
-
     // MARK: - Footer
     
     private var footerView: some View {
@@ -437,6 +339,101 @@ public struct SetupWizardView: View {
         .padding(.horizontal, 20)
         .padding(.vertical, 12)
         .background(Color("AccentColor").opacity(0.1))
+    }
+}
+
+// MARK: - Step Views Extension
+private extension SetupWizardView {
+    var welcomeStep: some View {
+        VStack(alignment: .leading, spacing: 20) {
+            Text("Welcome to Audientia").font(.system(size: 24, weight: .bold))
+            Text("To get started, let's configure your music library and preferences.")
+                .font(.system(size: 14))
+                .foregroundColor(.secondary)
+            VStack(alignment: .leading, spacing: 12) {
+                Label("Scan and organize your music library", systemImage: "music.note.list")
+                Label("Configure playback preferences", systemImage: "play.circle")
+                Label("Set up library locations", systemImage: "folder")
+            }
+            .padding(.top, 20)
+            Spacer()
+        }
+    }
+    
+    var preferencesStep: some View {
+        VStack(alignment: .leading, spacing: 20) {
+            Text("Preferences").font(.system(size: 24, weight: .bold))
+            VStack(alignment: .leading, spacing: 16) {
+                Toggle("Enable automatic library scanning", isOn: $viewModel.enableAutoScan)
+                    .help("Automatically scan library locations for new music files")
+                if viewModel.enableAutoScan {
+                    Picker("Scan Schedule:", selection: $viewModel.scanSchedule) {
+                        ForEach(ScanSchedule.allCases, id: \.self) { schedule in
+                            Text(schedule.displayName).tag(schedule)
+                        }
+                    }
+                    .pickerStyle(.menu)
+                }
+            }
+            .padding(.top, 20)
+            Spacer()
+        }
+    }
+}
+
+// MARK: - Helper Methods Extension
+private extension SetupWizardView {
+    func loadQRImage() {
+        qrImage = loadImage(named: "SupportQRCode")
+    }
+    
+    func loadBMACImage() {
+        bmacImage = loadImage(named: "SupportBMAC")
+    }
+    
+    func loadImage(named name: String) -> NSImage? {
+        // Try asset catalog first
+        if let assetImage = NSImage(named: name) {
+            return assetImage
+        }
+        // Try with subdirectory first
+        if let url = Bundle.main.url(forResource: name, withExtension: "png", subdirectory: "images"),
+           let image = NSImage(contentsOf: url) {
+            return image
+        }
+        // Try without subdirectory
+        if let url = Bundle.main.url(forResource: name, withExtension: "png"),
+           let image = NSImage(contentsOf: url) {
+            return image
+        }
+        // Try in Resources/images/ directly
+        if let url = Bundle.main.resourceURL?.appendingPathComponent("images/\(name).png"),
+           let image = NSImage(contentsOf: url) {
+            return image
+        }
+        return nil
+    }
+    
+    @ViewBuilder
+    func scanProgressOverlay(coordinator: LibraryScanCoordinator) -> some View {
+        Color.black.opacity(0.3)
+            .ignoresSafeArea()
+            .overlay {
+                VStack(spacing: 20) {
+                    ProgressView(value: coordinator.progress, total: 1.0)
+                        .progressViewStyle(.linear)
+                        .frame(width: 400)
+                    Text(coordinator.currentStatus)
+                        .font(.system(size: 14))
+                        .foregroundColor(.white)
+                    Text("\(Int(coordinator.progress * 100))%")
+                        .font(.system(size: 12))
+                        .foregroundColor(.white.opacity(0.8))
+                }
+                .padding(30)
+                .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 12))
+                .frame(width: 500)
+            }
     }
 }
 
