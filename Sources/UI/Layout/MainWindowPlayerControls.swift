@@ -12,6 +12,7 @@ import SwiftUI
 
 struct MainWindowPlayerControls: View {
     @ObservedObject var nowPlayingViewModel: NowPlayingViewModel
+    @Binding var showVisualizer: Bool
     
     var body: some View {
         HStack(spacing: 16) {
@@ -83,28 +84,54 @@ struct MainWindowPlayerControls: View {
             
             // Additional Controls
             HStack(spacing: 8) {
-                Button(action: {}, label: {
+                Button(action: {
+                    Task {
+                        nowPlayingViewModel.toggleShuffle()
+                    }
+                }, label: {
                     Image(systemName: "shuffle")
                         .font(.system(size: 14))
+                        .foregroundColor(nowPlayingViewModel.isShuffleEnabled ? Color("AccentColor") : .primary)
                 })
                 .buttonStyle(.plain)
                 
-                Button(action: {}, label: {
-                    Image(systemName: "repeat")
-                        .font(.system(size: 14))
+                Button(action: {
+                    Task {
+                        nowPlayingViewModel.toggleLoopMode()
+                    }
+                }, label: {
+                    Group {
+                        switch nowPlayingViewModel.loopMode {
+                        case .none:
+                            Image(systemName: "repeat")
+                        case .track:
+                            Image(systemName: "repeat.1")
+                        case .queue:
+                            Image(systemName: "repeat")
+                        }
+                    }
+                    .font(.system(size: 14))
+                    .foregroundColor(nowPlayingViewModel.loopMode != .none ? Color("AccentColor") : .primary)
                 })
                 .buttonStyle(.plain)
                 
-                Button(action: {}, label: {
+                Button(action: {
+                    showVisualizer.toggle()
+                }, label: {
                     Image(systemName: "waveform")
                         .font(.system(size: 14))
+                        .foregroundColor(showVisualizer ? Color("AccentColor") : .primary)
                 })
                 .buttonStyle(.plain)
                 
                 // Volume control
                 HStack(spacing: 4) {
-                    Button(action: {}, label: {
-                        Image(systemName: "speaker.wave.2.fill")
+                    Button(action: {
+                        Task {
+                            nowPlayingViewModel.toggleMute()
+                        }
+                    }, label: {
+                        Image(systemName: nowPlayingViewModel.isMuted ? "speaker.slash.fill" : "speaker.wave.2.fill")
                             .font(.system(size: 12))
                     })
                     .buttonStyle(.plain)

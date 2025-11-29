@@ -25,6 +25,8 @@ final class MockAudioEngine: AudioEngineProtocol {
     public var volume: Float = 1.0
     public var isMuted: Bool = false
     public var loopMode: LoopMode = .none
+    public var isShuffleEnabled: Bool = false
+    public let visualizer: AudioVisualizerProtocol = AudioVisualizer()
     
     var playCalled = false
     var pauseCalled = false
@@ -161,6 +163,22 @@ final class MockAudioEngine: AudioEngineProtocol {
             loopMode = .queue
         case .queue:
             loopMode = .none
+        }
+    }
+    
+    // MARK: - Shuffle Control
+    
+    public func toggleShuffle() {
+        isShuffleEnabled.toggle()
+        if isShuffleEnabled && !queue.isEmpty {
+            queue.shuffle()
+        }
+    }
+    
+    public func setShuffle(_ enabled: Bool) {
+        isShuffleEnabled = enabled
+        if isShuffleEnabled && !queue.isEmpty {
+            queue.shuffle()
         }
     }
 }

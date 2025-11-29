@@ -109,4 +109,21 @@ public protocol AudioEngineProtocol {
     
     /// Toggle loop mode (none -> track -> queue -> none)
     func toggleLoopMode()
+    
+    // MARK: - Shuffle Control
+    
+    /// Is shuffle mode enabled
+    var isShuffleEnabled: Bool { get set }
+    
+    /// Toggle shuffle mode
+    func toggleShuffle()
+    
+    /// Set shuffle mode
+    /// - Parameter enabled: Whether shuffle is enabled
+    func setShuffle(_ enabled: Bool)
+    
+    // MARK: - Visualizer
+    
+    /// Audio visualizer for real-time spectrum analysis
+    var visualizer: AudioVisualizerProtocol { get }
 }

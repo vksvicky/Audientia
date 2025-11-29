@@ -73,6 +73,11 @@ public final class NowPlayingViewModel: ObservableObject {
     /// Playback queue
     @Published public private(set) var queue: [Shared.Track] = []
     
+    /// Audio engine's visualizer for real-time spectrum analysis
+    public var visualizer: AudioVisualizerProtocol {
+        audioEngine.visualizer
+    }
+    
     // MARK: - Private Properties
     
     private let audioEngine: AudioEngineProtocol
@@ -321,6 +326,18 @@ public final class NowPlayingViewModel: ObservableObject {
     /// Is currently muted
     public var isMuted: Bool {
         audioEngine.isMuted
+    }
+    
+    /// Is shuffle enabled
+    public var isShuffleEnabled: Bool {
+        audioEngine.isShuffleEnabled
+    }
+    
+    /// Toggle shuffle mode
+    public func toggleShuffle() {
+        audioEngine.toggleShuffle()
+        updateState()
+        Logger.userInterface.info("Shuffle toggled: \(self.audioEngine.isShuffleEnabled, privacy: .public)")
     }
 
     // MARK: - Queue Management

@@ -24,6 +24,7 @@ public struct MainWindowLayoutView: View {
     // Use type inference - let Swift infer the type from the initial value
     @State private var selectedNavigationItem: NavigationItem = .home
     @State private var importError: Error?
+    @State private var showVisualizer = false
     
     private let audioEngine: AudioEngineProtocol
     @StateObject private var importCoordinator: TrackImportCoordinator
@@ -55,9 +56,12 @@ public struct MainWindowLayoutView: View {
             Divider()
             
             // Player Controls at Bottom (spans full width)
-            MainWindowPlayerControls(nowPlayingViewModel: nowPlayingViewModel)
-                .frame(height: 80)
-                .background(Color(NSColor.controlBackgroundColor))
+            MainWindowPlayerControls(
+                nowPlayingViewModel: nowPlayingViewModel,
+                showVisualizer: $showVisualizer
+            )
+            .frame(height: 80)
+            .background(Color(NSColor.controlBackgroundColor))
         }
         .frame(minWidth: 1000, minHeight: 600)
         .onAppear {
@@ -127,10 +131,21 @@ public struct MainWindowLayoutView: View {
             
             Divider()
             
-            // Content Area (Library Browser or other views)
-            contentArea
-                .frame(minWidth: 0, maxWidth: CGFloat.infinity, minHeight: 0, maxHeight: CGFloat.infinity)
-                .clipped()
+            // Content Area (Library Browser, Visualizer, or other views)
+            Group {
+                if showVisualizer {
+                    AudioVisualizerView(
+                        nowPlayingViewModel: nowPlayingViewModel,
+                        audioEngine: audioEngine as? AudioEngine
+                    )
+                        .frame(minWidth: 0, maxWidth: CGFloat.infinity, minHeight: 0, maxHeight: CGFloat.infinity)
+                        .clipped()
+                } else {
+                    contentArea
+                        .frame(minWidth: 0, maxWidth: CGFloat.infinity, minHeight: 0, maxHeight: CGFloat.infinity)
+                        .clipped()
+                }
+            }
         }
         .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity)
         .clipped()

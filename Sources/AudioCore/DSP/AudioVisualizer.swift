@@ -238,9 +238,13 @@ private actor VisualizerActor {
             previousMagnitudes = magnitudes
             return
         }
+        // Minimal smoothing for immediate, responsive visualization
+        // Use very low smoothing (10% of original) for real-time feel
+        let responsiveSmoothing = smoothingFactor * 0.1 // 90% reduction for immediate response
         for index in 0..<magnitudes.count {
             let previous = previousMagnitudes[index]
-            magnitudes[index] = (1.0 - smoothingFactor) * magnitudes[index] + smoothingFactor * previous
+            // Only apply minimal smoothing to prevent jitter, but keep it very responsive
+            magnitudes[index] = (1.0 - responsiveSmoothing) * magnitudes[index] + responsiveSmoothing * previous
         }
         previousMagnitudes = magnitudes
     }
