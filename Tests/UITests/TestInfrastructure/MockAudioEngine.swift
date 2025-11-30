@@ -20,6 +20,11 @@ final class MockAudioEngine: AudioEngineProtocol {
     public var duration: TimeInterval = 0.0
     public var queue: [Track] = []
     
+    // MARK: - Queue History (for previous track navigation)
+    
+    public var queueHistory: [Track] = []
+    public var currentQueueIndex: Int = -1
+    
     // MARK: - Additional Mock Properties
     
     public var volume: Float = 1.0
@@ -99,7 +104,25 @@ final class MockAudioEngine: AudioEngineProtocol {
     
     public func playPrevious() async throws {
         playPreviousCalled = true
-        throw AudioEngineError.queueEmpty // Simplified for now
+        
+        // Check if we have history to go back to
+        guard currentQueueIndex > 0 else {
+            throw AudioEngineError.queueEmpty
+        }
+        
+        // Get previous track from history
+        let previousIndex = currentQueueIndex - 1
+        let previousTrack = queueHistory[previousIndex]
+        
+        // Move current track back to queue if it exists
+        if let current = currentTrack {
+            queue.insert(current, at: 0)
+        }
+        
+        // Update index before loading previous track
+        currentQueueIndex = previousIndex
+        try await loadTrack(previousTrack)
+        try await play()
     }
     
     // MARK: - Volume Control

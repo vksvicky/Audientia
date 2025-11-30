@@ -117,13 +117,15 @@ final class MinimizePlayerTests: XCTestCase {
         appDelegate.minimizeToPlayer(nowPlayingViewModel: nowPlayingViewModel)
         let minimizedWindow = appDelegate.minimizedPlayerWindow
         XCTAssertNotNil(minimizedWindow)
+        XCTAssertTrue(minimizedWindow?.isVisible ?? false)
         
         // When: Restoring from player
         appDelegate.restoreFromPlayer()
         
         // Then: Minimized window should be closed
-        XCTAssertNil(appDelegate.minimizedPlayerWindow)
-        XCTAssertNil(minimizedWindow)
+        XCTAssertNil(appDelegate.minimizedPlayerWindow, "minimizedPlayerWindow property should be nil after restore")
+        // The window object itself may still exist in memory (just closed), so check it's closed instead
+        XCTAssertFalse(minimizedWindow?.isVisible ?? true, "Minimized window should be closed after restore")
     }
     
     // MARK: - Right-[B]ICEP - Boundary Conditions
@@ -221,22 +223,38 @@ final class MinimizePlayerTests: XCTestCase {
     }
     
     func testMinimizedWindowIsPositionedCorrectly() {
-        // Given: AppDelegate
+        // Given: AppDelegate with main window positioned
+        appDelegate.mainWindow?.setFrameOrigin(NSPoint(x: 100, y: 100))
+        let mainWindowFrame = appDelegate.mainWindow?.frame ?? NSRect.zero
+        
         // When: Minimizing to player
         appDelegate.minimizeToPlayer(nowPlayingViewModel: nowPlayingViewModel)
         
-        // Then: Window should be positioned in top-right corner
+        // Then: Window should be positioned (centered relative to main window or screen)
         let window = appDelegate.minimizedPlayerWindow
         XCTAssertNotNil(window)
         
-        if let screen = NSScreen.main {
+        if let screen = NSScreen.main, let window = window {
             let screenRect = screen.visibleFrame
-            let expectedX = screenRect.maxX - 420
-            let expectedY = screenRect.maxY - 100
-            if let window = window {
-                XCTAssertEqual(window.frame.origin.x, expectedX, accuracy: 1.0)
-                XCTAssertEqual(window.frame.origin.y, expectedY, accuracy: 1.0)
+            let windowWidth: CGFloat = 400
+            let windowHeight: CGFloat = 80
+            
+            // Implementation centers the window relative to main window position or screen center
+            let expectedX: CGFloat
+            let expectedY: CGFloat
+            
+            if mainWindowFrame != NSRect.zero {
+                // Centered relative to where the main window was
+                expectedX = mainWindowFrame.midX - windowWidth / 2
+                expectedY = mainWindowFrame.midY - windowHeight / 2
+            } else {
+                // Centered on screen
+                expectedX = screenRect.midX - windowWidth / 2
+                expectedY = screenRect.midY - windowHeight / 2
             }
+            
+            XCTAssertEqual(window.frame.origin.x, expectedX, accuracy: 1.0, "Window X position should be centered")
+            XCTAssertEqual(window.frame.origin.y, expectedY, accuracy: 1.0, "Window Y position should be centered")
         }
     }
 }

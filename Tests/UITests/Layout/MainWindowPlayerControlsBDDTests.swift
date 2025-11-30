@@ -193,11 +193,12 @@ final class MainWindowPlayerControlsBDDTests: XCTestCase {
     /// BDD: As a user, when I click the previous button, then the previous track should play
     func testAsAUserIWantToPlayPreviousTrack() async throws {
         // Given - Multiple tracks in queue with history
+        // History contains: [track1, track2] where we're currently on track2 (index 1)
         let track1 = MockFactory.makeTrack(title: "Track 1")
         let track2 = MockFactory.makeTrack(title: "Track 2")
         mockAudioEngine.currentTrack = track2
-        mockAudioEngine.queueHistory = [track1]
-        mockAudioEngine.currentQueueIndex = 0
+        mockAudioEngine.queueHistory = [track1, track2] // Both tracks in history
+        mockAudioEngine.currentQueueIndex = 1 // Currently on track2 (index 1)
         nowPlayingViewModel.updateState()
         
         // When - I click the previous button
@@ -205,6 +206,8 @@ final class MainWindowPlayerControlsBDDTests: XCTestCase {
         
         // Then - Previous track should play
         XCTAssertTrue(mockAudioEngine.playPreviousCalled)
+        XCTAssertEqual(mockAudioEngine.currentTrack?.title, "Track 1", "Should be playing track1 after going back")
+        XCTAssertEqual(mockAudioEngine.currentQueueIndex, 0, "Should be at index 0 after going back")
     }
     
     /// BDD: As a user, when I click the next button, then the next track should play
@@ -268,18 +271,23 @@ final class MainWindowPlayerControlsBDDTests: XCTestCase {
     // MARK: - BDD Scenario 4: Volume Controls
     
     /// BDD: As a user, when I adjust the volume slider, then the volume should change
-    func testAsAUserIWantToAdjustVolume() {
+    func testAsAUserIWantToAdjustVolume() async {
         // Given - Current volume is 0.5
         mockAudioEngine.volume = 0.5
-        nowPlayingViewModel.updateState()
+        nowPlayingViewModel.volume = 0.5 // Set view model volume to match
+        // Wait a bit for any async operations
+        try? await Task.sleep(nanoseconds: 10_000_000) // 10ms
         XCTAssertEqual(nowPlayingViewModel.volume, 0.5)
         
         // When - I adjust the volume slider to 0.8
         nowPlayingViewModel.volume = 0.8
         
+        // Wait for async volume update to complete
+        try? await Task.sleep(nanoseconds: 50_000_000) // 50ms
+        
         // Then - Volume should be updated
-        XCTAssertEqual(mockAudioEngine.volume, 0.8)
-        XCTAssertEqual(nowPlayingViewModel.volume, 0.8)
+        XCTAssertEqual(mockAudioEngine.volume, 0.8, accuracy: 0.01)
+        XCTAssertEqual(nowPlayingViewModel.volume, 0.8, accuracy: 0.01)
     }
     
     /// BDD: As a user, when I click the mute button, then audio should be muted
@@ -396,7 +404,7 @@ final class MainWindowPlayerControlsBDDTests: XCTestCase {
         let track2 = MockFactory.makeTrack(title: "Track 2")
         let track3 = MockFactory.makeTrack(title: "Track 3")
         mockAudioEngine.queue = [track1, track2, track3]
-        let originalOrder = mockAudioEngine.queue.map { $0.title }
+        _ = mockAudioEngine.queue.map { $0.title }
         
         // When - I enable shuffle
         mockAudioEngine.setShuffle(true)

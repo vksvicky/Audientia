@@ -35,7 +35,7 @@ final class MainWindowLayoutViewTests: XCTestCase {
         let view = MainWindowLayoutView(audioEngine: mockAudioEngine)
         
         // Then: View should be created
-        _ = view.body // Access body to verify compilation
+        SwiftUIViewTestHelpers.verifyViewCreation(view)
     }
     
     func testViewHasMinimumSize() {
@@ -43,10 +43,8 @@ final class MainWindowLayoutViewTests: XCTestCase {
         let view = MainWindowLayoutView(audioEngine: mockAudioEngine)
         
         // When: Accessing the view
-        let body = view.body
-        
         // Then: View should have minimum size constraints
-        _ = body // Verify compilation
+        SwiftUIViewTestHelpers.verifyViewCreation(view)
         // Note: Actual size constraints are set via .frame(minWidth:minHeight:)
     }
     
@@ -55,10 +53,8 @@ final class MainWindowLayoutViewTests: XCTestCase {
         let view = MainWindowLayoutView(audioEngine: mockAudioEngine)
         
         // When: Accessing the view
-        let body = view.body
-        
         // Then: View should have a title bar with minimize button
-        _ = body // Verify compilation
+        SwiftUIViewTestHelpers.verifyViewCreation(view)
         // Note: Title bar is part of mainLayout structure
     }
     
@@ -98,7 +94,7 @@ final class MainWindowLayoutViewTests: XCTestCase {
         let view = MainWindowLayoutView(audioEngine: mockAudioEngine)
         
         // Then: View should handle nil track gracefully
-        _ = view.body // Should not crash
+        SwiftUIViewTestHelpers.verifyViewCreation(view)
     }
     
     func testViewWithEmptyQueue() {
@@ -109,7 +105,7 @@ final class MainWindowLayoutViewTests: XCTestCase {
         let view = MainWindowLayoutView(audioEngine: mockAudioEngine)
         
         // Then: View should handle empty queue
-        _ = view.body // Should not crash
+        SwiftUIViewTestHelpers.verifyViewCreation(view)
     }
     
     // MARK: - Inverse Relationships
@@ -119,9 +115,8 @@ final class MainWindowLayoutViewTests: XCTestCase {
         let view = MainWindowLayoutView(audioEngine: mockAudioEngine)
         
         // When: Accessing view
-        _ = view.body
-        
         // Then: Default navigation should be .home
+        SwiftUIViewTestHelpers.verifyViewCreation(view)
         // Note: This tests the internal state, actual selection is tested in BDD tests
     }
     
@@ -132,9 +127,8 @@ final class MainWindowLayoutViewTests: XCTestCase {
         let view = MainWindowLayoutView(audioEngine: mockAudioEngine)
         
         // When: Accessing view
-        _ = view.body
-        
         // Then: View should have error handling for imports
+        SwiftUIViewTestHelpers.verifyViewCreation(view)
         // Note: Actual error handling is tested in BDD scenarios
     }
     
@@ -146,7 +140,7 @@ final class MainWindowLayoutViewTests: XCTestCase {
             // When: Creating view multiple times
             for _ in 0..<100 {
                 let view = MainWindowLayoutView(audioEngine: mockAudioEngine)
-                _ = view.body
+                SwiftUIViewTestHelpers.verifyViewCreation(view)
             }
         }
     }
@@ -174,7 +168,7 @@ final class MainWindowLayoutViewTests: XCTestCase {
         let view = MainWindowLayoutView(audioEngine: mockAudioEngine)
         
         // Then: View should handle long titles with lineLimit
-        _ = view.body // Should not crash
+        SwiftUIViewTestHelpers.verifyViewCreation(view)
     }
     
     func testViewWithUnicodeCharacters() {
@@ -197,6 +191,6 @@ final class MainWindowLayoutViewTests: XCTestCase {
         let view = MainWindowLayoutView(audioEngine: mockAudioEngine)
         
         // Then: View should handle Unicode characters
-        _ = view.body // Should not crash
+        SwiftUIViewTestHelpers.verifyViewCreation(view)
     }
 }

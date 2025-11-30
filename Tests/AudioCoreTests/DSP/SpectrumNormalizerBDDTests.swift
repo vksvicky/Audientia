@@ -45,12 +45,20 @@ final class SpectrumNormalizerBDDTests: XCTestCase {
         let normalized = normalizer.normalize(magnitudes)
         
         // Then - Low frequency region should have higher relative energy
-        let lowBand = normalized.prefix(100)
-        let midBand = normalized.dropFirst(100).prefix(100)
+        // Logarithmic normalization redistributes frequencies, so we check:
+        // 1. The first few output bins (which definitely map to bass frequencies)
+        // 2. Compare to a high-frequency region that should have low energy
+        let lowBand = normalized.prefix(20) // First 20 bins - definitely bass
+        let highBand = normalized.suffix(100) // Last 100 bins - high frequencies
         let lowAverage = lowBand.reduce(0, +) / Float(lowBand.count)
-        let midAverage = midBand.reduce(0, +) / Float(midBand.count)
+        let highAverage = highBand.reduce(0, +) / Float(highBand.count)
         
-        XCTAssertGreaterThan(lowAverage, midAverage * 1.5, "Bass frequencies should be emphasized in visualization")
+        // Bass should be significantly more prominent than high frequencies
+        // The bass energy (200-390) should be much higher than the low energy (10) in high frequencies
+        XCTAssertGreaterThan(lowAverage, highAverage * 2.0, "Bass frequencies should be emphasized in visualization")
+        
+        // Also verify that the low band has substantial energy (not zeroed out)
+        XCTAssertGreaterThan(lowAverage, 50.0, "Bass frequencies should retain significant energy after normalization")
     }
     
     /// BDD: Given a full-range audio spectrum, when I compress it, then quiet sections should be suppressed while loud sections remain visible

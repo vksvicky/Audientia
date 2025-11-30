@@ -35,7 +35,7 @@ final class MainWindowLayoutViewBDDTests: XCTestCase {
         let view = MainWindowLayoutView(audioEngine: mockAudioEngine)
         
         // Then: I should see a left navigation sidebar
-        _ = view.body // Verify view compiles and has navigation sidebar
+        SwiftUIViewTestHelpers.verifyViewCreation(view)
     }
     
     func testAsAUserIWantToSeeTheToolbarWithAppIcons() {
@@ -44,7 +44,7 @@ final class MainWindowLayoutViewBDDTests: XCTestCase {
         let view = MainWindowLayoutView(audioEngine: mockAudioEngine)
         
         // Then: I should see a toolbar with app-specific icons
-        _ = view.body // Verify view compiles and has toolbar
+        SwiftUIViewTestHelpers.verifyViewCreation(view)
     }
     
     func testAsAUserIWantToSeeThePlaylistPanelOnTheRight() {
@@ -53,7 +53,7 @@ final class MainWindowLayoutViewBDDTests: XCTestCase {
         let view = MainWindowLayoutView(audioEngine: mockAudioEngine)
         
         // Then: I should see a playlist panel on the right side
-        _ = view.body // Verify view compiles and has playlist panel
+        SwiftUIViewTestHelpers.verifyViewCreation(view)
     }
     
     func testAsAUserIWantToSeePlayerControlsAtTheBottom() {
@@ -62,7 +62,7 @@ final class MainWindowLayoutViewBDDTests: XCTestCase {
         let view = MainWindowLayoutView(audioEngine: mockAudioEngine)
         
         // Then: I should see player controls at the bottom
-        _ = view.body // Verify view compiles and has player controls
+        SwiftUIViewTestHelpers.verifyViewCreation(view)
     }
     
     func testAsAUserIWantToSeeCurrentlyPlayingTrackInfo() {
@@ -85,7 +85,7 @@ final class MainWindowLayoutViewBDDTests: XCTestCase {
         let view = MainWindowLayoutView(audioEngine: mockAudioEngine)
         
         // Then: I should see the track title and artist in the player controls
-        _ = view.body // Verify view compiles and displays track info
+        SwiftUIViewTestHelpers.verifyViewCreation(view)
     }
     
     func testAsAUserIWantToNavigateBetweenDifferentSections() {
@@ -94,7 +94,7 @@ final class MainWindowLayoutViewBDDTests: XCTestCase {
         
         // When: I click on different navigation items
         // Then: The content area should change to show the selected section
-        _ = view.body // Verify view compiles and supports navigation
+        SwiftUIViewTestHelpers.verifyViewCreation(view)
     }
     
     func testAsAUserIWantToControlPlaybackFromTheBottomControls() {
@@ -117,7 +117,7 @@ final class MainWindowLayoutViewBDDTests: XCTestCase {
         let view = MainWindowLayoutView(audioEngine: mockAudioEngine)
         
         // Then: Playback should start or pause
-        _ = view.body // Verify view compiles and has playback controls
+        SwiftUIViewTestHelpers.verifyViewCreation(view)
     }
     
     func testAsAUserIWantToSeeTheHomeViewWhenHomeIsSelected() {
@@ -126,7 +126,7 @@ final class MainWindowLayoutViewBDDTests: XCTestCase {
         
         // When: I select "Home" from the navigation sidebar
         // Then: I should see the welcome/home view
-        _ = view.body // Verify view compiles and shows home view
+        SwiftUIViewTestHelpers.verifyViewCreation(view)
     }
     
     func testAsAUserIWantToSeeTheLibraryWhenLibraryIsSelected() {
@@ -135,7 +135,7 @@ final class MainWindowLayoutViewBDDTests: XCTestCase {
         
         // When: I select "Entire Library" from the navigation sidebar
         // Then: I should see the library browser
-        _ = view.body // Verify view compiles and shows library browser
+        SwiftUIViewTestHelpers.verifyViewCreation(view)
     }
     
     func testAsAUserIWantToSeeThePlayingListInTheRightPanel() {
@@ -144,7 +144,7 @@ final class MainWindowLayoutViewBDDTests: XCTestCase {
         
         // When: I look at the right panel
         // Then: I should see the "Playing" list
-        _ = view.body // Verify view compiles and shows playing list
+        SwiftUIViewTestHelpers.verifyViewCreation(view)
     }
     
     func testAsAUserIWantTheWindowToHaveMinimumSize() {
@@ -153,7 +153,7 @@ final class MainWindowLayoutViewBDDTests: XCTestCase {
         let view = MainWindowLayoutView(audioEngine: mockAudioEngine)
         
         // Then: The window should have a minimum size of 1000x600
-        _ = view.body // Verify view compiles with minimum size constraints
+        SwiftUIViewTestHelpers.verifyViewCreation(view)
     }
     
     // MARK: - BDD Scenario: Minimize to Player
@@ -164,10 +164,8 @@ final class MainWindowLayoutViewBDDTests: XCTestCase {
         let view = MainWindowLayoutView(audioEngine: mockAudioEngine)
         
         // When - I access the view (minimize button is in title bar)
-        let body = view.body
-        
         // Then - The view should have a minimize button
-        _ = body // Verify compilation
+        SwiftUIViewTestHelpers.verifyViewCreation(view)
         // Note: Actual button interaction is tested in MinimizePlayerBDDTests
     }
 }

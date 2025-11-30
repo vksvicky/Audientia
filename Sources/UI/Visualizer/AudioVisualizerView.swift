@@ -57,9 +57,10 @@ public struct AudioVisualizerView: View {
                 .cornerRadius(4)
             }
             
-            // Visualizer Display
+            // Visualizer Display - Expand to fill available space
             if let currentFrame = viewModel.currentFrame {
                 spectrumView(frame: currentFrame)
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
             } else {
                 Text("No audio data available")
                     .font(.body)
@@ -67,8 +68,9 @@ public struct AudioVisualizerView: View {
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
             }
             
-            // Controls
+            // Controls - Fixed size at bottom
             controlsView
+                .frame(maxWidth: .infinity)
         }
         .padding()
         .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -85,26 +87,23 @@ public struct AudioVisualizerView: View {
     private func spectrumView(frame: AudioVisualizerFrame) -> some View {
         GeometryReader { geometry in
             switch viewModel.visualizationMode {
-            case .bars:
-                spectrumBarsView(frame: frame, geometry: geometry)
-            case .line:
-                spectrumLineView(frame: frame, geometry: geometry)
-            case .mirror:
-                spectrumMirrorView(frame: frame, geometry: geometry)
-            case .radial:
-                spectrumRadialView(frame: frame, geometry: geometry)
-            case .luminance:
-                spectrumLuminanceView(frame: frame, geometry: geometry)
-            case .led:
-                spectrumLEDView(frame: frame, geometry: geometry)
-            case .waveform:
-                spectrumWaveformView(frame: frame, geometry: geometry)
-            case .circle:
-                spectrumCircleView(frame: frame, geometry: geometry)
+            case .discreteFrequencies:
+                discreteFrequenciesView(frame: frame, geometry: geometry)
+            case .radialSpectrum:
+                radialSpectrumView(frame: frame, geometry: geometry)
+            case .dualChannelGraph:
+                dualChannelGraphView(frame: frame, geometry: geometry)
+            case .ledBars:
+                ledBarsView(frame: frame, geometry: geometry)
+            case .lumiBars:
+                lumiBarsView(frame: frame, geometry: geometry)
+            case .roundBarsReflex:
+                roundBarsReflexView(frame: frame, geometry: geometry)
             }
         }
-        .frame(height: 300)
-        .cornerRadius(12)
+        .frame(minHeight: 200, maxHeight: .infinity) // Responsive: minimum 200pt, expand to fill space
+        .drawingGroup() // Render to single layer for crisp rendering
+        .clipShape(RoundedRectangle(cornerRadius: 12))
         .overlay(
             RoundedRectangle(cornerRadius: 12)
                 .stroke(
@@ -119,86 +118,6 @@ public struct AudioVisualizerView: View {
                     lineWidth: 1
                 )
         )
-    }
-    
-    private func spectrumBarsView(frame: AudioVisualizerFrame, geometry: GeometryProxy) -> some View {
-            let barWidth = geometry.size.width / CGFloat(frame.magnitudes.count)
-        
-        // Use logarithmic normalization similar to audioMotion-analyzer
-        let normalizer = SpectrumNormalizer(
-            logScale: 2.0,
-            minFreq: 20.0,
-            maxFreq: 20000.0,
-            sampleRate: frame.sampleRate,
-            fftSize: frame.fftSize
-        )
-        let normalizedMagnitudes = normalizer.normalize(frame.magnitudes)
-        let compressedMagnitudes = normalizer.compress(normalizedMagnitudes, sensitivity: 1.2)
-        
-        // Apply amplification factor for better visibility (2.5x as requested)
-        let amplificationFactor: Float = 2.5
-        let amplifiedMagnitudes = compressedMagnitudes.map { $0 * amplificationFactor }
-        
-        // Dynamic range scaling for better visualization
-        let maxMagnitude = amplifiedMagnitudes.max() ?? 1.0
-        let minMagnitude = amplifiedMagnitudes.min() ?? 0.0
-        let range = max(maxMagnitude - minMagnitude, 1.0)
-        
-        return ZStack {
-            // Background gradient for depth
-            LinearGradient(
-                gradient: Gradient(colors: [
-                    Color.black.opacity(0.4),
-                    Color.black.opacity(0.1)
-                ]),
-                startPoint: .top,
-                endPoint: .bottom
-            )
-            
-            // Main spectrum bars with logarithmic scaling
-            HStack(alignment: .bottom, spacing: 0) {
-                ForEach(Array(amplifiedMagnitudes.enumerated()), id: \.offset) { index, magnitude in
-                    // Normalize to 0-1 range
-                    let normalizedMagnitude = CGFloat((magnitude - minMagnitude) / range)
-                    let barHeight = normalizedMagnitude * geometry.size.height
-                    let frequencyRatio = CGFloat(index) / CGFloat(amplifiedMagnitudes.count)
-                    let energy = min(normalizedMagnitude, 1.0)
-                    let color = colorForFrequency(ratio: frequencyRatio, energy: energy)
-                    
-                    spectrumBar(
-                        barWidth: barWidth,
-                        barHeight: max(1, barHeight), // Minimum 1pt for visibility
-                        color: color
-                    )
-                }
-            }
-            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
-        }
-    }
-    
-    func spectrumBar(barWidth: CGFloat, barHeight: CGFloat, color: Color) -> some View {
-        VStack(spacing: 0) {
-            Spacer()
-            
-            // Main bar with gradient
-            RoundedRectangle(cornerRadius: max(1, barWidth * 0.3))
-                        .fill(
-                            LinearGradient(
-                                gradient: Gradient(colors: [
-                            color.opacity(0.9),
-                            color.opacity(0.6),
-                            color.opacity(0.3)
-                                ]),
-                                startPoint: .top,
-                                endPoint: .bottom
-                            )
-                        )
-                        .frame(
-                            width: max(1, barWidth - 1),
-                            height: max(2, barHeight)
-                        )
-                .shadow(color: color.opacity(0.5), radius: 2, x: 0, y: -1)
-        }
     }
     
 }

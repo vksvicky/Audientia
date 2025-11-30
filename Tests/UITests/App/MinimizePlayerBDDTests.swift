@@ -106,6 +106,8 @@ final class MinimizePlayerBDDTests: XCTestCase {
         appDelegate.minimizeToPlayer(nowPlayingViewModel: nowPlayingViewModel)
         XCTAssertTrue(appDelegate.isMinimized)
         let minimizedWindow = appDelegate.minimizedPlayerWindow
+        XCTAssertNotNil(minimizedWindow)
+        XCTAssertTrue(minimizedWindow?.isVisible ?? false)
         
         // When - I click the restore button
         appDelegate.restoreFromPlayer()
@@ -113,8 +115,9 @@ final class MinimizePlayerBDDTests: XCTestCase {
         // Then - The main window should be shown and the minimized player should close
         XCTAssertFalse(appDelegate.isMinimized)
         XCTAssertTrue(appDelegate.mainWindow?.isVisible ?? false)
-        XCTAssertNil(appDelegate.minimizedPlayerWindow)
-        XCTAssertNil(minimizedWindow)
+        XCTAssertNil(appDelegate.minimizedPlayerWindow, "minimizedPlayerWindow property should be nil after restore")
+        // The window object itself may still exist in memory (just closed), so check it's closed instead
+        XCTAssertFalse(minimizedWindow?.isVisible ?? true, "Minimized window should be closed after restore")
     }
     
     // MARK: - BDD Scenario 3: Control Playback from Minimized Player

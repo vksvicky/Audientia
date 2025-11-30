@@ -635,6 +635,10 @@
 		E23DB84C2EDBBB53007AC259 /* AudioVisualizerModes.swift in Sources */ = {isa = PBXBuildFile; fileRef = E23DB84B2EDBBB53007AC259 /* AudioVisualizerModes.swift */; };
 		E23DB84D2EDBBB53007AC259 /* AudioVisualizerModes.swift in Sources */ = {isa = PBXBuildFile; fileRef = E23DB84B2EDBBB53007AC259 /* AudioVisualizerModes.swift */; };
 		E23DB84F2EDBBE06007AC259 /* AudioVisualizerTapHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = E23DB84E2EDBBE06007AC259 /* AudioVisualizerTapHelpers.swift */; };
+		E23DB8522EDC6379007AC259 /* AudioVisualizerModesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E23DB8512EDC6379007AC259 /* AudioVisualizerModesTests.swift */; };
+		E23DB8532EDC6379007AC259 /* AudioVisualizerModesBDDTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E23DB8502EDC6379007AC259 /* AudioVisualizerModesBDDTests.swift */; };
+		E23DB8552EDC9BC0007AC259 /* LibraryStatisticsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E23DB8542EDC9BC0007AC259 /* LibraryStatisticsViewModel.swift */; };
+		E23DB8562EDC9BC0007AC259 /* LibraryStatisticsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E23DB8542EDC9BC0007AC259 /* LibraryStatisticsViewModel.swift */; };
 		E2407FAA2ED70A210054F668 /* PlaylistPanelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2407FA82ED70A210054F668 /* PlaylistPanelView.swift */; };
 		E2407FAB2ED70A210054F668 /* PlaylistPanelViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2407FA92ED70A210054F668 /* PlaylistPanelViewModel.swift */; };
 		E2407FAC2ED70A210054F668 /* PlaylistPanelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2407FA82ED70A210054F668 /* PlaylistPanelView.swift */; };
@@ -1595,6 +1599,9 @@
 		E23DB8492EDBB8BA007AC259 /* AudioVisualizerTapBDDTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioVisualizerTapBDDTests.swift; sourceTree = "<group>"; };
 		E23DB84B2EDBBB53007AC259 /* AudioVisualizerModes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioVisualizerModes.swift; sourceTree = "<group>"; };
 		E23DB84E2EDBBE06007AC259 /* AudioVisualizerTapHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioVisualizerTapHelpers.swift; sourceTree = "<group>"; };
+		E23DB8502EDC6379007AC259 /* AudioVisualizerModesBDDTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioVisualizerModesBDDTests.swift; sourceTree = "<group>"; };
+		E23DB8512EDC6379007AC259 /* AudioVisualizerModesTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioVisualizerModesTests.swift; sourceTree = "<group>"; };
+		E23DB8542EDC9BC0007AC259 /* LibraryStatisticsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LibraryStatisticsViewModel.swift; sourceTree = "<group>"; };
 		E2407FA82ED70A210054F668 /* PlaylistPanelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaylistPanelView.swift; sourceTree = "<group>"; };
 		E2407FA92ED70A210054F668 /* PlaylistPanelViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaylistPanelViewModel.swift; sourceTree = "<group>"; };
 		E2407FAE2ED70A500054F668 /* TrackDetailsDependencies.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackDetailsDependencies.swift; sourceTree = "<group>"; };
@@ -3016,6 +3023,8 @@
 		CDA8C3F2B76B404A0AF446EA /* Visualizer */ = {
 			isa = PBXGroup;
 			children = (
+				E23DB8502EDC6379007AC259 /* AudioVisualizerModesBDDTests.swift */,
+				E23DB8512EDC6379007AC259 /* AudioVisualizerModesTests.swift */,
 				E23DB8392EDB981E007AC259 /* AudioVisualizerViewBDDTests.swift */,
 				E23DB83A2EDB981E007AC259 /* AudioVisualizerViewTests.swift */,
 				8E2E70FCDD0FA662D836C17B /* AudioVisualizerBDDTests.swift */,
@@ -3245,6 +3254,7 @@
 		F2D3A7F1A7D14E5F9AEB6880 /* Library */ = {
 			isa = PBXGroup;
 			children = (
+				E23DB8542EDC9BC0007AC259 /* LibraryStatisticsViewModel.swift */,
 				F2F7B17EE5F241E1A8439F38 /* LibraryBrowserView.swift */,
 				F3285B75C79B44A6988A5AEB /* LibraryBrowserViewModel.swift */,
 				F35D1E2F3A4B5C6D7E8F9A0B2 /* LibraryStatisticsView.swift */,
@@ -4294,6 +4304,7 @@
 				A54A5FBF0F451BCE66C1111D /* TagEditorView.swift in Sources */,
 				592FE0A08320DF02F6142616 /* TagEditorViewModel.swift in Sources */,
 				3F309CB729431D0E0CB1D75C /* TranscodeProgressView.swift in Sources */,
+				E23DB8562EDC9BC0007AC259 /* LibraryStatisticsViewModel.swift in Sources */,
 				F029D27D2C19365D6FD6CF02 /* TranscodeSettingsView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -4443,6 +4454,7 @@
 				B3C741784F2E95DEE2EC7CF1 /* NowPlayingViewModel.swift in Sources */,
 				8F8DCB77DF1C6765D4F5EF62 /* NowPlayingViewModelTests.swift in Sources */,
 				88513B7B068F3D835B2276FC /* PlaylistBrowserView.swift in Sources */,
+				E23DB8552EDC9BC0007AC259 /* LibraryStatisticsViewModel.swift in Sources */,
 				E718F749FDF77CDAE812DDC9 /* PlaylistBrowserViewBDDTests.swift in Sources */,
 				BCF1523373D6C5A128E4E9D7 /* PlaylistBrowserViewTests.swift in Sources */,
 				EE66CD5F0876A28A5C753326 /* PlaylistEditorView.swift in Sources */,
@@ -4478,6 +4490,8 @@
 				EDA667567B598543A85EF2E3 /* RecommendationViewTests.swift in Sources */,
 				E23DB83B2EDB981E007AC259 /* AudioVisualizerViewBDDTests.swift in Sources */,
 				E23DB83C2EDB981E007AC259 /* AudioVisualizerViewTests.swift in Sources */,
+				E23DB8522EDC6379007AC259 /* AudioVisualizerModesTests.swift in Sources */,
+				E23DB8532EDC6379007AC259 /* AudioVisualizerModesBDDTests.swift in Sources */,
 				E163E0FD43D04420BDF4745E /* MockRecommendationEngine.swift in Sources */,
 				137DDBA3F86B6DC84B971495 /* ReplayGainSettingsBDDTests.swift in Sources */,
 				D28887372857201115EACAC1 /* ReplayGainSettingsView.swift in Sources */,

@@ -115,28 +115,3 @@ private struct StatisticRow: View {
         }
     }
 }
-
-/// ViewModel for library statistics
-@MainActor
-final class LibraryStatisticsViewModel: ObservableObject {
-    @Published private(set) var statistics: LibraryStatistics?
-    @Published private(set) var isLoading = false
-    
-    private let statisticsCalculator: any LibraryStatisticsProtocol
-    
-    init(statisticsCalculator: any LibraryStatisticsProtocol) {
-        self.statisticsCalculator = statisticsCalculator
-    }
-    
-    func loadStatistics() async {
-        isLoading = true
-        defer { isLoading = false }
-        
-        do {
-            statistics = try await statisticsCalculator.calculateStatistics()
-        } catch {
-            // Handle error silently for now - could add error state if needed
-            statistics = nil
-        }
-    }
-}

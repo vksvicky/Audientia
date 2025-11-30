@@ -62,17 +62,35 @@ public struct SpectrumNormalizer {
             let logPosition = Float(outputIndex) / Float(magnitudeCount - 1)
             let targetFreq = minFreq * pow(maxFreq / minFreq, logPosition)
             
-            // Find the corresponding linear FFT bin(s) for this frequency
-            let linearBin = targetFreq / freqResolution
-            let lowerBin = Int(linearBin)
-            let upperBin = min(lowerBin + 1, magnitudeCount - 1)
-            let fraction = linearBin - Float(lowerBin)
-            
-            // Interpolate between adjacent bins for smooth visualization
-            if lowerBin >= 0 && lowerBin < magnitudeCount {
-                let lowerMag = magnitudes[lowerBin]
-                let upperMag = magnitudes[upperBin]
-                normalized[outputIndex] = lowerMag * (1.0 - fraction) + upperMag * fraction
+            // Filter out frequencies outside the specified range
+            // Only interpolate if the target frequency is within range
+            if targetFreq >= minFreq && targetFreq <= maxFreq {
+                // Find the corresponding linear FFT bin(s) for this frequency
+                let linearBin = targetFreq / freqResolution
+                let lowerBin = Int(linearBin)
+                let upperBin = min(lowerBin + 1, magnitudeCount - 1)
+                let fraction = linearBin - Float(lowerBin)
+                
+                // Only use bins that are within the valid frequency range
+                let lowerFreq = Float(lowerBin) * freqResolution
+                let upperFreq = Float(upperBin) * freqResolution
+                
+                // Only use lower bin if its frequency is at or above minFreq
+                let lowerMag = (lowerFreq >= minFreq && lowerBin >= 0 && lowerBin < magnitudeCount)
+                    ? magnitudes[lowerBin]
+                    : 0.0
+                
+                // Only use upper bin if its frequency is at or below maxFreq
+                let upperMag = (upperFreq <= maxFreq && upperBin >= 0 && upperBin < magnitudeCount)
+                    ? magnitudes[upperBin]
+                    : 0.0
+                
+                // Interpolate only if we have at least one valid bin
+                if lowerMag > 0.0 || upperMag > 0.0 {
+                    normalized[outputIndex] = lowerMag * (1.0 - fraction) + upperMag * fraction
+                } else {
+                    normalized[outputIndex] = 0.0
+                }
             } else {
                 normalized[outputIndex] = 0.0
             }
@@ -83,19 +101,38 @@ public struct SpectrumNormalizer {
     
     /// Applies dynamic range compression to enhance visualization
     /// Similar to audioMotion-analyzer's sensitivity and smoothing
+    /// Higher sensitivity values reduce dynamic range more (compress more)
     public func compress(_ magnitudes: [Float], sensitivity: Float = 1.0) -> [Float] {
         guard !magnitudes.isEmpty else { return magnitudes }
         
         let maxMagnitude = magnitudes.max() ?? 1.0
+        let minMagnitude = magnitudes.min() ?? 0.0
         let threshold = maxMagnitude * 0.1 // Bottom 10% threshold
         
+        // Calculate original range for compression
+        let originalRange = maxMagnitude - minMagnitude
+        guard originalRange > 0 else { return magnitudes }
+        
         return magnitudes.map { magnitude in
-            if magnitude < threshold {
-                return 0.0
+            // Normalize magnitude to 0-1 range relative to min and max
+            let normalized = (magnitude - minMagnitude) / originalRange
+            
+            // Apply sensitivity scaling (higher sensitivity = more compression)
+            // pow(normalized, 1.0 / sensitivity) compresses the range
+            // When sensitivity > 1, this reduces the dynamic range
+            let compressedNormalized = pow(max(0.0, normalized), 1.0 / sensitivity)
+            
+            // Scale back to a compressed range
+            // The compressed range is reduced proportionally to sensitivity
+            // This ensures the range is actually reduced
+            let compressedRange = originalRange / sensitivity
+            let compressedValue = compressedNormalized * compressedRange + minMagnitude
+            
+            // Apply threshold to very quiet values
+            if compressedValue < threshold {
+                return compressedValue * 0.1 // Reduce but don't zero
             }
-            // Apply sensitivity scaling
-            let normalized = (magnitude - threshold) / (maxMagnitude - threshold)
-            return pow(normalized, 1.0 / sensitivity) * maxMagnitude
+            return compressedValue
         }
     }
     

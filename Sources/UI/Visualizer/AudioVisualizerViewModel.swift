@@ -16,7 +16,7 @@ import SwiftUI
 final class AudioVisualizerViewModel: ObservableObject {
     @Published var currentFrame: AudioVisualizerFrame?
     @Published var fftSize: Int = 1024
-    @Published var visualizationMode: VisualizationMode = .bars
+    @Published var visualizationMode: VisualizationMode = .discreteFrequencies
     @Published var visualizationVolume: Float = 1.0 {
         didSet {
             updateVisualizationVolume()
