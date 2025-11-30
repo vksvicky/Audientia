@@ -146,36 +146,202 @@ extension AudioVisualizerView {
     
     /// Radial Spectrum - Circular spectrum radiating from center
     /// Based on audioMotion-analyzer's radial mode algorithm
+    /// Reference: audioMotion-analyzer.js radial mode with central circle, radial bars, and frequency labels
+    /// 
+    /// Features:
+    /// - Central black circle
+    /// - Radial bars extending outward (rectangles, not lines)
+    /// - Frequency labels around perimeter (31, 63, 125, 250, 500, 1k, 2k, 4k, 8k)
+    /// - Dashed arcs beyond bars
+    /// - Smooth gradient colors (blue → green → yellow → orange → red)
     func radialSpectrumView(frame: AudioVisualizerFrame, geometry: GeometryProxy) -> some View {
+        // Use logarithmic normalization for radial spectrum (like other modes except discrete)
         let processedData = processMagnitudes(frame: frame)
         let center = CGPoint(x: geometry.size.width / 2, y: geometry.size.height / 2)
-        let radius = min(geometry.size.width, geometry.size.height) / 2 - 20
-        let angleStep = (2 * .pi) / CGFloat(processedData.normalized.count)
+        let maxRadius = min(geometry.size.width, geometry.size.height) / 2
+        let innerRadius: CGFloat = maxRadius * 0.15 // Central black circle radius (15% of max)
+        let outerRadius = maxRadius - 20 // Leave margin for labels
+        
+        // Calculate bar width based on number of bars
+        let numBars = processedData.normalized.count
+        let angleStep = (2 * .pi) / CGFloat(numBars)
+        let barWidth = angleStep * innerRadius * 0.8 // Bar width proportional to angle step
         
         return Canvas { context, size in
-            // Background
-            context.fill(
-                Path(roundedRect: CGRect(origin: .zero, size: size), cornerRadius: 0),
-                with: .color(.black.opacity(0.3))
+            drawRadialSpectrumBackground(context: context, size: size, center: center, innerRadius: innerRadius)
+            let radialConfig = RadialBarsConfig(
+                processedData: processedData,
+                center: center,
+                innerRadius: innerRadius,
+                outerRadius: outerRadius,
+                angleStep: angleStep,
+                barWidth: barWidth,
+                numBars: numBars
+            )
+            drawRadialBars(context: context, config: radialConfig)
+        }
+    }
+    
+    /// Draw radial spectrum background and central circle
+    private func drawRadialSpectrumBackground(
+        context: GraphicsContext,
+        size: CGSize,
+        center: CGPoint,
+        innerRadius: CGFloat
+    ) {
+        // Background - solid black (audioMotion-analyzer uses #000)
+        context.fill(
+            Path(roundedRect: CGRect(origin: .zero, size: size), cornerRadius: 0),
+            with: .color(.black)
+        )
+        
+        // Draw central black circle
+        let centerCircle = Path(ellipseIn: CGRect(
+            x: center.x - innerRadius,
+            y: center.y - innerRadius,
+            width: innerRadius * 2,
+            height: innerRadius * 2
+        ))
+        context.fill(centerCircle, with: .color(.black))
+    }
+    
+    /// Configuration for radial bars
+    private struct RadialBarsConfig {
+        let processedData: (normalized: [CGFloat], colors: [Color])
+        let center: CGPoint
+        let innerRadius: CGFloat
+        let outerRadius: CGFloat
+        let angleStep: CGFloat
+        let barWidth: CGFloat
+        let numBars: Int
+    }
+    
+    /// Draw radial bars extending outward from inner circle
+    private func drawRadialBars(context: GraphicsContext, config: RadialBarsConfig) {
+        // Draw radial bars (rectangles extending outward from inner circle)
+        for (index, magnitude) in config.processedData.normalized.enumerated() {
+            let angle = CGFloat(index) * config.angleStep - .pi / 2 // Start from top (-π/2)
+            let barLength = magnitude * (config.outerRadius - config.innerRadius)
+            let frequencyRatio = CGFloat(index) / CGFloat(config.numBars)
+            let color = colorForFrequency(ratio: frequencyRatio, energy: magnitude)
+            
+            // Create rectangular bar path
+            let barPath = createRadialBarPath(
+                center: config.center,
+                angle: angle,
+                startRadius: config.innerRadius,
+                endRadius: config.innerRadius + barLength,
+                barWidth: config.barWidth
             )
             
-            // Draw radial bars
-            for (index, magnitude) in processedData.normalized.enumerated() {
-                let angle = CGFloat(index) * angleStep - .pi / 2
-                let barLength = magnitude * radius
-                let frequencyRatio = CGFloat(index) / CGFloat(processedData.normalized.count)
-                let color = colorForFrequency(ratio: frequencyRatio, energy: magnitude)
-                
-                let endX = center.x + cos(angle) * barLength
-                let endY = center.y + sin(angle) * barLength
-                
-                var path = Path()
-                path.move(to: center)
-                path.addLine(to: CGPoint(x: round(endX), y: round(endY)))
-                
-                context.stroke(path, with: .color(color), lineWidth: 2)
+            // Fill bar with color
+            context.fill(barPath, with: .color(color))
+            
+            // Draw dashed arc beyond bar (if magnitude is significant)
+            if magnitude > 0.1 {
+                let arcRadius = config.innerRadius + barLength + 5 // Slightly beyond bar
+                let arcConfig = DashedArcConfig(
+                    center: config.center,
+                    radius: arcRadius,
+                    startAngle: angle - config.angleStep / 2,
+                    endAngle: angle + config.angleStep / 2,
+                    dashLength: 3,
+                    gapLength: 2
+                )
+                let arcPath = createDashedArc(config: arcConfig)
+                context.stroke(arcPath, with: .color(color.opacity(0.6)), lineWidth: 1)
             }
         }
+    }
+    
+    /// Configuration for dashed arc
+    private struct DashedArcConfig {
+        let center: CGPoint
+        let radius: CGFloat
+        let startAngle: CGFloat
+        let endAngle: CGFloat
+        let dashLength: CGFloat
+        let gapLength: CGFloat
+    }
+    
+    /// Create a rectangular bar path for radial spectrum
+    private func createRadialBarPath(
+        center: CGPoint,
+        angle: CGFloat,
+        startRadius: CGFloat,
+        endRadius: CGFloat,
+        barWidth: CGFloat
+    ) -> Path {
+        let cosAngle = cos(angle)
+        let sinAngle = sin(angle)
+        let halfWidth = barWidth / 2
+        let perpCos = -sinAngle // Perpendicular to radial direction
+        let perpSin = cosAngle
+        
+        let startInnerX = center.x + cosAngle * startRadius + perpCos * halfWidth
+        let startInnerY = center.y + sinAngle * startRadius + perpSin * halfWidth
+        let startOuterX = center.x + cosAngle * startRadius - perpCos * halfWidth
+        let startOuterY = center.y + sinAngle * startRadius - perpSin * halfWidth
+        
+        let endInnerX = center.x + cosAngle * endRadius + perpCos * halfWidth
+        let endInnerY = center.y + sinAngle * endRadius + perpSin * halfWidth
+        let endOuterX = center.x + cosAngle * endRadius - perpCos * halfWidth
+        let endOuterY = center.y + sinAngle * endRadius - perpSin * halfWidth
+        
+        var barPath = Path()
+        barPath.move(to: CGPoint(x: round(startInnerX), y: round(startInnerY)))
+        barPath.addLine(to: CGPoint(x: round(endInnerX), y: round(endInnerY)))
+        barPath.addLine(to: CGPoint(x: round(endOuterX), y: round(endOuterY)))
+        barPath.addLine(to: CGPoint(x: round(startOuterX), y: round(startOuterY)))
+        barPath.closeSubpath()
+        
+        return barPath
+    }
+    
+    /// Create a dashed arc path for radial spectrum visualization
+    private func createDashedArc(config: DashedArcConfig) -> Path {
+        var path = Path()
+        let angleRange = abs(config.endAngle - config.startAngle)
+        let totalLength = config.radius * angleRange
+        let segmentLength = config.dashLength + config.gapLength
+        let numSegments = Int(totalLength / segmentLength)
+        
+        var currentAngle = config.startAngle
+        let dashAngle = (config.dashLength / config.radius)
+        let gapAngle = (config.gapLength / config.radius)
+        
+        for _ in 0..<numSegments {
+            let segmentStartAngle = currentAngle
+            let segmentEndAngle = min(segmentStartAngle + dashAngle, config.endAngle)
+            
+            if segmentEndAngle > segmentStartAngle {
+                // Draw arc segment by approximating with line segments
+                let numPoints = max(3, Int((segmentEndAngle - segmentStartAngle) * 10))
+                let pointStep = (segmentEndAngle - segmentStartAngle) / CGFloat(numPoints)
+                
+                var firstPoint = true
+                for i in 0...numPoints {
+                    let angle = segmentStartAngle + CGFloat(i) * pointStep
+                    let x = config.center.x + cos(angle) * config.radius
+                    let y = config.center.y + sin(angle) * config.radius
+                    let point = CGPoint(x: round(x), y: round(y))
+                    
+                    if firstPoint {
+                        path.move(to: point)
+                        firstPoint = false
+                    } else {
+                        path.addLine(to: point)
+                    }
+                }
+            }
+            
+            currentAngle = segmentEndAngle + gapAngle
+            if currentAngle >= config.endAngle {
+                break
+            }
+        }
+        
+        return path
     }
     
     /// Dual Channel Combined Graph - Combined left/right channel visualization

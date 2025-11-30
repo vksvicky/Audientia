@@ -115,15 +115,32 @@ final class AudioVisualizerModesBDDTests: XCTestCase {
     // MARK: - BDD Scenario 2: Radial Spectrum Mode
     
     /// BDD: As a user, when I select radial spectrum mode,
-    /// then I should see circular bars radiating from the center
+    /// then I should see circular bars radiating from the center with:
+    /// - A central black circle
+    /// - Radial bars (rectangles) extending outward from the center
+    /// - Gradient colors (blue → green → yellow → orange → red)
+    /// - Dashed arcs beyond bars (for significant magnitudes)
+    /// Reference: audioMotion-analyzer's radial mode
     func testRadialSpectrumShowsCircularBars() {
         // Given - A visualizer view with radial spectrum mode
+        // The radial spectrum should match audioMotion-analyzer's implementation:
+        // - Central black circle (15% of max radius)
+        // - Radial bars extending from inner circle to outer radius
+        // - Bars are rectangles, not lines
+        // - Frequency labels around perimeter (31, 63, 125, 250, 500, 1k, 2k, 4k, 8k)
+        // - Dashed arcs beyond bars for visual enhancement
         let view = AudioVisualizerView(nowPlayingViewModel: mockNowPlayingViewModel)
         
         // When - View is created
         // Then - View should be created without errors
-        // Note: viewModel is private, so we test through view creation
+        // The visualization should render radial bars extending outward from a central black circle
         XCTAssertNotNil(view)
+        
+        // Verify the mode exists and has correct description
+        let radialMode = VisualizationMode.radialSpectrum
+        XCTAssertEqual(radialMode.displayName, "Radial Spectrum")
+        XCTAssertEqual(radialMode.icon, "circle.grid.3x3.fill")
+        XCTAssertTrue(radialMode.description.contains("radial"))
     }
     
     // MARK: - BDD Scenario 3: Dual Channel Combined Graph Mode
