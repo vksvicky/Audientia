@@ -45,7 +45,7 @@ public enum VisualizationMode: String, CaseIterable, Identifiable {
         case .radialSpectrum:
             return "circle.grid.3x3.fill"
         case .dualChannelGraph:
-            return "chart.line.uptrend.xyaxis"
+            return "waveform.path" // Waveform icon better represents dual channel visualization
         case .ledBars:
             return "lightbulb.fill"
         case .lumiBars:

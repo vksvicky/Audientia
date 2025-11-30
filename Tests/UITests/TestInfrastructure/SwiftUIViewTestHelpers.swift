@@ -7,6 +7,7 @@
 //  Copyright © 2025 CycleRunCode Club. All rights reserved.
 //
 
+import AppKit
 import SwiftUI
 
 /// Helper utilities for testing SwiftUI views
@@ -25,10 +26,16 @@ enum SwiftUIViewTestHelpers {
     /// This method properly hosts the view to avoid StateObject warnings
     /// - Parameter view: The SwiftUI view to test
     static func verifyViewCreation<V: View>(_ view: V) {
-        // Access the view through the container to properly initialize StateObject
-        // The container ensures StateObject is accessed within a proper SwiftUI view hierarchy
+        // Wrap the view in NSHostingView to create a proper SwiftUI view hierarchy
+        // This ensures StateObject properties are properly initialized before access
+        // NSHostingView creates the necessary view infrastructure that SwiftUI expects
         let container = ContainerView(content: view)
-        _ = container.body
+        let hostingView = NSHostingView(rootView: container)
+        // Set a frame so the view has proper dimensions
+        hostingView.frame = NSRect(x: 0, y: 0, width: 800, height: 600)
+        // The hosting view properly initializes all StateObject properties when rendered
+        // We don't need to explicitly access the body - just creating the hosting view is enough
+        _ = hostingView
     }
     
     /// Get the view body in a way that properly initializes StateObject

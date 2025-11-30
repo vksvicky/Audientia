@@ -35,7 +35,7 @@ final class MultiPaneLayoutViewTests: XCTestCase {
         let view = MultiPaneLayoutView(viewModel: viewModel)
         
         // Then: View should be created
-        _ = view.body // Access body to verify compilation
+        SwiftUIViewTestHelpers.verifyViewCreation(view)
     }
     
     func testViewLoadsLayoutOnAppear() async {

@@ -76,7 +76,7 @@ final class AudioVisualizerModesBDDTests: XCTestCase {
     /// then bars should have 10% spacing between them (audioMotion-analyzer barSpace)
     func testDiscreteFrequenciesHasCorrectSpacing() {
         // Given - A visualizer view
-        let view = AudioVisualizerView(nowPlayingViewModel: mockNowPlayingViewModel)
+        _ = AudioVisualizerView(nowPlayingViewModel: mockNowPlayingViewModel)
         
         // When - Processing magnitudes for discrete mode
         // Note: We test the algorithm logic, not the extension method directly
@@ -129,15 +129,25 @@ final class AudioVisualizerModesBDDTests: XCTestCase {
     // MARK: - BDD Scenario 3: Dual Channel Combined Graph Mode
     
     /// BDD: As a user, when I select dual channel combined graph mode,
-    /// then I should see combined left/right channel visualization
+    /// then I should see combined left/right channel visualization with two overlapping waveforms
     func testDualChannelGraphShowsCombinedChannels() {
         // Given - A visualizer view with dual channel graph mode
+        // The dual channel mode should show two separate waveforms (left and right channels)
+        // with different colors (reddish-brown/orange for left, blue/teal for right)
+        // Reference: audioMotion-analyzer's CHANNEL_DUAL_COMBINED mode
         let view = AudioVisualizerView(nowPlayingViewModel: mockNowPlayingViewModel)
         
         // When - View is created
         // Then - View should be created without errors
-        // Note: viewModel is private, so we test through view creation
+        // The visualization should render two overlapping waveforms from a single mono source
+        // by applying phase shifts to simulate stereo channels
         XCTAssertNotNil(view)
+        
+        // Verify the mode exists and has correct description
+        let dualChannelMode = VisualizationMode.dualChannelGraph
+        XCTAssertEqual(dualChannelMode.displayName, "Dual Channel Graph")
+        XCTAssertEqual(dualChannelMode.icon, "waveform.path")
+        XCTAssertTrue(dualChannelMode.description.contains("dual channel"))
     }
     
     // MARK: - BDD Scenario 4: LED Bars Mode
@@ -158,7 +168,7 @@ final class AudioVisualizerModesBDDTests: XCTestCase {
     /// then bars should have 5% spacing (different from discrete mode)
     func testLEDBarsHasCorrectSpacing() {
         // Given - A visualizer view
-        let view = AudioVisualizerView(nowPlayingViewModel: mockNowPlayingViewModel)
+        _ = AudioVisualizerView(nowPlayingViewModel: mockNowPlayingViewModel)
         
         // When - Processing for LED bars (uses 5% spacing)
         // Test the algorithm logic

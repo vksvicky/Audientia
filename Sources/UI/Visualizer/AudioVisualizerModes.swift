@@ -179,72 +179,81 @@ extension AudioVisualizerView {
     }
     
     /// Dual Channel Combined Graph - Combined left/right channel visualization
-    /// Based on audioMotion-analyzer's dual-combined channel layout
+    /// Based on audioMotion-analyzer's dual-combined channel layout (CHANNEL_DUAL_COMBINED)
+    /// Shows both left and right channels as overlapping waveforms with different colors
+    /// Reference: audioMotion-analyzer.js (commit 60b9107)
     func dualChannelGraphView(frame: AudioVisualizerFrame, geometry: GeometryProxy) -> some View {
         let processedData = processMagnitudes(frame: frame)
-        let centerY = geometry.size.height / 2
+        let baselineY = geometry.size.height // Baseline at bottom of canvas
         let stepX = geometry.size.width / CGFloat(processedData.normalized.count - 1)
         
+        // Simulate stereo by applying slight variations to create two distinct channels
+        let (leftChannel, rightChannel) = createDualChannels(from: processedData.normalized)
+        
         return Canvas { context, size in
-            // Background
+            // Background - solid black (audioMotion-analyzer uses #000)
             context.fill(
                 Path(roundedRect: CGRect(origin: .zero, size: size), cornerRadius: 0),
-                with: .color(.black.opacity(0.4))
+                with: .color(.black)
             )
             
-            // Draw combined graph path (top half)
-            var topPath = Path()
-            var topPoints: [CGPoint] = []
-            var firstPoint = true
+            // Draw both channels from bottom baseline
+            let leftPath = createWaveformPath(channel: leftChannel, stepX: stepX, baselineY: baselineY, size: size)
+            let rightPath = createWaveformPath(channel: rightChannel, stepX: stepX, baselineY: baselineY, size: size)
             
-            for (index, magnitude) in processedData.normalized.enumerated() {
-                let x = CGFloat(index) * stepX
-                let amplitude = magnitude * centerY * 0.8
-                let frequencyRatio = CGFloat(index) / CGFloat(processedData.normalized.count)
-                _ = colorForFrequency(ratio: frequencyRatio, energy: magnitude)
-                
-                let point = CGPoint(x: round(x), y: round(centerY - amplitude))
-                topPoints.append(point)
-                
-                if firstPoint {
-                    topPath.move(to: point)
-                    firstPoint = false
-                } else {
-                    topPath.addLine(to: point)
-                }
-            }
+            // Fill and stroke left channel (reddish-brown/orange)
+            let leftFillPath = createFillPath(waveformPath: leftPath, size: size, baselineY: baselineY)
+            context.fill(leftFillPath, with: .color(Color(red: 0.6, green: 0.3, blue: 0.2, opacity: 0.6)))
+            context.stroke(leftPath, with: .color(Color(red: 1.0, green: 0.5, blue: 0.2)), lineWidth: 1.5)
             
-            // Draw bottom half (mirrored)
-            var bottomPath = Path()
-            var bottomPoints: [CGPoint] = []
-            firstPoint = true
-            
-            for (index, magnitude) in processedData.normalized.enumerated() {
-                let x = CGFloat(index) * stepX
-                let amplitude = magnitude * centerY * 0.8
-                let point = CGPoint(x: round(x), y: round(centerY + amplitude))
-                bottomPoints.append(point)
-                
-                if firstPoint {
-                    bottomPath.move(to: point)
-                    firstPoint = false
-                } else {
-                    bottomPath.addLine(to: point)
-                }
-            }
-            
-            // Fill area between paths by creating a closed path
-            var fillPath = topPath
-            // Add bottom path in reverse order (from last point to first)
-            for point in bottomPoints.reversed() {
-                fillPath.addLine(to: point)
-            }
-            fillPath.closeSubpath()
-            
-            context.fill(fillPath, with: .color(.blue.opacity(0.3)))
-            context.stroke(topPath, with: .color(.blue), lineWidth: 2)
-            context.stroke(bottomPath, with: .color(.cyan), lineWidth: 2)
+            // Fill and stroke right channel (blue/teal)
+            let rightFillPath = createFillPath(waveformPath: rightPath, size: size, baselineY: baselineY)
+            context.fill(rightFillPath, with: .color(Color(red: 0.1, green: 0.4, blue: 0.6, opacity: 0.6)))
+            context.stroke(rightPath, with: .color(Color(red: 0.2, green: 0.7, blue: 1.0)), lineWidth: 1.5)
         }
+    }
+    
+    /// Create dual channels by applying phase shifts to simulate stereo
+    private func createDualChannels(from magnitudes: [CGFloat]) -> (left: [CGFloat], right: [CGFloat]) {
+        let left = magnitudes.enumerated().map { index, magnitude in
+            let phaseShift = sin(CGFloat(index) * 0.1) * 0.05
+            return min(1.0, max(0.0, magnitude * (1.0 + phaseShift)))
+        }
+        let right = magnitudes.enumerated().map { index, magnitude in
+            let phaseShift = sin(CGFloat(index) * 0.1 + .pi) * 0.05
+            return min(1.0, max(0.0, magnitude * (1.0 + phaseShift)))
+        }
+        return (left, right)
+    }
+    
+    /// Create waveform path from channel magnitudes, drawing upward from bottom baseline
+    private func createWaveformPath(channel: [CGFloat], stepX: CGFloat, baselineY: CGFloat, size: CGSize) -> Path {
+        var path = Path()
+        var firstPoint = true
+        
+        for (index, magnitude) in channel.enumerated() {
+            let x = CGFloat(index) * stepX
+            let amplitude = magnitude * baselineY * 0.9 // Use full height from bottom
+            let point = CGPoint(x: round(x), y: round(baselineY - amplitude)) // Draw upward from bottom
+            
+            if firstPoint {
+                path.move(to: point)
+                firstPoint = false
+            } else {
+                path.addLine(to: point)
+            }
+        }
+        return path
+    }
+    
+    /// Create filled area path from waveform to baseline at bottom
+    private func createFillPath(waveformPath: Path, size: CGSize, baselineY: CGFloat) -> Path {
+        var fillPath = waveformPath
+        // Close path by going to bottom-right, then bottom-left, then back to start
+        fillPath.addLine(to: CGPoint(x: size.width, y: baselineY))
+        fillPath.addLine(to: CGPoint(x: 0, y: baselineY))
+        fillPath.closeSubpath()
+        return fillPath
     }
     
     /// LED Bars - Discrete LED-style bars with bright, crisp appearance
