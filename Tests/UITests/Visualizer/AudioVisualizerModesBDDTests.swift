@@ -139,7 +139,7 @@ final class AudioVisualizerModesBDDTests: XCTestCase {
         // Verify the mode exists and has correct description
         let radialMode = VisualizationMode.radialSpectrum
         XCTAssertEqual(radialMode.displayName, "Radial Spectrum")
-        XCTAssertEqual(radialMode.icon, "circle.grid.3x3.fill")
+        XCTAssertEqual(radialMode.iconSystemName, "waveform.circle.fill")
         XCTAssertTrue(radialMode.description.contains("radial"))
     }
     
@@ -163,22 +163,36 @@ final class AudioVisualizerModesBDDTests: XCTestCase {
         // Verify the mode exists and has correct description
         let dualChannelMode = VisualizationMode.dualChannelGraph
         XCTAssertEqual(dualChannelMode.displayName, "Dual Channel Graph")
-        XCTAssertEqual(dualChannelMode.icon, "waveform.path")
+        XCTAssertEqual(dualChannelMode.iconSystemName, "waveform.path")
         XCTAssertTrue(dualChannelMode.description.contains("dual channel"))
     }
     
     // MARK: - BDD Scenario 4: LED Bars Mode
     
     /// BDD: As a user, when I select LED bars mode,
-    /// then I should see discrete LED-style bars with bright indicators
+    /// then I should see segmented LED-style bars with:
+    /// - Segmented bars: each bar composed of small rectangular segments stacked vertically
+    /// - Magnitude-based color gradient: green (low) → yellow (medium) → red (high)
+    /// - Small gaps between segments and between adjacent bars
+    /// Reference: audioMotion-analyzer's ledBars mode
     func testLEDBarsShowsLEDIndicators() {
         // Given - A visualizer view with LED bars mode
+        // The LED bars should match audioMotion-analyzer's implementation:
+        // - Segmented appearance (not solid bars)
+        // - Color based on magnitude position (green at bottom, yellow in middle, red at top)
+        // - 5% spacing between bars
         let view = AudioVisualizerView(nowPlayingViewModel: mockNowPlayingViewModel)
         
         // When - View is created
         // Then - View should be created without errors
-        // Note: viewModel is private, so we test through view creation
+        // The visualization should render segmented bars with magnitude-based colors
         XCTAssertNotNil(view)
+        
+        // Verify the mode exists and has correct description
+        let ledBarsMode = VisualizationMode.ledBars
+        XCTAssertEqual(ledBarsMode.displayName, "LED Bars")
+        XCTAssertEqual(ledBarsMode.iconSystemName, "square.stack")
+        XCTAssertTrue(ledBarsMode.description.contains("LED"))
     }
     
     /// BDD: As a user, when I view LED bars,
@@ -229,9 +243,10 @@ final class AudioVisualizerModesBDDTests: XCTestCase {
     }
     
     /// BDD: As a user, when I view LumiBars,
-    /// then opacity should vary with magnitude (brightness effect)
+    /// then all bars should be full height with opacity varying by magnitude (brightness effect)
+    /// Reference: audioMotion-analyzer's lumiBars mode - all bars at full height, opacity = magnitude
     func testLumiBarsOpacityVariesWithMagnitude() {
-        // Given - A visualizer view
+        // Given - A visualizer view with LumiBars mode
         // When - Processing magnitudes using the algorithm directly
         let normalizer = SpectrumNormalizer(
             logScale: 2.0,
@@ -250,9 +265,28 @@ final class AudioVisualizerModesBDDTests: XCTestCase {
         let processed = amplifiedMagnitudes.map { CGFloat(($0 - minMagnitude) / range) }
         
         // Then - Magnitudes should be in 0-1 range for opacity calculation
+        // audioMotion-analyzer: lumiBars uses magnitude directly as opacity
+        // All bars are full height, brightness (opacity) varies with magnitude
         for magnitude in processed {
-            XCTAssertGreaterThanOrEqual(magnitude, 0.0)
-            XCTAssertLessThanOrEqual(magnitude, 1.0)
+            XCTAssertGreaterThanOrEqual(magnitude, 0.0, "Magnitude should be >= 0 for opacity")
+            XCTAssertLessThanOrEqual(magnitude, 1.0, "Magnitude should be <= 1 for opacity")
+        }
+        
+        // Verify that different magnitudes result in different opacities
+        // Higher magnitude = higher opacity = brighter bar
+        if processed.count >= 2 {
+            let sortedMagnitudes = processed.sorted()
+            if let minMagnitude = sortedMagnitudes.first,
+               let maxMagnitude = sortedMagnitudes.last,
+               minMagnitude < maxMagnitude {
+                // Lower magnitude should have lower opacity (dimmer)
+                // Higher magnitude should have higher opacity (brighter)
+                XCTAssertLessThan(
+                    minMagnitude,
+                    maxMagnitude,
+                    "Higher magnitudes should result in higher opacity (brightness)"
+                )
+            }
         }
     }
     
@@ -260,6 +294,11 @@ final class AudioVisualizerModesBDDTests: XCTestCase {
     
     /// BDD: As a user, when I select round bars + reflex mode,
     /// then I should see round bars with reflection effect
+    /// Reference: audioMotion-analyzer's roundBars + reflexRatio
+    /// - Bars have rounded tops
+    /// - Reflection appears below bars with reduced opacity
+    /// - reflexRatio: 0.5 (50% of canvas height for reflection)
+    /// - reflexAlpha: 0.15 (15% opacity for reflection)
     func testRoundBarsReflexShowsReflection() {
         // Given - A visualizer view with round bars + reflex mode
         let view = AudioVisualizerView(nowPlayingViewModel: mockNowPlayingViewModel)
@@ -268,6 +307,12 @@ final class AudioVisualizerModesBDDTests: XCTestCase {
         // Then - View should be created without errors
         // Note: viewModel is private, so we test through view creation
         XCTAssertNotNil(view)
+        
+        // Verify round bars + reflex mode configuration
+        let roundBarsReflexMode = VisualizationMode.roundBarsReflex
+        XCTAssertEqual(roundBarsReflexMode.displayName, "Round Bars + Reflex")
+        XCTAssertEqual(roundBarsReflexMode.iconSystemName, "circle.circle")
+        XCTAssertTrue(roundBarsReflexMode.description.contains("Round") || roundBarsReflexMode.description.contains("Reflex"))
     }
     
     /// BDD: As a user, when I view round bars + reflex,

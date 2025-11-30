@@ -205,17 +205,6 @@ extension AudioVisualizerView {
         context.fill(centerCircle, with: .color(.black))
     }
     
-    /// Configuration for radial bars
-    private struct RadialBarsConfig {
-        let processedData: (normalized: [CGFloat], colors: [Color])
-        let center: CGPoint
-        let innerRadius: CGFloat
-        let outerRadius: CGFloat
-        let angleStep: CGFloat
-        let barWidth: CGFloat
-        let numBars: Int
-    }
-    
     /// Draw radial bars extending outward from inner circle
     private func drawRadialBars(context: GraphicsContext, config: RadialBarsConfig) {
         // Draw radial bars (rectangles extending outward from inner circle)
@@ -252,16 +241,6 @@ extension AudioVisualizerView {
                 context.stroke(arcPath, with: .color(color.opacity(0.6)), lineWidth: 1)
             }
         }
-    }
-    
-    /// Configuration for dashed arc
-    private struct DashedArcConfig {
-        let center: CGPoint
-        let radius: CGFloat
-        let startAngle: CGFloat
-        let endAngle: CGFloat
-        let dashLength: CGFloat
-        let gapLength: CGFloat
     }
     
     /// Create a rectangular bar path for radial spectrum
@@ -422,89 +401,250 @@ extension AudioVisualizerView {
         return fillPath
     }
     
-    /// LED Bars - Discrete LED-style bars with bright, crisp appearance
+    /// LED Bars - Segmented LED-style bars with magnitude-based color gradient
     /// Based on audioMotion-analyzer's ledBars mode
+    /// Reference: audioMotion-analyzer.js ledBars mode with segmented bars
+    /// 
+    /// Features:
+    /// - Segmented bars: each bar composed of small rectangular segments stacked vertically
+    /// - Magnitude-based color gradient: green (low) → yellow (medium) → red (high)
+    /// - Grey inactive segments above active segments (showing potential maximum height)
+    /// - Small gaps between segments and between adjacent bars
+    /// - Bars fill full height based on magnitude (can reach top of canvas)
+    
     func ledBarsView(frame: AudioVisualizerFrame, geometry: GeometryProxy) -> some View {
+        // Use logarithmic normalization like other modes (except discrete)
         let processedData = processMagnitudes(frame: frame)
         let numBars = processedData.normalized.count
         
-        // Calculate bar spacing (similar to discrete but with LED styling)
-        let barSpace: CGFloat = 0.05 // 5% spacing for LED bars
-        let totalBarWidth = geometry.size.width / CGFloat(numBars)
-        let barWidth = totalBarWidth * (1.0 - barSpace)
+        // Calculate bar spacing - columns need clear separation with EQUAL spacing
+        // Each column is a vertical bar with horizontal segments stacked inside
+        // Equal spacing: divide total width by (numBars + 1) for spacing, then calculate column width
+        let spacingRatio: CGFloat = 0.2 // 20% of total width for spacing (equal gaps)
+        let totalSpacing = geometry.size.width * spacingRatio
+        let spacingPerGap = totalSpacing / CGFloat(numBars + 1) // Equal spacing between and around columns
+        let availableWidth = geometry.size.width - totalSpacing
+        let barWidth = availableWidth / CGFloat(numBars) // Equal width for all columns
+        
+        // Segment configuration: horizontal rectangular segments stacked vertically
+        // Each segment is a horizontal rectangle (wide, short) that spans the full column width
+        // Segments are stacked vertically to form each column
+        // Reference: segments should be clearly visible with small but visible gaps
+        let segmentConfig = LEDSegmentConfig(
+            height: 3, // Vertical height of each horizontal segment
+            gap: 1 // Vertical gap between segments (small but visible)
+        )
         
         return Canvas { context, size in
-            // Background - solid black
+            // Background - solid black (audioMotion-analyzer uses #000)
             context.fill(
                 Path(roundedRect: CGRect(origin: .zero, size: size), cornerRadius: 0),
                 with: .color(.black)
             )
             
-            // Draw LED bars
+            // Draw vertical columns (bars) with horizontal segments stacked vertically
+            // CRITICAL: Each column is a FIXED-WIDTH vertical bar at a FIXED X position
+            // Each segment within a column has the SAME width (column width) - no variation
+            // This creates distinct vertical columns, NOT a continuous waveform
             for (index, magnitude) in processedData.normalized.enumerated() {
-                let x = CGFloat(index) * totalBarWidth
-                let barHeight = magnitude * size.height
-                let frequencyRatio = CGFloat(index) / CGFloat(numBars)
-                let color = colorForFrequency(ratio: frequencyRatio, energy: magnitude)
+                // Calculate column X position with EQUAL spacing
+                // Each column has equal width and equal spacing on both sides
+                // Position = spacing + (index * (barWidth + spacing))
+                let columnX = spacingPerGap + CGFloat(index) * (barWidth + spacingPerGap)
                 
-                // LED indicator at top (bright circle)
-                let ledSize: CGFloat = 4
-                let ledRect = CGRect(
-                    x: round(x + totalBarWidth / 2 - ledSize / 2),
-                    y: round(size.height - barHeight - ledSize - 2),
-                    width: ledSize,
-                    height: ledSize
-                )
-                let ledPath = Path(ellipseIn: ledRect)
-                context.fill(ledPath, with: .color(color))
+                // Ensure column width is fixed and positive
+                let fixedColumnWidth = max(1.0, barWidth)
                 
-                // LED bar (rounded rectangle)
-                let barRect = CGRect(
-                    x: round(x + totalBarWidth * barSpace / 2),
-                    y: round(size.height - barHeight),
-                    width: max(2, round(barWidth)),
-                    height: max(2, round(barHeight))
+                let columnConfig = LEDColumnConfig(
+                    x: columnX,
+                    width: fixedColumnWidth, // FIXED width - same for ALL segments in this column
+                    segmentConfig: segmentConfig
                 )
-                let barPath = Path(roundedRect: barRect, cornerRadius: barRect.width / 2)
-                context.fill(barPath, with: .color(color))
+                drawLEDBarColumn(
+                    context: context,
+                    magnitude: magnitude,
+                    columnConfig: columnConfig,
+                    size: size
+                )
             }
+        }
+    }
+    
+    /// Draw a single vertical column (bar) composed of horizontal segments stacked vertically
+    /// Based on audioMotion-analyzer's ledBars implementation:
+    /// - Each segment is a discrete unit at a fixed grid position
+    /// - Bar height determines how many segments are active (colored)
+    /// - Remaining segments above are inactive (grey)
+    private func drawLEDBarColumn(
+        context: GraphicsContext,
+        magnitude: CGFloat,
+        columnConfig: LEDColumnConfig,
+        size: CGSize
+    ) {
+        // In SwiftUI Canvas: origin (0,0) is top-left, Y increases downward
+        // Bottom of canvas is at y = size.height
+        let canvasBottomY = size.height
+        let canvasTopY: CGFloat = 0
+        
+        // Calculate active bar height from magnitude (0.0 to 1.0)
+        let totalBarHeight = magnitude * size.height
+        
+        // Calculate how many segments fit in the canvas height
+        // Each segment takes segmentHeight + gap (segmentUnit) of vertical space
+        let segmentUnit = columnConfig.segmentConfig.unit
+        let totalSegments = Int(ceil(size.height / segmentUnit))
+        
+        // Calculate how many segments should be active based on bar height
+        // audioMotion-analyzer approach: count discrete segments that fit within bar height
+        let activeSegmentCount = Int(floor(totalBarHeight / segmentUnit))
+        
+        // Draw ALL segments from bottom to top on a fixed grid
+        // Column-based approach: each segment is a horizontal rectangle at a fixed grid position
+        for segmentIndex in 0..<totalSegments {
+            // Calculate segment position: start from bottom and stack upward
+            // segmentIndex 0 = bottom segment (closest to canvas bottom)
+            // Bottom edge of segment: canvasBottomY - segmentIndex * segmentUnit
+            let segmentBottomY = canvasBottomY - CGFloat(segmentIndex) * segmentUnit
+            let segmentTopY = segmentBottomY - columnConfig.segmentConfig.height
+            
+            // Only draw if segment is within canvas bounds
+            guard segmentTopY >= canvasTopY && segmentBottomY <= canvasBottomY else { continue }
+            
+            // Determine if this segment is active (within active segment count)
+            // audioMotion-analyzer: segments are discrete units, count from bottom
+            let isActive = segmentIndex < activeSegmentCount && totalBarHeight > 0
+            
+            if isActive {
+                // Active segment: draw with color based on position within active bar
+                // Calculate position ratio: 0.0 (bottom) to 1.0 (top of active bar)
+                // Use segment center for color calculation
+                let segmentCenterY = (segmentTopY + segmentBottomY) / 2
+                let distanceFromBottom = canvasBottomY - segmentCenterY
+                let positionInBar = distanceFromBottom / totalBarHeight
+                let magnitudeRatio = max(0.0, min(1.0, positionInBar))
+                
+                // Color based on magnitude position: green (low) → yellow (medium) → red (high)
+                let color = colorForMagnitude(ratio: magnitudeRatio)
+                
+                // Draw horizontal segment rectangle (wide, short) - spans full column width
+                // CRITICAL: Each segment must be exactly the column width - no variation
+                // This ensures vertical columns, not horizontal waveform bars
+                let segmentRect = CGRect(
+                    x: round(columnConfig.x), // Fixed X position of this column
+                    y: round(segmentTopY), // Top edge of segment (fixed grid position)
+                    width: max(1, round(columnConfig.width)), // Fixed column width - same for all segments
+                    height: max(1, round(columnConfig.segmentConfig.height)) // Fixed segment height
+                )
+                let segmentPath = Path(roundedRect: segmentRect, cornerRadius: 0)
+                context.fill(segmentPath, with: .color(color))
+            } else {
+                // Inactive segment: grey, above the active bar
+                // Draw at fixed grid position
+                drawInactiveLEDSegment(
+                    context: context,
+                    columnConfig: columnConfig,
+                    segmentTopY: segmentTopY
+                )
+            }
+        }
+    }
+
+    /// Draw an inactive LED segment (grey)
+    private func drawInactiveLEDSegment(
+        context: GraphicsContext,
+        columnConfig: LEDColumnConfig,
+        segmentTopY: CGFloat
+    ) {
+        // Inactive segment: grey, showing potential maximum height
+        // Reference: grey segments should be clearly visible against black background
+        let greyColor = Color(white: 0.2, opacity: 0.8) // Dark grey, more visible
+        
+        // Draw horizontal inactive segment rectangle
+        // CRITICAL: Same fixed width as active segments - ensures column structure
+        let segmentRect = CGRect(
+            x: round(columnConfig.x), // Fixed X position of this column
+            y: round(segmentTopY), // Top edge of segment
+            width: max(1, round(columnConfig.width)), // Fixed column width - same for all segments
+            height: max(1, round(columnConfig.segmentConfig.height)) // Fixed segment height
+        )
+        let segmentPath = Path(roundedRect: segmentRect, cornerRadius: 0)
+        context.fill(segmentPath, with: .color(greyColor))
+    }
+    
+    /// Color based on magnitude ratio (not frequency)
+    /// Green (low magnitude, bottom) → Yellow (medium) → Red (high magnitude, top)
+    /// This matches the LED bars reference where color indicates magnitude, not frequency
+    private func colorForMagnitude(ratio: CGFloat) -> Color {
+        // Clamp ratio to [0, 1]
+        let clampedRatio = max(0.0, min(1.0, ratio))
+        
+        // Green (0.0, bottom) → Yellow (0.5) → Red (1.0, top)
+        if clampedRatio < 0.5 {
+            // Green to Yellow transition
+            let transitionRatio = clampedRatio * 2.0 // 0.0 to 1.0
+            return Color(
+                red: Double(transitionRatio), // 0.0 to 1.0
+                green: 1.0, // Always 1.0 (bright green to bright yellow)
+                blue: 0.0 // Always 0.0 (no blue in green-yellow transition)
+            )
+        } else {
+            // Yellow to Red transition
+            let transitionRatio = (clampedRatio - 0.5) * 2.0 // 0.0 to 1.0
+            return Color(
+                red: 1.0, // Always 1.0 (bright yellow to bright red)
+                green: Double(1.0 - transitionRatio), // 1.0 to 0.0 (yellow fades out)
+                blue: 0.0 // Always 0.0
+            )
         }
     }
     
     /// LumiBars - Luminance-based bars with brightness effect
     /// Based on audioMotion-analyzer's lumiBars mode
+    /// Key feature: ALL bars are drawn at FULL HEIGHT, with opacity varying by magnitude
+    /// This creates a luminance/brightness effect where brighter bars indicate higher magnitude
     func lumiBarsView(frame: AudioVisualizerFrame, geometry: GeometryProxy) -> some View {
         let processedData = processMagnitudes(frame: frame)
         let numBars = processedData.normalized.count
         
-        // Calculate bar spacing
+        // Calculate bar spacing (audioMotion-analyzer uses barSpace, default 0.1 = 10%)
         let barSpace: CGFloat = 0.1
         let totalBarWidth = geometry.size.width / CGFloat(numBars)
-        let barWidth = totalBarWidth * (1.0 - barSpace)
+        let spacing = totalBarWidth * barSpace
+        let barWidth = totalBarWidth - spacing
         
         return Canvas { context, size in
-            // Background - solid black
+            // Background - solid black (audioMotion-analyzer uses #000)
             context.fill(
                 Path(roundedRect: CGRect(origin: .zero, size: size), cornerRadius: 0),
                 with: .color(.black)
             )
             
-            // Draw LumiBars with brightness-based opacity
+            // Draw LumiBars: ALL bars at FULL HEIGHT with varying opacity (luminance)
+            // audioMotion-analyzer: lumiBars displays all bars at full height
+            // Brightness/opacity varies with magnitude to show intensity
             for (index, magnitude) in processedData.normalized.enumerated() {
-                let x = CGFloat(index) * totalBarWidth
-                let barHeight = magnitude * size.height
-                let brightness = magnitude // Brightness = magnitude
+                let barStartX = CGFloat(index) * totalBarWidth
+                let barX = barStartX + spacing / 2
                 let frequencyRatio = CGFloat(index) / CGFloat(numBars)
                 
-                // Base color with brightness applied (audioMotion-analyzer uses opacity for luminance)
+                // CRITICAL: All bars are FULL HEIGHT (size.height)
+                // Opacity (luminance) varies with magnitude to show brightness
+                let fullBarHeight = size.height
+                let brightness = CGFloat(magnitude) // Opacity = magnitude (0.0 to 1.0)
+                
+                // Base color based on frequency (audioMotion-analyzer uses gradient)
                 let baseColor = colorForFrequency(ratio: frequencyRatio, energy: 1.0)
+                
+                // Apply brightness as opacity (audioMotion-analyzer uses opacity for luminance)
+                // Higher magnitude = higher opacity = brighter bar
                 let lumiColor = baseColor.opacity(Double(brightness))
                 
+                // Draw bar at FULL HEIGHT from bottom
                 let barRect = CGRect(
-                    x: round(x + totalBarWidth * barSpace / 2),
-                    y: round(size.height - barHeight),
+                    x: round(barX),
+                    y: 0, // Top of canvas (bar extends full height downward)
                     width: max(1, round(barWidth)),
-                    height: max(1, round(barHeight))
+                    height: max(1, round(fullBarHeight))
                 )
                 let barPath = Path(roundedRect: barRect, cornerRadius: 0)
                 context.fill(barPath, with: .color(lumiColor))
@@ -514,54 +654,94 @@ extension AudioVisualizerView {
     
     /// Round Bars + Reflex - Round bars with reflection effect
     /// Based on audioMotion-analyzer's roundBars + reflexRatio algorithm
+    /// Reference: https://github.com/hvianna/audioMotion-analyzer/blob/60b910729d4969e3cbc2a6eca3cf2f16a258b0e7/demo/media/reflex.png
+    /// 
+    /// Features:
+    /// - Bars with rounded tops (roundBars)
+    /// - Reflection effect below bars (reflex)
+    /// - reflexRatio: determines reflection height (0.5 = 50% of canvas height)
+    /// - reflexAlpha: opacity of reflection (default 0.15)
     func roundBarsReflexView(frame: AudioVisualizerFrame, geometry: GeometryProxy) -> some View {
         let processedData = processMagnitudes(frame: frame)
         let numBars = processedData.normalized.count
-        let centerY = geometry.size.height / 2
         
-        // Calculate bar spacing
-        let barSpace: CGFloat = 0.1
+        // Calculate bar spacing (audioMotion-analyzer uses barSpace, default 0.1 = 10%)
+        // Ensure clear distinction between each bar with VISIBLE spacing
+        // Reference: bars should have clear gaps between them like in the reference image
+        // Increase spacing significantly to match reference where gaps are clearly visible
+        let barSpace: CGFloat = 0.25 // 25% spacing for clearly visible gaps between bars
         let totalBarWidth = geometry.size.width / CGFloat(numBars)
-        let barWidth = totalBarWidth * (1.0 - barSpace)
+        let spacing = totalBarWidth * barSpace
+        let barWidth = totalBarWidth - spacing
         
-        // Reflex settings (audioMotion-analyzer uses reflexRatio and reflexAlpha)
-        let reflexRatio: CGFloat = 0.5 // Ratio of reflex height to bar height
-        let reflexAlpha: CGFloat = 0.15 // Opacity of reflex
+        // Ensure minimum spacing for clear bar distinction
+        // Each bar should be distinctly visible with clear separation
+        // Minimum spacing should be at least 3px for clear visibility
+        let minSpacing: CGFloat = 3.0
+        let actualSpacing = max(minSpacing, spacing)
+        let actualBarWidth = max(2.0, barWidth)
+        
+        // Reflex settings (audioMotion-analyzer defaults)
+        // reflexRatio: 0.5 = reflection uses 50% of canvas height (perfect mirror)
+        // reflexAlpha: 0.15 = reflection opacity (15%)
+        let reflexRatio: CGFloat = 0.5 // Reflection height ratio (50% of canvas)
+        let reflexAlpha: CGFloat = 0.15 // Reflection opacity
         
         return Canvas { context, size in
-            // Background
+            // Background - solid black (audioMotion-analyzer uses #000)
             context.fill(
                 Path(roundedRect: CGRect(origin: .zero, size: size), cornerRadius: 0),
-                with: .color(.black.opacity(0.3))
+                with: .color(.black)
             )
             
+            // Calculate center line (bars above, reflection below)
+            let centerY = size.height / 2
+            let topHalfHeight = centerY // Height available for bars (top half)
+            
             // Draw round bars with reflex (reflection) effect
+            // Each bar should be distinctly visible with clear separation
+            // Reference: bars should have visible gaps between them
             for (index, magnitude) in processedData.normalized.enumerated() {
-                let x = CGFloat(index) * totalBarWidth + totalBarWidth / 2
-                let barHeight = magnitude * centerY
+                // Calculate bar X position with clear spacing for distinct bars
+                // Position bars with equal spacing: spacing on left, bar, spacing on right
+                let barStartX = CGFloat(index) * totalBarWidth
+                let barX = barStartX + actualSpacing / 2 // Center bar within its allocated space
                 let frequencyRatio = CGFloat(index) / CGFloat(numBars)
                 let color = colorForFrequency(ratio: frequencyRatio, energy: magnitude)
                 
-                // Top bar (round)
+                // Calculate bar height (from center upward)
+                let barHeight = magnitude * topHalfHeight
+                
+                // Top bar (round) - extends upward from center
+                // audioMotion-analyzer: bars have rounded caps on BOTH ends (top and bottom)
+                // Each bar should be distinctly visible with clear separation
                 let topBarRect = CGRect(
-                    x: round(x - barWidth / 2),
-                    y: round(centerY - barHeight),
-                    width: max(2, round(barWidth)),
+                    x: round(barX),
+                    y: round(centerY - barHeight), // Start from center, extend upward
+                    width: max(2, round(actualBarWidth)),
                     height: max(2, round(barHeight))
                 )
-                let topBarPath = Path(roundedRect: topBarRect, cornerRadius: topBarRect.width / 2)
+                // Rounded rectangle with rounded caps on BOTH ends
+                // Corner radius = half of bar width creates fully rounded caps
+                let cornerRadius = min(topBarRect.width / 2, topBarRect.height / 2)
+                let topBarPath = Path(roundedRect: topBarRect, cornerRadius: cornerRadius)
                 context.fill(topBarPath, with: .color(color))
                 
-                // Reflex (reflection) - bottom bar with reduced opacity
-                let reflexHeight = barHeight * reflexRatio
+                // Reflex (reflection) - mirror of bar below center
+                // audioMotion-analyzer: reflection height = reflexRatio * bar height
+                // Reflection is a mirror image of the bar, flipped vertically
+                let reflexHeight = barHeight * reflexRatio // Reflection height based on bar height
                 let reflexBarRect = CGRect(
-                    x: round(x - barWidth / 2),
-                    y: round(centerY),
-                    width: max(2, round(barWidth)),
+                    x: round(barX),
+                    y: round(centerY), // Start from center, extend downward
+                    width: max(2, round(actualBarWidth)),
                     height: max(2, round(reflexHeight))
                 )
-                let reflexBarPath = Path(roundedRect: reflexBarRect, cornerRadius: reflexBarRect.width / 2)
-                context.fill(reflexBarPath, with: .color(color.opacity(reflexAlpha)))
+                // Rounded rectangle for reflection with rounded caps on BOTH ends
+                let reflexCornerRadius = min(reflexBarRect.width / 2, reflexBarRect.height / 2)
+                let reflexBarPath = Path(roundedRect: reflexBarRect, cornerRadius: reflexCornerRadius)
+                let reflexColor = color.opacity(Double(reflexAlpha)) // Reduced opacity for reflection
+                context.fill(reflexBarPath, with: .color(reflexColor))
             }
         }
     }
@@ -596,61 +776,4 @@ extension AudioVisualizerView {
         return (normalized, [])
     }
     
-    /// Dynamic color based on frequency band and energy
-    /// Enhanced color mapping matching audioMotion-analyzer reference image
-    /// Reference: Deep teal/blue-green (low) → vibrant greens/lime (mid) → bright yellows/oranges (high)
-    internal func colorForFrequency(ratio: CGFloat, energy: CGFloat) -> Color {
-        // Use energy directly with slight enhancement for vibrancy
-        // Reference shows vibrant, saturated colors that respond to energy
-        let enhancedEnergy = pow(energy, 0.7)
-        
-        // Low frequencies (31 Hz - ~250 Hz) - deep teal and blue-green
-        if ratio < 0.25 {
-            return Color(
-                red: 0.0 + enhancedEnergy * 0.2,
-                green: 0.4 + enhancedEnergy * 0.5,
-                blue: 0.6 + enhancedEnergy * 0.4
-            )
-        }
-        // Lower mid frequencies (~250 Hz - 500 Hz) - transitioning to vibrant greens
-        else if ratio < 0.35 {
-            return Color(
-                red: 0.0 + enhancedEnergy * 0.3,
-                green: 0.5 + enhancedEnergy * 0.5,
-                blue: 0.5 + enhancedEnergy * 0.3
-            )
-        }
-        // Mid frequencies (~500 Hz - 1 kHz) - vibrant greens and lime
-        else if ratio < 0.5 {
-            return Color(
-                red: 0.2 + enhancedEnergy * 0.4,
-                green: 0.7 + enhancedEnergy * 0.3,
-                blue: 0.2 + enhancedEnergy * 0.2
-            )
-        }
-        // Upper mid frequencies (1 kHz - 2 kHz) - bright yellows
-        else if ratio < 0.65 {
-            return Color(
-                red: 0.7 + enhancedEnergy * 0.3,
-                green: 0.8 + enhancedEnergy * 0.2,
-                blue: 0.1 + enhancedEnergy * 0.1
-            )
-        }
-        // High frequencies (2 kHz - 4 kHz) - bright oranges
-        else if ratio < 0.8 {
-            return Color(
-                red: 0.9 + enhancedEnergy * 0.1,
-                green: 0.5 + enhancedEnergy * 0.3,
-                blue: 0.0 + enhancedEnergy * 0.1
-            )
-        }
-        // Very high frequencies (4 kHz+) - reddish-orange, less intense
-        else {
-            return Color(
-                red: 1.0,
-                green: 0.3 + enhancedEnergy * 0.4,
-                blue: 0.1 + enhancedEnergy * 0.2
-            )
-        }
-    }
 }

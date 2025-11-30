@@ -38,21 +38,47 @@ public enum VisualizationMode: String, CaseIterable, Identifiable {
         }
     }
     
-    public var icon: String {
+    /// Asset catalog image name for the visualization mode icon
+    /// Falls back to SF Symbol if custom image is not available
+    public var iconImageName: String {
         switch self {
         case .discreteFrequencies:
-            return "chart.bar.xaxis"
+            return "VisualizationIcon.discreteFrequencies"
         case .radialSpectrum:
-            return "circle.grid.3x3.fill"
+            return "VisualizationIcon.radialSpectrum"
         case .dualChannelGraph:
-            return "waveform.path" // Waveform icon better represents dual channel visualization
+            return "VisualizationIcon.dualChannelGraph"
         case .ledBars:
-            return "lightbulb.fill"
+            return "VisualizationIcon.ledBars"
         case .lumiBars:
-            return "sun.max.fill"
+            return "VisualizationIcon.lumiBars"
         case .roundBarsReflex:
-            return "circle.fill"
+            return "VisualizationIcon.roundBarsReflex"
         }
+    }
+    
+    /// SF Symbol name as fallback when custom image is not available
+    public var iconSystemName: String {
+        switch self {
+        case .discreteFrequencies:
+            return "chart.bar.fill"
+        case .radialSpectrum:
+            return "waveform.circle.fill"
+        case .dualChannelGraph:
+            return "waveform.path"
+        case .ledBars:
+            return "square.stack"
+        case .lumiBars:
+            return "sparkles"
+        case .roundBarsReflex:
+            return "circle.circle"
+        }
+    }
+    
+    /// Legacy property for backward compatibility
+    @available(*, deprecated, message: "Use iconImageName or iconSystemName instead")
+    public var icon: String {
+        iconSystemName
     }
     
     public var description: String {

@@ -1,0 +1,18 @@
+{
+  "images" : [
+    {
+      "filename" : "VisualizationIcon.dualChannelGraph.png",
+      "idiom" : "mac",
+      "scale" : "1x"
+    },
+    {
+      "filename" : "VisualizationIcon.dualChannelGraph@2x.png",
+      "idiom" : "mac",
+      "scale" : "2x"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}

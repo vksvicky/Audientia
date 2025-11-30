@@ -639,6 +639,8 @@
 		E23DB8532EDC6379007AC259 /* AudioVisualizerModesBDDTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E23DB8502EDC6379007AC259 /* AudioVisualizerModesBDDTests.swift */; };
 		E23DB8552EDC9BC0007AC259 /* LibraryStatisticsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E23DB8542EDC9BC0007AC259 /* LibraryStatisticsViewModel.swift */; };
 		E23DB8562EDC9BC0007AC259 /* LibraryStatisticsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E23DB8542EDC9BC0007AC259 /* LibraryStatisticsViewModel.swift */; };
+		E23DB85B2EDCFE92007AC259 /* VisualizationHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = E23DB85A2EDCFE92007AC259 /* VisualizationHelpers.swift */; };
+		E23DB85C2EDCFE92007AC259 /* VisualizationHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = E23DB85A2EDCFE92007AC259 /* VisualizationHelpers.swift */; };
 		E2407FAA2ED70A210054F668 /* PlaylistPanelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2407FA82ED70A210054F668 /* PlaylistPanelView.swift */; };
 		E2407FAB2ED70A210054F668 /* PlaylistPanelViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2407FA92ED70A210054F668 /* PlaylistPanelViewModel.swift */; };
 		E2407FAC2ED70A210054F668 /* PlaylistPanelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2407FA82ED70A210054F668 /* PlaylistPanelView.swift */; };
@@ -1602,6 +1604,7 @@
 		E23DB8502EDC6379007AC259 /* AudioVisualizerModesBDDTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioVisualizerModesBDDTests.swift; sourceTree = "<group>"; };
 		E23DB8512EDC6379007AC259 /* AudioVisualizerModesTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioVisualizerModesTests.swift; sourceTree = "<group>"; };
 		E23DB8542EDC9BC0007AC259 /* LibraryStatisticsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LibraryStatisticsViewModel.swift; sourceTree = "<group>"; };
+		E23DB85A2EDCFE92007AC259 /* VisualizationHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VisualizationHelpers.swift; sourceTree = "<group>"; };
 		E2407FA82ED70A210054F668 /* PlaylistPanelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaylistPanelView.swift; sourceTree = "<group>"; };
 		E2407FA92ED70A210054F668 /* PlaylistPanelViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaylistPanelViewModel.swift; sourceTree = "<group>"; };
 		E2407FAE2ED70A500054F668 /* TrackDetailsDependencies.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackDetailsDependencies.swift; sourceTree = "<group>"; };
@@ -1955,6 +1958,7 @@
 		2254175E9544E3E5EC766600 /* Visualizer */ = {
 			isa = PBXGroup;
 			children = (
+				E23DB85A2EDCFE92007AC259 /* VisualizationHelpers.swift */,
 				E23DB84B2EDBBB53007AC259 /* AudioVisualizerModes.swift */,
 				E23DB8432EDBAA08007AC259 /* AudioVisualizerViewModel.swift */,
 				E23DB8442EDBAA08007AC259 /* VisualizationMode.swift */,
@@ -4245,6 +4249,7 @@
 				3138F41FEC034426960A0D59 /* LayoutCustomizationViewModel.swift in Sources */,
 				811EC393C2EF453DAE998321 /* LayoutCustomizationView.swift in Sources */,
 				241C5500A2A54A0A92909428 /* SettingsViewModel.swift in Sources */,
+				E23DB85C2EDCFE92007AC259 /* VisualizationHelpers.swift in Sources */,
 				55D3452AECCA481580C1570A /* SettingsView.swift in Sources */,
 				E2407FB82ED70C960054F668 /* TrackSelectionStore.swift in Sources */,
 				98B59161553A4746ACCBF5A9 /* ThemeSelectorViewModel.swift in Sources */,
@@ -4427,6 +4432,7 @@
 				E2840D332EDA632900AB8F12 /* AudientiaAppTests.swift in Sources */,
 				E2840D342EDA632900AB8F12 /* MinimizePlayerBDDTests.swift in Sources */,
 				E2840D352EDA632900AB8F12 /* AudientiaAppBDDTests.swift in Sources */,
+				E23DB85B2EDCFE92007AC259 /* VisualizationHelpers.swift in Sources */,
 				E2840D362EDA632900AB8F12 /* MinimizePlayerTests.swift in Sources */,
 				9486BB734ED37AAB914CB85B /* FingerprintStatusViewModel.swift in Sources */,
 				3600E8D53A1CE1BB83CF1E5D /* FingerprintStatusViewTests.swift in Sources */,

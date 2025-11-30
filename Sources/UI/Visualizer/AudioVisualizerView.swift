@@ -30,25 +30,14 @@ public struct AudioVisualizerView: View {
                 
                 Spacer()
                 
-                // Compact icon-based mode selector
-                HStack(spacing: 2) {
+                // Compact icon-based mode selector with 3D button style
+                HStack(spacing: 3) {
                     ForEach(VisualizationMode.allCases) { mode in
-                        Button {
-                            viewModel.visualizationMode = mode
-                        } label: {
-                            Image(systemName: mode.icon)
-                                .font(.system(size: 11))
-                                .foregroundColor(viewModel.visualizationMode == mode ? .white : .secondary)
-                                .frame(width: 22, height: 22)
-                                .background(
-                                    viewModel.visualizationMode == mode ?
-                                    Color.accentColor.opacity(0.8) :
-                                    Color.clear
-                                )
-                                .cornerRadius(3)
-                        }
-                        .buttonStyle(.plain)
-                        .help(mode.displayName)
+                        VisualizationModeButton(
+                            mode: mode,
+                            isSelected: viewModel.visualizationMode == mode,
+                            action: { viewModel.visualizationMode = mode }
+                        )
                     }
                 }
                 .padding(.horizontal, 4)
@@ -120,6 +109,119 @@ public struct AudioVisualizerView: View {
         )
     }
     
+}
+
+// MARK: - Visualization Mode Button
+
+private struct VisualizationModeButton: View {
+    let mode: VisualizationMode
+    let isSelected: Bool
+    let action: () -> Void
+    
+    var body: some View {
+        Button(action: action) {
+            modeIcon
+                .foregroundColor(isSelected ? .white : .secondary)
+                .frame(width: 24, height: 24)
+                .background(buttonBackground)
+                .cornerRadius(4)
+                .overlay(buttonBorder)
+                .shadow(
+                    color: isSelected ? Color.black.opacity(0.4) : Color.black.opacity(0.3),
+                    radius: isSelected ? 1 : 2,
+                    x: 0,
+                    y: isSelected ? 1 : -1
+                )
+        }
+        .buttonStyle(.plain)
+        .help(mode.displayName)
+    }
+    
+    private var modeIcon: some View {
+        Group {
+            if NSImage(named: mode.iconImageName) != nil {
+                Image(mode.iconImageName)
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+            } else {
+                Image(systemName: mode.iconSystemName)
+                    .font(.system(size: 11))
+            }
+        }
+    }
+    
+    @ViewBuilder
+    private var buttonBackground: some View {
+        if isSelected {
+            selectedButtonBackground
+        } else {
+            unselectedButtonBackground
+        }
+    }
+    
+    private var selectedButtonBackground: some View {
+        ZStack {
+            LinearGradient(
+                gradient: Gradient(colors: [
+                    Color.accentColor.opacity(0.9),
+                    Color.accentColor.opacity(0.7)
+                ]),
+                startPoint: .top,
+                endPoint: .bottom
+            )
+            VStack {
+                Rectangle()
+                    .fill(
+                        LinearGradient(
+                            gradient: Gradient(colors: [
+                                Color.black.opacity(0.3),
+                                Color.clear
+                            ]),
+                            startPoint: .top,
+                            endPoint: .center
+                        )
+                    )
+                    .frame(height: 2)
+                Spacer()
+            }
+        }
+    }
+    
+    private var unselectedButtonBackground: some View {
+        ZStack {
+            LinearGradient(
+                gradient: Gradient(colors: [
+                    Color(white: 0.25),
+                    Color(white: 0.15)
+                ]),
+                startPoint: .top,
+                endPoint: .bottom
+            )
+            VStack {
+                Rectangle()
+                    .fill(
+                        LinearGradient(
+                            gradient: Gradient(colors: [
+                                Color.white.opacity(0.2),
+                                Color.clear
+                            ]),
+                            startPoint: .top,
+                            endPoint: .center
+                        )
+                    )
+                    .frame(height: 2)
+                Spacer()
+            }
+        }
+    }
+    
+    private var buttonBorder: some View {
+        RoundedRectangle(cornerRadius: 4)
+            .stroke(
+                isSelected ? Color.white.opacity(0.3) : Color.black.opacity(0.4),
+                lineWidth: 0.5
+            )
+    }
 }
 
 // MARK: - Controls View Extension
