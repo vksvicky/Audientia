@@ -138,7 +138,7 @@ final class PlaylistPanelViewModelTests: XCTestCase {
     }
 
     func testCreatePlaylist() async throws {
-        // Given: ViewModel is initialized
+        // Given: ViewModel is initialised
         try await createMockPlaylists()
         await viewModel.loadPlaylists()
         let initialCount = viewModel.playlists.count

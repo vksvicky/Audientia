@@ -13,7 +13,7 @@ import XCTest
 @MainActor
 final class MetadataLookupViewTests: XCTestCase {
     
-    func testViewInitializes() {
+    func testViewInitialises() {
         let view = MetadataLookupView(
             acoustIDService: MetadataLookupViewTestsMockAcoustIDService(),
             musicBrainzClient: MetadataLookupViewTestsMockMusicBrainzClient(),

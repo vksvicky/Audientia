@@ -11,7 +11,7 @@ public enum AudioEngineError: LocalizedError, Equatable {
     case trackLoadFailed(String)
     case formatDetectionFailed
     case decodingFailed
-    case outputInitializationFailed
+    case outputInitialisationFailed
     case outputWriteFailed
     case durationDetectionFailed
     case invalidSeekPosition
@@ -27,8 +27,8 @@ public enum AudioEngineError: LocalizedError, Equatable {
             return "Failed to detect audio format"
         case .decodingFailed:
             return "Failed to decode audio data"
-        case .outputInitializationFailed:
-            return "Failed to initialize audio output"
+        case .outputInitialisationFailed:
+            return "Failed to initialise audio output"
         case .outputWriteFailed:
             return "Failed to write audio data to output"
         case .durationDetectionFailed:

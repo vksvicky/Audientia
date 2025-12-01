@@ -2,7 +2,7 @@
 //  EQInterfaceView.swift
 //  Audientia
 //
-//  10-band parametric equalizer interface with presets
+//  10-band parametric equaliser interface with presets
 //
 //  Copyright © 2025 CycleRunCode Club. All rights reserved.
 //
@@ -10,8 +10,8 @@
 import AudioCore
 import SwiftUI
 
-/// Equalizer interface view with 10-band parametric EQ and presets
-/// BDD: As a user, I want to adjust bass and treble using an equalizer
+/// Equaliser interface view with 10-band parametric EQ and presets
+/// BDD: As a user, I want to adjust bass and treble using an equaliser
 @MainActor
 public struct EQInterfaceView: View {
     @StateObject private var viewModel = EQInterfaceViewModel()
@@ -44,7 +44,7 @@ public struct EQInterfaceView: View {
     
     private var headerView: some View {
         HStack {
-            Text("10-Band Parametric Equalizer")
+            Text("10-Band Parametric Equaliser")
                 .font(.title2)
                 .fontWeight(.semibold)
             Spacer()
@@ -54,7 +54,7 @@ public struct EQInterfaceView: View {
     // MARK: - Enable Toggle View
     
     private var enableToggleView: some View {
-        Toggle("Enable Equalizer", isOn: $viewModel.isEnabled)
+        Toggle("Enable Equaliser", isOn: $viewModel.isEnabled)
             .onChange(of: viewModel.isEnabled) { _, newValue in
                 Task {
                     await viewModel.setEnabled(newValue)
@@ -201,10 +201,10 @@ private enum EQPreset: String, CaseIterable {
 /// ViewModel for EQ Interface
 @MainActor
 private final class EQInterfaceViewModel: ObservableObject {
-    @Published var bands: [EqualizerBand] = []
+    @Published var bands: [EqualiserBand] = []
     @Published var isEnabled: Bool = true
     
-    private let equalizer = AudioEqualizer()
+    private let equaliser = AudioEqualiser()
     
     init() {
         Task {
@@ -214,32 +214,32 @@ private final class EQInterfaceViewModel: ObservableObject {
     }
     
     private func loadBands() async {
-        bands = await equalizer.getBands()
+        bands = await equaliser.getBands()
     }
     
     private func loadEnabledState() async {
-        isEnabled = await equalizer.isEnabled()
+        isEnabled = await equaliser.isEnabled()
     }
     
     func setBandGain(_ bandIndex: Int, gain: Float) async throws {
-        try await equalizer.setBandGain(bandIndex, gain: gain)
+        try await equaliser.setBandGain(bandIndex, gain: gain)
         await loadBands()
     }
     
     func setEnabled(_ enabled: Bool) async {
-        await equalizer.setEnabled(enabled)
+        await equaliser.setEnabled(enabled)
         await loadEnabledState()
     }
     
     func reset() async {
-        await equalizer.reset()
+        await equaliser.reset()
         await loadBands()
     }
     
     func applyPreset(_ preset: EQPreset) async {
         let presetGains = getPresetGains(preset)
         for (index, gain) in presetGains.enumerated() {
-            try? await equalizer.setBandGain(index, gain: gain)
+            try? await equaliser.setBandGain(index, gain: gain)
         }
         await loadBands()
     }

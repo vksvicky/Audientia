@@ -19,7 +19,7 @@ public struct Version: Codable, Equatable, Comparable, CustomStringConvertible {
         self.build = build
     }
 
-    /// Initialize from string format "yyyy.mm.bbbb"
+    /// Initialise from string format "yyyy.mm.bbbb"
     public init?(from string: String) {
         let components = string.split(separator: ".").compactMap { Int($0) }
         guard components.count == 3,

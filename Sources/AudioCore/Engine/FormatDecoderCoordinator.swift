@@ -69,12 +69,12 @@ public final class DefaultFormatDecodingCoordinator: FormatDecodingCoordinating 
     private let decoders: [FormatDecoder]
     private let logger = Logger.audio
 
-    /// Public convenience initializer using the built-in decoder stack
+    /// Public convenience initialiser using the built-in decoder stack
     public convenience init() {
         self.init(decoders: DefaultFormatDecodingCoordinator.defaultDecoders())
     }
 
-    /// Designated initializer for dependency injection (used heavily in tests)
+    /// Designated initialiser for dependency injection (used heavily in tests)
     public init(decoders: [FormatDecoder]) {
         self.decoders = decoders
     }

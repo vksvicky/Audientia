@@ -38,13 +38,13 @@ public final class PlaylistEditorViewModel: ObservableObject {
     private let playlistManager: any PlaylistManagerProtocol
     private var currentPlaylistId: UUID?
     
-    // MARK: - Initialization
+    // MARK: - Initialisation
     
-    /// Initialize with PlaylistManager
+    /// Initialise with PlaylistManager
     /// - Parameter playlistManager: The playlist manager to use
     public init(playlistManager: any PlaylistManagerProtocol) {
         self.playlistManager = playlistManager
-        Logger.userInterface.info("PlaylistEditorViewModel initialized")
+        Logger.userInterface.info("PlaylistEditorViewModel initialised")
     }
     
     // MARK: - Public Methods

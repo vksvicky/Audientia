@@ -14,7 +14,7 @@ public final class DiscogsClient: DiscogsClientProtocol, @unchecked Sendable {
     private let userAgent: String
     private let session: URLSession
     
-    /// Initialize with custom user agent and URL session
+    /// Initialise with custom user agent and URL session
     /// - Parameters:
     ///   - userAgent: User agent string (required by Discogs API)
     ///   - session: URLSession for network requests (default: shared session)

@@ -12,11 +12,11 @@ import Foundation
 @testable import AudioCore
 @testable import Shared
 
-// MARK: - Mock AudioEqualizer
+// MARK: - Mock AudioEqualiser
 
 @MainActor
-final class MockAudioEqualizer: AudioEqualizerProtocol {
-    var bands: [EqualizerBand] = []
+final class MockAudioEqualiser: AudioEqualiserProtocol {
+    var bands: [EqualiserBand] = []
     var isEnabled: Bool = true
     var setBandGainCalled = false
     var resetCalled = false
@@ -27,24 +27,24 @@ final class MockAudioEqualizer: AudioEqualizerProtocol {
     var shouldFailProcess = false
     
     init() {
-        // Initialize with standard 10-band frequencies
+        // Initialise with standard 10-band frequencies
         let frequencies: [Float] = [31.0, 62.0, 125.0, 250.0, 500.0, 1000.0, 2000.0, 4000.0, 8000.0, 16000.0]
-        bands = frequencies.map { EqualizerBand(frequency: $0, gain: 0.0, qualityFactor: 1.0) }
+        bands = frequencies.map { EqualiserBand(frequency: $0, gain: 0.0, qualityFactor: 1.0) }
     }
     
-    func getBands() async -> [EqualizerBand] {
+    func getBands() async -> [EqualiserBand] {
         bands
     }
     
     func setBandGain(_ bandIndex: Int, gain: Float) async throws {
         setBandGainCalled = true
         if shouldFailSetBandGain {
-            throw AudioEqualizerError.invalidBandIndex(bandIndex)
+            throw AudioEqualiserError.invalidBandIndex(bandIndex)
         }
         guard bandIndex >= 0 && bandIndex < bands.count else {
-            throw AudioEqualizerError.invalidBandIndex(bandIndex)
+            throw AudioEqualiserError.invalidBandIndex(bandIndex)
         }
-        bands[bandIndex] = EqualizerBand(
+        bands[bandIndex] = EqualiserBand(
             frequency: bands[bandIndex].frequency,
             gain: gain,
             qualityFactor: bands[bandIndex].qualityFactor
@@ -53,20 +53,20 @@ final class MockAudioEqualizer: AudioEqualizerProtocol {
     
     func getBandGain(_ bandIndex: Int) async throws -> Float {
         guard bandIndex >= 0 && bandIndex < bands.count else {
-            throw AudioEqualizerError.invalidBandIndex(bandIndex)
+            throw AudioEqualiserError.invalidBandIndex(bandIndex)
         }
         return bands[bandIndex].gain
     }
     
     func reset() async {
         resetCalled = true
-        bands = bands.map { EqualizerBand(frequency: $0.frequency, gain: 0.0, qualityFactor: $0.qualityFactor) }
+        bands = bands.map { EqualiserBand(frequency: $0.frequency, gain: 0.0, qualityFactor: $0.qualityFactor) }
     }
     
     func process(audioData: [Float], sampleRate: Int, channels: Int) async throws -> [Float] {
         processCalled = true
         if shouldFailProcess {
-            throw AudioEqualizerError.processingFailed("Mock processing failure")
+            throw AudioEqualiserError.processingFailed("Mock processing failure")
         }
         return audioData // Return unchanged for mock
     }
@@ -128,10 +128,10 @@ final class MockAudioGainControl: AudioGainControlProtocol, @unchecked Sendable 
     }
 }
 
-// MARK: - Mock AudioNormalizer
+// MARK: - Mock AudioNormaliser
 
 @MainActor
-final class MockAudioNormalizer: AudioNormalizationProtocol {
+final class MockAudioNormaliser: AudioNormalisationProtocol {
     var mode: NormalizationMode = .peak
     var targetLevel: Float = -3.0
     
@@ -150,7 +150,7 @@ final class MockAudioNormalizer: AudioNormalizationProtocol {
     ) async throws -> Float {
         analyzeCalled = true
         if shouldFailAnalyze {
-            throw AudioNormalizationError.analysisFailed("Mock analysis failure")
+            throw AudioNormalisationError.analysisFailed("Mock analysis failure")
         }
         // Return mock gain adjustment
         return -3.0
@@ -162,7 +162,7 @@ final class MockAudioNormalizer: AudioNormalizationProtocol {
     ) async throws -> [Float] {
         applyCalled = true
         if shouldFailApply {
-            throw AudioNormalizationError.normalizationFailed("Mock application failure")
+            throw AudioNormalisationError.normalizationFailed("Mock application failure")
         }
         let multiplier = pow(10.0, gainDB / 20.0)
         return audioData.map { $0 * multiplier }
@@ -192,7 +192,7 @@ final class MockAudioNormalizer: AudioNormalizationProtocol {
         channels: Int
     ) async throws -> Float {
         if shouldFailAnalyze {
-            throw AudioNormalizationError.analysisFailed("Mock loudness calculation failure")
+            throw AudioNormalisationError.analysisFailed("Mock loudness calculation failure")
         }
         // Return mock loudness value in LUFS
         return -23.0
@@ -237,33 +237,33 @@ final class MockReplayGain: ReplayGainProtocol {
     }
 }
 
-// MARK: - Mock AudioVisualizer
+// MARK: - Mock AudioVisualiser
 
 @MainActor
-final class MockAudioVisualizer: AudioVisualizerProtocol {
-    var config: AudioVisualizerConfig
-    var frames: [AudioVisualizerFrame] = []
+final class MockAudioVisualiser: AudioVisualiserProtocol {
+    var config: AudioVisualiserConfig
+    var frames: [AudioVisualiserFrame] = []
     
     var processCalled = false
     var getRecentFramesCalled = false
     
     var shouldFailProcess = false
     
-    init(config: AudioVisualizerConfig = AudioVisualizerConfig()) {
+    init(config: AudioVisualiserConfig = AudioVisualiserConfig()) {
         self.config = config
     }
     
-    func process(audioData: [Float], sampleRate: Int, channels: Int) async throws -> AudioVisualizerFrame {
+    func process(audioData: [Float], sampleRate: Int, channels: Int) async throws -> AudioVisualiserFrame {
         processCalled = true
         if shouldFailProcess {
-            throw AudioVisualizerError.invalidAudioData
+            throw AudioVisualiserError.invalidAudioData
         }
         
         // Create a mock frame with some test data
         let fftSize = config.fftSize
         let magnitudes = (0..<(fftSize / 2)).map { _ in Float.random(in: 0...100) }
         
-        let frame = AudioVisualizerFrame(
+        let frame = AudioVisualiserFrame(
             magnitudes: magnitudes,
             timestamp: Date(),
             sampleRate: sampleRate,
@@ -278,11 +278,11 @@ final class MockAudioVisualizer: AudioVisualizerProtocol {
         return frame
     }
     
-    func latestFrame() async -> AudioVisualizerFrame? {
+    func latestFrame() async -> AudioVisualiserFrame? {
         frames.last
     }
     
-    func recentFrames(limit: Int) async -> [AudioVisualizerFrame] {
+    func recentFrames(limit: Int) async -> [AudioVisualiserFrame] {
         getRecentFramesCalled = true
         return Array(frames.suffix(limit))
     }

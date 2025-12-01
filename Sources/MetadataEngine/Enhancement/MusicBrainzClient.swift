@@ -14,7 +14,7 @@ public final class MusicBrainzClient: MusicBrainzClientProtocol, @unchecked Send
     private let userAgent: String
     private let session: URLSession
     
-    /// Initialize with custom user agent and URL session
+    /// Initialise with custom user agent and URL session
     /// - Parameters:
     ///   - userAgent: User agent string (required by MusicBrainz API)
     ///   - session: URLSession for network requests (default: shared session)

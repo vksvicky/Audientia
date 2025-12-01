@@ -251,9 +251,9 @@ final class TagParserCoordinatorTests: XCTestCase {
         XCTAssertFalse(canParse, "Coordinator should return false for empty URLs")
     }
     
-    /// Test that coordinator uses default parsers when initialized without parameters
+    /// Test that coordinator uses default parsers when initialised without parameters
     func testCoordinatorUsesDefaultParsers() {
-        // Given - A coordinator with default initialization
+        // Given - A coordinator with default initialisation
         let defaultCoordinator = TagParserCoordinator()
         let mp3URL = URL(fileURLWithPath: "/test/song.mp3")
         let flacURL = URL(fileURLWithPath: "/test/song.flac")

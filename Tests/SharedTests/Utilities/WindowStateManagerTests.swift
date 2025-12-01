@@ -34,7 +34,7 @@ final class WindowStateManagerTests: XCTestCase {
         let state = WindowState(
             frame: CGRect(x: 50, y: 50, width: 1000, height: 700),
             isMaximized: false,
-            isMinimized: false
+            isMinimised: false
         )
         
         // When: Saving and loading

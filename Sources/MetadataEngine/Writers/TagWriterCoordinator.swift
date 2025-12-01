@@ -37,13 +37,13 @@ public protocol TagWriterCoordinating: Sendable {
 public final class TagWriterCoordinator: TagWriterCoordinating, @unchecked Sendable {
     private let writers: [TagWriterProtocol]
     
-    /// Initialize with a list of writers
+    /// Initialise with a list of writers
     /// - Parameter writers: Array of tag writers to use (in priority order)
     public init(writers: [TagWriterProtocol]) {
         self.writers = writers
     }
     
-    /// Initialize with default writers (ID3v2, Vorbis Comments, MP4)
+    /// Initialise with default writers (ID3v2, Vorbis Comments, MP4)
     public convenience init() {
         self.init(writers: [
             ID3v2TagWriter(),

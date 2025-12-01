@@ -16,7 +16,7 @@ public final class ReplayGainCrossChecker: @unchecked Sendable {
     private let replayGain: ReplayGainProtocol
     private let externalTool: ReplayGainExternalToolProtocol
     
-    /// Initialize cross-checker with ReplayGain implementation and external tool
+    /// Initialise cross-checker with ReplayGain implementation and external tool
     /// - Parameters:
     ///   - replayGain: Our ReplayGain implementation
     ///   - externalTool: External tool for comparison (e.g., foobar2000)

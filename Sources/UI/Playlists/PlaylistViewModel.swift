@@ -34,13 +34,13 @@ public final class PlaylistViewModel: ObservableObject {
     
     private let playlistManager: any PlaylistManagerProtocol
     
-    // MARK: - Initialization
+    // MARK: - Initialisation
     
-    /// Initialize with PlaylistManager
+    /// Initialise with PlaylistManager
     /// - Parameter playlistManager: The playlist manager to use
     public init(playlistManager: any PlaylistManagerProtocol) {
         self.playlistManager = playlistManager
-        Logger.userInterface.info("PlaylistViewModel initialized")
+        Logger.userInterface.info("PlaylistViewModel initialised")
     }
     
     // MARK: - Public Methods

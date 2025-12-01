@@ -12,7 +12,7 @@ import XCTest
 @MainActor
 final class MergeConflictResolutionViewTests: XCTestCase {
     
-    func testViewInitializesWithTracks() {
+    func testViewInitialisesWithTracks() {
         let original = Track(
             title: "Original",
             artist: "Original Artist",

@@ -5,14 +5,19 @@
 **Branch**: `19_ui-wiring-and-polish`  
 **Focus**: Complete UI/backend integration, wire all features, fix issues, and polish the user experience.
 
+### Recent Updates (Dec 2025)
+- **✅ LanguageSettingsView Bug Fixes**: Fixed Form trailing closure compiler error by using explicit `Form(content: { })` syntax instead of implicit trailing closure. Fixed localisation key access to use `LocalisationManager.language` static properties instead of enum-style `.language` syntax.
+- **✅ Test Count Investigation**: Documented test count discrepancy between `count_tests.sh` (389 tests) and Xcode (368 visible tests) for MetadataEngineTests. Difference of ~21 tests is due to conditional test execution - ChromaprintFingerprintGeneratorTests and FingerprintCache tests skip when FFmpeg/chromaprint dependencies are unavailable. Added installation instructions for enabling all tests.
+- **✅ Language Settings Integration**: LanguageSettingsView now fully functional with British/American English selection, live spelling preview, and proper localization system integration via LocalisationManager and AppSettings.
+
 ### Goals
 - [x] Complete UI/backend wiring for all implemented features - **✅ Setup wizard, library scanning, and notification permissions fully integrated**
-- [x] Fix all UI issues and inconsistencies - **✅ Setup wizard navigation, notification formatting, and scan triggering logic fixed**
-- [x] Ensure all features are accessible and functional from the UI - **✅ Setup wizard accessible via File menu (⇧⌘S), notification settings in Settings → General**
-- [ ] Polish user experience and interactions - **In progress: Setup wizard improvements, notification system**
-- [x] Verify end-to-end workflows - **✅ Setup wizard → library scan → notification flow verified**
+- [x] Fix all UI issues and inconsistencies - **✅ Setup wizard navigation, notification formatting, scan triggering logic, LanguageSettingsView compilation errors fixed**
+- [x] Ensure all features are accessible and functional from the UI - **✅ Setup wizard accessible via File menu (⇧⌘S), notification settings in Settings → General, language settings in Settings → Language**
+- [x] Polish user experience and interactions - **✅ Setup wizard improvements, notification system, language selection with live spelling preview**
+- [x] Verify end-to-end workflows - **✅ Setup wizard → library scan → notification flow verified, language change → UI update flow verified**
 - [ ] Complete About screen menu wiring QA
-- [x] Fix any remaining integration issues - **✅ Notification permission flow, library scan notifications, duplicate scan prevention**
+- [x] Fix any remaining integration issues - **✅ Notification permission flow, library scan notifications, duplicate scan prevention, LanguageSettingsView Form syntax and localisation key access**
 
 ### Areas of Focus
 1. **UI/Backend Integration**
@@ -26,14 +31,19 @@
    - Check that all settings and preferences are wired
 
 3. **Issue Resolution**
-   - Fix any UI bugs or inconsistencies
-   - Resolve integration issues between components
-   - Address any user experience problems
+   - Fix any UI bugs or inconsistencies - **✅ LanguageSettingsView Form trailing closure error fixed, localisation key access corrected**
+   - Resolve integration issues between components - **✅ LocalisationManager static properties now used for key access instead of enum-style syntax**
+   - Address any user experience problems - **✅ Language settings UI now compiles and displays correctly**
 
 4. **Polish & Refinement**
    - Improve UI responsiveness
    - Enhance visual feedback
    - Optimize user workflows
+
+5. **Test Infrastructure & Quality**
+   - **✅ Test count discrepancy investigation completed** - Identified 21-test difference between script count (389) and Xcode visible tests (368) due to conditional test execution based on system configuration (FFmpeg/chromaprint availability)
+   - **✅ Conditional test execution documented** - ChromaprintFingerprintGeneratorTests and FingerprintCache tests skip when dependencies unavailable
+   - Test quality maintained with comprehensive Right-BICEP coverage across all test suites
 
 ---
 
@@ -49,7 +59,7 @@
   - **Layout Controls**: Control bar with layout mode picker (horizontal/vertical/tabbed/floating), panel visibility toggles, and save/reset functionality.
 - **Now Playing** exposes a dedicated import workflow: users can add audio via the standard macOS file picker or by dropping files anywhere in the window. Supported formats are validated against `AudioFormats`, tracks are indexed, queued, and (optionally) auto-played if nothing is currently loaded.
 - Drag-and-drop now feeds into `TrackImportCoordinator`, so supported files begin playback immediately (or queue if something is already playing). Unsupported formats surface actionable errors.
-- **Settings/Preferences UI** is accessible via the standard macOS Settings menu (⌘,). Settings views exist for layout customization, theme selection, and other preferences, with full persistence support.
+- **Settings/Preferences UI** is accessible via the standard macOS Settings menu (⌘,). Settings views exist for layout customization, theme selection, language settings, notification preferences, and other preferences, with full persistence support. LanguageSettingsView provides British English vs American English selection with live preview of spelling differences (visualiser/visualizer, minimise/minimize, colour/color).
 - Device Sync UI powers the counters you see (e.g. "391 tracks ready for sync"), but there is no guidance to connect a device or kick off sync beyond the disabled buttons.
 - The roadmap below has been updated to reflect the current state of UI implementation.
 
@@ -70,7 +80,7 @@
 - [x] **Multi-pane Workspace** – ✅ Workspace tab with MediaMonkey-style multi-pane layout system, library browser, and playlist panel integrated and functional.
 - [x] **Library Browser** – ✅ Full library browsing with search, sorting, grouping, and multiple view modes. Tracks loaded from library indexer.
 - [x] **Playlist Panel** – ✅ Split-view playlist management with create/delete, track add/remove, and playlist selection.
-- [x] **Settings/Preferences UI** – ✅ Accessible via macOS Settings menu (⌘,). Layout customization, theme selection, notification permissions, and other preferences with full persistence.
+- [x] **Settings/Preferences UI** – ✅ Accessible via macOS Settings menu (⌘,). Layout customization, theme selection, language settings (British/American English with spelling preview), notification permissions, and other preferences with full persistence.
 - [x] **Now Playing view surfaced to users** – ✅ Users can import/drag-and-drop audio, double-click library/playlist entries, and immediately hear playback through the shared `AudioEngine`.
 - [x] **Playback controls (play/pause/stop)** – ✅ Controls are live; state follows the audio engine and surfaces errors when operations fail.
 - [x] **Progress slider with scrubbing** – ✅ The slider now reflects real durations and supports scrubbing/seek via `NowPlayingViewModel`.
@@ -94,13 +104,20 @@
 - **Test Files**: ~188 files
 - **Test Types**: ~1,156 TDD tests, ~375 BDD tests
 - **Breakdown by Target**:
-  - MetadataEngineTests: ~389 tests
-  - AudioCoreTests: ~347 tests
+  - MetadataEngineTests: ~389 tests (script count) / ~368 tests (Xcode visible)
+  - AudioCoreTests: ~363 tests
   - DataLayerTests: ~320 tests
   - SharedTests: ~118 tests
   - UITests: ~365 tests
 
 To view current test counts, run: `./Scripts/count_tests.sh`
+
+**Note on Test Count Discrepancy:**
+The difference between script count and Xcode visible tests (~21 tests) is due to conditional test execution:
+- `ChromaprintFingerprintGeneratorTests` (11 tests) - Skipped if FFmpeg with chromaprint filter is not available. Tests check availability in `setUp()` and throw `XCTSkip` if FFmpeg/chromaprint is missing.
+- `FingerprintCacheTests` + `FingerprintCacheBDDTests` (~18 tests) - May skip individual tests using `requireCache()` helper if cache initialization fails.
+- Xcode only counts tests that can actually run in the current environment, while the script counts all test function definitions.
+- To enable all fingerprint tests: `brew install chromaprint && brew reinstall ffmpeg`
 
 - **Not Yet Built / Not Integrated in UI:**
   - [x] Library browser UI – **✅ LibraryBrowserView integrated into Workspace tab with full search, sorting, grouping, and view modes.**
@@ -698,14 +715,16 @@ See [`Scripts/build_guide.md`](../Scripts/build_guide.md) for detailed build ins
 - [x] Theme management system - **✅ ThemeConfiguration models (light/dark/auto/custom themes with color schemes) and ThemeManager with persistence. Comprehensive TDD tests (ThemeManagerTests) and BDD scenarios (ThemeManagerBDDTests) following Right-BICEP principles.**
 - [x] Window state management - **✅ WindowState models (frame, maximized, minimized) and WindowStateManager with persistence. Comprehensive TDD tests (WindowStateManagerTests) following Right-BICEP principles.**
 - [x] Library view configuration - **✅ LibraryViewConfiguration models (view modes, grouping, sorting, column visibility) and LibraryViewConfigurationManager with persistence. Comprehensive TDD tests (LibraryViewConfigurationManagerTests) following Right-BICEP principles.**
+- [x] Language configuration system - **✅ Language enum (britishEnglish/americanEnglish) in Shared module with LocalisationManager for runtime string translation using JSON resource files (en_GB.json, en_US.json). Full support for British vs American spelling differences (visualiser/visualizer, minimise/minimize, colour/color).**
 
 **UI:**
 - [x] Multi-pane layout system - **✅ MultiPaneLayoutView implemented with MediaMonkey-style multi-pane interface. Supports horizontal/vertical/tabbed/floating layout modes, resizable panels, panel visibility toggles, layout persistence, and control bar with save/reset functionality. Integrated into ContentView as "Workspace" tab.**
 - [x] Enhanced library browser - **✅ LibraryBrowserView implemented with multiple view modes (list/grid/compact), search functionality, sorting (title/artist/album/year/rating/duration/dateAdded), grouping options (none/artist/album/genre/year/rating), and configuration persistence. LibraryBrowserViewModel manages library data, search, filtering, sorting, and view configuration. Integrated into MultiPaneLayoutView. Comprehensive TDD tests (LibraryBrowserViewModelTests) and BDD scenarios (LibraryBrowserViewModelBDDTests) following Right-BICEP principles.**
 - [x] Track details panel - **✅ TrackDetailsView shows structured metadata, audio/file stats, heuristic insights (BPM, key, energy/danceability), ML classification controls, recommendation surface, and fingerprint status actions. Backed by TrackDetailsViewModel with Right-BICEP tests.**
 - [x] Playlist panel - **✅ PlaylistPanelView implemented with split view (playlist list + track list), create/delete playlists, add/remove tracks, playlist selection, and track management. PlaylistPanelViewModel manages playlist browsing, selection, and track operations. Integrated into MultiPaneLayoutView. Comprehensive TDD tests (PlaylistPanelViewModelTests) and BDD scenarios (PlaylistPanelViewModelBDDTests) following Right-BICEP principles.**
-- [x] Settings/preferences UI - **✅ SettingsView implemented with comprehensive settings interface. SettingsViewModel manages settings loading and state. LayoutCustomizationView, ThemeSelectorView, and other settings views exist. Settings scene added to AudientiaApp for standard macOS Settings menu access.**
-- [x] Settings persistence - **✅ Save/load all user preferences including layout, theme, library views, playback settings, audio settings. SettingsStorageProtocol and UserDefaultsSettingsStorage provide actor-based persistence. All configuration managers (LayoutConfigurationManager, ThemeManager, WindowStateManager, LibraryViewConfigurationManager) support persistence.**
+- [x] Settings/preferences UI - **✅ SettingsView implemented with comprehensive settings interface. SettingsViewModel manages settings loading and state. LayoutCustomizationView, ThemeSelectorView, LanguageSettingsView, and other settings views exist. Settings scene added to AudientiaApp for standard macOS Settings menu access.**
+- [x] Language settings UI - **✅ LanguageSettingsView implemented with language picker (British English/American English), live preview of spelling differences (visualiser/visualizer, minimise/minimize, etc.), and language selection persistence via AppSettings. Uses LocalisationManager for runtime string translation from JSON resource files.**
+- [x] Settings persistence - **✅ Save/load all user preferences including layout, theme, language, library views, playback settings, audio settings. SettingsStorageProtocol and UserDefaultsSettingsStorage provide actor-based persistence. All configuration managers (LayoutConfigurationManager, ThemeManager, WindowStateManager, LibraryViewConfigurationManager) support persistence. Language settings persist via AppSettings.shared.language.**
 - [x] Layout customization - **✅ User-configurable panel layouts, split views, panel visibility toggles, panel size persistence. LayoutCustomizationView provides UI for customizing layout. LayoutConfigurationManager handles persistence.**
 - [x] Theme selector - **✅ ThemeSelectorView implemented with theme selection UI, light/dark/auto mode support, and custom color scheme support. ThemeManager handles persistence.**
 - [x] Window management - **✅ WindowStateManager implemented with window state persistence (frame, maximized, minimized). WindowState models and persistence system complete.**

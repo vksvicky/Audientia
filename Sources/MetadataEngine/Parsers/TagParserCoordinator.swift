@@ -29,13 +29,13 @@ public protocol TagParserCoordinating: Sendable {
 public final class TagParserCoordinator: TagParserCoordinating, @unchecked Sendable {
     private let parsers: [TagParserProtocol]
     
-    /// Initialize with a list of parsers
+    /// Initialise with a list of parsers
     /// - Parameter parsers: Array of tag parsers to use (in priority order)
     public init(parsers: [TagParserProtocol]) {
         self.parsers = parsers
     }
     
-    /// Initialize with default parsers (ID3v2, Vorbis Comments, MP4)
+    /// Initialise with default parsers (ID3v2, Vorbis Comments, MP4)
     public convenience init() {
         self.init(parsers: [
             ID3v2Parser(),

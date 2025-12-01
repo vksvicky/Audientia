@@ -15,7 +15,7 @@ private let SQLITE_TRANSIENT = unsafeBitCast(-1, to: sqlite3_destructor_type.sel
 public actor SQLiteFingerprintCache: FingerprintCacheProtocol {
     private let databaseURL: URL
     private var db: OpaquePointer?
-    private var isInitialized = false
+    private var isInitialised = false
     
     // Current schema version
     private static let currentSchemaVersion: Int32 = 1
@@ -225,13 +225,13 @@ public actor SQLiteFingerprintCache: FingerprintCacheProtocol {
     // MARK: - Private Database Operations
     
     private func ensureDatabaseOpen() async throws {
-        if !isInitialized {
-            try await initializeDatabase()
-            isInitialized = true
+        if !isInitialised {
+            try await initialiseDatabase()
+            isInitialised = true
         }
     }
     
-    private func initializeDatabase() async throws {
+    private func initialiseDatabase() async throws {
         let result = sqlite3_open_v2(
             databaseURL.path,
             &db,

@@ -166,6 +166,6 @@ final class MainWindowLayoutViewBDDTests: XCTestCase {
         // When - I access the view (minimize button is in title bar)
         // Then - The view should have a minimize button
         SwiftUIViewTestHelpers.verifyViewCreation(view)
-        // Note: Actual button interaction is tested in MinimizePlayerBDDTests
+        // Note: Actual button interaction is tested in MinimisePlayerBDDTests
     }
 }

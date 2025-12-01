@@ -26,9 +26,9 @@ public struct PlaylistEditorView: View {
     
     private let playlistId: UUID
     
-    // MARK: - Initialization
+    // MARK: - Initialisation
     
-    /// Initialize with PlaylistManager and playlist ID
+    /// Initialise with PlaylistManager and playlist ID
     /// - Parameters:
     ///   - playlistManager: The playlist manager to use
     ///   - playlistId: The ID of the playlist to edit

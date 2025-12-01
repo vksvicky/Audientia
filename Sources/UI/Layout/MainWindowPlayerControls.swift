@@ -14,7 +14,7 @@ import SwiftUI
 
 struct MainWindowPlayerControls: View {
     @ObservedObject var nowPlayingViewModel: NowPlayingViewModel
-    @Binding var showVisualizer: Bool
+    @Binding var showVisualiser: Bool
     var onMinimize: (() -> Void)?
     @ObservedObject private var appSettings = AppSettings.shared
     
@@ -170,11 +170,11 @@ struct MainWindowPlayerControls: View {
                 .buttonStyle(.plain)
                 
                 Button(action: {
-                    showVisualizer.toggle()
+                    showVisualiser.toggle()
                 }, label: {
                     Image(systemName: "waveform")
                         .font(.system(size: 14))
-                        .foregroundColor(showVisualizer ? Color("AccentColor") : .primary)
+                        .foregroundColor(showVisualiser ? Color("AccentColor") : .primary)
                 })
                 .buttonStyle(.plain)
                 

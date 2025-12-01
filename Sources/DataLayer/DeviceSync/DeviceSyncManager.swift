@@ -28,7 +28,7 @@ public actor DeviceSyncManager: DeviceSyncManagerProtocol {
     private var idleContinuations: [CheckedContinuation<Void, Never>] = []
     private let logger = Logger.deviceSync
     
-    // MARK: - Initialization
+    // MARK: - Initialisation
     
     public init(
         discovery: DeviceDiscoveryProtocol,

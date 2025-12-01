@@ -28,11 +28,11 @@ final class PersistentSyncJobQueueMigrationTests: XCTestCase {
         try await super.tearDown()
     }
     
-    func testGivenNewDatabaseWhenInitializedThenSchemaVersionIsSet() async throws {
+    func testGivenNewDatabaseWhenInitialisedThenSchemaVersionIsSet() async throws {
         // Given: New database
         queue = PersistentSyncJobQueue(databaseURL: dbURL)
         
-        // When: Initialize (happens on first use)
+        // When: Initialise (happens on first use)
         _ = await queue.isEmpty()
         
         // Then: Schema version should be set (verified by successful operations)
@@ -42,7 +42,7 @@ final class PersistentSyncJobQueueMigrationTests: XCTestCase {
         XCTAssertEqual(snapshot.count, 1)
     }
     
-    func testGivenExistingDatabaseWhenInitializedThenSchemaIsCompatible() async throws {
+    func testGivenExistingDatabaseWhenInitialisedThenSchemaIsCompatible() async throws {
         // Given: Database with existing jobs
         queue = PersistentSyncJobQueue(databaseURL: dbURL)
         let job1 = DeviceSyncFixtures.syncJob()

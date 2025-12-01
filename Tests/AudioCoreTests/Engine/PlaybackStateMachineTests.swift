@@ -21,7 +21,7 @@ final class PlaybackStateMachineTests: XCTestCase {
     
     // MARK: - [Right] Tests: Are the Results Right?
     
-    /// BDD: Given an audio engine, when I initialize it, then it should be in stopped state
+    /// BDD: Given an audio engine, when I initialise it, then it should be in stopped state
     func testInitialStateIsStopped() {
         // Given
         let engine = AudioEngineTestHelpers.createMockEngine()

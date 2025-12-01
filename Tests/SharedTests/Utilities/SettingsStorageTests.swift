@@ -38,7 +38,7 @@ final class SettingsStorageTests: XCTestCase {
     
     private func requireStorage() throws -> any SettingsStorageProtocol {
         guard let storage = storage else {
-            throw NSError(domain: "test", code: 1, userInfo: [NSLocalizedDescriptionKey: "Storage not initialized"])
+            throw NSError(domain: "test", code: 1, userInfo: [NSLocalizedDescriptionKey: "Storage not initialised"])
         }
         return storage
     }

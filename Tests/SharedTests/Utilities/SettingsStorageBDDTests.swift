@@ -45,7 +45,7 @@ final class SettingsStorageBDDTests: XCTestCase {
         
         // When: I save my preferences
         guard let storage = storage else {
-            XCTFail("Storage not initialized")
+            XCTFail("Storage not initialised")
             return
         }
         try await storage.save(preferences, forKey: "user.preferences")
@@ -59,7 +59,7 @@ final class SettingsStorageBDDTests: XCTestCase {
     func testAsAUserIWantToLoadMySavedPreferencesAfterRestartingTheApp() async throws {
         // Given: I have saved preferences
         guard let storage = storage else {
-            XCTFail("Storage not initialized")
+            XCTFail("Storage not initialised")
             return
         }
         let preferences = ["theme": "dark", "volume": "0.8"]
@@ -76,7 +76,7 @@ final class SettingsStorageBDDTests: XCTestCase {
     func testAsAUserIWantToClearAllMySettings() async throws {
         // Given: I have multiple saved settings
         guard let storage = storage else {
-            XCTFail("Storage not initialized")
+            XCTFail("Storage not initialised")
             return
         }
         try await storage.save("value1", forKey: "setting1")

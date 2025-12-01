@@ -74,7 +74,7 @@ public final class BatchTagOperations: BatchTagOperationsProtocol, @unchecked Se
     private let writer: TagWriterProtocol
     private let validator: TagValidatorProtocol
     
-    /// Initialize with a tag writer and validator
+    /// Initialise with a tag writer and validator
     /// - Parameters:
     ///   - writer: The tag writer to use for writing tags
     ///   - validator: The tag validator to use for validating tags

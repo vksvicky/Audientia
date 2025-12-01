@@ -51,7 +51,7 @@ public final class SettingsViewModel: ObservableObject {
     private let libraryViewManager: any LibraryViewConfigurationManagerProtocol
     private let logger = Logger.userInterface
     
-    // MARK: - Initialization
+    // MARK: - Initialisation
     
     public init(
         layoutManager: any LayoutConfigurationManagerProtocol = LayoutConfigurationManager(),

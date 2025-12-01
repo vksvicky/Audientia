@@ -25,7 +25,7 @@ public struct Artist: Codable, Equatable, Hashable, Identifiable {
     /// Number of tracks by this artist
     public let trackCount: Int
 
-    // MARK: - Initialization
+    // MARK: - Initialisation
 
     /// Creates a new Artist instance
     /// - Parameters:
@@ -44,7 +44,7 @@ public struct Artist: Codable, Equatable, Hashable, Identifiable {
         self.albumCount = albumCount
         self.trackCount = trackCount
 
-        // Log after initialization to avoid capturing mutating self
+        // Log after initialisation to avoid capturing mutating self
         let artistName = name
         artistLogger.debug("Artist created: \(artistName)")
     }

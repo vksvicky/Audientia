@@ -79,7 +79,7 @@ final class MainWindowPlayerControlsBDDTests: XCTestCase {
         nowPlayingViewModel.updateState()
         
         // When - I view the player controls
-        let view = MainWindowPlayerControls(nowPlayingViewModel: nowPlayingViewModel, showVisualizer: .constant(false))
+        let view = MainWindowPlayerControls(nowPlayingViewModel: nowPlayingViewModel, showVisualiser: .constant(false))
         
         // Then - I should see the track information
         let hostingController = NSHostingController(rootView: view)
@@ -91,36 +91,36 @@ final class MainWindowPlayerControlsBDDTests: XCTestCase {
     
     // MARK: - BDD Scenario 8: Visualizer Functionality
     
-    /// BDD: As a user, when I click the visualizer button, then the visualizer should toggle
+    /// BDD: As a user, when I click the visualiser button, then the visualiser should toggle
     func testAsAUserIWantToToggleVisualizer() {
         // Given - Visualizer is not shown
-        var showVisualizer = false
+        var showVisualiser = false
         let track = MockFactory.makeTrack()
         mockAudioEngine.currentTrack = track
         nowPlayingViewModel.updateState()
         
-        // When - I click the visualizer button
-        showVisualizer.toggle()
+        // When - I click the visualiser button
+        showVisualiser.toggle()
         
         // Then - Visualizer should be shown
-        XCTAssertTrue(showVisualizer)
+        XCTAssertTrue(showVisualiser)
         
-        // When - I click the visualizer button again
-        showVisualizer.toggle()
+        // When - I click the visualiser button again
+        showVisualiser.toggle()
         
         // Then - Visualizer should be hidden
-        XCTAssertFalse(showVisualizer)
+        XCTAssertFalse(showVisualiser)
     }
     
-    /// BDD: As a user, when visualizer is active, then the visualizer button should show blue
+    /// BDD: As a user, when visualiser is active, then the visualiser button should show blue
     func testAsAUserIWantToSeeBlueVisualizerButtonWhenActive() {
         // Given - Visualizer is shown
         let track = MockFactory.makeTrack()
         mockAudioEngine.currentTrack = track
         nowPlayingViewModel.updateState()
         
-        // When - I view the player controls with visualizer active
-        let view = MainWindowPlayerControls(nowPlayingViewModel: nowPlayingViewModel, showVisualizer: .constant(true))
+        // When - I view the player controls with visualiser active
+        let view = MainWindowPlayerControls(nowPlayingViewModel: nowPlayingViewModel, showVisualiser: .constant(true))
         
         // Then - Visualizer button should show active state
         let hostingController = NSHostingController(rootView: view)
@@ -135,7 +135,7 @@ final class MainWindowPlayerControlsBDDTests: XCTestCase {
         nowPlayingViewModel.updateState()
         
         // When - I view the player controls
-        let view = MainWindowPlayerControls(nowPlayingViewModel: nowPlayingViewModel, showVisualizer: .constant(false))
+        let view = MainWindowPlayerControls(nowPlayingViewModel: nowPlayingViewModel, showVisualiser: .constant(false))
         
         // Then - I should see "No track selected"
         let hostingController = NSHostingController(rootView: view)
@@ -266,7 +266,7 @@ final class MainWindowPlayerControlsBDDTests: XCTestCase {
         nowPlayingViewModel.updateState()
         
         // When - I view the player controls
-        let view = MainWindowPlayerControls(nowPlayingViewModel: nowPlayingViewModel, showVisualizer: .constant(false))
+        let view = MainWindowPlayerControls(nowPlayingViewModel: nowPlayingViewModel, showVisualiser: .constant(false))
         
         // Then - Repeat button should show active state
         let hostingController = NSHostingController(rootView: view)
@@ -339,7 +339,7 @@ final class MainWindowPlayerControlsBDDTests: XCTestCase {
         nowPlayingViewModel.updateState()
         
         // When - I view the player controls
-        let view = MainWindowPlayerControls(nowPlayingViewModel: nowPlayingViewModel, showVisualizer: .constant(false))
+        let view = MainWindowPlayerControls(nowPlayingViewModel: nowPlayingViewModel, showVisualiser: .constant(false))
         
         // Then - Previous and next buttons should be disabled
         let hostingController = NSHostingController(rootView: view)
@@ -357,7 +357,7 @@ final class MainWindowPlayerControlsBDDTests: XCTestCase {
         nowPlayingViewModel.updateState()
         
         // When - I view the player controls
-        let view = MainWindowPlayerControls(nowPlayingViewModel: nowPlayingViewModel, showVisualizer: .constant(false))
+        let view = MainWindowPlayerControls(nowPlayingViewModel: nowPlayingViewModel, showVisualiser: .constant(false))
         
         // Then - Previous and next buttons should be enabled
         let hostingController = NSHostingController(rootView: view)
@@ -398,7 +398,7 @@ final class MainWindowPlayerControlsBDDTests: XCTestCase {
         nowPlayingViewModel.updateState()
         
         // When - I view the player controls
-        let view = MainWindowPlayerControls(nowPlayingViewModel: nowPlayingViewModel, showVisualizer: .constant(false))
+        let view = MainWindowPlayerControls(nowPlayingViewModel: nowPlayingViewModel, showVisualiser: .constant(false))
         
         // Then - Shuffle button should show active state
         let hostingController = NSHostingController(rootView: view)
@@ -465,7 +465,7 @@ final class MainWindowPlayerControlsBDDTests: XCTestCase {
         nowPlayingViewModel.updateState()
         
         // When - I view the player controls
-        let view = MainWindowPlayerControls(nowPlayingViewModel: nowPlayingViewModel, showVisualizer: .constant(false))
+        let view = MainWindowPlayerControls(nowPlayingViewModel: nowPlayingViewModel, showVisualiser: .constant(false))
         
         // Then - Repeat button should show active state
         let hostingController = NSHostingController(rootView: view)

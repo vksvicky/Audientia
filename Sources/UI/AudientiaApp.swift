@@ -124,9 +124,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     private let setupWizardMenuConfigurator = SetupWizardMenuConfigurator()
     private var setupWizardWindow: NSWindow?
     var mainWindow: NSWindow?
-    var minimizedPlayerWindow: NSWindow?
+    var minimisedPlayerWindow: NSWindow?
     private var shortcutsDisabled = false
-    var isMinimized = false
+    var isMinimised = false
     
     override init() {
         super.init()
@@ -390,7 +390,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     
     @MainActor
     func minimizeToPlayer(nowPlayingViewModel: NowPlayingViewModel) {
-        guard !isMinimized else { return }
+        guard !isMinimised else { return }
         
         // Get main window frame before hiding it (for centering)
         let mainWindowFrame = mainWindow?.frame ?? NSRect.zero
@@ -398,7 +398,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         // Hide main window
         mainWindow?.orderOut(nil)
         
-        // Create minimized player window
+        // Create minimised player window
         let playerWindow = NSWindow(
             contentRect: NSRect(x: 0, y: 0, width: 400, height: 80),
             styleMask: [.borderless, .fullSizeContentView],
@@ -435,8 +435,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             playerWindow.setFrameOrigin(NSPoint(x: centerX, y: centerY))
         }
         
-        // Create minimized player view
-        let playerView = MinimizedPlayerView(
+        // Create minimised player view
+        let playerView = MinimisedPlayerView(
             nowPlayingViewModel: nowPlayingViewModel,
             onRestore: { [weak self] in
                 self?.restoreFromPlayer()
@@ -448,23 +448,23 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         playerWindow.contentView = hostingView
         playerWindow.makeKeyAndOrderFront(nil)
         
-        minimizedPlayerWindow = playerWindow
-        isMinimized = true
-        Logger.userInterface.info("Minimized to player window")
+        minimisedPlayerWindow = playerWindow
+        isMinimised = true
+        Logger.userInterface.info("Minimised to player window")
     }
     
     @MainActor
     func restoreFromPlayer() {
-        guard isMinimized else { return }
+        guard isMinimised else { return }
         
-        // Close minimized window
-        minimizedPlayerWindow?.close()
-        minimizedPlayerWindow = nil
+        // Close minimised window
+        minimisedPlayerWindow?.close()
+        minimisedPlayerWindow = nil
         
         // Show main window
         mainWindow?.makeKeyAndOrderFront(nil)
         
-        isMinimized = false
+        isMinimised = false
         Logger.userInterface.info("Restored from player window")
     }
 }

@@ -12,7 +12,7 @@ import Foundation
 public final class MetadataMerger: @unchecked Sendable {
     private let strategy: MergeStrategy
     
-    /// Initialize with a merge strategy
+    /// Initialise with a merge strategy
     /// - Parameter strategy: The merge strategy to use
     public init(strategy: MergeStrategy = .fillMissing) {
         self.strategy = strategy

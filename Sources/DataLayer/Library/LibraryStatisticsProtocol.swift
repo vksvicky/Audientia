@@ -24,7 +24,7 @@ public struct LibraryStatistics: Equatable {
     /// Average sample rate in Hz
     public let averageSampleRate: Double
     
-    /// Initialize library statistics
+    /// Initialise library statistics
     public init(
         trackCount: Int,
         totalDuration: TimeInterval,

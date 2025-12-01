@@ -17,9 +17,9 @@ public final class LibraryIndexer: LibraryIndexerProtocol, @unchecked Sendable {
     /// Actor for thread-safe index operations
     private let indexActor: IndexActor
     
-    /// Initialize the indexer
-    public init(normalizer: MetadataNormalizerProtocol = MetadataNormalizer()) {
-        self.indexActor = IndexActor(normalizer: normalizer)
+    /// Initialise the indexer
+    public init(normaliser: MetadataNormaliserProtocol = MetadataNormaliser()) {
+        self.indexActor = IndexActor(normaliser: normaliser)
     }
     
     /// Index a collection of tracks
@@ -70,16 +70,16 @@ private actor IndexActor {
     /// In-memory index of tracks by file path (for duplicate detection)
     private var tracksByPath: [String: UUID] = [:]
     
-    /// Normalizer applied before storing tracks
-    private let normalizer: MetadataNormalizerProtocol
+    /// Normaliser applied before storing tracks
+    private let normaliser: MetadataNormaliserProtocol
     
-    init(normalizer: MetadataNormalizerProtocol) {
-        self.normalizer = normalizer
+    init(normaliser: MetadataNormaliserProtocol) {
+        self.normaliser = normaliser
     }
     
     func index(tracks: [Track]) throws {
         for original in tracks {
-            let track = normalizer.normalize(track: original)
+            let track = normaliser.normalize(track: original)
             // Validate track has non-empty file path
             guard !track.filePath.isEmpty else {
                 throw LibraryIndexerError.invalidTrack

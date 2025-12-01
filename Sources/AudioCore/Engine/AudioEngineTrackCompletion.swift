@@ -59,7 +59,7 @@ extension AudioEngine {
         if state == .playing {
             Logger.audio.debug("Stopping current track before looping to first track")
             stopPositionTracking()
-            visualizerTap?.stop()
+            visualiserTap?.stop()
             nativeEngine.stop()
             currentPosition = 0.0
         }
@@ -108,7 +108,7 @@ extension AudioEngine {
         if state == .playing {
             Logger.audio.debug("Stopping current track before loading next track")
             stopPositionTracking()
-            visualizerTap?.stop()
+            visualiserTap?.stop()
             nativeEngine.stop()
             currentPosition = 0.0
             // Don't set state to .stopped yet - we'll set it to .loading in loadTrack

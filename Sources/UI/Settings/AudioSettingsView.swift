@@ -14,7 +14,7 @@ import SwiftUI
 /// BDD: As a user, I want to access all audio processing settings in one place
 @MainActor
 public struct AudioSettingsView: View {
-    @State private var selectedTab: AudioSettingsTab = .equalizer
+    @State private var selectedTab: AudioSettingsTab = .equaliser
     
     public init() {}
     
@@ -22,9 +22,9 @@ public struct AudioSettingsView: View {
         TabView(selection: $selectedTab) {
             EQInterfaceView()
                 .tabItem {
-                    Label("Equalizer", systemImage: "slider.horizontal.3")
+                    Label("Equaliser", systemImage: "slider.horizontal.3")
                 }
-                .tag(AudioSettingsTab.equalizer)
+                .tag(AudioSettingsTab.equaliser)
             
             ReplayGainSettingsView()
                 .tabItem {
@@ -38,26 +38,26 @@ public struct AudioSettingsView: View {
                 }
                 .tag(AudioSettingsTab.gain)
             
-            NormalizationSettingsView()
+            NormalisationSettingsView()
                 .tabItem {
                     Label("Normalization", systemImage: "chart.bar.fill")
                 }
                 .tag(AudioSettingsTab.normalization)
             
-            AudioVisualizerView()
+            AudioVisualiserView()
                 .tabItem {
                     Label("Visualizer", systemImage: "waveform")
                 }
-                .tag(AudioSettingsTab.visualizer)
+                .tag(AudioSettingsTab.visualiser)
         }
         .frame(minWidth: 600, minHeight: 400)
     }
 }
 
 private enum AudioSettingsTab: String, CaseIterable {
-    case equalizer
+    case equaliser
     case replayGain
     case gain
     case normalization
-    case visualizer
+    case visualiser
 }

@@ -67,6 +67,8 @@ public struct SettingsView: View {
             AudioSettingsView() // Already exists in UI/Settings
         case .appearance:
             AppearanceSettingsView(viewModel: viewModel)
+        case .language:
+            LanguageSettingsView()
         case .advanced:
             AdvancedSettingsView(viewModel: viewModel)
         }
@@ -80,6 +82,7 @@ enum SettingsCategory: String, CaseIterable {
     case playback
     case audio
     case appearance
+    case language
     case advanced
     
     var displayName: String {
@@ -89,6 +92,7 @@ enum SettingsCategory: String, CaseIterable {
         case .playback: return "Playback"
         case .audio: return "Audio/DSP"
         case .appearance: return "Appearance"
+        case .language: return "Language"
         case .advanced: return "Advanced"
         }
     }
@@ -100,6 +104,7 @@ enum SettingsCategory: String, CaseIterable {
         case .playback: return "play.circle"
         case .audio: return "waveform"
         case .appearance: return "paintbrush"
+        case .language: return "globe"
         case .advanced: return "wrench.and.screwdriver"
         }
     }

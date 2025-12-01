@@ -79,7 +79,7 @@ final class PlaylistEditorViewModelTests: XCTestCase {
     
     // MARK: - [Right] Tests - Verify Expected Behavior
     
-    /// Test: ViewModel should load playlist tracks on initialization
+    /// Test: ViewModel should load playlist tracks on initialisation
     func testLoadsPlaylistTracksOnInit() async throws {
         // Given - A playlist with tracks
         let playlist = createPlaylist(name: "My Playlist")

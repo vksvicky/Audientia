@@ -27,11 +27,11 @@ public final class SmartPlaylistRuleBuilderViewModel: ObservableObject {
     /// Whether rules are valid
     @Published public private(set) var isValid: Bool = false
     
-    // MARK: - Initialization
+    // MARK: - Initialisation
     
-    /// Initialize the rule builder
+    /// Initialise the rule builder
     public init() {
-        Logger.userInterface.info("SmartPlaylistRuleBuilderViewModel initialized")
+        Logger.userInterface.info("SmartPlaylistRuleBuilderViewModel initialised")
     }
     
     // MARK: - Public Methods

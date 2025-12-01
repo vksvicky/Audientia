@@ -24,7 +24,7 @@ public struct MainWindowLayoutView: View {
     // Use type inference - let Swift infer the type from the initial value
     @State private var selectedNavigationItem: NavigationItem = .home
     @State private var importError: Error?
-    @State private var showVisualizer = false
+    @State private var showVisualiser = false
     
     private let audioEngine: AudioEngineProtocol
     @StateObject private var importCoordinator: TrackImportCoordinator
@@ -58,7 +58,7 @@ public struct MainWindowLayoutView: View {
             // Player Controls at Bottom (spans full width)
             MainWindowPlayerControls(
                 nowPlayingViewModel: nowPlayingViewModel,
-                showVisualizer: $showVisualizer,
+                showVisualiser: $showVisualiser,
                 onMinimize: {
                     if let appDelegate = AppDelegate.shared ?? (NSApplication.shared.delegate as? AppDelegate) {
                         appDelegate.minimizeToPlayer(nowPlayingViewModel: nowPlayingViewModel)
@@ -138,8 +138,8 @@ public struct MainWindowLayoutView: View {
             
             // Content Area (Library Browser, Visualizer, or other views)
             Group {
-                if showVisualizer {
-                    AudioVisualizerView(
+                if showVisualiser {
+                    AudioVisualiserView(
                         nowPlayingViewModel: nowPlayingViewModel,
                         audioEngine: audioEngine as? AudioEngine
                     )

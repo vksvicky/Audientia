@@ -36,7 +36,7 @@ public final class LibraryBrowserViewModel: ObservableObject {
     private let artworkExtractor: ArtworkExtractorProtocol
     private let logger = Logger.userInterface
     
-    // MARK: - Initialization
+    // MARK: - Initialisation
     
     @Published public private(set) var artworkCache: [UUID: TrackArtwork] = [:]
     

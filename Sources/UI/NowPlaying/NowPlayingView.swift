@@ -24,9 +24,9 @@ public struct NowPlayingView: View {
     @State private var importError: Error?
     private let audioEngine: (any AudioEngineProtocol)?
 
-    // MARK: - Initialization
+    // MARK: - Initialisation
 
-    /// Initialize with AudioEngine
+    /// Initialise with AudioEngine
     /// - Parameter audioEngine: The audio engine to control (optional, creates default if not provided)
     public init(audioEngine: (any AudioEngineProtocol)? = nil) {
         self.audioEngine = audioEngine

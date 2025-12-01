@@ -73,9 +73,9 @@ public final class NowPlayingViewModel: ObservableObject {
     /// Playback queue
     @Published public private(set) var queue: [Shared.Track] = []
     
-    /// Audio engine's visualizer for real-time spectrum analysis
-    public var visualizer: AudioVisualizerProtocol {
-        audioEngine.visualizer
+    /// Audio engine's visualiser for real-time spectrum analysis
+    public var visualiser: AudioVisualiserProtocol {
+        audioEngine.visualiser
     }
     
     // MARK: - Private Properties
@@ -84,18 +84,18 @@ public final class NowPlayingViewModel: ObservableObject {
     private var cancellables = Set<AnyCancellable>()
     private var positionUpdateTask: Task<Void, Never>?
     
-    // MARK: - Initialization
+    // MARK: - Initialisation
     
-    /// Initialize with AudioEngine
+    /// Initialise with AudioEngine
     /// - Parameter audioEngine: The audio engine to control
     public init(audioEngine: AudioEngineProtocol) {
         self.audioEngine = audioEngine
         setupObservers()
-        Logger.userInterface.info("NowPlayingViewModel initialized")
+        Logger.userInterface.info("NowPlayingViewModel initialised")
     }
     
-    /// Convenience initializer that creates a default AudioEngine
-    /// This initializer must be called from the main actor
+    /// Convenience initialiser that creates a default AudioEngine
+    /// This initialiser must be called from the main actor
     public convenience init() {
         // Create AudioEngine on the main actor
         let engine = AudioEngine()
@@ -104,7 +104,7 @@ public final class NowPlayingViewModel: ObservableObject {
     
     deinit {
         positionUpdateTask?.cancel()
-        Logger.userInterface.debug("NowPlayingViewModel deinitialized")
+        Logger.userInterface.debug("NowPlayingViewModel deinitialised")
     }
     
     // MARK: - Setup

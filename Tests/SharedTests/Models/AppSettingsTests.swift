@@ -108,7 +108,7 @@ final class AppSettingsTests: XCTestCase {
         // Given: No saved value in UserDefaults
         UserDefaults.standard.removeObject(forKey: splashScreenKey)
         
-        // When: AppSettings initializes
+        // When: AppSettings initialises
         // Since AppSettings.shared is a singleton, we verify default behavior
         // by checking what happens when the key doesn't exist
         let defaultValue = UserDefaults.standard.object(forKey: splashScreenKey) as? Bool ?? true
@@ -192,7 +192,7 @@ final class AppSettingsTests: XCTestCase {
         // Given: No customer profile exists (no saved settings)
         UserDefaults.standard.removeObject(forKey: splashScreenKey)
         
-        // When: AppSettings initializes
+        // When: AppSettings initialises
         // AppSettings.init loads showSplashScreen with default value
         let settings = AppSettings.shared
         
@@ -211,7 +211,7 @@ final class AppSettingsTests: XCTestCase {
         // Given: An existing customer profile with saved values
         UserDefaults.standard.set(false, forKey: splashScreenKey)
         
-        // When: AppSettings initializes
+        // When: AppSettings initialises
         let settings = AppSettings.shared
         
         // Then: Should load existing values

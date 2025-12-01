@@ -5,7 +5,7 @@ import Foundation
 public final class LibraryStatisticsCalculator: LibraryStatisticsProtocol, @unchecked Sendable {
     private let indexer: LibraryIndexerProtocol?
     
-    /// Initialize with a LibraryIndexerProtocol instance
+    /// Initialise with a LibraryIndexerProtocol instance
     /// - Parameter indexer: The indexer to calculate statistics from (optional)
     public init(indexer: LibraryIndexerProtocol?) {
         self.indexer = indexer

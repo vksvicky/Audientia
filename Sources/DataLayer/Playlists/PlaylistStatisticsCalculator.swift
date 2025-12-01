@@ -94,7 +94,7 @@ public struct PlaylistStatistics: Equatable, Sendable {
 /// Playlist statistics calculator implementation
 public final class PlaylistStatisticsCalculator: PlaylistStatisticsCalculatorProtocol, @unchecked Sendable {
     
-    /// Initialize the calculator
+    /// Initialise the calculator
     public init() {}
     
     /// Calculate statistics for a playlist

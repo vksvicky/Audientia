@@ -34,7 +34,7 @@ public final class TagEditHistory: @unchecked Sendable {
     private var redoStack: [TagEdit] = []
     private let maxHistorySize: Int
     
-    /// Initialize with a maximum history size
+    /// Initialise with a maximum history size
     /// - Parameter maxHistorySize: Maximum number of edits to keep in history (default: 100)
     public init(maxHistorySize: Int = 100) {
         self.maxHistorySize = maxHistorySize

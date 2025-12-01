@@ -27,7 +27,7 @@ public struct Playlist: Codable, Equatable, Hashable, Identifiable {
     /// Whether this is a smart playlist (rule-based) or regular playlist
     public let isSmart: Bool
 
-    // MARK: - Initialization
+    // MARK: - Initialisation
 
     /// Creates a new Playlist instance
     /// - Parameters:
@@ -49,7 +49,7 @@ public struct Playlist: Codable, Equatable, Hashable, Identifiable {
         self.totalDuration = totalDuration
         self.isSmart = isSmart
 
-        // Log after initialization to avoid capturing mutating self
+        // Log after initialisation to avoid capturing mutating self
         let playlistType = isSmart ? "Smart" : "Regular"
         let playlistName = name
         Logger.shared.debug("\(playlistType) playlist created: \(playlistName)")

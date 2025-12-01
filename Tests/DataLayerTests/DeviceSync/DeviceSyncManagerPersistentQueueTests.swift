@@ -51,7 +51,7 @@ final class DeviceSyncManagerPersistentQueueTests: XCTestCase {
         try await super.tearDown()
     }
     
-    func testGivenJobsInPersistentQueueWhenManagerInitializedThenJobsAreRestored() async throws {
+    func testGivenJobsInPersistentQueueWhenManagerInitialisedThenJobsAreRestored() async throws {
         // Given: Jobs in persistent queue
         let device = DeviceSyncFixtures.usbDevice()
         await discovery.setDevices([device])

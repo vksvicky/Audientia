@@ -67,8 +67,8 @@ final class TagEditorViewTests: XCTestCase {
     
     // MARK: - Right: Are the Results Right?
     
-    /// Test view initializes correctly
-    func testViewInitializes() {
+    /// Test view initialises correctly
+    func testViewInitialises() {
         // Given/When - Create view
         let view = createView()
         

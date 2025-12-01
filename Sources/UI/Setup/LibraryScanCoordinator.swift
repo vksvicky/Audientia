@@ -59,7 +59,7 @@ public final class LibraryScanCoordinator: ObservableObject {
     private let isFirstRun: Bool
     private var existingTracks: Set<String> = [] // Track file paths for comparison
     
-    // MARK: - Initialization
+    // MARK: - Initialisation
     
     public init(
         scanner: LibraryScannerProtocol = LibraryScanner(),

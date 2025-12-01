@@ -26,9 +26,9 @@ public struct SmartPlaylistRuleBuilderView: View {
     @State private var selectedLogicalOperator: SmartPlaylistRule.LogicalOperator?
     @State private var editingRuleIndex: Int?
     
-    // MARK: - Initialization
+    // MARK: - Initialisation
     
-    /// Initialize the rule builder
+    /// Initialise the rule builder
     /// - Parameter viewModel: Optional ViewModel (for testing)
     public init(viewModel: SmartPlaylistRuleBuilderViewModel? = nil) {
         if let viewModel = viewModel {

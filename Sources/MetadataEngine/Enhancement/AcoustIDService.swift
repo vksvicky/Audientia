@@ -14,7 +14,7 @@ public final class AcoustIDService: @unchecked Sendable {
     private let lookupService: AcoustIDLookupProtocol
     private let fingerprintCache: (any FingerprintCacheProtocol)?
     
-    /// Initialize with fingerprint generator and lookup service
+    /// Initialise with fingerprint generator and lookup service
     /// - Parameters:
     ///   - fingerprintGenerator: Service for generating audio fingerprints
     ///   - lookupService: Service for AcoustID lookup

@@ -103,7 +103,7 @@ final class MockAudioOutput: AudioOutputProtocol {
     func start() throws {
         startCallCount += 1
         if shouldThrowError {
-            throw errorToThrow ?? AudioEngineError.outputInitializationFailed
+            throw errorToThrow ?? AudioEngineError.outputInitialisationFailed
         }
         isPlaying = true
         isPaused = false

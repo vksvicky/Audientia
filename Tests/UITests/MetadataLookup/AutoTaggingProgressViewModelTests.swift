@@ -10,7 +10,7 @@ import XCTest
 @MainActor
 final class AutoTaggingProgressViewModelTests: XCTestCase {
     
-    func testStartInitializesState() {
+    func testStartInitialisesState() {
         let viewModel = AutoTaggingProgressViewModel()
         viewModel.start(total: 5)
         XCTAssertEqual(viewModel.total, 5)

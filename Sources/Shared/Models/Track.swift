@@ -54,7 +54,7 @@ public struct Track: Codable, Equatable, Hashable, Identifiable {
     /// User rating (1-5, optional)
     public let rating: Int?
 
-    // MARK: - Initialization
+    // MARK: - Initialisation
 
     /// Creates a new Track instance
     /// - Parameters:
@@ -103,7 +103,7 @@ public struct Track: Codable, Equatable, Hashable, Identifiable {
         self.genre = genre
         self.rating = rating
 
-        // Log after initialization to avoid capturing mutating self
+        // Log after initialisation to avoid capturing mutating self
         let trackTitle = title
         let trackArtist = artist
         Logger.shared.debug("Track created: \(trackTitle) by \(trackArtist)")

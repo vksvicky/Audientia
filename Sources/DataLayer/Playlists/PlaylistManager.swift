@@ -16,7 +16,7 @@ public final class PlaylistManager: PlaylistManagerProtocol, @unchecked Sendable
     private let indexer: LibraryIndexerProtocol
     private let playlistActor = PlaylistActor()
     
-    /// Initialize with a library indexer
+    /// Initialise with a library indexer
     /// - Parameter indexer: Library indexer for track lookups
     public init(indexer: LibraryIndexerProtocol) {
         self.indexer = indexer

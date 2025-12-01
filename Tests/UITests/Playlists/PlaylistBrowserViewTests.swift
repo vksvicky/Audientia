@@ -58,8 +58,8 @@ final class PlaylistBrowserViewTests: XCTestCase {
     
     // MARK: - [Right] Tests - Verify Expected Behavior
     
-    /// Test: View should initialize with PlaylistManager
-    func testViewInitializesWithPlaylistManager() {
+    /// Test: View should initialise with PlaylistManager
+    func testViewInitialisesWithPlaylistManager() {
         // Given - A PlaylistManager
         // When - Creating view with PlaylistManager
         let view = PlaylistBrowserView(playlistManager: mockPlaylistManager)

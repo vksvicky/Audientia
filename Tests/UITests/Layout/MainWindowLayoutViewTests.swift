@@ -29,7 +29,7 @@ final class MainWindowLayoutViewTests: XCTestCase {
     
     // MARK: - Right Results
     
-    func testViewInitialization() {
+    func testViewInitialisation() {
         // Given: A mock audio engine
         // When: Creating MainWindowLayoutView
         let view = MainWindowLayoutView(audioEngine: mockAudioEngine)
@@ -75,9 +75,9 @@ final class MainWindowLayoutViewTests: XCTestCase {
         let testViewModel = NowPlayingViewModel(audioEngine: mockAudioEngine)
         appDelegate.minimizeToPlayer(nowPlayingViewModel: testViewModel)
         
-        // Then: App should be minimized
-        XCTAssertTrue(appDelegate.isMinimized)
-        XCTAssertNotNil(appDelegate.minimizedPlayerWindow)
+        // Then: App should be minimised
+        XCTAssertTrue(appDelegate.isMinimised)
+        XCTAssertNotNil(appDelegate.minimisedPlayerWindow)
         
         // Cleanup
         appDelegate.restoreFromPlayer()

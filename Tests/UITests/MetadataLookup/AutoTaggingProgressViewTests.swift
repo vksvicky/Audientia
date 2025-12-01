@@ -11,7 +11,7 @@ import XCTest
 @MainActor
 final class AutoTaggingProgressViewTests: XCTestCase {
     
-    func testViewInitializes() {
+    func testViewInitialises() {
         let viewModel = AutoTaggingProgressViewModel()
         let view = AutoTaggingProgressView(viewModel: viewModel)
         XCTAssertNotNil(view)

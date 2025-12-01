@@ -40,9 +40,9 @@ public final class PlaylistPanelViewModel: ObservableObject {
     private let indexer: any LibraryIndexerProtocol
     private let logger = Logger.userInterface
 
-    // MARK: - Initialization
+    // MARK: - Initialisation
 
-    /// Initialize with dependencies
+    /// Initialise with dependencies
     /// - Parameters:
     ///   - playlistManager: The playlist manager to use
     ///   - indexer: The library indexer for track lookups
@@ -52,7 +52,7 @@ public final class PlaylistPanelViewModel: ObservableObject {
     ) {
         self.playlistManager = playlistManager ?? PlaylistManager(indexer: LibraryIndexer())
         self.indexer = indexer ?? LibraryIndexer()
-        logger.info("PlaylistPanelViewModel initialized")
+        logger.info("PlaylistPanelViewModel initialised")
     }
 
     // MARK: - Public Methods

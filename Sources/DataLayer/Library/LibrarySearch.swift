@@ -23,7 +23,7 @@ public final class LibrarySearch: @unchecked Sendable {
     
     private let indexer: LibraryIndexerProtocol
     
-    /// Initialize with an indexer
+    /// Initialise with an indexer
     /// - Parameter indexer: The indexer to search
     public init(indexer: LibraryIndexerProtocol) {
         self.indexer = indexer

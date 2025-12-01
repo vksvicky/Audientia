@@ -45,7 +45,7 @@ final class LibraryIndexerTests: XCTestCase {
             artist: "radiohead",
             album: "  in  rainbows "
         )
-        let indexer = LibraryIndexer(normalizer: MetadataNormalizer())
+        let indexer = LibraryIndexer(normaliser: MetadataNormaliser())
         
         // When - Index the track
         try await indexer.index(tracks: [track])

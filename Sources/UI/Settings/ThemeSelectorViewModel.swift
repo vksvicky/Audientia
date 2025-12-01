@@ -38,7 +38,7 @@ public final class ThemeSelectorViewModel: ObservableObject {
     private let themeManager: any ThemeManagerProtocol
     private let logger = Logger.userInterface
     
-    // MARK: - Initialization
+    // MARK: - Initialisation
     
     public init(themeManager: any ThemeManagerProtocol = ThemeManager()) {
         self.themeManager = themeManager

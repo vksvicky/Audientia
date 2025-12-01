@@ -39,13 +39,13 @@ public final class BatchTagOperationsViewModel: ObservableObject {
     
     private let batchOperations: any BatchTagOperationsProtocol
     
-    // MARK: - Initialization
+    // MARK: - Initialisation
     
-    /// Initialize with batch operations
+    /// Initialise with batch operations
     /// - Parameter batchOperations: The batch operations instance to use
     public init(batchOperations: any BatchTagOperationsProtocol) {
         self.batchOperations = batchOperations
-        Logger.userInterface.info("BatchTagOperationsViewModel initialized")
+        Logger.userInterface.info("BatchTagOperationsViewModel initialised")
     }
     
     // MARK: - Public Methods

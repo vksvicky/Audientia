@@ -81,9 +81,9 @@ public final class TagEditorViewModel: ObservableObject {
     private let validator: any TagValidatorProtocol
     private let history: any TagEditHistoryProtocol
     
-    // MARK: - Initialization
+    // MARK: - Initialisation
     
-    /// Initialize with dependencies
+    /// Initialise with dependencies
     /// - Parameters:
     ///   - tagWriter: Tag writer coordinator
     ///   - validator: Tag validator
@@ -96,7 +96,7 @@ public final class TagEditorViewModel: ObservableObject {
         self.tagWriter = tagWriter
         self.validator = validator
         self.history = history
-        Logger.userInterface.info("TagEditorViewModel initialized")
+        Logger.userInterface.info("TagEditorViewModel initialised")
     }
     
     // MARK: - Public Methods

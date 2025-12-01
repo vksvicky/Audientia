@@ -31,7 +31,7 @@ final class MockAudioEngine: AudioEngineProtocol {
     public var isMuted: Bool = false
     public var loopMode: LoopMode = .none
     public var isShuffleEnabled: Bool = false
-    public let visualizer: AudioVisualizerProtocol = AudioVisualizer()
+    public let visualiser: AudioVisualiserProtocol = AudioVisualiser()
     
     var playCalled = false
     var pauseCalled = false

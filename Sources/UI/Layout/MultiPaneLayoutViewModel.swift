@@ -36,7 +36,7 @@ public final class MultiPaneLayoutViewModel: ObservableObject {
     private let layoutManager: any LayoutConfigurationManagerProtocol
     private let logger = Logger.userInterface
     
-    // MARK: - Initialization
+    // MARK: - Initialisation
     
     public init(layoutManager: any LayoutConfigurationManagerProtocol = LayoutConfigurationManager()) {
         self.layoutManager = layoutManager

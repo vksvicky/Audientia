@@ -20,7 +20,7 @@ public final class LibraryScanner: LibraryScannerProtocol, @unchecked Sendable {
     private let fileManager: FileManager
     private let metadataExtractor: MetadataExtractorProtocol?
     
-    /// Initialize with a FileManager instance and optional metadata extractor
+    /// Initialise with a FileManager instance and optional metadata extractor
     /// - Parameters:
     ///   - fileManager: FileManager to use (defaults to .default)
     ///   - metadataExtractor: Optional metadata extractor for extracting track metadata

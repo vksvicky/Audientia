@@ -29,7 +29,7 @@ final class MultiPaneLayoutViewTests: XCTestCase {
         super.tearDown()
     }
     
-    func testViewInitialization() {
+    func testViewInitialisation() {
         // Given: A view model
         // When: Creating view
         let view = MultiPaneLayoutView(viewModel: viewModel)

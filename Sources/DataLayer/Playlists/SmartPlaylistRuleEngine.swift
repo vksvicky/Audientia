@@ -30,7 +30,7 @@ public protocol SmartPlaylistRuleEngineProtocol: Sendable {
 /// Smart playlist rule evaluation engine
 public final class SmartPlaylistRuleEngine: SmartPlaylistRuleEngineProtocol, @unchecked Sendable {
     
-    /// Initialize the rule engine
+    /// Initialise the rule engine
     public init() {}
     
     /// Evaluate rules against a track

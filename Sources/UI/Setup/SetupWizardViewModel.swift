@@ -47,7 +47,7 @@ public final class SetupWizardViewModel: ObservableObject {
         UserDefaults.standard.bool(forKey: Self.hasCompletedWizardKey)
     }
     
-    // MARK: - Initialization
+    // MARK: - Initialisation
     
     public init() {
         loadLibraryLocations()

@@ -36,6 +36,17 @@ public class AppSettings: ObservableObject {
         }
     }
     
+    /// Application language
+    @Published public var language: Language {
+        didSet {
+            UserDefaults.standard.set(language.rawValue, forKey: "audientia.settings.language")
+            // Update LocalisationManager
+            Task { @MainActor in
+                LocalisationManager.shared.currentLanguage = language
+            }
+        }
+    }
+    
     /// Scroll speed for track info text (pixels per second)
     /// Range: 10-100, default: 30
     @Published public var trackInfoScrollSpeed: Double {
@@ -50,7 +61,7 @@ public class AppSettings: ObservableObject {
         }
     }
 
-    // MARK: - Initialization
+    // MARK: - Initialisation
 
     private init() {
         self.appVersion = VersionManager.shared.appVersion
@@ -59,6 +70,15 @@ public class AppSettings: ObservableObject {
         // Load splash screen preference (default: true)
         let splashScreenKey = "audientia.settings.showSplashScreen"
         self.showSplashScreen = UserDefaults.standard.object(forKey: splashScreenKey) as? Bool ?? true
+        
+        // Load language preference (default: British English)
+        let languageKey = "audientia.settings.language"
+        if let savedLang = UserDefaults.standard.string(forKey: languageKey),
+           let lang = Language(rawValue: savedLang) {
+            self.language = lang
+        } else {
+            self.language = .default
+        }
         
         // Load track info scroll speed (default: 30 pixels per second)
         let scrollSpeedKey = "audientia.settings.trackInfoScrollSpeed"
@@ -74,6 +94,11 @@ public class AppSettings: ObservableObject {
 
         // Load module versions on init
         loadModuleVersions()
+        
+        // Synchronize language with LocalisationManager
+        Task { @MainActor in
+            LocalisationManager.shared.currentLanguage = self.language
+        }
     }
 
     // MARK: - Version Management

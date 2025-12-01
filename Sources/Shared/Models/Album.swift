@@ -32,7 +32,7 @@ public struct Album: Codable, Equatable, Hashable, Identifiable {
     /// Total duration of all tracks in seconds
     public let totalDuration: TimeInterval
 
-    // MARK: - Initialization
+    // MARK: - Initialisation
 
     /// Creates a new Album instance
     /// - Parameters:
@@ -60,7 +60,7 @@ public struct Album: Codable, Equatable, Hashable, Identifiable {
         self.trackCount = trackCount
         self.totalDuration = totalDuration
 
-        // Log after initialization to avoid capturing mutating self
+        // Log after initialisation to avoid capturing mutating self
         let albumTitle = title
         let albumArtist = artist
         Logger.shared.debug("Album created: \(albumTitle) by \(albumArtist)")

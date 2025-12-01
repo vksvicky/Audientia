@@ -75,7 +75,7 @@ final class MainWindowPlayerControlsArtworkBDDTests: XCTestCase {
         nowPlayingViewModel.updateState()
         
         // When - I view the player controls
-        let view = MainWindowPlayerControls(nowPlayingViewModel: nowPlayingViewModel, showVisualizer: .constant(false))
+        let view = MainWindowPlayerControls(nowPlayingViewModel: nowPlayingViewModel, showVisualiser: .constant(false))
         let hostingController = NSHostingController(rootView: view)
         
         // Then - The view should render and attempt to load artwork
@@ -94,7 +94,7 @@ final class MainWindowPlayerControlsArtworkBDDTests: XCTestCase {
         nowPlayingViewModel.updateState()
         
         // When - I view the player controls
-        let view = MainWindowPlayerControls(nowPlayingViewModel: nowPlayingViewModel, showVisualizer: .constant(false))
+        let view = MainWindowPlayerControls(nowPlayingViewModel: nowPlayingViewModel, showVisualiser: .constant(false))
         let hostingController = NSHostingController(rootView: view)
         
         // Then - The view should show a placeholder (music.note icon)
@@ -110,7 +110,7 @@ final class MainWindowPlayerControlsArtworkBDDTests: XCTestCase {
         mockAudioEngine.state = .playing
         nowPlayingViewModel.updateState()
         
-        let view = MainWindowPlayerControls(nowPlayingViewModel: nowPlayingViewModel, showVisualizer: .constant(false))
+        let view = MainWindowPlayerControls(nowPlayingViewModel: nowPlayingViewModel, showVisualiser: .constant(false))
         let hostingController = NSHostingController(rootView: view)
         XCTAssertNotNil(hostingController.view)
         
@@ -137,7 +137,7 @@ final class MainWindowPlayerControlsArtworkBDDTests: XCTestCase {
         nowPlayingViewModel.updateState()
         
         // When - I view the player controls
-        let view = MainWindowPlayerControls(nowPlayingViewModel: nowPlayingViewModel, showVisualizer: .constant(false))
+        let view = MainWindowPlayerControls(nowPlayingViewModel: nowPlayingViewModel, showVisualiser: .constant(false))
         let hostingController = NSHostingController(rootView: view)
         
         // Then - Artwork extraction should be attempted
@@ -153,7 +153,7 @@ final class MainWindowPlayerControlsArtworkBDDTests: XCTestCase {
         nowPlayingViewModel.updateState()
         
         // When - I view the player controls
-        let view = MainWindowPlayerControls(nowPlayingViewModel: nowPlayingViewModel, showVisualizer: .constant(false))
+        let view = MainWindowPlayerControls(nowPlayingViewModel: nowPlayingViewModel, showVisualiser: .constant(false))
         let hostingController = NSHostingController(rootView: view)
         
         // Then - Should attempt to load from sidecar files (cover.jpg, folder.png, etc.)
@@ -169,7 +169,7 @@ final class MainWindowPlayerControlsArtworkBDDTests: XCTestCase {
         nowPlayingViewModel.updateState()
         
         // When - I view the player controls
-        let view = MainWindowPlayerControls(nowPlayingViewModel: nowPlayingViewModel, showVisualizer: .constant(false))
+        let view = MainWindowPlayerControls(nowPlayingViewModel: nowPlayingViewModel, showVisualiser: .constant(false))
         let hostingController = NSHostingController(rootView: view)
         
         // Then - Should not crash, show placeholder instead
@@ -177,7 +177,7 @@ final class MainWindowPlayerControlsArtworkBDDTests: XCTestCase {
         XCTAssertNotNil(nowPlayingViewModel.currentTrack)
     }
     
-    /// BDD: As a user, I want artwork to be visible in both main and minimized player
+    /// BDD: As a user, I want artwork to be visible in both main and minimised player
     func testAsAUserIWantArtworkInBothPlayerViews() async {
         // Given - A track is playing
         let track = MockFactory.makeTrack(title: "Beautiful Song")
@@ -186,7 +186,7 @@ final class MainWindowPlayerControlsArtworkBDDTests: XCTestCase {
         nowPlayingViewModel.updateState()
         
         // When - I view both player controls
-        let mainView = MainWindowPlayerControls(nowPlayingViewModel: nowPlayingViewModel, showVisualizer: .constant(false))
+        let mainView = MainWindowPlayerControls(nowPlayingViewModel: nowPlayingViewModel, showVisualiser: .constant(false))
         let mainController = NSHostingController(rootView: mainView)
         
         // Then - Both views should attempt to load artwork

@@ -24,9 +24,9 @@ public struct BatchTagOperationsView: View {
     @State private var showingError = false
     @State private var errorMessage = ""
     
-    // MARK: - Initialization
+    // MARK: - Initialisation
     
-    /// Initialize with batch operations
+    /// Initialise with batch operations
     /// - Parameter batchOperations: The batch operations instance to use
     public init(batchOperations: any BatchTagOperationsProtocol) {
         _viewModel = StateObject(

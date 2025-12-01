@@ -8,8 +8,8 @@ import Foundation
 import os.log
 import Shared
 
-// Import AudioVisualizer for visualization support
-// Note: AudioVisualizer is in the AudioCore module
+// Import AudioVisualiser for visualisation support
+// Note: AudioVisualiser is in the AudioCore module
 
 // FileSystemProtocol is defined in FileSystemProtocol.swift
 
@@ -114,28 +114,28 @@ public final class AudioEngine: AudioEngineProtocol {
     var currentQueueIndex: Int = -1 // Index of current track in queue history
     var queueHistory: [Track] = [] // History of played tracks for previous navigation
     private var previousVolume: Float = 1.0 // Volume before muting
-    var visualizerTap: AudioVisualizerTap?
+    var visualiserTap: AudioVisualiserTap?
     
-    /// Audio visualizer for real-time spectrum analysis
-    public let visualizer: AudioVisualizerProtocol
+    /// Audio visualiser for real-time spectrum analysis
+    public let visualiser: AudioVisualiserProtocol
     
-    // MARK: - Initialization
+    // MARK: - Initialisation
     
     /// Current detected audio format (if available)
     public private(set) var detectedFormat: DecodedAudioFormat?
     public private(set) var lastFormatDetectionError: Error?
     
-    /// Initialize AudioEngine with default dependencies
+    /// Initialise AudioEngine with default dependencies
     public init() {
         self.fileSystem = RealFileSystem()
         self.formatCoordinator = DefaultFormatDecodingCoordinator()
         self.nativeEngine = CAudioEngine()
-        self.visualizer = AudioVisualizer()
-        self.visualizerTap = AudioVisualizerTap(visualizer: self.visualizer)
-        Logger.audio.debug("AudioEngine initialized")
+        self.visualiser = AudioVisualiser()
+        self.visualiserTap = AudioVisualiserTap(visualiser: self.visualiser)
+        Logger.audio.debug("AudioEngine initialised")
     }
     
-    /// Initialize AudioEngine with custom dependencies (mainly for testing)
+    /// Initialise AudioEngine with custom dependencies (mainly for testing)
     /// - Parameters:
     ///   - fileSystem: File system abstraction
     ///   - formatCoordinator: Format decoder coordinator
@@ -144,13 +144,13 @@ public final class AudioEngine: AudioEngineProtocol {
         fileSystem: FileSystemProtocol,
         formatCoordinator: FormatDecodingCoordinating = DefaultFormatDecodingCoordinator(),
         nativeEngine: NativeAudioEngineProtocol,
-        visualizer: AudioVisualizerProtocol? = nil
+        visualiser: AudioVisualiserProtocol? = nil
     ) {
         self.fileSystem = fileSystem
         self.formatCoordinator = formatCoordinator
         self.nativeEngine = nativeEngine
-        self.visualizer = visualizer ?? AudioVisualizer()
-        Logger.audio.debug("AudioEngine initialized with custom dependencies")
+        self.visualiser = visualiser ?? AudioVisualiser()
+        Logger.audio.debug("AudioEngine initialised with custom dependencies")
     }
     
     @MainActor
@@ -167,7 +167,7 @@ public final class AudioEngine: AudioEngineProtocol {
     
     deinit {
         positionUpdateTask?.cancel()
-        Logger.audio.debug("AudioEngine deinitialized")
+        Logger.audio.debug("AudioEngine deinitialised")
     }
     
     // MARK: - Track Loading
@@ -182,7 +182,7 @@ public final class AudioEngine: AudioEngineProtocol {
         if state == .playing || state == .paused {
             Logger.audio.debug("Stopping current playback before loading new track")
             stopPositionTracking()
-            visualizerTap?.stop()
+            visualiserTap?.stop()
             nativeEngine.stop()
             currentPosition = 0.0
         }
@@ -239,10 +239,10 @@ public final class AudioEngine: AudioEngineProtocol {
         currentPosition = nativeEngine.currentPosition
         currentTrack = track
         
-        // Setup audio tap for visualization if available
-        // This provides real-time audio data for the visualizer
-        if visualizerTap?.setupAudioEngine(filePath: track.filePath) == true {
-            Logger.audio.debug("Audio visualizer tap installed for: \(track.title)")
+        // Setup audio tap for visualisation if available
+        // This provides real-time audio data for the visualiser
+        if visualiserTap?.setupAudioEngine(filePath: track.filePath) == true {
+            Logger.audio.debug("Audio visualiser tap installed for: \(track.title)")
         }
         
         state = .stopped
@@ -282,12 +282,12 @@ public final class AudioEngine: AudioEngineProtocol {
             throw AudioEngineError.trackLoadFailed("Native audio engine failed to start playback")
         }
         
-        // Start visualizer tap for real-time audio data (runs in parallel, no audio output)
-        // This provides real audio samples for visualization
+        // Start visualiser tap for real-time audio data (runs in parallel, no audio output)
+        // This provides real audio samples for visualisation
         // Sync with current playback position if available
         let currentPos = currentPosition
-        if visualizerTap?.play(startPosition: currentPos > 0 ? currentPos : nil) == false {
-            Logger.audio.warning("Failed to start visualizer tap, visualization may not work")
+        if visualiserTap?.play(startPosition: currentPos > 0 ? currentPos : nil) == false {
+            Logger.audio.warning("Failed to start visualiser tap, visualisation may not work")
         }
         
         // Start position tracking
@@ -307,7 +307,7 @@ public final class AudioEngine: AudioEngineProtocol {
         
         Logger.audio.info("Pausing playback")
         stopPositionTracking()
-        visualizerTap?.pause()
+        visualiserTap?.pause()
         nativeEngine.pause()
         state = .paused
     }
@@ -332,12 +332,12 @@ public final class AudioEngine: AudioEngineProtocol {
             throw AudioEngineError.trackLoadFailed("Native audio engine failed to resume playback")
         }
         
-        // Restart visualizer tap for real-time audio data (runs in parallel, no audio output)
-        // This ensures visualization continues after resume
+        // Restart visualiser tap for real-time audio data (runs in parallel, no audio output)
+        // This ensures visualisation continues after resume
         // Sync with current playback position if available
         let currentPos = currentPosition
-        if visualizerTap?.play(startPosition: currentPos > 0 ? currentPos : nil) == false {
-            Logger.audio.warning("Failed to restart visualizer tap on resume, visualization may not work")
+        if visualiserTap?.play(startPosition: currentPos > 0 ? currentPos : nil) == false {
+            Logger.audio.warning("Failed to restart visualiser tap on resume, visualisation may not work")
         }
         
         startPositionTracking()
@@ -349,7 +349,7 @@ public final class AudioEngine: AudioEngineProtocol {
     public func stop() async {
         Logger.audio.info("Stopping playback")
         stopPositionTracking()
-        visualizerTap?.stop()
+        visualiserTap?.stop()
         nativeEngine.stop()
         currentPosition = 0.0
         state = .stopped
@@ -618,18 +618,18 @@ extension AudioEngine {
 
 // MARK: - Visualization Extension
 extension AudioEngine {
-    /// Set visualization volume (0.0 to 1.0)
-    /// Controls the output volume of the visualization engine
+    /// Set visualisation volume (0.0 to 1.0)
+    /// Controls the output volume of the visualisation engine
     /// - Parameter volume: Volume level (0.0 to 1.0), will be clamped
     public func setVisualizationVolume(_ volume: Float) {
         let clamped = max(0.0, min(1.0, volume))
-        visualizerTap?.volume = clamped
+        visualiserTap?.volume = clamped
     }
     
-    /// Get current visualization volume
-    /// - Returns: Current visualization volume (0.0 to 1.0)
+    /// Get current visualisation volume
+    /// - Returns: Current visualisation volume (0.0 to 1.0)
     public func getVisualizationVolume() -> Float {
-        visualizerTap?.volume ?? 1.0
+        visualiserTap?.volume ?? 1.0
     }
 }
 

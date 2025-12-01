@@ -28,9 +28,9 @@ public struct PlaylistBrowserView: View {
     @State private var showingRenameDialog = false
     @State private var renameText = ""
     
-    // MARK: - Initialization
+    // MARK: - Initialisation
     
-    /// Initialize with PlaylistManager
+    /// Initialise with PlaylistManager
     /// - Parameter playlistManager: The playlist manager to use (optional, creates default if not provided)
     public init(playlistManager: (any PlaylistManagerProtocol)? = nil) {
         if let playlistManager = playlistManager {

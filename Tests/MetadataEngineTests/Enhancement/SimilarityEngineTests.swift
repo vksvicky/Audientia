@@ -19,7 +19,7 @@ final class SimilarityEngineTests: XCTestCase {
     override func setUp() async throws {
         try await super.setUp()
         mockClassifier = MockMLClassifier()
-        // Will be initialized with mock implementation
+        // Will be initialised with mock implementation
     }
     
     override func tearDown() async throws {

@@ -18,7 +18,7 @@ final class CAudioEngineTests: XCTestCase {
     
     // MARK: - [Right] Tests: Are the Results Right?
     
-    /// BDD: Given a C++ audio engine, when I initialize it, then it should be in stopped state
+    /// BDD: Given a C++ audio engine, when I initialise it, then it should be in stopped state
     func testInitialStateIsStopped() {
         // Given
         let engine = CAudioEngine()

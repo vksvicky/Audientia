@@ -67,11 +67,11 @@ final class MainWindowPlayerControlsTests: XCTestCase {
     
     // MARK: - [Right] Tests - Verify Expected Behavior
     
-    /// Test: View should initialize with NowPlayingViewModel
-    func testViewInitialization() {
+    /// Test: View should initialise with NowPlayingViewModel
+    func testViewInitialisation() {
         // Given: A NowPlayingViewModel
         // When: Creating MainWindowPlayerControls
-        let view = MainWindowPlayerControls(nowPlayingViewModel: nowPlayingViewModel, showVisualizer: .constant(false))
+        let view = MainWindowPlayerControls(nowPlayingViewModel: nowPlayingViewModel, showVisualiser: .constant(false))
         
         // Then: View should be hosted without triggering SwiftUI state warnings
         let hostingController = NSHostingController(rootView: view)
@@ -91,7 +91,7 @@ final class MainWindowPlayerControlsTests: XCTestCase {
         nowPlayingViewModel.updateState()
         
         // When: View is rendered
-        let view = MainWindowPlayerControls(nowPlayingViewModel: nowPlayingViewModel, showVisualizer: .constant(false))
+        let view = MainWindowPlayerControls(nowPlayingViewModel: nowPlayingViewModel, showVisualiser: .constant(false))
         
         // Then: View should display track information
         let hostingController = NSHostingController(rootView: view)
@@ -108,7 +108,7 @@ final class MainWindowPlayerControlsTests: XCTestCase {
         nowPlayingViewModel.updateState()
         
         // When: View is rendered
-        let view = MainWindowPlayerControls(nowPlayingViewModel: nowPlayingViewModel, showVisualizer: .constant(false))
+        let view = MainWindowPlayerControls(nowPlayingViewModel: nowPlayingViewModel, showVisualiser: .constant(false))
         
         // Then: View should show "No track selected"
         let hostingController = NSHostingController(rootView: view)
@@ -127,7 +127,7 @@ final class MainWindowPlayerControlsTests: XCTestCase {
         nowPlayingViewModel.updateState()
         
         // When: View is rendered
-        let view = MainWindowPlayerControls(nowPlayingViewModel: nowPlayingViewModel, showVisualizer: .constant(false))
+        let view = MainWindowPlayerControls(nowPlayingViewModel: nowPlayingViewModel, showVisualiser: .constant(false))
         
         // Then: Previous button should be disabled
         let hostingController = NSHostingController(rootView: view)
@@ -144,7 +144,7 @@ final class MainWindowPlayerControlsTests: XCTestCase {
         nowPlayingViewModel.updateState()
         
         // When: View is rendered
-        let view = MainWindowPlayerControls(nowPlayingViewModel: nowPlayingViewModel, showVisualizer: .constant(false))
+        let view = MainWindowPlayerControls(nowPlayingViewModel: nowPlayingViewModel, showVisualiser: .constant(false))
         
         // Then: Next button should be disabled
         let hostingController = NSHostingController(rootView: view)
@@ -162,7 +162,7 @@ final class MainWindowPlayerControlsTests: XCTestCase {
         nowPlayingViewModel.updateState()
         
         // When: View is rendered
-        let view = MainWindowPlayerControls(nowPlayingViewModel: nowPlayingViewModel, showVisualizer: .constant(false))
+        let view = MainWindowPlayerControls(nowPlayingViewModel: nowPlayingViewModel, showVisualiser: .constant(false))
         
         // Then: Previous button should be enabled
         let hostingController = NSHostingController(rootView: view)
@@ -180,7 +180,7 @@ final class MainWindowPlayerControlsTests: XCTestCase {
         nowPlayingViewModel.updateState()
         
         // When: View is rendered
-        let view = MainWindowPlayerControls(nowPlayingViewModel: nowPlayingViewModel, showVisualizer: .constant(false))
+        let view = MainWindowPlayerControls(nowPlayingViewModel: nowPlayingViewModel, showVisualiser: .constant(false))
         
         // Then: Next button should be enabled
         let hostingController = NSHostingController(rootView: view)
@@ -199,7 +199,7 @@ final class MainWindowPlayerControlsTests: XCTestCase {
         nowPlayingViewModel.updateState()
         
         // When: View is rendered
-        let view = MainWindowPlayerControls(nowPlayingViewModel: nowPlayingViewModel, showVisualizer: .constant(false))
+        let view = MainWindowPlayerControls(nowPlayingViewModel: nowPlayingViewModel, showVisualiser: .constant(false))
         
         // Then: Play button should show pause icon
         let hostingController = NSHostingController(rootView: view)
@@ -216,7 +216,7 @@ final class MainWindowPlayerControlsTests: XCTestCase {
         nowPlayingViewModel.updateState()
         
         // When: View is rendered
-        let view = MainWindowPlayerControls(nowPlayingViewModel: nowPlayingViewModel, showVisualizer: .constant(false))
+        let view = MainWindowPlayerControls(nowPlayingViewModel: nowPlayingViewModel, showVisualiser: .constant(false))
         
         // Then: Play button should show play icon
         let hostingController = NSHostingController(rootView: view)
@@ -235,7 +235,7 @@ final class MainWindowPlayerControlsTests: XCTestCase {
         // When: Loop mode is none
         mockAudioEngine.loopMode = .none
         nowPlayingViewModel.updateState()
-        var view = MainWindowPlayerControls(nowPlayingViewModel: nowPlayingViewModel, showVisualizer: .constant(false))
+        var view = MainWindowPlayerControls(nowPlayingViewModel: nowPlayingViewModel, showVisualiser: .constant(false))
         let hostingControllerNone = NSHostingController(rootView: view)
         XCTAssertNotNil(hostingControllerNone.view)
         XCTAssertEqual(nowPlayingViewModel.loopMode, .none)
@@ -243,7 +243,7 @@ final class MainWindowPlayerControlsTests: XCTestCase {
         // When: Loop mode is track
         mockAudioEngine.loopMode = .track
         nowPlayingViewModel.updateState()
-        view = MainWindowPlayerControls(nowPlayingViewModel: nowPlayingViewModel, showVisualizer: .constant(false))
+        view = MainWindowPlayerControls(nowPlayingViewModel: nowPlayingViewModel, showVisualiser: .constant(false))
         let hostingControllerTrack = NSHostingController(rootView: view)
         XCTAssertNotNil(hostingControllerTrack.view)
         XCTAssertEqual(nowPlayingViewModel.loopMode, .track)
@@ -251,7 +251,7 @@ final class MainWindowPlayerControlsTests: XCTestCase {
         // When: Loop mode is queue
         mockAudioEngine.loopMode = .queue
         nowPlayingViewModel.updateState()
-        view = MainWindowPlayerControls(nowPlayingViewModel: nowPlayingViewModel, showVisualizer: .constant(false))
+        view = MainWindowPlayerControls(nowPlayingViewModel: nowPlayingViewModel, showVisualiser: .constant(false))
         let hostingControllerQueue = NSHostingController(rootView: view)
         XCTAssertNotNil(hostingControllerQueue.view)
         XCTAssertEqual(nowPlayingViewModel.loopMode, .queue)
@@ -266,7 +266,7 @@ final class MainWindowPlayerControlsTests: XCTestCase {
         nowPlayingViewModel.updateState()
         
         // When: View is rendered
-        let view = MainWindowPlayerControls(nowPlayingViewModel: nowPlayingViewModel, showVisualizer: .constant(false))
+        let view = MainWindowPlayerControls(nowPlayingViewModel: nowPlayingViewModel, showVisualiser: .constant(false))
         
         // Then: Shuffle should be active
         let hostingController = NSHostingController(rootView: view)
@@ -283,7 +283,7 @@ final class MainWindowPlayerControlsTests: XCTestCase {
         nowPlayingViewModel.updateState()
         
         // When: View is rendered
-        let view = MainWindowPlayerControls(nowPlayingViewModel: nowPlayingViewModel, showVisualizer: .constant(false))
+        let view = MainWindowPlayerControls(nowPlayingViewModel: nowPlayingViewModel, showVisualiser: .constant(false))
         
         // Then: Shuffle should be inactive
         let hostingController = NSHostingController(rootView: view)
@@ -300,7 +300,7 @@ final class MainWindowPlayerControlsTests: XCTestCase {
         nowPlayingViewModel.updateState()
         
         // When: View is rendered
-        let view = MainWindowPlayerControls(nowPlayingViewModel: nowPlayingViewModel, showVisualizer: .constant(false))
+        let view = MainWindowPlayerControls(nowPlayingViewModel: nowPlayingViewModel, showVisualiser: .constant(false))
         
         // Then: Loop mode should be active
         let hostingController = NSHostingController(rootView: view)
@@ -317,7 +317,7 @@ final class MainWindowPlayerControlsTests: XCTestCase {
         nowPlayingViewModel.updateState()
         
         // When: View is rendered
-        let view = MainWindowPlayerControls(nowPlayingViewModel: nowPlayingViewModel, showVisualizer: .constant(false))
+        let view = MainWindowPlayerControls(nowPlayingViewModel: nowPlayingViewModel, showVisualiser: .constant(false))
         
         // Then: Loop mode should be none
         let hostingController = NSHostingController(rootView: view)
@@ -332,8 +332,8 @@ final class MainWindowPlayerControlsTests: XCTestCase {
         mockAudioEngine.currentTrack = track
         nowPlayingViewModel.updateState()
         
-        // When: View is rendered with visualizer active
-        let view = MainWindowPlayerControls(nowPlayingViewModel: nowPlayingViewModel, showVisualizer: .constant(true))
+        // When: View is rendered with visualiser active
+        let view = MainWindowPlayerControls(nowPlayingViewModel: nowPlayingViewModel, showVisualiser: .constant(true))
         
         // Then: Visualizer button should show active state
         let hostingController = NSHostingController(rootView: view)
@@ -348,8 +348,8 @@ final class MainWindowPlayerControlsTests: XCTestCase {
         mockAudioEngine.currentTrack = track
         nowPlayingViewModel.updateState()
         
-        // When: View is rendered with visualizer inactive
-        let view = MainWindowPlayerControls(nowPlayingViewModel: nowPlayingViewModel, showVisualizer: .constant(false))
+        // When: View is rendered with visualiser inactive
+        let view = MainWindowPlayerControls(nowPlayingViewModel: nowPlayingViewModel, showVisualiser: .constant(false))
         
         // Then: Visualizer button should show inactive state
         let hostingController = NSHostingController(rootView: view)
@@ -366,7 +366,7 @@ final class MainWindowPlayerControlsTests: XCTestCase {
         // When: Not muted
         mockAudioEngine.isMuted = false
         nowPlayingViewModel.updateState()
-        var view = MainWindowPlayerControls(nowPlayingViewModel: nowPlayingViewModel, showVisualizer: .constant(false))
+        var view = MainWindowPlayerControls(nowPlayingViewModel: nowPlayingViewModel, showVisualiser: .constant(false))
         var hostingController = NSHostingController(rootView: view)
         XCTAssertNotNil(hostingController.view)
         XCTAssertFalse(nowPlayingViewModel.isMuted)
@@ -374,7 +374,7 @@ final class MainWindowPlayerControlsTests: XCTestCase {
         // When: Muted
         mockAudioEngine.isMuted = true
         nowPlayingViewModel.updateState()
-        view = MainWindowPlayerControls(nowPlayingViewModel: nowPlayingViewModel, showVisualizer: .constant(false))
+        view = MainWindowPlayerControls(nowPlayingViewModel: nowPlayingViewModel, showVisualiser: .constant(false))
         hostingController = NSHostingController(rootView: view)
         XCTAssertNotNil(hostingController.view)
         XCTAssertTrue(nowPlayingViewModel.isMuted)
@@ -390,7 +390,7 @@ final class MainWindowPlayerControlsTests: XCTestCase {
         nowPlayingViewModel.updateState()
         
         // When: View is rendered
-        let view = MainWindowPlayerControls(nowPlayingViewModel: nowPlayingViewModel, showVisualizer: .constant(false))
+        let view = MainWindowPlayerControls(nowPlayingViewModel: nowPlayingViewModel, showVisualiser: .constant(false))
         
         // Then: View should not crash
         let hostingController = NSHostingController(rootView: view)
@@ -408,7 +408,7 @@ final class MainWindowPlayerControlsTests: XCTestCase {
         nowPlayingViewModel.updateState()
         
         // When: View is rendered
-        let view = MainWindowPlayerControls(nowPlayingViewModel: nowPlayingViewModel, showVisualizer: .constant(false))
+        let view = MainWindowPlayerControls(nowPlayingViewModel: nowPlayingViewModel, showVisualiser: .constant(false))
         
         // Then: View should not crash
         let hostingController = NSHostingController(rootView: view)
@@ -425,7 +425,7 @@ final class MainWindowPlayerControlsTests: XCTestCase {
         mockAudioEngine.currentTrack = track1
         nowPlayingViewModel.updateState()
         
-        let view = MainWindowPlayerControls(nowPlayingViewModel: nowPlayingViewModel, showVisualizer: .constant(false))
+        let view = MainWindowPlayerControls(nowPlayingViewModel: nowPlayingViewModel, showVisualiser: .constant(false))
         let hostingController = NSHostingController(rootView: view)
         XCTAssertNotNil(hostingController.view)
         
@@ -452,7 +452,7 @@ final class MainWindowPlayerControlsTests: XCTestCase {
         nowPlayingViewModel.updateState()
         
         // When: View is rendered
-        let view = MainWindowPlayerControls(nowPlayingViewModel: nowPlayingViewModel, showVisualizer: .constant(false))
+        let view = MainWindowPlayerControls(nowPlayingViewModel: nowPlayingViewModel, showVisualiser: .constant(false))
         let hostingController = NSHostingController(rootView: view)
         
         // Then: View should render without crashing (artwork should be nil)
@@ -465,7 +465,7 @@ final class MainWindowPlayerControlsTests: XCTestCase {
         // Given: Multiple tracks
         let tracks = (0..<5).map { MockFactory.makeTrack(title: "Track \($0)") }
         
-        let view = MainWindowPlayerControls(nowPlayingViewModel: nowPlayingViewModel, showVisualizer: .constant(false))
+        let view = MainWindowPlayerControls(nowPlayingViewModel: nowPlayingViewModel, showVisualiser: .constant(false))
         let hostingController = NSHostingController(rootView: view)
         XCTAssertNotNil(hostingController.view)
         
@@ -491,7 +491,7 @@ final class MainWindowPlayerControlsTests: XCTestCase {
         nowPlayingViewModel.updateState()
         
         // When: View is rendered
-        let view = MainWindowPlayerControls(nowPlayingViewModel: nowPlayingViewModel, showVisualizer: .constant(false))
+        let view = MainWindowPlayerControls(nowPlayingViewModel: nowPlayingViewModel, showVisualiser: .constant(false))
         let hostingController = NSHostingController(rootView: view)
         
         // Then: Should not crash, artwork should be nil
@@ -510,7 +510,7 @@ final class MainWindowPlayerControlsTests: XCTestCase {
             nowPlayingViewModel.updateState()
             
             // When: View is rendered
-            let view = MainWindowPlayerControls(nowPlayingViewModel: nowPlayingViewModel, showVisualizer: .constant(false))
+            let view = MainWindowPlayerControls(nowPlayingViewModel: nowPlayingViewModel, showVisualiser: .constant(false))
             let hostingController = NSHostingController(rootView: view)
             
             // Then: Should not crash
@@ -530,7 +530,7 @@ final class MainWindowPlayerControlsTests: XCTestCase {
         
         // When: View is rendered
         measure {
-            let view = MainWindowPlayerControls(nowPlayingViewModel: nowPlayingViewModel, showVisualizer: .constant(false))
+            let view = MainWindowPlayerControls(nowPlayingViewModel: nowPlayingViewModel, showVisualiser: .constant(false))
             let hostingController = NSHostingController(rootView: view)
             _ = hostingController.view
         }
@@ -545,7 +545,7 @@ final class MainWindowPlayerControlsTests: XCTestCase {
         
         // When: Measuring artwork loading performance
         measure {
-            let view = MainWindowPlayerControls(nowPlayingViewModel: nowPlayingViewModel, showVisualizer: .constant(false))
+            let view = MainWindowPlayerControls(nowPlayingViewModel: nowPlayingViewModel, showVisualiser: .constant(false))
             let hostingController = NSHostingController(rootView: view)
             _ = hostingController.view
         }

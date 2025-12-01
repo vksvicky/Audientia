@@ -30,9 +30,9 @@ public struct TagEditorView: View {
     private let musicBrainzClient: (any MusicBrainzClientProtocol)?
     private let discogsClient: (any DiscogsClientProtocol)?
     
-    // MARK: - Initialization
+    // MARK: - Initialisation
     
-    /// Initialize with dependencies
+    /// Initialise with dependencies
     /// - Parameters:
     ///   - tagWriter: Tag writer coordinator
     ///   - validator: Tag validator

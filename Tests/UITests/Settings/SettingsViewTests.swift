@@ -47,7 +47,7 @@ final class SettingsViewTests: XCTestCase {
         super.tearDown()
     }
     
-    func testViewInitialization() {
+    func testViewInitialisation() {
         // Given: A view model
         // When: Creating view
         let view = SettingsView(viewModel: viewModel)

@@ -77,8 +77,8 @@ final class PlaylistEditorViewTests: XCTestCase {
     
     // MARK: - [Right] Tests - Verify Expected Behavior
     
-    /// Test: View should initialize with PlaylistManager and playlist ID
-    func testViewInitializesWithPlaylistManagerAndId() {
+    /// Test: View should initialise with PlaylistManager and playlist ID
+    func testViewInitialisesWithPlaylistManagerAndId() {
         // Given - A PlaylistManager and playlist ID
         let playlistId = UUID()
         

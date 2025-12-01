@@ -124,6 +124,6 @@ public protocol AudioEngineProtocol {
     
     // MARK: - Visualizer
     
-    /// Audio visualizer for real-time spectrum analysis
-    var visualizer: AudioVisualizerProtocol { get }
+    /// Audio visualiser for real-time spectrum analysis
+    var visualiser: AudioVisualiserProtocol { get }
 }

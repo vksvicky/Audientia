@@ -29,9 +29,9 @@ final class AudientiaAppTests: XCTestCase {
     
     // MARK: - Right Results
     
-    func testAppDelegateInitialization() {
+    func testAppDelegateInitialisation() {
         // Given: AppDelegate
-        // When: Initialized
+        // When: Initialised
         // Then: Should be created successfully
         XCTAssertNotNil(appDelegate)
     }

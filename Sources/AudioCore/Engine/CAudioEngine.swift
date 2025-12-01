@@ -57,7 +57,7 @@ public final class CAudioEngine {
     private var positionUpdateTask: Task<Void, Never>?
     private let positionUpdateInterval: TimeInterval = 0.1 // Update every 100ms
     
-    // MARK: - Initialization
+    // MARK: - Initialisation
     
     public init() {
         self.cppEngine = CAudioEngineWrapper()
@@ -77,7 +77,7 @@ public final class CAudioEngine {
     /// - Note: This operation may perform blocking I/O, so it's async to avoid blocking the main thread
     public func loadFile(_ filePath: String) async -> Bool {
         // Run blocking I/O operation off the main actor
-        // Note: AVAudioPlayer initialization can block, so we run it in a detached task
+        // Note: AVAudioPlayer initialisation can block, so we run it in a detached task
         let success = await Task.detached {
             await self.cppEngine.loadFile(filePath)
         }.value

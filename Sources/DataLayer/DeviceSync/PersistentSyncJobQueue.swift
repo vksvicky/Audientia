@@ -17,7 +17,7 @@ public actor PersistentSyncJobQueue: SyncJobQueueProtocol {
     private let databaseURL: URL
     private var db: OpaquePointer?
     private var waiters: [CheckedContinuation<SyncJob?, Never>] = []
-    private var isInitialized = false
+    private var isInitialised = false
     
     // Current schema version - increment when schema changes
     private static let currentSchemaVersion: Int32 = 1
@@ -79,7 +79,7 @@ public actor PersistentSyncJobQueue: SyncJobQueueProtocol {
                 sqlite3_close_v2(db)
             }
             self.db = nil
-            isInitialized = false
+            isInitialised = false
         }
     }
     
@@ -92,7 +92,7 @@ public actor PersistentSyncJobQueue: SyncJobQueueProtocol {
     
     // MARK: - Private Database Operations
     
-    private func initializeDatabase() async {
+    private func initialiseDatabase() async {
         let result = sqlite3_open_v2(
             databaseURL.path,
             &db,
@@ -113,9 +113,9 @@ public actor PersistentSyncJobQueue: SyncJobQueueProtocol {
     }
     
     private func ensureDatabaseOpen() async {
-        if !isInitialized {
-            await initializeDatabase()
-            isInitialized = true
+        if !isInitialised {
+            await initialiseDatabase()
+            isInitialised = true
         }
     }
     

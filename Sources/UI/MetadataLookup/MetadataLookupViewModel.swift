@@ -58,7 +58,7 @@ public final class MetadataLookupViewModel: ObservableObject {
     private let discogsClient: any DiscogsClientProtocol
     private let baseMetadataMerger: any MetadataMergeStrategyProtocol
     
-    // MARK: - Initialization
+    // MARK: - Initialisation
     
     public init(
         acoustIDService: any AcoustIDServicing,

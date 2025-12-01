@@ -14,16 +14,16 @@ import Foundation
 public struct WindowState: Codable, Equatable, Sendable {
     public var frame: CGRect
     public var isMaximized: Bool
-    public var isMinimized: Bool
+    public var isMinimised: Bool
     
     public init(
         frame: CGRect = CGRect(x: 100, y: 100, width: 1200, height: 800),
         isMaximized: Bool = false,
-        isMinimized: Bool = false
+        isMinimised: Bool = false
     ) {
         self.frame = frame
         self.isMaximized = isMaximized
-        self.isMinimized = isMinimized
+        self.isMinimised = isMinimised
     }
 }
 
