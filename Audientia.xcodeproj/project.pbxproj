@@ -655,6 +655,7 @@
 		E23DB8772EDD0C22007AC259 /* LayoutCustomizationViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E23DB8672EDD0C22007AC259 /* LayoutCustomizationViewModelTests.swift */; };
 		E23DB8782EDD0C22007AC259 /* SettingsViewBDDTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E23DB86A2EDD0C22007AC259 /* SettingsViewBDDTests.swift */; };
 		E23DB8792EDD0C22007AC259 /* ThemeSelectorViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E23DB86F2EDD0C22007AC259 /* ThemeSelectorViewModelTests.swift */; };
+		E23DB87B2EDDA873007AC259 /* AudioEngineTrackCompletion.swift in Sources */ = {isa = PBXBuildFile; fileRef = E23DB87A2EDDA873007AC259 /* AudioEngineTrackCompletion.swift */; };
 		E2407FAA2ED70A210054F668 /* PlaylistPanelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2407FA82ED70A210054F668 /* PlaylistPanelView.swift */; };
 		E2407FAB2ED70A210054F668 /* PlaylistPanelViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2407FA92ED70A210054F668 /* PlaylistPanelViewModel.swift */; };
 		E2407FAC2ED70A210054F668 /* PlaylistPanelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2407FA82ED70A210054F668 /* PlaylistPanelView.swift */; };
@@ -1632,6 +1633,7 @@
 		E23DB86D2EDD0C22007AC259 /* SettingsViewTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewTests.swift; sourceTree = "<group>"; };
 		E23DB86E2EDD0C22007AC259 /* ThemeSelectorViewModelBDDTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeSelectorViewModelBDDTests.swift; sourceTree = "<group>"; };
 		E23DB86F2EDD0C22007AC259 /* ThemeSelectorViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeSelectorViewModelTests.swift; sourceTree = "<group>"; };
+		E23DB87A2EDDA873007AC259 /* AudioEngineTrackCompletion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioEngineTrackCompletion.swift; sourceTree = "<group>"; };
 		E2407FA82ED70A210054F668 /* PlaylistPanelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaylistPanelView.swift; sourceTree = "<group>"; };
 		E2407FA92ED70A210054F668 /* PlaylistPanelViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaylistPanelViewModel.swift; sourceTree = "<group>"; };
 		E2407FAE2ED70A500054F668 /* TrackDetailsDependencies.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackDetailsDependencies.swift; sourceTree = "<group>"; };
@@ -2394,6 +2396,7 @@
 		5C12721AD9F5907FD3439739 /* Engine */ = {
 			isa = PBXGroup;
 			children = (
+				E23DB87A2EDDA873007AC259 /* AudioEngineTrackCompletion.swift */,
 				E23DB84E2EDBBE06007AC259 /* AudioVisualizerTapHelpers.swift */,
 				E23DB8372EDB8E53007AC259 /* AudioVisualizerTap.swift */,
 				595646096456ABC6D381E0FC /* AudioEngine.swift */,
@@ -4217,6 +4220,7 @@
 				7E16DABD89A966E1BBE812FA /* CAudioEngineBridge.cpp in Sources */,
 				44FF6FA24D32ACECA4CB9547 /* Crossfade.swift in Sources */,
 				712D1A5D7681421CC1EE7C10 /* CrossfadeProtocol.swift in Sources */,
+				E23DB87B2EDDA873007AC259 /* AudioEngineTrackCompletion.swift in Sources */,
 				BE541EA7A45DEEE6DB3BC11B /* FileSystemProtocol.swift in Sources */,
 				87F971118D79BC770BF64D32 /* FormatDecoderCoordinator.swift in Sources */,
 				E23DB83E2EDB983E007AC259 /* SpectrumNormalizer.swift in Sources */,

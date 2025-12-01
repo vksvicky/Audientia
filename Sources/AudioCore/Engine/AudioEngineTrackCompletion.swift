@@ -1,5 +1,5 @@
 //
-//  AudioEngine+TrackCompletion.swift
+//  AudioEngineTrackCompletion.swift
 //  Audientia
 //
 //  Extracted track completion and queue handling logic to keep AudioEngine.swift
@@ -7,8 +7,11 @@
 //
 
 import Foundation
+import os.log
 
 // MARK: - Track Completion Handling Extension
+
+// Keep in same module as AudioEngine; defined in AudioEngine.swift
 
 extension AudioEngine {
     func handleTrackCompletion() async {
@@ -123,5 +126,3 @@ extension AudioEngine {
         }
     }
 }
-
-
