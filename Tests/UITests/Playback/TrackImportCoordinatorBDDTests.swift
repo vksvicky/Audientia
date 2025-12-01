@@ -124,23 +124,54 @@ final class TrackImportCoordinatorBDDTests: XCTestCase {
         XCTAssertTrue(mockAudioEngine.currentTrack?.filePath.contains("autoplay") ?? false)
     }
 
-    func testAsAUserIDropFilesWhileAlreadyPlayingAndExpectNoAutoPlay() async throws {
-        // Given: Playback is already active
+    func testAsAUserIDropASingleFileWhilePlayingAndExpectItToReplaceCurrentTrack() async throws {
+        // Given: I'm listening to a track
         mockAudioEngine.currentTrack = makeTrack(title: "currently-playing")
-        mockAudioEngine.queue = [makeTrack(title: "queued-track")]
+        mockAudioEngine.state = .playing
 
-        let url = URL(fileURLWithPath: "/tmp/no-autoplay.flac")
+        let url = URL(fileURLWithPath: "/tmp/replace-with-this.mp3")
         FileManager.default.createFile(atPath: url.path, contents: Data("fake audio".utf8), attributes: nil)
         defer { try? FileManager.default.removeItem(at: url) }
 
-        // When: I drop another file
+        // When: I drag and drop a new single track
         try await coordinator.importFiles(urls: [url])
 
-        // Then: It should queue without interrupting ongoing playback
-        XCTAssertEqual(mockAudioEngine.queue.count, 2)
-        XCTAssertFalse(mockAudioEngine.loadTrackCalled, "Should not reload track when something is already playing")
-        XCTAssertFalse(mockAudioEngine.playCalled, "Should not auto-trigger playback when engine is busy")
-        XCTAssertEqual(mockAudioEngine.currentTrack?.title, "currently-playing")
+        // Then: The new track should immediately replace and play the current track
+        XCTAssertTrue(mockAudioEngine.loadTrackCalled, "Should load the dropped track")
+        XCTAssertTrue(mockAudioEngine.playCalled, "Should immediately start playing the dropped track")
+        XCTAssertTrue(mockAudioEngine.currentTrack?.filePath.contains("replace-with-this") ?? false,
+                      "Current track should be the newly dropped track")
+    }
+
+    func testAsAUserIDropMultipleFilesWhilePlayingAndExpectFirstToReplaceCurrent() async throws {
+        // Given: I'm listening to a track
+        mockAudioEngine.currentTrack = makeTrack(title: "currently-playing")
+        mockAudioEngine.state = .playing
+
+        let urls = [
+            URL(fileURLWithPath: "/tmp/new-track1.mp3"),
+            URL(fileURLWithPath: "/tmp/new-track2.flac"),
+            URL(fileURLWithPath: "/tmp/new-track3.m4a")
+        ]
+        // Create temporary files
+        for url in urls {
+            FileManager.default.createFile(atPath: url.path, contents: Data("fake audio".utf8), attributes: nil)
+        }
+        defer {
+            for url in urls {
+                try? FileManager.default.removeItem(at: url)
+            }
+        }
+
+        // When: I drop multiple tracks
+        try await coordinator.importFiles(urls: urls)
+
+        // Then: First track should replace current, rest should queue
+        XCTAssertTrue(mockAudioEngine.loadTrackCalled, "Should load the first dropped track")
+        XCTAssertTrue(mockAudioEngine.playCalled, "Should start playing the first dropped track")
+        XCTAssertEqual(mockAudioEngine.queue.count, 3, "All tracks should be in queue")
+        XCTAssertTrue(mockAudioEngine.currentTrack?.filePath.contains("new-track1") ?? false,
+                      "First dropped track should be current")
     }
 
     // MARK: - Helpers

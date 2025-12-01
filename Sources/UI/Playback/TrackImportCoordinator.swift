@@ -54,11 +54,12 @@ public final class TrackImportCoordinator: ObservableObject {
     /// Import multiple audio files
     /// - Parameter urls: File URLs to import
     /// - Throws: TrackImportError if any file fails to import
+    /// - Note: When importing via drag-and-drop, the first track will immediately start playing,
+    ///         replacing any currently playing track. This provides immediate user feedback.
     public func importFiles(urls: [URL]) async throws {
         guard !urls.isEmpty else { return }
 
         var tracks: [Track] = []
-        let shouldAutoPlay = audioEngine.currentTrack == nil && audioEngine.queue.isEmpty
 
         for url in urls {
             // Validate file exists
@@ -93,14 +94,15 @@ public final class TrackImportCoordinator: ObservableObject {
 
         logger.info("Queued \(tracks.count) tracks for playback")
 
-        // Auto-play first track when nothing is currently playing
-        if shouldAutoPlay, let firstTrack = tracks.first {
+        // Always load and play first track for immediate user feedback
+        // BDD: As a user, when I drag-and-drop a track, I want it to play immediately
+        if let firstTrack = tracks.first {
             do {
                 try await audioEngine.loadTrack(firstTrack)
                 try await audioEngine.play()
-                logger.info("Auto-started playback for dropped track: \(firstTrack.title, privacy: .public)")
+                logger.info("Started playback for imported track: \(firstTrack.title, privacy: .public)")
             } catch {
-                logger.error("Failed to auto-play dropped track: \(error.localizedDescription)")
+                logger.error("Failed to play imported track: \(error.localizedDescription)")
                 throw TrackImportError.importFailed("Playback failed: \(error.localizedDescription)")
             }
         }

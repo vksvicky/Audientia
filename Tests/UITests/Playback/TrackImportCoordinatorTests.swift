@@ -191,6 +191,82 @@ final class TrackImportCoordinatorTests: XCTestCase {
         }
     }
 
+    // MARK: - Edge Cases
+
+    func testImportSingleFileWhilePlayingReplacesCurrentTrack() async throws {
+        // Given: A track is currently playing
+        let currentTrack = Track(
+            id: UUID(),
+            title: "Currently Playing",
+            artist: "Artist",
+            album: "Album",
+            duration: 180,
+            filePath: "/tmp/current.mp3",
+            fileSize: 1024,
+            bitrate: 320_000,
+            sampleRate: 44_100,
+            year: 2025,
+            trackNumber: 1,
+            discNumber: 1
+        )
+        mockAudioEngine.currentTrack = currentTrack
+        mockAudioEngine.state = .playing
+
+        // When: A new file is imported
+        let newUrl = URL(fileURLWithPath: "/tmp/new-track.mp3")
+        FileManager.default.createFile(atPath: newUrl.path, contents: Data("new audio".utf8), attributes: nil)
+        defer { try? FileManager.default.removeItem(at: newUrl) }
+
+        try await coordinator.importFile(url: newUrl)
+
+        // Then: New track should replace current and start playing
+        XCTAssertTrue(mockAudioEngine.loadTrackCalled, "Should load new track")
+        XCTAssertTrue(mockAudioEngine.playCalled, "Should play new track")
+        XCTAssertTrue(mockAudioEngine.currentTrack?.filePath.contains("new-track") ?? false)
+    }
+
+    func testImportMultipleFilesWhilePlayingReplacesWithFirst() async throws {
+        // Given: A track is currently playing
+        let currentTrack = Track(
+            id: UUID(),
+            title: "Currently Playing",
+            artist: "Artist",
+            album: "Album",
+            duration: 180,
+            filePath: "/tmp/current.mp3",
+            fileSize: 1024,
+            bitrate: 320_000,
+            sampleRate: 44_100,
+            year: 2025,
+            trackNumber: 1,
+            discNumber: 1
+        )
+        mockAudioEngine.currentTrack = currentTrack
+        mockAudioEngine.state = .playing
+
+        // When: Multiple files are imported
+        let urls = [
+            URL(fileURLWithPath: "/tmp/new1.mp3"),
+            URL(fileURLWithPath: "/tmp/new2.flac")
+        ]
+        for url in urls {
+            FileManager.default.createFile(atPath: url.path, contents: Data("audio".utf8), attributes: nil)
+        }
+        defer {
+            for url in urls {
+                try? FileManager.default.removeItem(at: url)
+            }
+        }
+
+        try await coordinator.importFiles(urls: urls)
+
+        // Then: First track should replace current, both queued
+        XCTAssertTrue(mockAudioEngine.loadTrackCalled, "Should load first track")
+        XCTAssertTrue(mockAudioEngine.playCalled, "Should play first track")
+        XCTAssertEqual(mockAudioEngine.queue.count, 2, "Both tracks should be queued")
+        XCTAssertTrue(mockAudioEngine.currentTrack?.filePath.contains("new1") ?? false)
+    }
+
     // MARK: - Performance
 
     func testImportManyFilesPerformance() throws {
