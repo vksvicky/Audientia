@@ -138,7 +138,8 @@ final class MainWindowPlayerControlsBDDTests: XCTestCase {
         let view = MainWindowPlayerControls(nowPlayingViewModel: nowPlayingViewModel, showVisualizer: .constant(false))
         
         // Then - I should see "No track selected"
-        _ = view.body
+        let hostingController = NSHostingController(rootView: view)
+        XCTAssertNotNil(hostingController.view)
         XCTAssertNil(nowPlayingViewModel.currentTrack)
     }
     
@@ -268,7 +269,8 @@ final class MainWindowPlayerControlsBDDTests: XCTestCase {
         let view = MainWindowPlayerControls(nowPlayingViewModel: nowPlayingViewModel, showVisualizer: .constant(false))
         
         // Then - Repeat button should show active state
-        _ = view.body
+        let hostingController = NSHostingController(rootView: view)
+        XCTAssertNotNil(hostingController.view)
         XCTAssertEqual(nowPlayingViewModel.loopMode, .track)
     }
     
@@ -340,7 +342,8 @@ final class MainWindowPlayerControlsBDDTests: XCTestCase {
         let view = MainWindowPlayerControls(nowPlayingViewModel: nowPlayingViewModel, showVisualizer: .constant(false))
         
         // Then - Previous and next buttons should be disabled
-        _ = view.body
+        let hostingController = NSHostingController(rootView: view)
+        XCTAssertNotNil(hostingController.view)
         XCTAssertEqual(nowPlayingViewModel.queue.count, 0)
     }
     
@@ -357,7 +360,8 @@ final class MainWindowPlayerControlsBDDTests: XCTestCase {
         let view = MainWindowPlayerControls(nowPlayingViewModel: nowPlayingViewModel, showVisualizer: .constant(false))
         
         // Then - Previous and next buttons should be enabled
-        _ = view.body
+        let hostingController = NSHostingController(rootView: view)
+        XCTAssertNotNil(hostingController.view)
         XCTAssertGreaterThan(nowPlayingViewModel.queue.count, 0)
     }
     
@@ -397,7 +401,8 @@ final class MainWindowPlayerControlsBDDTests: XCTestCase {
         let view = MainWindowPlayerControls(nowPlayingViewModel: nowPlayingViewModel, showVisualizer: .constant(false))
         
         // Then - Shuffle button should show active state
-        _ = view.body
+        let hostingController = NSHostingController(rootView: view)
+        XCTAssertNotNil(hostingController.view)
         XCTAssertTrue(nowPlayingViewModel.isShuffleEnabled)
     }
     
@@ -463,7 +468,8 @@ final class MainWindowPlayerControlsBDDTests: XCTestCase {
         let view = MainWindowPlayerControls(nowPlayingViewModel: nowPlayingViewModel, showVisualizer: .constant(false))
         
         // Then - Repeat button should show active state
-        _ = view.body
+        let hostingController = NSHostingController(rootView: view)
+        XCTAssertNotNil(hostingController.view)
         XCTAssertNotEqual(nowPlayingViewModel.loopMode, .none)
     }
 }

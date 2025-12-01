@@ -58,7 +58,12 @@ public struct MainWindowLayoutView: View {
             // Player Controls at Bottom (spans full width)
             MainWindowPlayerControls(
                 nowPlayingViewModel: nowPlayingViewModel,
-                showVisualizer: $showVisualizer
+                showVisualizer: $showVisualizer,
+                onMinimize: {
+                    if let appDelegate = AppDelegate.shared ?? (NSApplication.shared.delegate as? AppDelegate) {
+                        appDelegate.minimizeToPlayer(nowPlayingViewModel: nowPlayingViewModel)
+                    }
+                }
             )
             .frame(height: 80)
             .background(Color(NSColor.controlBackgroundColor))

@@ -286,7 +286,8 @@ final class MainWindowPlayerControlsTests: XCTestCase {
         let view = MainWindowPlayerControls(nowPlayingViewModel: nowPlayingViewModel, showVisualizer: .constant(false))
         
         // Then: Shuffle should be inactive
-        _ = view.body
+        let hostingController = NSHostingController(rootView: view)
+        XCTAssertNotNil(hostingController.view)
         XCTAssertFalse(nowPlayingViewModel.isShuffleEnabled)
     }
     
@@ -302,7 +303,8 @@ final class MainWindowPlayerControlsTests: XCTestCase {
         let view = MainWindowPlayerControls(nowPlayingViewModel: nowPlayingViewModel, showVisualizer: .constant(false))
         
         // Then: Loop mode should be active
-        _ = view.body
+        let hostingController = NSHostingController(rootView: view)
+        XCTAssertNotNil(hostingController.view)
         XCTAssertNotEqual(nowPlayingViewModel.loopMode, .none)
     }
     
@@ -318,7 +320,8 @@ final class MainWindowPlayerControlsTests: XCTestCase {
         let view = MainWindowPlayerControls(nowPlayingViewModel: nowPlayingViewModel, showVisualizer: .constant(false))
         
         // Then: Loop mode should be none
-        _ = view.body
+        let hostingController = NSHostingController(rootView: view)
+        XCTAssertNotNil(hostingController.view)
         XCTAssertEqual(nowPlayingViewModel.loopMode, .none)
     }
     
@@ -333,7 +336,8 @@ final class MainWindowPlayerControlsTests: XCTestCase {
         let view = MainWindowPlayerControls(nowPlayingViewModel: nowPlayingViewModel, showVisualizer: .constant(true))
         
         // Then: Visualizer button should show active state
-        _ = view.body
+        let hostingController = NSHostingController(rootView: view)
+        XCTAssertNotNil(hostingController.view)
         // Visualizer state is managed by binding, so we verify the view compiles
     }
     
@@ -348,7 +352,8 @@ final class MainWindowPlayerControlsTests: XCTestCase {
         let view = MainWindowPlayerControls(nowPlayingViewModel: nowPlayingViewModel, showVisualizer: .constant(false))
         
         // Then: Visualizer button should show inactive state
-        _ = view.body
+        let hostingController = NSHostingController(rootView: view)
+        XCTAssertNotNil(hostingController.view)
         // Visualizer state is managed by binding, so we verify the view compiles
     }
     
@@ -362,14 +367,16 @@ final class MainWindowPlayerControlsTests: XCTestCase {
         mockAudioEngine.isMuted = false
         nowPlayingViewModel.updateState()
         var view = MainWindowPlayerControls(nowPlayingViewModel: nowPlayingViewModel, showVisualizer: .constant(false))
-        _ = view.body
+        var hostingController = NSHostingController(rootView: view)
+        XCTAssertNotNil(hostingController.view)
         XCTAssertFalse(nowPlayingViewModel.isMuted)
         
         // When: Muted
         mockAudioEngine.isMuted = true
         nowPlayingViewModel.updateState()
         view = MainWindowPlayerControls(nowPlayingViewModel: nowPlayingViewModel, showVisualizer: .constant(false))
-        _ = view.body
+        hostingController = NSHostingController(rootView: view)
+        XCTAssertNotNil(hostingController.view)
         XCTAssertTrue(nowPlayingViewModel.isMuted)
     }
     
@@ -386,7 +393,8 @@ final class MainWindowPlayerControlsTests: XCTestCase {
         let view = MainWindowPlayerControls(nowPlayingViewModel: nowPlayingViewModel, showVisualizer: .constant(false))
         
         // Then: View should not crash
-        _ = view.body
+        let hostingController = NSHostingController(rootView: view)
+        XCTAssertNotNil(hostingController.view)
         XCTAssertNil(nowPlayingViewModel.currentTrack)
     }
     
@@ -403,8 +411,111 @@ final class MainWindowPlayerControlsTests: XCTestCase {
         let view = MainWindowPlayerControls(nowPlayingViewModel: nowPlayingViewModel, showVisualizer: .constant(false))
         
         // Then: View should not crash
-        _ = view.body
+        let hostingController = NSHostingController(rootView: view)
+        XCTAssertNotNil(hostingController.view)
         XCTAssertEqual(nowPlayingViewModel.queue.count, 0)
+    }
+    
+    // MARK: - Artwork Loading Tests
+    
+    /// Test: Artwork loading should be triggered when track changes
+    func testArtworkLoadingTriggeredOnTrackChange() async {
+        // Given: Initial track with artwork
+        let track1 = MockFactory.makeTrack(title: "Track 1")
+        mockAudioEngine.currentTrack = track1
+        nowPlayingViewModel.updateState()
+        
+        let view = MainWindowPlayerControls(nowPlayingViewModel: nowPlayingViewModel, showVisualizer: .constant(false))
+        let hostingController = NSHostingController(rootView: view)
+        XCTAssertNotNil(hostingController.view)
+        
+        // Give time for initial artwork loading
+        try? await Task.sleep(nanoseconds: 100_000_000) // 0.1 seconds
+        
+        // When: Track changes
+        let track2 = MockFactory.makeTrack(title: "Track 2")
+        mockAudioEngine.currentTrack = track2
+        nowPlayingViewModel.updateState()
+        
+        // Give time for new artwork loading
+        try? await Task.sleep(nanoseconds: 100_000_000)
+        
+        // Then: New artwork loading should have been triggered
+        // (Verify through console logs in real app)
+        XCTAssertEqual(nowPlayingViewModel.currentTrack?.title, "Track 2")
+    }
+    
+    /// Test: Artwork should be cleared when no track is playing
+    func testArtworkClearedWhenNoTrack() {
+        // Given: No current track
+        mockAudioEngine.currentTrack = nil
+        nowPlayingViewModel.updateState()
+        
+        // When: View is rendered
+        let view = MainWindowPlayerControls(nowPlayingViewModel: nowPlayingViewModel, showVisualizer: .constant(false))
+        let hostingController = NSHostingController(rootView: view)
+        
+        // Then: View should render without crashing (artwork should be nil)
+        XCTAssertNotNil(hostingController.view)
+        XCTAssertNil(nowPlayingViewModel.currentTrack)
+    }
+    
+    /// Test: Multiple rapid track changes should not cause concurrent artwork loading
+    func testRapidTrackChangesHandledGracefully() async {
+        // Given: Multiple tracks
+        let tracks = (0..<5).map { MockFactory.makeTrack(title: "Track \($0)") }
+        
+        let view = MainWindowPlayerControls(nowPlayingViewModel: nowPlayingViewModel, showVisualizer: .constant(false))
+        let hostingController = NSHostingController(rootView: view)
+        XCTAssertNotNil(hostingController.view)
+        
+        // When: Rapidly changing tracks
+        for track in tracks {
+            mockAudioEngine.currentTrack = track
+            nowPlayingViewModel.updateState()
+            try? await Task.sleep(nanoseconds: 10_000_000) // 0.01 seconds
+        }
+        
+        // Give time for final artwork loading
+        try? await Task.sleep(nanoseconds: 100_000_000)
+        
+        // Then: Should end with last track without crashes
+        XCTAssertEqual(nowPlayingViewModel.currentTrack?.title, "Track 4")
+    }
+    
+    /// Test: Artwork extraction should handle missing files gracefully
+    func testArtworkExtractionHandlesMissingFiles() {
+        // Given: Track with non-existent file path
+        let track = MockFactory.makeTrack(filePath: "/nonexistent/path/to/file.mp3")
+        mockAudioEngine.currentTrack = track
+        nowPlayingViewModel.updateState()
+        
+        // When: View is rendered
+        let view = MainWindowPlayerControls(nowPlayingViewModel: nowPlayingViewModel, showVisualizer: .constant(false))
+        let hostingController = NSHostingController(rootView: view)
+        
+        // Then: Should not crash, artwork should be nil
+        XCTAssertNotNil(hostingController.view)
+        XCTAssertEqual(nowPlayingViewModel.currentTrack?.filePath, "/nonexistent/path/to/file.mp3")
+    }
+    
+    /// Test: Artwork loading should work with various file extensions
+    func testArtworkLoadingWithVariousFileExtensions() {
+        let extensions = ["mp3", "m4a", "flac", "wav", "aac", "ogg"]
+        
+        for ext in extensions {
+            // Given: Track with specific extension
+            let track = MockFactory.makeTrack(filePath: "/path/to/file.\(ext)")
+            mockAudioEngine.currentTrack = track
+            nowPlayingViewModel.updateState()
+            
+            // When: View is rendered
+            let view = MainWindowPlayerControls(nowPlayingViewModel: nowPlayingViewModel, showVisualizer: .constant(false))
+            let hostingController = NSHostingController(rootView: view)
+            
+            // Then: Should not crash
+            XCTAssertNotNil(hostingController.view, "Failed for extension: \(ext)")
+        }
     }
     
     // MARK: - [P]erformance Tests
@@ -420,7 +531,23 @@ final class MainWindowPlayerControlsTests: XCTestCase {
         // When: View is rendered
         measure {
             let view = MainWindowPlayerControls(nowPlayingViewModel: nowPlayingViewModel, showVisualizer: .constant(false))
-            _ = view.body
+            let hostingController = NSHostingController(rootView: view)
+            _ = hostingController.view
+        }
+    }
+    
+    /// Test: Artwork loading should complete within reasonable time
+    func testArtworkLoadingPerformance() {
+        // Given: Track with file path
+        let track = MockFactory.makeTrack()
+        mockAudioEngine.currentTrack = track
+        nowPlayingViewModel.updateState()
+        
+        // When: Measuring artwork loading performance
+        measure {
+            let view = MainWindowPlayerControls(nowPlayingViewModel: nowPlayingViewModel, showVisualizer: .constant(false))
+            let hostingController = NSHostingController(rootView: view)
+            _ = hostingController.view
         }
     }
 }

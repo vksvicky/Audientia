@@ -656,6 +656,9 @@
 		E23DB8782EDD0C22007AC259 /* SettingsViewBDDTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E23DB86A2EDD0C22007AC259 /* SettingsViewBDDTests.swift */; };
 		E23DB8792EDD0C22007AC259 /* ThemeSelectorViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E23DB86F2EDD0C22007AC259 /* ThemeSelectorViewModelTests.swift */; };
 		E23DB87B2EDDA873007AC259 /* AudioEngineTrackCompletion.swift in Sources */ = {isa = PBXBuildFile; fileRef = E23DB87A2EDDA873007AC259 /* AudioEngineTrackCompletion.swift */; };
+		E23DB87D2EDE1866007AC259 /* AVFoundationArtworkExtractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = E23DB87C2EDE1866007AC259 /* AVFoundationArtworkExtractor.swift */; };
+		E23DB87F2EDE1937007AC259 /* ArtworkExtractionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E23DB87E2EDE1937007AC259 /* ArtworkExtractionTests.swift */; };
+		E23DB8812EDE1F3F007AC259 /* MainWindowPlayerControlsArtworkBDDTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E23DB8802EDE1F3F007AC259 /* MainWindowPlayerControlsArtworkBDDTests.swift */; };
 		E2407FAA2ED70A210054F668 /* PlaylistPanelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2407FA82ED70A210054F668 /* PlaylistPanelView.swift */; };
 		E2407FAB2ED70A210054F668 /* PlaylistPanelViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2407FA92ED70A210054F668 /* PlaylistPanelViewModel.swift */; };
 		E2407FAC2ED70A210054F668 /* PlaylistPanelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2407FA82ED70A210054F668 /* PlaylistPanelView.swift */; };
@@ -1634,6 +1637,9 @@
 		E23DB86E2EDD0C22007AC259 /* ThemeSelectorViewModelBDDTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeSelectorViewModelBDDTests.swift; sourceTree = "<group>"; };
 		E23DB86F2EDD0C22007AC259 /* ThemeSelectorViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeSelectorViewModelTests.swift; sourceTree = "<group>"; };
 		E23DB87A2EDDA873007AC259 /* AudioEngineTrackCompletion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioEngineTrackCompletion.swift; sourceTree = "<group>"; };
+		E23DB87C2EDE1866007AC259 /* AVFoundationArtworkExtractor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AVFoundationArtworkExtractor.swift; sourceTree = "<group>"; };
+		E23DB87E2EDE1937007AC259 /* ArtworkExtractionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArtworkExtractionTests.swift; sourceTree = "<group>"; };
+		E23DB8802EDE1F3F007AC259 /* MainWindowPlayerControlsArtworkBDDTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainWindowPlayerControlsArtworkBDDTests.swift; sourceTree = "<group>"; };
 		E2407FA82ED70A210054F668 /* PlaylistPanelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaylistPanelView.swift; sourceTree = "<group>"; };
 		E2407FA92ED70A210054F668 /* PlaylistPanelViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaylistPanelViewModel.swift; sourceTree = "<group>"; };
 		E2407FAE2ED70A500054F668 /* TrackDetailsDependencies.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackDetailsDependencies.swift; sourceTree = "<group>"; };
@@ -1961,6 +1967,7 @@
 		1FF0F21D70D9B8F65A0BAD66 /* Library */ = {
 			isa = PBXGroup;
 			children = (
+				E23DB87C2EDE1866007AC259 /* AVFoundationArtworkExtractor.swift */,
 				2B4C6B1DD0C1163A9B18B453 /* LibraryIndexer.swift */,
 				16158E722C9DAE23A0555886 /* LibraryIndexerProtocol.swift */,
 				16F9D76B5ACD512E2813D707 /* LibraryScanner.swift */,
@@ -3122,6 +3129,8 @@
 		E2840D3E2EDA633E00AB8F12 /* Layout */ = {
 			isa = PBXGroup;
 			children = (
+				E23DB8802EDE1F3F007AC259 /* MainWindowPlayerControlsArtworkBDDTests.swift */,
+				E23DB87E2EDE1937007AC259 /* ArtworkExtractionTests.swift */,
 				E23DB8332EDB70B1007AC259 /* MainWindowPlayerControlsBDDTests.swift */,
 				E23DB8342EDB70B1007AC259 /* MainWindowPlayerControlsTests.swift */,
 				E2840D372EDA633E00AB8F12 /* MainWindowLayoutViewBDDTests.swift */,
@@ -4482,8 +4491,10 @@
 				E2840D422EDA633E00AB8F12 /* MultiPaneLayoutViewModelTests.swift in Sources */,
 				E2840D432EDA633E00AB8F12 /* MainWindowLayoutViewBDDTests.swift in Sources */,
 				E2840D442EDA633E00AB8F12 /* MinimizedPlayerViewTests.swift in Sources */,
+				E23DB8812EDE1F3F007AC259 /* MainWindowPlayerControlsArtworkBDDTests.swift in Sources */,
 				E2840D452EDA633E00AB8F12 /* MultiPaneLayoutViewModelBDDTests.swift in Sources */,
 				91E36195B883C270848274D1 /* DeviceConfigurationWizardView.swift in Sources */,
+				E23DB87F2EDE1937007AC259 /* ArtworkExtractionTests.swift in Sources */,
 				0D45FC4430D4CBCA18865244 /* DeviceSyncView.swift in Sources */,
 				9A90A2674DED2E4144C8771A /* DeviceSyncViewBDDTests.swift in Sources */,
 				A9DFAA2FF58369162DAC3662 /* DeviceSyncViewModel.swift in Sources */,
@@ -4662,6 +4673,7 @@
 				86471F5CBB9A18BEB6282E6B /* MetadataNormalizer.swift in Sources */,
 				E4BCC93C9B1A02EEB56DFBE2 /* LocalDeviceConnector.swift in Sources */,
 				D406E7A366F3A9217E8EC746 /* MTPDeviceConnector.swift in Sources */,
+				E23DB87D2EDE1866007AC259 /* AVFoundationArtworkExtractor.swift in Sources */,
 				04D687D03A1ADCCE3E12E3F9 /* MTPProtocol.swift in Sources */,
 				1479DA0AA9200888AF22C118 /* PersistentSyncJobQueue.swift in Sources */,
 				FAA3F954A02CCA227AADFCBC /* PlaylistManager.swift in Sources */,

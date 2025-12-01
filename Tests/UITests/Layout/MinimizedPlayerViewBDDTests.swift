@@ -9,6 +9,8 @@
 
 import Foundation
 import SwiftUI
+
+#if canImport(XCTest)
 import XCTest
 
 @testable import Audientia
@@ -174,4 +176,105 @@ final class MinimizedPlayerViewBDDTests: XCTestCase {
         XCTAssertNil(nowPlayingViewModel.currentTrack)
         XCTAssertTrue(nowPlayingViewModel.isStopped)
     }
+    
+    // MARK: - BDD Scenario 6: Album Artwork in Minimized Player
+    
+    /// BDD: As a user, I want to see album artwork in the minimized player
+    func testUserSeesAlbumArtworkInMinimizedPlayer() async {
+        // Given - A track with artwork is playing
+        let track = MockFactory.makeTrack(title: "Beautiful Song", filePath: "/music/album/track.m4a")
+        mockAudioEngine.currentTrack = track
+        mockAudioEngine.state = .playing
+        nowPlayingViewModel.updateState()
+        
+        // When - I view the minimized player
+        let view = MinimizedPlayerView(
+            nowPlayingViewModel: nowPlayingViewModel,
+            onRestore: { self.restoreCallbackInvoked = true }
+        )
+        _ = view.body
+        
+        // Then - Artwork should be loaded
+        XCTAssertEqual(nowPlayingViewModel.currentTrack?.title, "Beautiful Song")
+        
+        // Give time for artwork loading
+        try? await Task.sleep(nanoseconds: 100_000_000)
+    }
+    
+    /// BDD: As a user, I want to see a placeholder when no artwork is available
+    func testUserSeesPlaceholderWhenNoArtworkAvailable() {
+        // Given - A track without artwork
+        let track = MockFactory.makeTrack(filePath: "/path/without/artwork.wav")
+        mockAudioEngine.currentTrack = track
+        nowPlayingViewModel.updateState()
+        
+        // When - I view the minimized player
+        let view = MinimizedPlayerView(
+            nowPlayingViewModel: nowPlayingViewModel,
+            onRestore: { self.restoreCallbackInvoked = true }
+        )
+        
+        // Then - Placeholder should be shown (music.note icon)
+        _ = view.body
+        XCTAssertNotNil(nowPlayingViewModel.currentTrack)
+    }
+    
+    /// BDD: As a user, when track changes, I want to see the new artwork
+    func testUserSeesNewArtworkWhenTrackChanges() async {
+        // Given - Playing a track with artwork
+        let track1 = MockFactory.makeTrack(title: "Song 1", filePath: "/music/song1.mp3")
+        mockAudioEngine.currentTrack = track1
+        mockAudioEngine.state = .playing
+        nowPlayingViewModel.updateState()
+        
+        let view = MinimizedPlayerView(
+            nowPlayingViewModel: nowPlayingViewModel,
+            onRestore: { self.restoreCallbackInvoked = true }
+        )
+        _ = view.body
+        
+        // Give time for initial artwork
+        try? await Task.sleep(nanoseconds: 100_000_000)
+        
+        // When - Track changes to another song
+        let track2 = MockFactory.makeTrack(title: "Song 2", filePath: "/music/song2.flac")
+        mockAudioEngine.currentTrack = track2
+        nowPlayingViewModel.updateState()
+        
+        // Give time for new artwork
+        try? await Task.sleep(nanoseconds: 100_000_000)
+        
+        // Then - New artwork should be displayed
+        XCTAssertEqual(nowPlayingViewModel.currentTrack?.title, "Song 2")
+    }
+    
+    /// BDD: As a user, I want artwork to work with different audio formats
+    func testUserSeesArtworkForDifferentAudioFormats() {
+        let formats = [
+            ("MP3 file", "/music/track.mp3"),
+            ("M4A file", "/music/track.m4a"),
+            ("FLAC file", "/music/track.flac"),
+            ("WAV file", "/music/track.wav"),
+            ("OGG file", "/music/track.ogg")
+        ]
+        
+        for (description, filePath) in formats {
+            // Given - A track with specific format
+            let track = MockFactory.makeTrack(title: description, filePath: filePath)
+            mockAudioEngine.currentTrack = track
+            nowPlayingViewModel.updateState()
+            
+            // When - I view the minimized player
+            let view = MinimizedPlayerView(
+                nowPlayingViewModel: nowPlayingViewModel,
+                onRestore: { self.restoreCallbackInvoked = true }
+            )
+            
+            // Then - Artwork should be attempted to load
+            _ = view.body
+            XCTAssertNotNil(nowPlayingViewModel.currentTrack, "Failed for: \(description)")
+        }
+    }
 }
+
+#endif

@@ -36,74 +36,78 @@ struct ScrollingTextView: View {
     }
     
     var body: some View {
-        // Base text view - exactly like original Text view for layout
-        Text(text)
-            .font(font)
-            .foregroundColor(foregroundColor)
-            .lineLimit(1)
-            .truncationMode(.tail)
-            .background(
-                GeometryReader { textGeometry in
-                    Color.clear
-                        .onAppear {
-                            textWidth = textGeometry.size.width
-                        }
-                        .onChange(of: text) { _, _ in
-                            textWidth = textGeometry.size.width
-                        }
+        ZStack(alignment: .leading) {
+            // Hidden measuring text to get intrinsic width, unconstrained by frameWidth
+            Text(text)
+                .font(font)
+                .fixedSize(horizontal: true, vertical: false)
+                .background(
+                    GeometryReader { textGeometry in
+                        Color.clear
+                            .onAppear {
+                                textWidth = textGeometry.size.width
+                            }
+                            .onChange(of: text) { _, _ in
+                                textWidth = textGeometry.size.width
+                            }
+                    }
+                )
+                .hidden()
+            
+            if textWidth > frameWidth {
+                // Scrolling overlay when content is wider than available width
+                // Use smaller spacing for seamless loop
+                HStack(spacing: 20) {
+                    Text(text)
+                        .font(font)
+                        .foregroundColor(foregroundColor)
+                        .lineLimit(1)
+                        .fixedSize(horizontal: true, vertical: false)
+                    
+                    Text(text)
+                        .font(font)
+                        .foregroundColor(foregroundColor)
+                        .lineLimit(1)
+                        .fixedSize(horizontal: true, vertical: false)
                 }
-            )
-            .overlay(
-                // Overlay scrolling version when text exceeds width
-                Group {
+                .offset(x: -scrollOffset)
+                .frame(width: frameWidth, alignment: .leading)
+                .clipped()
+                .onAppear {
+                    startScrolling()
+                }
+                .onDisappear {
+                    stopScrolling()
+                }
+                .onChange(of: text) { _, _ in
+                    stopScrolling()
+                    scrollOffset = 0
+                    startScrolling()
+                }
+                .onChange(of: scrollSpeed) { _, _ in
+                    stopScrolling()
+                    startScrolling()
+                }
+                .onChange(of: textWidth) { _, _ in
                     if textWidth > frameWidth {
-                        HStack(spacing: 40) {
-                            Text(text)
-                                .font(font)
-                                .foregroundColor(foregroundColor)
-                                .lineLimit(1)
-                            
-                            Text(text)
-                                .font(font)
-                                .foregroundColor(foregroundColor)
-                                .lineLimit(1)
-                        }
-                        .offset(x: -scrollOffset)
-                        .frame(width: frameWidth, alignment: .leading)
-                        .clipped()
-                        .onAppear {
-                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                                startScrolling()
-                            }
-                        }
-                        .onDisappear {
-                            stopScrolling()
-                        }
-                        .onChange(of: text) { _, _ in
-                            stopScrolling()
-                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                                startScrolling()
-                            }
-                        }
-                        .onChange(of: scrollSpeed) { _, _ in
-                            stopScrolling()
-                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                                startScrolling()
-                            }
-                        }
-                        .onChange(of: textWidth) { _, _ in
-                            if textWidth > frameWidth {
-                                stopScrolling()
-                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                                    startScrolling()
-                                }
-                            } else {
-                                stopScrolling()
-                            }
-                        }
+                        stopScrolling()
+                        scrollOffset = 0
+                        startScrolling()
+                    } else {
+                        stopScrolling()
+                        scrollOffset = 0
                     }
                 }
-            )
+            } else {
+                // Simple, non-scrolling text when it fits
+                Text(text)
+                    .font(font)
+                    .foregroundColor(foregroundColor)
+                    .lineLimit(1)
+                    .truncationMode(.tail)
+            }
+        }
+        .frame(width: frameWidth, alignment: .leading)
     }
     
     private func startScrolling() {
@@ -114,8 +118,10 @@ struct ScrollingTextView: View {
         
         stopScrolling() // Stop any existing timer
         
+        // Reset to start position
         scrollOffset = 0
-        let totalDistance = textWidth + 40 // text width + spacing
+        let spacing: CGFloat = 20
+        let totalDistance = textWidth + spacing // text width + spacing between copies
         
         // Calculate update interval (60 FPS for smooth scrolling)
         let updateInterval = 1.0 / 60.0
@@ -123,12 +129,13 @@ struct ScrollingTextView: View {
         
         // Start timer on main run loop to continuously update scroll offset
         let newTimer = Timer.scheduledTimer(withTimeInterval: updateInterval, repeats: true) { _ in
-            // Timer callbacks are delivered on the main run loop; update state directly
+            // Update scroll offset
             scrollOffset += pixelsPerUpdate
             
-            // Reset when we've scrolled past the first text + spacing
+            // Seamlessly reset when we've scrolled past one complete text + spacing
+            // This creates a continuous loop since the second copy is now in the same position
             if scrollOffset >= totalDistance {
-                scrollOffset = 0
+                scrollOffset -= totalDistance
             }
         }
         RunLoop.main.add(newTimer, forMode: .common)

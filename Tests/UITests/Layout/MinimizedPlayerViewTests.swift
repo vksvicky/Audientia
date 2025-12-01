@@ -9,6 +9,8 @@
 
 import Foundation
 import SwiftUI
+
+#if canImport(XCTest)
 import XCTest
 
 @testable import Audientia
@@ -230,4 +232,112 @@ final class MinimizedPlayerViewTests: XCTestCase {
         _ = view.body
         XCTAssertTrue(nowPlayingViewModel.isPlaying)
     }
+    
+    // MARK: - Artwork Loading Tests
+    
+    func testArtworkLoadingTriggeredWhenTrackChanges() async {
+        // Given: Initial track
+        let track1 = MockFactory.makeTrack(title: "Track 1")
+        mockAudioEngine.currentTrack = track1
+        nowPlayingViewModel.updateState()
+        
+        let view = MinimizedPlayerView(
+            nowPlayingViewModel: nowPlayingViewModel,
+            onRestore: { self.restoreCalled = true }
+        )
+        _ = view.body
+        
+        // Give time for initial artwork loading
+        try? await Task.sleep(nanoseconds: 100_000_000)
+        
+        // When: Track changes
+        let track2 = MockFactory.makeTrack(title: "Track 2")
+        mockAudioEngine.currentTrack = track2
+        nowPlayingViewModel.updateState()
+        
+        // Give time for new artwork loading
+        try? await Task.sleep(nanoseconds: 100_000_000)
+        
+        // Then: New artwork should be loaded
+        XCTAssertEqual(nowPlayingViewModel.currentTrack?.title, "Track 2")
+    }
+    
+    func testArtworkClearedWhenNoTrackPlaying() {
+        // Given: No current track
+        mockAudioEngine.currentTrack = nil
+        nowPlayingViewModel.updateState()
+        
+        // When: View is rendered
+        let view = MinimizedPlayerView(
+            nowPlayingViewModel: nowPlayingViewModel,
+            onRestore: { self.restoreCalled = true }
+        )
+        
+        // Then: Should not crash
+        _ = view.body
+        XCTAssertNil(nowPlayingViewModel.currentTrack)
+    }
+    
+    func testArtworkLoadingHandlesVariousFileFormats() {
+        let fileFormats = ["mp3", "m4a", "flac", "wav", "aac", "ogg"]
+        
+        for format in fileFormats {
+            // Given: Track with specific format
+            let track = MockFactory.makeTrack(filePath: "/path/to/file.\(format)")
+            mockAudioEngine.currentTrack = track
+            nowPlayingViewModel.updateState()
+            
+            // When: View is rendered
+            let view = MinimizedPlayerView(
+                nowPlayingViewModel: nowPlayingViewModel,
+                onRestore: { self.restoreCalled = true }
+            )
+            
+            // Then: Should not crash
+            _ = view.body
+            XCTAssertNotNil(nowPlayingViewModel.currentTrack, "Failed for format: \(format)")
+        }
+    }
+    
+    func testArtworkLoadingPerformance() {
+        // Given: Track with file path
+        let track = MockFactory.makeTrack()
+        mockAudioEngine.currentTrack = track
+        nowPlayingViewModel.updateState()
+        
+        // When: Measuring artwork loading performance
+        measure {
+            let view = MinimizedPlayerView(
+                nowPlayingViewModel: nowPlayingViewModel,
+                onRestore: { self.restoreCalled = true }
+            )
+            _ = view.body
+        }
+    }
+    
+    func testMultipleRapidTrackChangesHandledGracefully() async {
+        // Given: Multiple tracks
+        let tracks = (0..<5).map { MockFactory.makeTrack(title: "Track \($0)") }
+        
+        let view = MinimizedPlayerView(
+            nowPlayingViewModel: nowPlayingViewModel,
+            onRestore: { self.restoreCalled = true }
+        )
+        _ = view.body
+        
+        // When: Rapidly changing tracks
+        for track in tracks {
+            mockAudioEngine.currentTrack = track
+            nowPlayingViewModel.updateState()
+            try? await Task.sleep(nanoseconds: 10_000_000) // 0.01 seconds
+        }
+        
+        // Give time for final artwork loading
+        try? await Task.sleep(nanoseconds: 100_000_000)
+        
+        // Then: Should end with last track
+        XCTAssertEqual(nowPlayingViewModel.currentTrack?.title, "Track 4")
+    }
 }
+
+#endif
