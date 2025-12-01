@@ -7,8 +7,11 @@
 //  Copyright © 2025 CycleRunCode Club. All rights reserved.
 //
 
+import AppKit
 import Foundation
 import SwiftUI
+
+#if canImport(XCTest)
 import XCTest
 
 @testable import Audientia
@@ -70,8 +73,9 @@ final class MainWindowPlayerControlsTests: XCTestCase {
         // When: Creating MainWindowPlayerControls
         let view = MainWindowPlayerControls(nowPlayingViewModel: nowPlayingViewModel, showVisualizer: .constant(false))
         
-        // Then: View should be created
-        _ = view.body // Access body to verify compilation
+        // Then: View should be hosted without triggering SwiftUI state warnings
+        let hostingController = NSHostingController(rootView: view)
+        XCTAssertNotNil(hostingController.view)
     }
     
     /// Test: View should display track information when track is playing
@@ -90,7 +94,8 @@ final class MainWindowPlayerControlsTests: XCTestCase {
         let view = MainWindowPlayerControls(nowPlayingViewModel: nowPlayingViewModel, showVisualizer: .constant(false))
         
         // Then: View should display track information
-        _ = view.body
+        let hostingController = NSHostingController(rootView: view)
+        XCTAssertNotNil(hostingController.view)
         XCTAssertEqual(nowPlayingViewModel.currentTrack?.title, "Bohemian Rhapsody")
         XCTAssertEqual(nowPlayingViewModel.currentTrack?.artist, "Queen")
     }
@@ -106,7 +111,8 @@ final class MainWindowPlayerControlsTests: XCTestCase {
         let view = MainWindowPlayerControls(nowPlayingViewModel: nowPlayingViewModel, showVisualizer: .constant(false))
         
         // Then: View should show "No track selected"
-        _ = view.body
+        let hostingController = NSHostingController(rootView: view)
+        XCTAssertNotNil(hostingController.view)
         XCTAssertNil(nowPlayingViewModel.currentTrack)
     }
     
@@ -124,7 +130,8 @@ final class MainWindowPlayerControlsTests: XCTestCase {
         let view = MainWindowPlayerControls(nowPlayingViewModel: nowPlayingViewModel, showVisualizer: .constant(false))
         
         // Then: Previous button should be disabled
-        _ = view.body
+        let hostingController = NSHostingController(rootView: view)
+        XCTAssertNotNil(hostingController.view)
         XCTAssertEqual(nowPlayingViewModel.queue.count, 0)
     }
     
@@ -140,7 +147,8 @@ final class MainWindowPlayerControlsTests: XCTestCase {
         let view = MainWindowPlayerControls(nowPlayingViewModel: nowPlayingViewModel, showVisualizer: .constant(false))
         
         // Then: Next button should be disabled
-        _ = view.body
+        let hostingController = NSHostingController(rootView: view)
+        XCTAssertNotNil(hostingController.view)
         XCTAssertEqual(nowPlayingViewModel.queue.count, 0)
     }
     
@@ -157,7 +165,8 @@ final class MainWindowPlayerControlsTests: XCTestCase {
         let view = MainWindowPlayerControls(nowPlayingViewModel: nowPlayingViewModel, showVisualizer: .constant(false))
         
         // Then: Previous button should be enabled
-        _ = view.body
+        let hostingController = NSHostingController(rootView: view)
+        XCTAssertNotNil(hostingController.view)
         XCTAssertGreaterThan(nowPlayingViewModel.queue.count, 0)
     }
     
@@ -174,7 +183,8 @@ final class MainWindowPlayerControlsTests: XCTestCase {
         let view = MainWindowPlayerControls(nowPlayingViewModel: nowPlayingViewModel, showVisualizer: .constant(false))
         
         // Then: Next button should be enabled
-        _ = view.body
+        let hostingController = NSHostingController(rootView: view)
+        XCTAssertNotNil(hostingController.view)
         XCTAssertGreaterThan(nowPlayingViewModel.queue.count, 0)
     }
     
@@ -192,7 +202,8 @@ final class MainWindowPlayerControlsTests: XCTestCase {
         let view = MainWindowPlayerControls(nowPlayingViewModel: nowPlayingViewModel, showVisualizer: .constant(false))
         
         // Then: Play button should show pause icon
-        _ = view.body
+        let hostingController = NSHostingController(rootView: view)
+        XCTAssertNotNil(hostingController.view)
         XCTAssertTrue(nowPlayingViewModel.isPlaying)
     }
     
@@ -208,7 +219,8 @@ final class MainWindowPlayerControlsTests: XCTestCase {
         let view = MainWindowPlayerControls(nowPlayingViewModel: nowPlayingViewModel, showVisualizer: .constant(false))
         
         // Then: Play button should show play icon
-        _ = view.body
+        let hostingController = NSHostingController(rootView: view)
+        XCTAssertNotNil(hostingController.view)
         XCTAssertFalse(nowPlayingViewModel.isPlaying)
     }
     
@@ -224,21 +236,24 @@ final class MainWindowPlayerControlsTests: XCTestCase {
         mockAudioEngine.loopMode = .none
         nowPlayingViewModel.updateState()
         var view = MainWindowPlayerControls(nowPlayingViewModel: nowPlayingViewModel, showVisualizer: .constant(false))
-        _ = view.body
+        let hostingControllerNone = NSHostingController(rootView: view)
+        XCTAssertNotNil(hostingControllerNone.view)
         XCTAssertEqual(nowPlayingViewModel.loopMode, .none)
         
         // When: Loop mode is track
         mockAudioEngine.loopMode = .track
         nowPlayingViewModel.updateState()
         view = MainWindowPlayerControls(nowPlayingViewModel: nowPlayingViewModel, showVisualizer: .constant(false))
-        _ = view.body
+        let hostingControllerTrack = NSHostingController(rootView: view)
+        XCTAssertNotNil(hostingControllerTrack.view)
         XCTAssertEqual(nowPlayingViewModel.loopMode, .track)
         
         // When: Loop mode is queue
         mockAudioEngine.loopMode = .queue
         nowPlayingViewModel.updateState()
         view = MainWindowPlayerControls(nowPlayingViewModel: nowPlayingViewModel, showVisualizer: .constant(false))
-        _ = view.body
+        let hostingControllerQueue = NSHostingController(rootView: view)
+        XCTAssertNotNil(hostingControllerQueue.view)
         XCTAssertEqual(nowPlayingViewModel.loopMode, .queue)
     }
     
@@ -254,7 +269,8 @@ final class MainWindowPlayerControlsTests: XCTestCase {
         let view = MainWindowPlayerControls(nowPlayingViewModel: nowPlayingViewModel, showVisualizer: .constant(false))
         
         // Then: Shuffle should be active
-        _ = view.body
+        let hostingController = NSHostingController(rootView: view)
+        XCTAssertNotNil(hostingController.view)
         XCTAssertTrue(nowPlayingViewModel.isShuffleEnabled)
     }
     
@@ -408,3 +424,5 @@ final class MainWindowPlayerControlsTests: XCTestCase {
         }
     }
 }
+
+#endif

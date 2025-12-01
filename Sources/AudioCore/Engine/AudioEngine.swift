@@ -21,13 +21,13 @@ public final class AudioEngine: AudioEngineProtocol {
     // MARK: - Properties
     
     /// Current playback state
-    public private(set) var state: PlaybackState = .stopped
+    public internal(set) var state: PlaybackState = .stopped
     
     /// Currently loaded track
     public private(set) var currentTrack: Track?
     
     /// Current playback position in seconds
-    public private(set) var currentPosition: TimeInterval = 0.0
+    public internal(set) var currentPosition: TimeInterval = 0.0
     
     /// Track duration in seconds (prefers native or detected metadata)
     public var duration: TimeInterval {
@@ -55,7 +55,7 @@ public final class AudioEngine: AudioEngineProtocol {
     }
     
     /// Playback queue
-    public private(set) var queue: [Track] = []
+    public internal(set) var queue: [Track] = []
     
     /// Current volume (0.0 to 1.0)
     public var volume: Float = 1.0 {
@@ -110,11 +110,11 @@ public final class AudioEngine: AudioEngineProtocol {
     private let positionUpdateInterval: TimeInterval = 0.1 // Update every 100ms
     private let fileSystem: FileSystemProtocol
     private let formatCoordinator: FormatDecodingCoordinating
-    private let nativeEngine: NativeAudioEngineProtocol
-    private var currentQueueIndex: Int = -1 // Index of current track in queue history
-    private var queueHistory: [Track] = [] // History of played tracks for previous navigation
+    let nativeEngine: NativeAudioEngineProtocol
+    var currentQueueIndex: Int = -1 // Index of current track in queue history
+    var queueHistory: [Track] = [] // History of played tracks for previous navigation
     private var previousVolume: Float = 1.0 // Volume before muting
-    private var visualizerTap: AudioVisualizerTap?
+    var visualizerTap: AudioVisualizerTap?
     
     /// Audio visualizer for real-time spectrum analysis
     public let visualizer: AudioVisualizerProtocol
@@ -634,7 +634,7 @@ extension AudioEngine {
 }
 
 // MARK: - Position Tracking Extension
-private extension AudioEngine {
+extension AudioEngine {
     func startPositionTracking() {
         stopPositionTracking()
         

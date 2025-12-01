@@ -228,7 +228,7 @@ final class AppSettingsTests: XCTestCase {
         UserDefaults.standard.removeObject(forKey: scrollSpeedKey)
         
         // When: Creating AppSettings
-        let settings = AppSettings.shared
+        _ = AppSettings.shared
         
         // Then: Should default to 30.0
         let defaultValue = UserDefaults.standard.object(forKey: scrollSpeedKey) as? Double ?? 30.0

@@ -36,7 +36,8 @@ final class MP4TagWriterTests: XCTestCase {
         
         // Clean up the temporary directory
         if FileManager.default.fileExists(atPath: tempDirectory.path) {
-            try FileManager.default.removeItem(at: tempDirectory)
+            // Best-effort cleanup: ignore permission errors in constrained environments
+            try? FileManager.default.removeItem(at: tempDirectory)
         }
         try await super.tearDown()
     }

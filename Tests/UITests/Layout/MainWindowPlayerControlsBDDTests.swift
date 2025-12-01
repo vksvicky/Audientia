@@ -7,8 +7,11 @@
 //  Copyright © 2025 CycleRunCode Club. All rights reserved.
 //
 
+import AppKit
 import Foundation
 import SwiftUI
+
+#if canImport(XCTest)
 import XCTest
 
 @testable import Audientia
@@ -79,7 +82,8 @@ final class MainWindowPlayerControlsBDDTests: XCTestCase {
         let view = MainWindowPlayerControls(nowPlayingViewModel: nowPlayingViewModel, showVisualizer: .constant(false))
         
         // Then - I should see the track information
-        _ = view.body
+        let hostingController = NSHostingController(rootView: view)
+        XCTAssertNotNil(hostingController.view)
         XCTAssertEqual(nowPlayingViewModel.currentTrack?.title, "Bohemian Rhapsody")
         XCTAssertEqual(nowPlayingViewModel.currentTrack?.artist, "Queen")
         XCTAssertEqual(nowPlayingViewModel.currentTrack?.album, "A Night at the Opera")
@@ -119,8 +123,8 @@ final class MainWindowPlayerControlsBDDTests: XCTestCase {
         let view = MainWindowPlayerControls(nowPlayingViewModel: nowPlayingViewModel, showVisualizer: .constant(true))
         
         // Then - Visualizer button should show active state
-        _ = view.body
-        // Visualizer state is managed by binding, so we verify the view compiles
+        let hostingController = NSHostingController(rootView: view)
+        XCTAssertNotNil(hostingController.view)
     }
     
     /// BDD: As a user, when no track is playing, then I should see "No track selected"
@@ -463,3 +467,5 @@ final class MainWindowPlayerControlsBDDTests: XCTestCase {
         XCTAssertNotEqual(nowPlayingViewModel.loopMode, .none)
     }
 }
+
+#endif

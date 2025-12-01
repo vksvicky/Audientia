@@ -7,7 +7,11 @@
 //  Copyright © 2025 CycleRunCode Club. All rights reserved.
 //
 
+import AppKit
 import Foundation
+import SwiftUI
+
+#if canImport(XCTest)
 import XCTest
 
 @testable import Audientia
@@ -15,17 +19,17 @@ import XCTest
 @MainActor
 final class SettingsViewTests: XCTestCase {
     var viewModel: SettingsViewModel!
-    var mockLayoutManager: MockLayoutConfigurationManager!
+    var mockLayoutManager: SettingsMockLayoutConfigurationManager!
     var mockThemeManager: MockThemeManager!
     var mockWindowStateManager: MockWindowStateManager!
-    var mockLibraryViewManager: MockLibraryViewConfigurationManager!
+    var mockLibraryViewManager: SettingsMockLibraryViewConfigurationManager!
     
     override func setUp() {
         super.setUp()
-        mockLayoutManager = MockLayoutConfigurationManager()
+        mockLayoutManager = SettingsMockLayoutConfigurationManager()
         mockThemeManager = MockThemeManager()
         mockWindowStateManager = MockWindowStateManager()
-        mockLibraryViewManager = MockLibraryViewConfigurationManager()
+        mockLibraryViewManager = SettingsMockLibraryViewConfigurationManager()
         viewModel = SettingsViewModel(
             layoutManager: mockLayoutManager,
             themeManager: mockThemeManager,
@@ -48,13 +52,14 @@ final class SettingsViewTests: XCTestCase {
         // When: Creating view
         let view = SettingsView(viewModel: viewModel)
         
-        // Then: View should be created
-        _ = view.body // Access body to verify compilation
+        // Then: View should be hosted without triggering SwiftUI state warnings
+        let hostingController = NSHostingController(rootView: view)
+        XCTAssertNotNil(hostingController.view)
     }
     
     func testViewLoadsSettingsOnAppear() async {
         // Given: A view
-        let view = SettingsView(viewModel: viewModel)
+        _ = SettingsView(viewModel: viewModel)
         
         // When: View appears (task runs)
         await viewModel.loadSettings()
@@ -64,3 +69,5 @@ final class SettingsViewTests: XCTestCase {
         XCTAssertNotNil(viewModel.currentTheme)
     }
 }
+
+#endif

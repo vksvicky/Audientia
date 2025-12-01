@@ -15,17 +15,17 @@ import XCTest
 @MainActor
 final class SettingsViewModelTests: XCTestCase {
     var viewModel: SettingsViewModel!
-    var mockLayoutManager: MockLayoutConfigurationManager!
+    var mockLayoutManager: SettingsMockLayoutConfigurationManager!
     var mockThemeManager: MockThemeManager!
     var mockWindowStateManager: MockWindowStateManager!
-    var mockLibraryViewManager: MockLibraryViewConfigurationManager!
+    var mockLibraryViewManager: SettingsMockLibraryViewConfigurationManager!
     
     override func setUp() {
         super.setUp()
-        mockLayoutManager = MockLayoutConfigurationManager()
+        mockLayoutManager = SettingsMockLayoutConfigurationManager()
         mockThemeManager = MockThemeManager()
         mockWindowStateManager = MockWindowStateManager()
-        mockLibraryViewManager = MockLibraryViewConfigurationManager()
+        mockLibraryViewManager = SettingsMockLibraryViewConfigurationManager()
         viewModel = SettingsViewModel(
             layoutManager: mockLayoutManager,
             themeManager: mockThemeManager,
@@ -132,7 +132,7 @@ final class SettingsViewModelTests: XCTestCase {
 }
 
 /// Mock implementations for testing
-actor MockLayoutConfigurationManager: LayoutConfigurationManagerProtocol {
+actor SettingsMockLayoutConfigurationManager: LayoutConfigurationManagerProtocol {
     private var layout: LayoutConfiguration?
     var shouldFail = false
     
@@ -194,7 +194,7 @@ actor MockThemeManager: ThemeManagerProtocol {
         theme ?? ThemeConfiguration.auto
     }
     
-    func getAvailableThemes() -> [ThemeConfiguration] {
+    nonisolated func getAvailableThemes() -> [ThemeConfiguration] {
         [.light, .dark, .auto]
     }
     
@@ -241,7 +241,7 @@ actor MockWindowStateManager: WindowStateManagerProtocol {
     }
 }
 
-actor MockLibraryViewConfigurationManager: LibraryViewConfigurationManagerProtocol {
+actor SettingsMockLibraryViewConfigurationManager: LibraryViewConfigurationManagerProtocol {
     private var config: LibraryViewConfiguration?
     var shouldFail = false
     

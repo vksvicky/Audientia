@@ -39,11 +39,13 @@ final class NotificationPermissionStatusFormatterTests: XCTestCase {
     }
     
     func testDescriptionForEphemeral() {
-        if #available(macOS 12.0, *) {
+        #if !os(macOS)
+        if #available(iOS 14.0, *) {
             XCTAssertEqual(
                 NotificationPermissionStatusFormatter.description(for: .ephemeral),
                 "Ephemeral"
             )
         }
+        #endif
     }
 }

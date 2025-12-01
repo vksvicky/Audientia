@@ -15,17 +15,17 @@ import XCTest
 @MainActor
 final class SettingsViewModelBDDTests: XCTestCase {
     var viewModel: SettingsViewModel!
-    var mockLayoutManager: MockLayoutConfigurationManager!
+    var mockLayoutManager: SettingsMockLayoutConfigurationManager!
     var mockThemeManager: MockThemeManager!
     var mockWindowStateManager: MockWindowStateManager!
-    var mockLibraryViewManager: MockLibraryViewConfigurationManager!
+    var mockLibraryViewManager: SettingsMockLibraryViewConfigurationManager!
     
     override func setUp() {
         super.setUp()
-        mockLayoutManager = MockLayoutConfigurationManager()
+        mockLayoutManager = SettingsMockLayoutConfigurationManager()
         mockThemeManager = MockThemeManager()
         mockWindowStateManager = MockWindowStateManager()
-        mockLibraryViewManager = MockLibraryViewConfigurationManager()
+        mockLibraryViewManager = SettingsMockLibraryViewConfigurationManager()
         viewModel = SettingsViewModel(
             layoutManager: mockLayoutManager,
             themeManager: mockThemeManager,

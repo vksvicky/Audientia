@@ -7,7 +7,11 @@
 //  Copyright © 2025 CycleRunCode Club. All rights reserved.
 //
 
+import AppKit
 import Foundation
+import SwiftUI
+
+#if canImport(XCTest)
 import XCTest
 
 @testable import Audientia
@@ -15,17 +19,17 @@ import XCTest
 @MainActor
 final class SettingsViewBDDTests: XCTestCase {
     var viewModel: SettingsViewModel!
-    var mockLayoutManager: MockLayoutConfigurationManager!
+    var mockLayoutManager: SettingsMockLayoutConfigurationManager!
     var mockThemeManager: MockThemeManager!
     var mockWindowStateManager: MockWindowStateManager!
-    var mockLibraryViewManager: MockLibraryViewConfigurationManager!
+    var mockLibraryViewManager: SettingsMockLibraryViewConfigurationManager!
     
     override func setUp() {
         super.setUp()
-        mockLayoutManager = MockLayoutConfigurationManager()
+        mockLayoutManager = SettingsMockLayoutConfigurationManager()
         mockThemeManager = MockThemeManager()
         mockWindowStateManager = MockWindowStateManager()
-        mockLibraryViewManager = MockLibraryViewConfigurationManager()
+        mockLibraryViewManager = SettingsMockLibraryViewConfigurationManager()
         viewModel = SettingsViewModel(
             layoutManager: mockLayoutManager,
             themeManager: mockThemeManager,
@@ -52,8 +56,11 @@ final class SettingsViewBDDTests: XCTestCase {
         await viewModel.loadSettings()
         
         // Then: I should see all settings categories
-        _ = view.body // Verify view compiles and can be created
+        let hostingController = NSHostingController(rootView: view)
+        XCTAssertNotNil(hostingController.view)
         XCTAssertNotNil(viewModel.currentLayout)
         XCTAssertNotNil(viewModel.currentTheme)
     }
 }
+
+#endif

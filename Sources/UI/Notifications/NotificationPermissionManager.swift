@@ -16,17 +16,37 @@ public final class NotificationPermissionManager: ObservableObject {
     
     @Published public private(set) var authorizationStatus: UNAuthorizationStatus = .notDetermined
     
-    private let center = UNUserNotificationCenter.current()
+    // `UNUserNotificationCenter.current()` asserts when called from the Xcode
+    // test agent host bundle (e.g. SwiftUI previews / some UI test hosts).
+    // We guard against that so tests can safely construct this manager.
+    private static var isRunningInXcodeAgent: Bool {
+        ProcessInfo.processInfo.environment["XCTestConfigurationFilePath"] != nil
+    }
+    
+    private let center: UNUserNotificationCenter?
     private let hasPromptedKey = "audientia.notifications.hasPrompted"
     private let logger = Logger.userInterface
     
     private init() {
+        if Self.isRunningInXcodeAgent {
+            center = nil
+            logger.info("Notification center unavailable in Xcode agent; using no-op notifications manager.")
+        } else {
+            center = UNUserNotificationCenter.current()
+        }
+        
         Task {
             await refreshAuthorizationStatus()
         }
     }
     
     public func refreshAuthorizationStatus() async {
+        guard let center else {
+            // In test/agent environments we simply expose a neutral status.
+            authorizationStatus = .notDetermined
+            return
+        }
+        
         let settings = await center.notificationSettings()
         authorizationStatus = settings.authorizationStatus
     }
@@ -54,6 +74,12 @@ public final class NotificationPermissionManager: ObservableObject {
         if showRationale {
             let proceed = presentRationaleAlert()
             guard proceed else { return }
+        }
+        
+        guard let center else {
+            logger.warning("Notification center unavailable in this environment; skipping authorization request.")
+            await refreshAuthorizationStatus()
+            return
         }
         
         let granted = try? await center.requestAuthorization(options: [.alert, .sound])
