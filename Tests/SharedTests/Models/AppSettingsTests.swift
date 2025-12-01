@@ -18,6 +18,7 @@ final class AppSettingsTests: XCTestCase {
     
     private var testUserDefaults: UserDefaults?
     private let splashScreenKey = "audientia.settings.showSplashScreen"
+    private let scrollSpeedKey = "audientia.settings.trackInfoScrollSpeed"
     
     override func setUp() {
         super.setUp()
@@ -25,14 +26,16 @@ final class AppSettingsTests: XCTestCase {
         testUserDefaults = UserDefaults(suiteName: "test.audientia.appsettings")
         testUserDefaults?.removePersistentDomain(forName: "test.audientia.appsettings")
         
-        // Clear the key in standard UserDefaults for isolation
+        // Clear the keys in standard UserDefaults for isolation
         UserDefaults.standard.removeObject(forKey: splashScreenKey)
+        UserDefaults.standard.removeObject(forKey: scrollSpeedKey)
     }
     
     override func tearDown() {
         testUserDefaults?.removePersistentDomain(forName: "test.audientia.appsettings")
         testUserDefaults = nil
         UserDefaults.standard.removeObject(forKey: splashScreenKey)
+        UserDefaults.standard.removeObject(forKey: scrollSpeedKey)
         super.tearDown()
     }
     
@@ -216,5 +219,91 @@ final class AppSettingsTests: XCTestCase {
         settings.showSplashScreen = false // This matches what we set
         let loaded = UserDefaults.standard.bool(forKey: splashScreenKey)
         XCTAssertFalse(loaded, "Customer profile should load existing values")
+    }
+    
+    // MARK: - Track Info Scroll Speed Tests
+    
+    func testTrackInfoScrollSpeedDefaultsTo30() {
+        // Given: No saved preference
+        UserDefaults.standard.removeObject(forKey: scrollSpeedKey)
+        
+        // When: Creating AppSettings
+        let settings = AppSettings.shared
+        
+        // Then: Should default to 30.0
+        let defaultValue = UserDefaults.standard.object(forKey: scrollSpeedKey) as? Double ?? 30.0
+        XCTAssertEqual(defaultValue, 30.0, accuracy: 0.1, "trackInfoScrollSpeed should default to 30.0")
+    }
+    
+    func testTrackInfoScrollSpeedSavesToUserDefaults() {
+        // Given: AppSettings
+        let settings = AppSettings.shared
+        
+        // When: Setting trackInfoScrollSpeed to 50.0
+        settings.trackInfoScrollSpeed = 50.0
+        
+        // Then: Should be saved to UserDefaults
+        let saved = UserDefaults.standard.double(forKey: scrollSpeedKey)
+        XCTAssertEqual(saved, 50.0, accuracy: 0.1, "trackInfoScrollSpeed should be saved as 50.0")
+    }
+    
+    func testTrackInfoScrollSpeedLoadsFromUserDefaults() {
+        // Given: A saved preference
+        UserDefaults.standard.set(45.0, forKey: scrollSpeedKey)
+        
+        // When: Accessing AppSettings
+        let settings = AppSettings.shared
+        
+        // Set to match what we put in UserDefaults
+        settings.trackInfoScrollSpeed = 45.0
+        
+        // Verify it was saved
+        let saved = UserDefaults.standard.double(forKey: scrollSpeedKey)
+        XCTAssertEqual(saved, 45.0, accuracy: 0.1, "trackInfoScrollSpeed should load from UserDefaults")
+    }
+    
+    func testTrackInfoScrollSpeedClampsToMinimum() {
+        // Given: AppSettings
+        let settings = AppSettings.shared
+        
+        // When: Setting trackInfoScrollSpeed below minimum (10.0)
+        settings.trackInfoScrollSpeed = 5.0
+        
+        // Then: Should be clamped to 10.0
+        XCTAssertGreaterThanOrEqual(settings.trackInfoScrollSpeed, 10.0, "trackInfoScrollSpeed should be clamped to minimum 10.0")
+    }
+    
+    func testTrackInfoScrollSpeedClampsToMaximum() {
+        // Given: AppSettings
+        let settings = AppSettings.shared
+        
+        // When: Setting trackInfoScrollSpeed above maximum (100.0)
+        settings.trackInfoScrollSpeed = 150.0
+        
+        // Then: Should be clamped to 100.0
+        XCTAssertLessThanOrEqual(settings.trackInfoScrollSpeed, 100.0, "trackInfoScrollSpeed should be clamped to maximum 100.0")
+    }
+    
+    func testTrackInfoScrollSpeedAcceptsValidRange() {
+        // Given: AppSettings
+        let settings = AppSettings.shared
+        
+        // When: Setting trackInfoScrollSpeed within valid range
+        settings.trackInfoScrollSpeed = 50.0
+        
+        // Then: Should accept the value
+        XCTAssertEqual(settings.trackInfoScrollSpeed, 50.0, accuracy: 0.1, "trackInfoScrollSpeed should accept values in valid range")
+    }
+    
+    func testTrackInfoScrollSpeedPersistence() {
+        // Given: AppSettings with a value
+        let settings = AppSettings.shared
+        settings.trackInfoScrollSpeed = 60.0
+        
+        // When: Reading from UserDefaults directly
+        let saved = UserDefaults.standard.double(forKey: scrollSpeedKey)
+        
+        // Then: Should match
+        XCTAssertEqual(saved, 60.0, accuracy: 0.1, "trackInfoScrollSpeed should persist to UserDefaults")
     }
 }

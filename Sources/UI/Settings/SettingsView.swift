@@ -184,10 +184,39 @@ private struct LibrarySettingsView: View {
 /// Playback settings view
 @MainActor
 private struct PlaybackSettingsView: View {
+    @ObservedObject private var appSettings = AppSettings.shared
+    
     var body: some View {
         Form {
-            Section("Playback") {
-                Text("Playback settings")
+            Section("Track Info Display") {
+                VStack(alignment: .leading, spacing: 8) {
+                    Text("Scroll Speed")
+                        .font(.headline)
+                    
+                    HStack {
+                        Slider(
+                            value: $appSettings.trackInfoScrollSpeed,
+                            in: 10...100,
+                            step: 5
+                        )
+                        Text("\(Int(appSettings.trackInfoScrollSpeed)) px/s")
+                            .frame(width: 60, alignment: .trailing)
+                            .monospacedDigit()
+                    }
+                    
+                    Text(
+                        "Long track titles scroll."
+                    )
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                    
+                    Text(
+                        "Adjust the scroll speed " +
+                        "(10-100 px/s)."
+                    )
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                }
             }
         }
         .padding()

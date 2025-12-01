@@ -178,6 +178,15 @@ public final class AudioEngine: AudioEngineProtocol {
     public func loadTrack(_ track: Track) async throws {
         Logger.audio.info("Loading track: \(track.title)")
         
+        // Stop any current playback before loading a new track to prevent overlapping
+        if state == .playing || state == .paused {
+            Logger.audio.debug("Stopping current playback before loading new track")
+            stopPositionTracking()
+            visualizerTap?.stop()
+            nativeEngine.stop()
+            currentPosition = 0.0
+        }
+        
         state = .loading
         
         // Validate file exists
@@ -638,12 +647,27 @@ private extension AudioEngine {
                     
                     // Check if we've reached the end using detected duration when available
                     let playbackDuration = self.duration
-                    if playbackDuration > 0,
-                       self.currentPosition >= playbackDuration {
-                        // Clamp position to avoid runaway values
-                        self.currentPosition = playbackDuration
-                        // Auto-advance to next track or stop
-                        await self.handleTrackCompletion()
+                    if playbackDuration > 0 {
+                        // Check if position is at or very close to the end (within 0.2s tolerance)
+                        // This accounts for timing precision while ensuring we catch completion
+                        let isAtEnd = self.currentPosition >= playbackDuration - 0.2
+                        
+                        if isAtEnd {
+                            // Clamp position to duration to avoid showing values beyond track length
+                            self.currentPosition = min(self.currentPosition, playbackDuration)
+                            
+                            // Only trigger completion once - use a flag to prevent multiple calls
+                            // Stop position tracking temporarily to prevent race conditions
+                            self.stopPositionTracking()
+                            
+                            // Auto-advance to next track or stop
+                            await self.handleTrackCompletion()
+                            
+                            // Restart position tracking if still playing (e.g., next track started)
+                            if self.state == .playing {
+                                self.startPositionTracking()
+                            }
+                        }
                     }
                 }
                 
@@ -655,99 +679,5 @@ private extension AudioEngine {
     func stopPositionTracking() {
         positionUpdateTask?.cancel()
         positionUpdateTask = nil
-    }
-}
-
-// MARK: - Track Completion Handling Extension
-
-private extension AudioEngine {
-    func handleTrackCompletion() async {
-        Logger.audio.info("Track completed, checking loop mode and queue")
-        
-        // Handle loop modes
-        if await handleLoopMode() {
-            return // Loop mode handled the completion
-        }
-        
-        // Normal completion: advance to next track or stop
-        await handleNormalCompletion()
-    }
-    
-    func handleLoopMode() async -> Bool {
-        switch loopMode {
-        case .track:
-            return await handleTrackLoop()
-        case .queue:
-            return await handleQueueLoop()
-        case .none:
-            return false
-        }
-    }
-    
-    func handleTrackLoop() async -> Bool {
-        guard let track = currentTrack else { return false }
-        do {
-            try await replay()
-            Logger.audio.info("Looped current track: \(track.title)")
-            return true
-        } catch {
-            Logger.audio.error("Failed to loop track: \(error.localizedDescription)")
-            return false
-        }
-    }
-    
-    func handleQueueLoop() async -> Bool {
-        guard queue.isEmpty, !queueHistory.isEmpty else { return false }
-        let firstTrack = queueHistory[0]
-        queueHistory.removeAll()
-        currentQueueIndex = -1
-        do {
-            try await loadTrack(firstTrack)
-            queueHistory.append(firstTrack)
-            currentQueueIndex = 0
-            try await play()
-            Logger.audio.info("Looped to first track in queue")
-            return true
-        } catch {
-            Logger.audio.error("Failed to loop queue: \(error.localizedDescription)")
-            return false
-        }
-    }
-    
-    func handleNormalCompletion() async {
-        guard !self.queue.isEmpty else {
-            await stop()
-            Logger.audio.info("Queue empty, stopping playback")
-            return
-        }
-        
-        // Check if next track is the same as current track (prevents infinite loop when single track finishes)
-        if let currentTrack = self.currentTrack,
-           let nextTrack = self.queue.first,
-           currentTrack.id == nextTrack.id,
-           self.loopMode == .none {
-            // Same track in queue with no loop mode - stop instead of replaying
-            await stop()
-            Logger.audio.info("Track completed, same track in queue with loop mode off - stopping playback")
-            return
-        }
-        
-        // Auto-advance to next track
-        let nextTrack = self.queue.removeFirst()
-        // Add current track to history
-        if let current = self.currentTrack {
-            self.queueHistory.append(current)
-            self.currentQueueIndex = self.queueHistory.count - 1
-        }
-        do {
-            try await self.loadTrack(nextTrack)
-            self.queueHistory.append(nextTrack)
-            self.currentQueueIndex = self.queueHistory.count - 1
-            try await self.play()
-            Logger.audio.info("Auto-advanced to next track: \(nextTrack.title)")
-        } catch {
-            Logger.audio.error("Failed to auto-advance to next track: \(error.localizedDescription)")
-            self.state = .error(error.localizedDescription)
-        }
     }
 }

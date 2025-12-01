@@ -35,6 +35,20 @@ public class AppSettings: ObservableObject {
             UserDefaults.standard.set(showSplashScreen, forKey: "audientia.settings.showSplashScreen")
         }
     }
+    
+    /// Scroll speed for track info text (pixels per second)
+    /// Range: 10-100, default: 30
+    @Published public var trackInfoScrollSpeed: Double {
+        didSet {
+            // Clamp to valid range
+            let clamped = max(10.0, min(100.0, trackInfoScrollSpeed))
+            if clamped != trackInfoScrollSpeed {
+                trackInfoScrollSpeed = clamped
+            } else {
+                UserDefaults.standard.set(trackInfoScrollSpeed, forKey: "audientia.settings.trackInfoScrollSpeed")
+            }
+        }
+    }
 
     // MARK: - Initialization
 
@@ -45,6 +59,10 @@ public class AppSettings: ObservableObject {
         // Load splash screen preference (default: true)
         let splashScreenKey = "audientia.settings.showSplashScreen"
         self.showSplashScreen = UserDefaults.standard.object(forKey: splashScreenKey) as? Bool ?? true
+        
+        // Load track info scroll speed (default: 30 pixels per second)
+        let scrollSpeedKey = "audientia.settings.trackInfoScrollSpeed"
+        self.trackInfoScrollSpeed = UserDefaults.standard.object(forKey: scrollSpeedKey) as? Double ?? 30.0
 
         // Listen for module conflict notifications
         NotificationCenter.default.addObserver(
