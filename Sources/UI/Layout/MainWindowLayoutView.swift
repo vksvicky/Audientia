@@ -99,7 +99,10 @@ public struct MainWindowLayoutView: View {
     private var horizontalLayout: some View {
         HStack(alignment: .top, spacing: 0) {
             // Left Navigation Sidebar - FIXED WIDTH (highest priority)
-            MainWindowNavigationSidebar(selectedNavigationItem: $selectedNavigationItem)
+            MainWindowNavigationSidebar(
+                selectedNavigationItem: $selectedNavigationItem,
+                queueCount: nowPlayingViewModel.queue.count
+            )
                 .frame(width: 200)
                 .fixedSize(horizontal: true, vertical: false)
                 .layoutPriority(1000)
@@ -296,20 +299,64 @@ public struct MainWindowLayoutView: View {
     
     private var playingView: some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: 12) {
-                if let track = nowPlayingViewModel.currentTrack {
-                    Text("Now Playing")
-                        .font(.system(size: 18, weight: .semibold))
-                        .padding(.top, 20)
+            VStack(alignment: .leading, spacing: 20) {
+                // Now Playing Section
+                VStack(alignment: .leading, spacing: 12) {
+                    if let track = nowPlayingViewModel.currentTrack {
+                        Text("Now Playing")
+                            .font(.system(size: 18, weight: .semibold))
+                        
+                        Text("\(track.title) - \(track.artist)")
+                            .font(.system(size: 14))
+                            .foregroundColor(.secondary)
+                    } else {
+                        Text("No track playing")
+                            .font(.system(size: 14))
+                            .foregroundColor(.secondary)
+                    }
+                }
+                .padding(.top, 20)
+                
+                // Queue Section
+                if !nowPlayingViewModel.queue.isEmpty {
+                    Divider()
                     
-                    Text("\(track.title) - \(track.artist)")
-                        .font(.system(size: 14))
-                        .foregroundColor(.secondary)
-                } else {
-                    Text("No track playing")
-                        .font(.system(size: 14))
-                        .foregroundColor(.secondary)
-                        .padding(.top, 20)
+                    VStack(alignment: .leading, spacing: 12) {
+                        Text("Queue (\(nowPlayingViewModel.queue.count) tracks)")
+                            .font(.system(size: 18, weight: .semibold))
+                        
+                        ForEach(Array(nowPlayingViewModel.queue.enumerated()), id: \.element.id) { index, track in
+                            HStack {
+                                Text("\(index + 1).")
+                                    .font(.caption)
+                                    .foregroundColor(.secondary)
+                                    .frame(width: 30, alignment: .trailing)
+                                
+                                VStack(alignment: .leading, spacing: 2) {
+                                    Text(track.title)
+                                        .font(.body)
+                                        .lineLimit(1)
+                                    
+                                    Text(track.artist)
+                                        .font(.caption)
+                                        .foregroundColor(.secondary)
+                                        .lineLimit(1)
+                                }
+                                
+                                Spacer()
+                                
+                                Button {
+                                    nowPlayingViewModel.removeFromQueue(track)
+                                } label: {
+                                    Image(systemName: "xmark.circle.fill")
+                                        .foregroundColor(.secondary)
+                                }
+                                .buttonStyle(.plain)
+                                .help("Remove from queue")
+                            }
+                            .padding(.vertical, 4)
+                        }
+                    }
                 }
             }
             .frame(maxWidth: CGFloat.infinity, alignment: Alignment.leading)

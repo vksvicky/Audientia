@@ -2,13 +2,26 @@
 
 ## Current Development Phase: UI Wiring & Polish
 
-**Branch**: `19_ui-wiring-and-polish`  
+**Branch**: `20_ui-wiring-and-polish`  
 **Focus**: Complete UI/backend integration, wire all features, fix issues, and polish the user experience.
 
 ### Recent Updates (Dec 2025)
+- **✅ UI Layout Analysis Complete**: Analysed current 3-column layout (sidebar + content + playlist panel) and identified content duplication issues. Created comprehensive layout comparison document with ASCII diagrams. Selected Option D (Tabbed Interface with Visualisation) as the new design direction. See `Documentation/16-ui-layout-redesign.md` for full details.
+- **✅ Drag-and-Drop Immediate Playback**: Fixed drag-and-drop behavior where dropped audio files now immediately start playing instead of only queueing. Updated `TrackImportCoordinator` to always load and play the first dropped track for instant user feedback. Added comprehensive TDD tests (`testImportSingleFileWhilePlayingReplacesCurrentTrack`, `testImportMultipleFilesWhilePlayingReplacesWithFirst`) and BDD scenarios following Right-BICEP principles. User experience improved from "no visible response" to "immediate playback".
+- **✅ Queue Display in Main Window**: Added queue view to the "Playing" navigation section in `MainWindowLayoutView`. Users can now see all queued tracks with track numbers, artist info, and remove buttons. Queue displays track count and updates in real-time as tracks are added/removed.
 - **✅ LanguageSettingsView Bug Fixes**: Fixed Form trailing closure compiler error by using explicit `Form(content: { })` syntax instead of implicit trailing closure. Fixed localisation key access to use `LocalisationManager.language` static properties instead of enum-style `.language` syntax.
 - **✅ Test Count Investigation**: Documented test count discrepancy between `count_tests.sh` (389 tests) and Xcode (368 visible tests) for MetadataEngineTests. Difference of ~21 tests is due to conditional test execution - ChromaprintFingerprintGeneratorTests and FingerprintCache tests skip when FFmpeg/chromaprint dependencies are unavailable. Added installation instructions for enabling all tests.
 - **✅ Language Settings Integration**: LanguageSettingsView now fully functional with British/American English selection, live spelling preview, and proper localization system integration via LocalisationManager and AppSettings.
+
+### Next Phase: UI Layout Redesign
+- **Branch**: `21_ui-layout-redesign`
+- **Design**: Option D - Tabbed Interface with Visualisation (see `Documentation/16-ui-layout-redesign.md`)
+- **Key Changes**:
+  - Replace sidebar navigation with horizontal tabs (Home, Library, Playlists, Devices, Visualiser)
+  - Remove right playlist panel (eliminates content duplication)
+  - Move search from toolbar to contextual sidebar
+  - Add dedicated Visualiser tab
+  - Single player bar as the only "Now Playing" source
 
 ### Goals
 - [x] Complete UI/backend wiring for all implemented features - **✅ Setup wizard, library scanning, and notification permissions fully integrated**

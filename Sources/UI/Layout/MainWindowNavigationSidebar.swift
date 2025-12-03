@@ -14,13 +14,15 @@ import SwiftUI
 struct MainWindowNavigationSidebar: View {
     @Binding var selectedNavigationItem: NavigationItem
     @StateObject private var statisticsViewModel: LibraryStatisticsViewModel
+    var queueCount: Int = 0 // Queue count passed from parent
     
     private var visibleNavigationItems: [NavigationItem] {
         NavigationItem.allCases.filter { $0.isVisible }
     }
     
-    init(selectedNavigationItem: Binding<NavigationItem>) {
+    init(selectedNavigationItem: Binding<NavigationItem>, queueCount: Int = 0) {
         self._selectedNavigationItem = selectedNavigationItem
+        self.queueCount = queueCount
         let indexer = LibraryIndexer()
         let calculator = LibraryStatisticsCalculator(indexer: indexer)
         _statisticsViewModel = StateObject(
@@ -51,11 +53,24 @@ struct MainWindowNavigationSidebar: View {
         .task {
             await statisticsViewModel.loadStatistics()
         }
+        .onChange(of: queueCount) {
+            // Refresh statistics when queue changes (tracks imported)
+            Task {
+                await statisticsViewModel.loadStatistics()
+            }
+        }
     }
     
     private var libraryStatsView: some View {
         VStack(alignment: .leading, spacing: 8) {
             if let stats = statisticsViewModel.statistics {
+                // Library label
+                Text("Library")
+                    .font(.system(size: 10, weight: .semibold))
+                    .foregroundColor(.secondary)
+                    .textCase(.uppercase)
+                    .padding(.bottom, 2)
+                
                 VStack(alignment: .leading, spacing: 6) {
                     // Track count
                     HStack(spacing: 6) {
@@ -181,6 +196,17 @@ struct MainWindowNavigationSidebar: View {
                     .fixedSize(horizontal: false, vertical: true)
                 
                 Spacer(minLength: 0)
+                
+                // Show queue count badge for "Playing" item
+                if item == .playing && queueCount > 0 {
+                    Text("\(queueCount)")
+                        .font(.system(size: 11, weight: .semibold))
+                        .foregroundColor(.white)
+                        .padding(.horizontal, 6)
+                        .padding(.vertical, 2)
+                        .background(Color("AccentColor"))
+                        .cornerRadius(10)
+                }
             }
             .padding(.vertical, 10)
             .padding(.leading, 14)
