@@ -81,8 +81,21 @@ The current layout has several duplication and space efficiency problems:
 2. **Tabbed Navigation** - Clean top-level organization using horizontal tabs
 3. **Contextual Sidebar** - Shows relevant content based on selected tab
 4. **Search in Sidebar** - Moved from toolbar to sidebar for consistent placement
-5. **Single Player Bar** - The ONLY source of "Now Playing" information
+5. **Persistent Player Bar** - Always visible at bottom, the ONLY source of "Now Playing" information
 6. **Dedicated Visualiser Tab** - Full-screen visualisation experience
+
+### Persistent Elements (Always Visible)
+
+The following elements remain **constant across all tabs**:
+
+| Element | Position | Purpose |
+|---------|----------|---------|
+| **Title Bar** | Top | Window controls, app title |
+| **Navigation Tabs** | Below title bar | Tab switching (Home, Library, Playlists, Devices, Visualiser) |
+| **Library Stats** | Bottom of sidebar | Track/artist/album counts, duration |
+| **Player Controls** | Bottom of window | Album art, track info, seek bar, transport controls, volume |
+
+The **Player Controls bar never changes or disappears** - it provides continuous playback control and "Now Playing" information regardless of which tab is active.
 
 ### Main Layout Structure
 
@@ -283,9 +296,11 @@ The current layout has several duplication and space efficiency problems:
 
 ---
 
-## Player Controls Bar
+## Player Controls Bar (Persistent)
 
-The player controls bar is always visible at the bottom and is the **single source of truth** for "Now Playing" information:
+The player controls bar is **always visible at the bottom of the window** on every tab and is the **single source of truth** for "Now Playing" information. It never changes position, never hides, and provides continuous playback control.
+
+**Visibility**: ✅ Home | ✅ Library | ✅ Playlists | ✅ Devices | ✅ Visualiser
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────────────┐
@@ -313,25 +328,44 @@ The player controls bar is always visible at the bottom and is the **single sour
 
 ```
 MainWindowLayoutView
-├── NavigationTabBar              ← NEW: Horizontal tabs
+│
+├── NavigationTabBar              ← PERSISTENT: Horizontal tabs (always visible)
 │   ├── Tab: Home
 │   ├── Tab: Library  
 │   ├── Tab: Playlists
 │   ├── Tab: Devices
 │   └── Tab: Visualiser
-├── HStack
-│   ├── ContextualSidebar         ← REFACTORED: Search + context nav + stats
+│
+├── HStack (Main Content Area)
+│   │
+│   ├── ContextualSidebar         ← SEMI-PERSISTENT: Always visible, content changes per tab
 │   │   ├── SearchField           ← MOVED from toolbar
-│   │   ├── ContextualNavigation  ← Changes per selected tab
-│   │   └── LibraryStats          ← Always at bottom
-│   └── MainContentView           ← Tab-specific content
-│       ├── HomeView
-│       ├── LibraryBrowserView
-│       ├── PlaylistBrowserView
-│       ├── DeviceSyncView
-│       └── AudioVisualiserView
-└── PlayerControlsBar             ← Single source of "Now Playing"
+│   │   ├── ContextualNavigation  ← DYNAMIC: Changes per selected tab
+│   │   └── LibraryStats          ← PERSISTENT: Always at bottom of sidebar
+│   │
+│   └── MainContentView           ← DYNAMIC: Tab-specific content
+│       ├── HomeView              (when Home tab selected)
+│       ├── LibraryBrowserView    (when Library tab selected)
+│       ├── PlaylistBrowserView   (when Playlists tab selected)
+│       ├── DeviceSyncView        (when Devices tab selected)
+│       └── AudioVisualiserView   (when Visualiser tab selected)
+│
+└── PlayerControlsBar             ← PERSISTENT: Always visible, never changes
+    ├── AlbumArtView              (60x60 artwork)
+    ├── TrackInfoView             (title, artist - album)
+    ├── SeekBarView               (progress slider + time labels)
+    └── TransportControlsView     (prev/play/next, shuffle, loop, volume)
 ```
+
+### Element Persistence Summary
+
+| Component | Persistence | Notes |
+|-----------|-------------|-------|
+| `NavigationTabBar` | **Always visible** | Tab selection changes active tab indicator |
+| `ContextualSidebar` | **Always visible** | Content changes based on selected tab |
+| `LibraryStats` | **Always visible** | Bottom of sidebar, shows library totals |
+| `MainContentView` | **Dynamic** | Swaps content based on selected tab |
+| `PlayerControlsBar` | **Always visible** | Never changes, single "Now Playing" source |
 
 ---
 
@@ -382,8 +416,9 @@ MainWindowLayoutView
 3. **Cleaner Navigation** - Tabs are familiar and intuitive
 4. **Contextual Sidebar** - Shows relevant options per tab
 5. **Dedicated Visualiser** - Full tab for immersive visualisation
-6. **Single Player Bar** - Clear, consistent "Now Playing" location
+6. **Persistent Player Bar** - Always visible at bottom, clear and consistent "Now Playing" location on every screen
 7. **Modern macOS Feel** - Follows Apple's design patterns
+8. **Continuous Playback Control** - Never lose access to play/pause/seek regardless of current view
 
 ---
 
