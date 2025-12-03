@@ -78,33 +78,25 @@ The current layout has several duplication and space efficiency problems:
 ### Design Principles
 
 1. **No Content Duplication** - Each piece of information appears in ONE place
-2. **Tabbed Navigation** - Clean top-level organization using horizontal tabs
+2. **Collapsible Toolbar** - Navigation tabs in toolbar, can be collapsed to maximise content
 3. **Contextual Sidebar** - Shows relevant content based on selected tab
 4. **Search in Sidebar** - Moved from toolbar to sidebar for consistent placement
-5. **Persistent Player Bar** - Always visible at bottom, the ONLY source of "Now Playing" information
+5. **Collapsible Player Bar** - Can collapse to compact single-line mode
 6. **Dedicated Visualiser Tab** - Full-screen visualisation experience
 
-### Persistent Elements (Always Visible)
+### Collapsible Elements
 
-The following elements remain **constant across all tabs**:
+| Element | Position | Collapsed State | Expanded State |
+|---------|----------|-----------------|----------------|
+| **Toolbar** | Top | Hidden (0px) | Navigation tabs visible (44px) |
+| **Player Controls** | Bottom | Single line: title-artist, seek, controls (32px) | Full: artwork, info, seek, controls (70px) |
 
-| Element | Position | Purpose |
-|---------|----------|---------|
-| **Title Bar** | Top | Window controls, app title |
-| **Navigation Tabs** | Below title bar | Tab switching (Home, Library, Playlists, Devices, Visualiser) |
-| **Library Stats** | Bottom of sidebar | Track/artist/album counts, duration |
-| **Player Controls** | Bottom of window | Album art, track info, seek bar, transport controls, volume |
-
-The **Player Controls bar never changes or disappears** - it provides continuous playback control and "Now Playing" information regardless of which tab is active.
-
-### Main Layout Structure
+### Main Layout Structure (Expanded)
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────────────┐
-│                                        TITLE BAR                                         │
-├─────────────────────────────────────────────────────────────────────────────────────────┤
-│                                     NAVIGATION TABS                                      │
-│     [🏠 Home]  [📚 Library]  [📋 Playlists]  [📱 Devices]  [🎨 Visualiser]               │
+│                              TOOLBAR (44px, collapsible)                          [▲]   │
+│  [🏠 Home]  [📚 Library]  [📋 Playlists]  [📱 Devices]  [🎨 Visualiser]                  │
 ├──────────────────────────────┬──────────────────────────────────────────────────────────┤
 │       SIDEBAR (180px)        │                    MAIN CONTENT AREA                      │
 │                              │                       (FLEXIBLE)                          │
@@ -130,7 +122,7 @@ The **Player Controls bar never changes or disappears** - it provides continuous
 │  💿 89 albums                │                                                          │
 │  🕐 48h 32m                  │                                                          │
 ├──────────────────────────────┴──────────────────────────────────────────────────────────┤
-│                                  PLAYER CONTROLS (70px)                                  │
+│                           PLAYER CONTROLS - EXPANDED (70px)                        [▼]  │
 │  ┌─────┐                                                                                 │
 │  │ 🎵  │  Track Title                 ────────●───────────      [⏮][▶][⏭]              │
 │  │     │  Artist - Album               1:45 / 4:12              [🔀][🔁] [🔊━━━━━]      │
@@ -138,9 +130,155 @@ The **Player Controls bar never changes or disappears** - it provides continuous
 └─────────────────────────────────────────────────────────────────────────────────────────┘
 ```
 
+### Main Layout Structure (Toolbar Collapsed)
+
+```
+┌─────────────────────────────────────────────────────────────────────────────────────────┐
+│                                                                                    [▼]  │ ← Toolbar collapsed (click to expand)
+├──────────────────────────────┬──────────────────────────────────────────────────────────┤
+│       SIDEBAR (180px)        │                    MAIN CONTENT AREA                      │
+│                              │                       (FLEXIBLE)                          │
+│  ┌────────────────────────┐  │                                                          │
+│  │ 🔍 Search...           │  │                                                          │
+│  └────────────────────────┘  │        ┌────────────────────────────────────────┐        │
+│                              │        │                                        │        │
+│  CONTEXTUAL NAVIGATION       │        │      MAXIMUM CONTENT SPACE             │        │
+│  ┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄   │        │                                        │        │
+│  (Changes per tab)           │        │      Toolbar hidden for immersive      │        │
+│                              │        │      viewing (e.g., Visualiser)        │        │
+│                              │        │                                        │        │
+│                              │        └────────────────────────────────────────┘        │
+│                              │                                                          │
+│  ┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄   │                                                          │
+│  LIBRARY STATS               │                                                          │
+│  🎵 1,234 tracks             │                                                          │
+├──────────────────────────────┴──────────────────────────────────────────────────────────┤
+│  ◀◀ Track Title - Artist ▶▶          ────●────────  1:45/4:12   [⏮][▶][⏭][🔀][🔁][🔊] [▲]│
+└─────────────────────────────────────────────────────────────────────────────────────────┘
+                                         ↑ Player collapsed to single line (32px)
+```
+
+### Player Controls - Collapsed State (32px)
+
+```
+┌─────────────────────────────────────────────────────────────────────────────────────────┐
+│  ◀◀ Track Title - Artist ▶▶          ────●────────  1:45/4:12   [⏮][▶][⏭][🔀][🔁][🔊] [▲]│
+└─────────────────────────────────────────────────────────────────────────────────────────┘
+   │                                    │              │                              │
+   └─ Scrolling text (marquee)          └─ Seek bar    └─ Transport + Volume         └─ Expand
+
+Details:
+- Track Title - Artist: Scrolls left-to-right when text is too long (marquee style)
+- Seek bar: Compact slider with current/total time
+- Controls: Previous, Play/Pause, Next, Shuffle, Loop, Volume (all icons only)
+- [▲] button: Click to expand to full player view
+```
+
+### Player Controls - Expanded State (70px)
+
+```
+┌─────────────────────────────────────────────────────────────────────────────────────────┐
+│                           PLAYER CONTROLS - EXPANDED (70px)                        [▼]  │
+│                                                                                         │
+│  ┌───────┐   Track Title                    ───────●─────────────   ┌─────────────────┐ │
+│  │  🎵   │   Artist - Album                  2:30 / 4:15            │ [⏮] [▶] [⏭]    │ │
+│  │ Album │                                                          │ [🔀] [🔁] [🔊━] │ │
+│  │  Art  │                                                          └─────────────────┘ │
+│  └───────┘                                                                              │
+│                                                                                         │
+└─────────────────────────────────────────────────────────────────────────────────────────┘
+   │            │                              │                              │
+   └─ Album art └─ Track info (2 lines)        └─ Seek bar + time             └─ [▼] Collapse
+
+Details:
+- Album art: 60x60 artwork thumbnail
+- Track info: Title on first line, Artist - Album on second line
+- Seek bar: Full-width slider with time labels
+- Controls: Larger icons with spacing
+- [▼] button: Click to collapse to single-line view
+```
+
+### Maximum Content Mode (Both Collapsed)
+
+For immersive experiences like the Visualiser, both toolbar and player can be collapsed:
+
+```
+┌─────────────────────────────────────────────────────────────────────────────────────────┐
+│                                                                                    [▼]  │
+├──────────────────────────────┬──────────────────────────────────────────────────────────┤
+│       SIDEBAR (180px)        │                                                          │
+│                              │                                                          │
+│  ┌────────────────────────┐  │                                                          │
+│  │ 🔍 Search...           │  │          ▄▄    ▄▄                                        │
+│  └────────────────────────┘  │      ▄▄ ████ ████ ▄▄                                     │
+│                              │    ▄▄████████████████▄▄                                   │
+│  VISUALISATION STYLE         │  ▄▄██████████████████████▄▄                               │
+│  ┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄   │ ████████████████████████████                              │
+│  ◉ LED Bars                  │                                                          │
+│  ○ Lumi Bars                 │        MAXIMUM VISUALISATION AREA                        │
+│  ○ Radial Spectrum           │                                                          │
+│                              │                                                          │
+│  SETTINGS                    │                                                          │
+│  ┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄   │                                                          │
+│  Sensitivity  [━━━●━━]       │                                                          │
+│  Smoothing    [━━●━━━]       │                                                          │
+│                              │                                                          │
+│  ┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄   │                                                          │
+│  LIBRARY STATS               │                                                          │
+│  🎵 1,234 tracks             │                                                          │
+├──────────────────────────────┴──────────────────────────────────────────────────────────┤
+│  ◀◀ Track Title - Artist ▶▶          ────●────────  1:45/4:12   [⏮][▶][⏭][🔀][🔁][🔊] [▲]│
+└─────────────────────────────────────────────────────────────────────────────────────────┘
+```
+
+---
+
+## Collapsible Toolbar
+
+The toolbar contains the navigation tabs and can be collapsed to maximise content space.
+
+### Expanded State (44px)
+
+```
+┌─────────────────────────────────────────────────────────────────────────────────────────┐
+│  [🏠 Home]  [📚 Library]  [📋 Playlists]  [📱 Devices]  [🎨 Visualiser]            [▲]  │
+└─────────────────────────────────────────────────────────────────────────────────────────┘
+    │            │              │               │              │                      │
+    └─ Tab buttons (icons + text)                                                     └─ Collapse button
+
+- Active tab: Highlighted with accent colour, bold text
+- Inactive tabs: Standard colour, normal weight
+- [▲] button: Click to collapse toolbar
+- Keyboard: ⌘T to toggle
+```
+
+### Collapsed State (0px)
+
+```
+┌─────────────────────────────────────────────────────────────────────────────────────────┐
+│                                                                                    [▼]  │
+└─────────────────────────────────────────────────────────────────────────────────────────┘
+                                                                                      │
+                                                                          [▼] Expand button
+
+- Toolbar hidden, only expand button visible in corner
+- Click [▼] or press ⌘T to show tabs again
+- Tab navigation still works via sidebar contextual navigation
+```
+
+### Tab Switching While Collapsed
+
+When toolbar is collapsed, tabs can still be switched via:
+1. **Sidebar contextual navigation** - Each tab's sidebar has relevant quick links
+2. **Keyboard shortcuts** - `⌘1` Home, `⌘2` Library, `⌘3` Playlists, `⌘4` Devices, `⌘5` Visualiser
+3. **Expand toolbar** - Click [▼] or press `⌘T`
+
 ---
 
 ## Tab-Specific Views
+
+> **Note**: The diagrams below show only the **sidebar + content area** for each tab.  
+> The **toolbar** (top) and **player controls** (bottom) remain as shown in the main layout.
 
 ### 🏠 Home Tab
 
@@ -296,15 +434,17 @@ The **Player Controls bar never changes or disappears** - it provides continuous
 
 ---
 
-## Player Controls Bar (Persistent)
+## Player Controls Bar (Collapsible)
 
-The player controls bar is **always visible at the bottom of the window** on every tab and is the **single source of truth** for "Now Playing" information. It never changes position, never hides, and provides continuous playback control.
+The player controls bar is **always visible at the bottom of the window** on every tab and is the **single source of truth** for "Now Playing" information. It can be **collapsed to a compact single-line view** to maximise content space.
 
 **Visibility**: ✅ Home | ✅ Library | ✅ Playlists | ✅ Devices | ✅ Visualiser
 
+### Expanded State (70px) - Default
+
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────────────┐
-│                                  PLAYER CONTROLS (70px)                                  │
+│                           PLAYER CONTROLS - EXPANDED (70px)                        [▼]  │
 │                                                                                         │
 │  ┌───────┐   Track Title                    ───────●─────────────   ┌─────────────────┐ │
 │  │  🎵   │   Artist - Album                  2:30 / 4:15            │ [⏮] [▶] [⏭]    │ │
@@ -315,12 +455,45 @@ The player controls bar is **always visible at the bottom of the window** on eve
 └─────────────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Key Points:**
+**Expanded Features:**
 - Album art (60x60) on the left
-- Track info (title, artist-album) next to art
-- Seek bar with time in center
-- Transport controls on right
+- Track info: Title (line 1), Artist - Album (line 2)
+- Full-width seek bar with time labels
+- Spacious transport controls
+- [▼] button to collapse
+
+### Collapsed State (32px) - Compact
+
+```
+┌─────────────────────────────────────────────────────────────────────────────────────────┐
+│  ◀◀ Track Title - Artist ▶▶          ────●────────  1:45/4:12   [⏮][▶][⏭][🔀][🔁][🔊] [▲]│
+└─────────────────────────────────────────────────────────────────────────────────────────┘
+```
+
+**Collapsed Features:**
+- **Scrolling text**: "Track Title - Artist" scrolls left-to-right (marquee) when text overflows
+- **Compact seek bar**: Inline slider with time display
+- **Icon-only controls**: All transport controls as compact icons
+- **[▲] button**: Click to expand back to full view
+
+### Scrolling Text Behaviour
+
+When the track title and artist combined exceed available width:
+
+```
+Normal (fits):     "Short Song - Artist"
+                   ─────────────────────
+
+Scrolling (long):  "◀◀ Very Long Track Title That Keeps Going - Artist Name Here ▶▶"
+                   ─────────────────────────────────────────────────────────────────→
+                   Text scrolls smoothly from right to left, then resets
+```
+
+**Key Points:**
 - **No "Now Playing" duplication** - this IS the now playing info
+- Collapse/expand state persists per session
+- Keyboard shortcut: `⌘P` to toggle player collapse
+- Default: Expanded on first launch
 
 ---
 
@@ -329,16 +502,18 @@ The player controls bar is **always visible at the bottom of the window** on eve
 ```
 MainWindowLayoutView
 │
-├── NavigationTabBar              ← PERSISTENT: Horizontal tabs (always visible)
-│   ├── Tab: Home
-│   ├── Tab: Library  
-│   ├── Tab: Playlists
-│   ├── Tab: Devices
-│   └── Tab: Visualiser
+├── CollapsibleToolbar            ← COLLAPSIBLE: Can hide to maximise content (44px ↔ 0px)
+│   ├── CollapseToggle            [▲/▼] button to toggle visibility
+│   └── NavigationTabBar          Horizontal tabs
+│       ├── Tab: Home
+│       ├── Tab: Library  
+│       ├── Tab: Playlists
+│       ├── Tab: Devices
+│       └── Tab: Visualiser
 │
 ├── HStack (Main Content Area)
 │   │
-│   ├── ContextualSidebar         ← SEMI-PERSISTENT: Always visible, content changes per tab
+│   ├── ContextualSidebar         ← ALWAYS VISIBLE: Content changes per tab
 │   │   ├── SearchField           ← MOVED from toolbar
 │   │   ├── ContextualNavigation  ← DYNAMIC: Changes per selected tab
 │   │   └── LibraryStats          ← PERSISTENT: Always at bottom of sidebar
@@ -350,22 +525,37 @@ MainWindowLayoutView
 │       ├── DeviceSyncView        (when Devices tab selected)
 │       └── AudioVisualiserView   (when Visualiser tab selected)
 │
-└── PlayerControlsBar             ← PERSISTENT: Always visible, never changes
-    ├── AlbumArtView              (60x60 artwork)
-    ├── TrackInfoView             (title, artist - album)
-    ├── SeekBarView               (progress slider + time labels)
-    └── TransportControlsView     (prev/play/next, shuffle, loop, volume)
+└── CollapsiblePlayerBar          ← COLLAPSIBLE: Expanded (70px) ↔ Collapsed (32px)
+    ├── CollapseToggle            [▲/▼] button to toggle mode
+    ├── ExpandedView (70px)
+    │   ├── AlbumArtView          (60x60 artwork)
+    │   ├── TrackInfoView         (title, artist - album on 2 lines)
+    │   ├── SeekBarView           (full-width progress slider + time labels)
+    │   └── TransportControlsView (prev/play/next, shuffle, loop, volume)
+    └── CollapsedView (32px)
+        ├── ScrollingTextView     (marquee: "Track Title - Artist")
+        ├── CompactSeekBar        (inline slider + time)
+        └── CompactControls       (icon-only: prev/play/next/shuffle/loop/volume)
 ```
 
-### Element Persistence Summary
+### Element Behaviour Summary
 
-| Component | Persistence | Notes |
-|-----------|-------------|-------|
-| `NavigationTabBar` | **Always visible** | Tab selection changes active tab indicator |
-| `ContextualSidebar` | **Always visible** | Content changes based on selected tab |
-| `LibraryStats` | **Always visible** | Bottom of sidebar, shows library totals |
-| `MainContentView` | **Dynamic** | Swaps content based on selected tab |
-| `PlayerControlsBar` | **Always visible** | Never changes, single "Now Playing" source |
+| Component | Behaviour | Height | Keyboard Shortcut |
+|-----------|-----------|--------|-------------------|
+| `CollapsibleToolbar` | **Collapsible** | 44px ↔ 0px | `⌘T` toggle |
+| `ContextualSidebar` | **Always visible** | 100% | — |
+| `LibraryStats` | **Always visible** | Auto | — |
+| `MainContentView` | **Dynamic content** | Fills available | — |
+| `CollapsiblePlayerBar` | **Collapsible** | 70px ↔ 32px | `⌘P` toggle |
+
+### State Combinations
+
+| Toolbar | Player | Content Height | Use Case |
+|---------|--------|----------------|----------|
+| Expanded | Expanded | Normal | Default browsing |
+| Expanded | Collapsed | +38px | More list items visible |
+| Collapsed | Expanded | +44px | Focus on content |
+| Collapsed | Collapsed | +82px | **Maximum content** (Visualiser) |
 
 ---
 
@@ -375,22 +565,30 @@ MainWindowLayoutView
 
 | File | Action | Notes |
 |------|--------|-------|
-| `MainWindowLayoutView.swift` | **Refactor** | New tab-based structure |
+| `MainWindowLayoutView.swift` | **Refactor** | New collapsible toolbar + player structure |
 | `MainWindowNavigationSidebar.swift` | **Refactor** → `ContextualSidebar.swift` | Add search, contextual nav |
-| `MainWindowToolbar.swift` | **Delete** | Merged into tabs + sidebar |
+| `MainWindowToolbar.swift` | **Delete** | Replaced by CollapsibleToolbar |
 | `MainWindowPlaylistPanel.swift` | **Delete** | No right panel needed |
 | `NavigationItem.swift` | **Refactor** → `TabItem.swift` | Home, Library, Playlists, Devices, Visualiser |
-| `MainWindowPlayerControls.swift` | **Keep** | Minor updates |
+| `MainWindowPlayerControls.swift` | **Refactor** → `CollapsiblePlayerBar.swift` | Add collapsed/expanded states |
+| **NEW** `CollapsibleToolbar.swift` | **Create** | Toolbar with collapse toggle |
 | **NEW** `NavigationTabBar.swift` | **Create** | Horizontal tab component |
+| **NEW** `ScrollingTextView.swift` | **Create** | Marquee text for collapsed player |
+| **NEW** `CompactPlayerControls.swift` | **Create** | Single-line player controls |
 
 ### Implementation Steps
 
 1. **Step 1**: Create `TabItem.swift` enum with new tab definitions
 2. **Step 2**: Create `NavigationTabBar.swift` horizontal tab component
-3. **Step 3**: Refactor `MainWindowNavigationSidebar.swift` → `ContextualSidebar.swift`
-4. **Step 4**: Update `MainWindowLayoutView.swift` with new architecture
-5. **Step 5**: Delete unused files (`MainWindowToolbar.swift`, `MainWindowPlaylistPanel.swift`)
-6. **Step 6**: Update all tests to reflect new structure
+3. **Step 3**: Create `CollapsibleToolbar.swift` with expand/collapse toggle
+4. **Step 4**: Create `ScrollingTextView.swift` for marquee text animation
+5. **Step 5**: Create `CompactPlayerControls.swift` for collapsed player state
+6. **Step 6**: Refactor `MainWindowPlayerControls.swift` → `CollapsiblePlayerBar.swift`
+7. **Step 7**: Refactor `MainWindowNavigationSidebar.swift` → `ContextualSidebar.swift`
+8. **Step 8**: Update `MainWindowLayoutView.swift` with new architecture
+9. **Step 9**: Delete unused files (`MainWindowToolbar.swift`, `MainWindowPlaylistPanel.swift`)
+10. **Step 10**: Add keyboard shortcuts (`⌘T` for toolbar, `⌘P` for player)
+11. **Step 11**: Update all tests to reflect new structure
 
 ---
 
@@ -398,14 +596,16 @@ MainWindowLayoutView
 
 | Aspect | Before (Current) | After (Option D) |
 |--------|------------------|------------------|
-| Navigation | Sidebar nav items | Horizontal tabs |
+| Navigation | Sidebar nav items | Horizontal tabs in collapsible toolbar |
 | Search | Toolbar | Sidebar |
 | Right panel | Always visible playlist panel | Removed (no duplication) |
 | Visualiser | Toggle button | Dedicated tab |
-| "Now Playing" | Multiple places | Player bar only |
+| "Now Playing" | Multiple places | Collapsible player bar only |
 | Radio | Present | Removed |
-| Layout | 3-column | 2-column (sidebar + content) |
-| Content width | ~500px (50%) | ~820px (82%) |
+| Layout | 3-column fixed | 2-column with collapsible elements |
+| Content width | ~500px (50%) | ~820px (82%) to ~820px+82px (max) |
+| Player height | 80px fixed | 70px ↔ 32px collapsible |
+| Toolbar | Fixed | 44px ↔ 0px collapsible |
 
 ---
 
@@ -416,9 +616,12 @@ MainWindowLayoutView
 3. **Cleaner Navigation** - Tabs are familiar and intuitive
 4. **Contextual Sidebar** - Shows relevant options per tab
 5. **Dedicated Visualiser** - Full tab for immersive visualisation
-6. **Persistent Player Bar** - Always visible at bottom, clear and consistent "Now Playing" location on every screen
-7. **Modern macOS Feel** - Follows Apple's design patterns
-8. **Continuous Playback Control** - Never lose access to play/pause/seek regardless of current view
+6. **Collapsible Player Bar** - Compact mode for maximum content, expanded for full controls
+7. **Collapsible Toolbar** - Hide navigation tabs when focused on content
+8. **Modern macOS Feel** - Follows Apple's design patterns
+9. **Keyboard Shortcuts** - `⌘T` toggle toolbar, `⌘P` toggle player
+10. **Maximum Content Mode** - Collapse both for +82px vertical space (great for Visualiser)
+11. **Scrolling Track Info** - Marquee text in collapsed player shows full track info
 
 ---
 

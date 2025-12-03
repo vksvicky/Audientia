@@ -5,6 +5,7 @@
 disabled_rules: []
 
 # Opt-in rules
+# Note: single_test_class removed - BDD tests commonly have multiple classes per file (TDD + BDD)
 opt_in_rules:
   - empty_count
   - empty_string
@@ -15,7 +16,6 @@ opt_in_rules:
   - overridden_super_call
   - prohibited_super_call
   - redundant_nil_coalescing
-  - single_test_class
   - sorted_first_last
   - sorted_imports
   - static_operator

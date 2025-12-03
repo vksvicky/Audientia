@@ -2,7 +2,7 @@
 //  MainWindowLayoutView.swift
 //  Audientia
 //
-//  Main window layout matching MediaMonkey's design
+//  Main window layout with collapsible toolbar, contextual sidebar, and collapsible player
 //
 //  Copyright © 2025 CycleRunCode Club. All rights reserved.
 //
@@ -16,19 +16,33 @@ import os.log
 import Shared
 import SwiftUI
 
-/// Main window layout with left navigation, toolbar, playlist panel, and player controls
+/// Main window layout with:
+/// - Collapsible toolbar with navigation tabs at top
+/// - Contextual sidebar on the left
+/// - Tab-specific content in the center
+/// - Collapsible player controls at bottom
 @MainActor
 public struct MainWindowLayoutView: View {
+    // MARK: - View Models
+    
     @StateObject private var nowPlayingViewModel: NowPlayingViewModel
     @StateObject private var libraryBrowserViewModel = LibraryBrowserViewModel()
-    // Use type inference - let Swift infer the type from the initial value
-    @State private var selectedNavigationItem: NavigationItem = .home
+    @StateObject private var importCoordinator: TrackImportCoordinator
+    
+    // MARK: - State
+    
+    @State private var selectedTab: TabItem = .home
+    @State private var searchText: String = ""
+    @State private var isToolbarExpanded: Bool = true
+    @State private var isPlayerExpanded: Bool = true
     @State private var importError: Error?
-    @State private var showVisualiser = false
+    
+    // MARK: - Dependencies
     
     private let audioEngine: AudioEngineProtocol
-    @StateObject private var importCoordinator: TrackImportCoordinator
     @Environment(\.dismissWindow) private var dismissWindow
+    
+    // MARK: - Initialization
     
     public init(audioEngine: AudioEngineProtocol) {
         self.audioEngine = audioEngine
@@ -41,36 +55,31 @@ public struct MainWindowLayoutView: View {
         )
     }
     
+    // MARK: - Body
+    
     public var body: some View {
-        mainLayout
-    }
-    
-    // MARK: - Layout Structure
-    
-    private var mainLayout: some View {
         VStack(spacing: 0) {
-            // Main content area (navigation, content, playlist)
-            horizontalLayout
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
+            // Collapsible Toolbar with Navigation Tabs
+            CollapsibleToolbar(
+                selectedTab: $selectedTab,
+                isExpanded: $isToolbarExpanded
+            )
             
             Divider()
             
-            // Player Controls at Bottom (spans full width)
-            MainWindowPlayerControls(
+            // Main Content Area (Sidebar + Content)
+            mainContentArea
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+            
+            // Collapsible Player Controls
+            CollapsiblePlayerBar(
                 nowPlayingViewModel: nowPlayingViewModel,
-                showVisualiser: $showVisualiser,
-                onMinimize: {
-                    if let appDelegate = AppDelegate.shared ?? (NSApplication.shared.delegate as? AppDelegate) {
-                        appDelegate.minimizeToPlayer(nowPlayingViewModel: nowPlayingViewModel)
-                    }
-                }
+                isExpanded: $isPlayerExpanded,
+                onMinimize: handleMinimize
             )
-            .frame(height: 80)
-            .background(Color(NSColor.controlBackgroundColor))
         }
-        .frame(minWidth: 1000, minHeight: 600)
+        .frame(minWidth: 900, minHeight: 500)
         .onAppear {
-            // Setup minimize button in title bar when view appears
             setupMinimizeButtonInTitleBar()
         }
         .onAudioFilesDropped { urls in
@@ -96,78 +105,63 @@ public struct MainWindowLayoutView: View {
         }
     }
     
-    private var horizontalLayout: some View {
-        HStack(alignment: .top, spacing: 0) {
-            // Left Navigation Sidebar - FIXED WIDTH (highest priority)
-            MainWindowNavigationSidebar(
-                selectedNavigationItem: $selectedNavigationItem,
-                queueCount: nowPlayingViewModel.queue.count
+    // MARK: - Main Content Area
+    
+    private var mainContentArea: some View {
+        HStack(spacing: 0) {
+            // Contextual Sidebar
+            ContextualSidebar(
+                selectedTab: $selectedTab,
+                searchText: $searchText
             )
-                .frame(width: 200)
-                .fixedSize(horizontal: true, vertical: false)
-                .layoutPriority(1000)
             
             Divider()
-                .frame(width: 1)
-                .layoutPriority(1000)
             
-            // Main Content Area - FLEXIBLE (lowest priority, fills remaining space)
-            mainContentArea
-                .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity)
-                .layoutPriority(0)
-                .clipped()
-            
-            Divider()
-                .frame(width: 1)
-                .layoutPriority(1000)
-            
-            // Right Playlist Panel - FIXED WIDTH (highest priority)
-            MainWindowPlaylistPanel()
-                .frame(width: 300)
-                .fixedSize(horizontal: true, vertical: false)
-                .layoutPriority(1000)
+            // Tab-specific Content
+            tabContentView
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
     }
     
-    private var mainContentArea: some View {
-        VStack(alignment: .leading, spacing: 0) {
-            // Toolbar
-            MainWindowToolbar(selectedNavigationItem: $selectedNavigationItem)
-                .frame(height: 44)
-                .frame(maxWidth: CGFloat.infinity, alignment: Alignment.leading)
-                .background(Color(NSColor.controlBackgroundColor))
-            
-            Divider()
-            
-            // Content Area (Library Browser, Visualizer, or other views)
-            Group {
-                if showVisualiser {
-                    AudioVisualiserView(
-                        nowPlayingViewModel: nowPlayingViewModel,
-                        audioEngine: audioEngine as? AudioEngine
-                    )
-                        .frame(minWidth: 0, maxWidth: CGFloat.infinity, minHeight: 0, maxHeight: CGFloat.infinity)
-                        .clipped()
-                } else {
-                    contentArea
-                        .frame(minWidth: 0, maxWidth: CGFloat.infinity, minHeight: 0, maxHeight: CGFloat.infinity)
-                        .clipped()
-                }
-            }
+    // MARK: - Tab Content View
+    
+    @ViewBuilder
+    private var tabContentView: some View {
+        switch selectedTab {
+        case .home:
+            HomeContentView()
+        case .library:
+            LibraryBrowserView(viewModel: libraryBrowserViewModel)
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+        case .playlists:
+            PlaylistBrowserView(playlistManager: PlaylistManager(indexer: LibraryIndexer()))
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+        case .devices:
+            DeviceSyncView()
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+        case .visualiser:
+            AudioVisualiserView(
+                nowPlayingViewModel: nowPlayingViewModel,
+                audioEngine: audioEngine as? AudioEngine
+            )
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
-        .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity)
-        .clipped()
+    }
+    
+    // MARK: - Actions
+    
+    private func handleMinimize() {
+        if let appDelegate = AppDelegate.shared ?? (NSApplication.shared.delegate as? AppDelegate) {
+            appDelegate.minimizeToPlayer(nowPlayingViewModel: nowPlayingViewModel)
+        }
     }
     
     // MARK: - Minimize Button Setup
     
     private func setupMinimizeButtonInTitleBar() {
-        // Capture the viewModel to use in the closure
         let viewModel = nowPlayingViewModel
         
-        // Try to add button to title bar using AppKit
         DispatchQueue.main.async {
-            // Find the main window - try multiple times if needed
             var window: NSWindow?
             for attempt in 0..<5 {
                 window = NSApplication.shared.windows.first(where: { $0.isMainWindow || $0.isKeyWindow })
@@ -178,10 +172,7 @@ public struct MainWindowLayoutView: View {
             }
             
             guard let window = window else {
-                // Retry after a short delay if window not found
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                    // We need to call this from the view, but we can't capture self
-                    // So we'll find the window and set it up directly
                     if let retryWindow = NSApplication.shared.windows.first(where: { $0.isMainWindow || $0.isKeyWindow }) {
                         Self.setupMinimizeButton(in: retryWindow, viewModel: viewModel)
                     }
@@ -194,12 +185,10 @@ public struct MainWindowLayoutView: View {
     }
     
     private static func setupMinimizeButton(in window: NSWindow, viewModel: NowPlayingViewModel) {
-        // Remove any existing titlebar accessories
         while !window.titlebarAccessoryViewControllers.isEmpty {
             window.removeTitlebarAccessoryViewController(at: 0)
         }
         
-        // Create button
         let button = NSButton()
         if let image = NSImage(systemSymbolName: "minus.circle.fill", accessibilityDescription: nil) {
             button.image = image
@@ -210,162 +199,119 @@ public struct MainWindowLayoutView: View {
         button.toolTip = "Minimize to Player"
         button.frame = NSRect(x: 0, y: 0, width: 20, height: 20)
         
-        // Create target and retain it - use a strong reference
         let target = MinimizeButtonTarget(viewModel: viewModel)
         button.target = target
         button.action = #selector(MinimizeButtonTarget.minimize)
         
-        // Create container view
         let containerView = NSView(frame: NSRect(x: 0, y: 0, width: 80, height: 22))
         containerView.addSubview(button)
-        button.frame.origin = NSPoint(x: 60, y: 1) // Position to the right of traffic lights
+        button.frame.origin = NSPoint(x: 60, y: 1)
         
-        // Retain the target by storing it in the container view
         objc_setAssociatedObject(containerView, "minimizeTarget", target, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
         
-        // Create titlebar accessory
         let accessory = NSTitlebarAccessoryViewController()
         accessory.view = containerView
         accessory.layoutAttribute = .leading
         
         window.addTitlebarAccessoryViewController(accessory)
     }
-    
-    // MARK: - Content Area
-    
-    @ViewBuilder
-    private var contentArea: some View {
-        switch selectedNavigationItem {
-        case .home:
-            homeView
-        case .playing:
-            playingView
-        case .entireLibrary:
-            LibraryBrowserView(viewModel: libraryBrowserViewModel)
-                .frame(minWidth: 0, maxWidth: CGFloat.infinity, minHeight: 0, maxHeight: CGFloat.infinity)
-                .clipped()
-        case .music:
-            LibraryBrowserView(viewModel: libraryBrowserViewModel)
-                .frame(minWidth: 0, maxWidth: CGFloat.infinity, minHeight: 0, maxHeight: CGFloat.infinity)
-                .clipped()
-        case .playlists:
-            PlaylistBrowserView(playlistManager: PlaylistManager(indexer: LibraryIndexer()))
-                .frame(minWidth: 0, maxWidth: CGFloat.infinity, minHeight: 0, maxHeight: CGFloat.infinity)
-                .clipped()
-        case .devices:
-            DeviceSyncView()
-                .frame(minWidth: 0, maxWidth: CGFloat.infinity, minHeight: 0, maxHeight: CGFloat.infinity)
-                .clipped()
-        case .folders:
-            LibraryBrowserView(viewModel: libraryBrowserViewModel)
-                .frame(minWidth: 0, maxWidth: CGFloat.infinity, minHeight: 0, maxHeight: CGFloat.infinity)
-                .clipped()
-        case .web:
-            Text("Web")
-                .frame(maxWidth: CGFloat.infinity, maxHeight: CGFloat.infinity)
-        case .pinned:
-            Text("Pinned")
-                .frame(maxWidth: CGFloat.infinity, maxHeight: CGFloat.infinity)
-        }
-    }
-    
-    private var homeView: some View {
+}
+
+// MARK: - Home Content View
+
+private struct HomeContentView: View {
+    var body: some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: 20) {
-                Text("Welcome to Audientia")
-                    .font(.system(size: 24, weight: .bold))
-                    .padding(.top, 20)
-                
-                Text("Audientia is a powerful media library manager for your music collection.")
-                    .font(.system(size: 14))
-                    .foregroundColor(.secondary)
-                
-                VStack(alignment: .leading, spacing: 12) {
-                    if let url = URL(string: "https://github.com/vksvicky/Audientia") {
-                        Link(">> What's New?", destination: url)
-                        Link(">> Introduction", destination: url)
-                        Link(">> Add files to the library", destination: url)
-                        Link(">> Play files", destination: url)
-                        Link(">> Update/Edit your files", destination: url)
-                        Link(">> Sync your files", destination: url)
-                    }
-                }
-                .padding(.top, 20)
-            }
-            .frame(maxWidth: CGFloat.infinity, alignment: Alignment.leading)
-            .padding(30)
-        }
-    }
-    
-    private var playingView: some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: 20) {
-                // Now Playing Section
-                VStack(alignment: .leading, spacing: 12) {
-                    if let track = nowPlayingViewModel.currentTrack {
-                        Text("Now Playing")
-                            .font(.system(size: 18, weight: .semibold))
-                        
-                        Text("\(track.title) - \(track.artist)")
-                            .font(.system(size: 14))
-                            .foregroundColor(.secondary)
-                    } else {
-                        Text("No track playing")
-                            .font(.system(size: 14))
-                            .foregroundColor(.secondary)
-                    }
-                }
-                .padding(.top, 20)
-                
-                // Queue Section
-                if !nowPlayingViewModel.queue.isEmpty {
-                    Divider()
+            VStack(alignment: .leading, spacing: 24) {
+                // Header
+                VStack(alignment: .leading, spacing: 8) {
+                    Text("Welcome to Audientia")
+                        .font(.system(size: 28, weight: .bold))
                     
-                    VStack(alignment: .leading, spacing: 12) {
-                        Text("Queue (\(nowPlayingViewModel.queue.count) tracks)")
-                            .font(.system(size: 18, weight: .semibold))
-                        
-                        ForEach(Array(nowPlayingViewModel.queue.enumerated()), id: \.element.id) { index, track in
-                            HStack {
-                                Text("\(index + 1).")
-                                    .font(.caption)
-                                    .foregroundColor(.secondary)
-                                    .frame(width: 30, alignment: .trailing)
-                                
-                                VStack(alignment: .leading, spacing: 2) {
-                                    Text(track.title)
-                                        .font(.body)
-                                        .lineLimit(1)
-                                    
-                                    Text(track.artist)
-                                        .font(.caption)
-                                        .foregroundColor(.secondary)
-                                        .lineLimit(1)
-                                }
-                                
-                                Spacer()
-                                
-                                Button {
-                                    nowPlayingViewModel.removeFromQueue(track)
-                                } label: {
-                                    Image(systemName: "xmark.circle.fill")
-                                        .foregroundColor(.secondary)
-                                }
-                                .buttonStyle(.plain)
-                                .help("Remove from queue")
-                            }
-                            .padding(.vertical, 4)
+                    Text("Your powerful media library manager")
+                        .font(.system(size: 14))
+                        .foregroundColor(.secondary)
+                }
+                .padding(.top, 20)
+                
+                // Recently Played Section
+                VStack(alignment: .leading, spacing: 12) {
+                    Text("RECENTLY PLAYED")
+                        .font(.system(size: 12, weight: .semibold))
+                        .foregroundColor(.secondary)
+                    
+                    HStack(spacing: 16) {
+                        ForEach(0..<4) { _ in
+                            AlbumPlaceholderView()
+                        }
+                        Spacer()
+                    }
+                }
+                
+                // Recently Added Section
+                VStack(alignment: .leading, spacing: 12) {
+                    Text("RECENTLY ADDED")
+                        .font(.system(size: 12, weight: .semibold))
+                        .foregroundColor(.secondary)
+                    
+                    HStack(spacing: 16) {
+                        ForEach(0..<4) { _ in
+                            AlbumPlaceholderView()
+                        }
+                        Spacer()
+                    }
+                }
+                
+                // Quick Links
+                VStack(alignment: .leading, spacing: 12) {
+                    Text("GET STARTED")
+                        .font(.system(size: 12, weight: .semibold))
+                        .foregroundColor(.secondary)
+                    
+                    VStack(alignment: .leading, spacing: 8) {
+                        if let url = URL(string: "https://github.com/vksvicky/Audientia") {
+                            Link(">> What's New?", destination: url)
+                            Link(">> Introduction", destination: url)
+                            Link(">> Add files to the library", destination: url)
+                            Link(">> Play files", destination: url)
+                            Link(">> Update/Edit your files", destination: url)
+                            Link(">> Sync your files", destination: url)
                         }
                     }
+                    .font(.system(size: 13))
                 }
             }
-            .frame(maxWidth: CGFloat.infinity, alignment: Alignment.leading)
+            .frame(maxWidth: .infinity, alignment: .leading)
             .padding(30)
         }
     }
 }
 
-// Helper class to handle button action
+// MARK: - Album Placeholder View
+
+private struct AlbumPlaceholderView: View {
+    var body: some View {
+        VStack(spacing: 8) {
+            RoundedRectangle(cornerRadius: 8)
+                .fill(Color.gray.opacity(0.2))
+                .frame(width: 100, height: 100)
+                .overlay(
+                    Image(systemName: "music.note")
+                        .font(.system(size: 30))
+                        .foregroundColor(.secondary)
+                )
+            
+            Text("Album")
+                .font(.system(size: 11))
+                .foregroundColor(.secondary)
+                .lineLimit(1)
+        }
+        .frame(width: 100)
+    }
+}
+
+// MARK: - Minimize Button Target
+
 private class MinimizeButtonTarget: NSObject {
     let viewModel: NowPlayingViewModel
     
@@ -378,19 +324,15 @@ private class MinimizeButtonTarget: NSObject {
         DispatchQueue.main.async { [weak self] in
             guard let self = self else { return }
             
-            // Try multiple ways to get AppDelegate
             var appDelegate: AppDelegate?
-            
-            // Method 1: Try static shared property
             appDelegate = AppDelegate.shared
             
-            // Method 2: Try NSApplication delegate
             if appDelegate == nil {
                 appDelegate = NSApplication.shared.delegate as? AppDelegate
             }
             
-            // Method 3: Try to get from the main window's delegate
-            if appDelegate == nil, let window = NSApplication.shared.windows.first(where: { $0.isMainWindow || $0.isKeyWindow }) {
+            if appDelegate == nil,
+               let window = NSApplication.shared.windows.first(where: { $0.isMainWindow || $0.isKeyWindow }) {
                 appDelegate = window.delegate as? AppDelegate
             }
             
