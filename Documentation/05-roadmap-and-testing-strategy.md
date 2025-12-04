@@ -158,7 +158,7 @@ Based on `Documentation/16-ui-layout-redesign.md` Implementation Plan:
 - [x] Persistent library statistics at bottom
 - [x] Implement search functionality per tab - **✅ Library tab search wired up via `LibraryBrowserViewModel.updateSearchText()`, Playlists tab search wired up via `PlaylistSidebarViewModel.updateSearchText()`, Devices tab search wired up via `DeviceSidebarViewModel.updateSearchText()`, Home and Visualiser tabs don't require search (curated content)**
 - [x] Wire up action callbacks (file import, settings) - **✅ Import Files and Settings actions wired up with TDD/BDD tests**
-- [ ] Wire up "New Playlist" action (placeholder implemented, UI pending)
+- [x] Wire up "New Playlist" action - **✅ Implemented: `CreatePlaylistDialog` created and wired up in `MainWindowLayoutView`, `PlaylistSidebarViewModel.createPlaylist()` method with validation, error handling, and comprehensive TDD/BDD tests. Dialog shown via sheet presentation with keyboard shortcuts.**
 
 **General:**
 - [x] Collapsible toolbar with `⌘T` keyboard shortcut
@@ -186,14 +186,14 @@ Based on `Documentation/16-ui-layout-redesign.md` Implementation Plan:
 - [x] End-to-end tests for search functionality across tabs - **✅ Created `SearchFunctionalityE2ETests.swift` with E2E tests for search: Library tab (track search, filtering, clearing), Playlists tab (playlist search, filtering, clearing), Devices tab (device search, filtering, clearing), search routing per tab, case-insensitivity, partial matching, whitespace handling, and search persistence across tab switches**
 - [x] UI/UX testing for all tab-specific views - **✅ Created `TabSpecificViewsUIUXTests.swift` with UI/UX tests for all 5 tab-specific views: HomeContentView (recently played, recently added, most played, favourites, empty state), LibraryBrowserView (tracks display, empty library, loading, error), PlaylistBrowserView (playlists display, empty playlists), DeviceSyncView (device sync interface, no devices), AudioVisualiserView (visualisation display, no audio), view layout/positioning, and data update handling**
 - [x] Performance testing for layout transitions - **✅ Created `LayoutPerformanceTests.swift` with performance tests for tab switching (repeated tab iteration), toolbar/player collapse/expand state persistence, and search routing, using XCTest `measure` to validate layout transition performance characteristics**
-- [ ] Accessibility testing (VoiceOver, keyboard navigation)
+- [x] Accessibility testing (VoiceOver, keyboard navigation) - **✅ Created `AccessibilityTests.swift` with comprehensive accessibility test suite following Right-BICEP principles: VoiceOver labels and hints for all components (toolbar tabs, sidebar items, player controls), keyboard navigation (Tab key, arrow keys, shortcuts), focus management (forward/backward), accessibility traits (buttons, selected states), accessibility announcements, edge cases (collapsed states, empty states, long titles, special characters), and BDD scenarios for VoiceOver users, keyboard-only users, screen reader users, and users with motor impairments**
 
 #### 📚 Documentation
 - [x] Design document (`Documentation/16-ui-layout-redesign.md`)
 - [x] Implementation checklist in roadmap
-- [ ] User guide for new layout features
-- [ ] Developer guide for extending tab-specific views
-- [ ] Keyboard shortcuts reference
+- [x] User guide for new layout features - **✅ Created `Documentation/18-user-guide-ui-layout.md` with comprehensive user guide: overview of main window layout, detailed features for all 5 tabs (Home, Library, Playlists, Devices, Visualiser), collapsible toolbar and player controls, search functionality, playlist creation (regular and smart), player controls, tips and best practices, and troubleshooting section**
+- [x] Developer guide for extending tab-specific views - **✅ Created `Documentation/19-developer-guide-extending-tabs.md` with comprehensive developer guide: architecture overview, step-by-step process for adding new tabs (TabItem enum, ViewModel, View, MainWindowTabContentView, MainWindowLayoutView, sidebar content, search integration), extending existing tabs, testing requirements (TDD, BDD, UI, E2E), sidebar components, search integration, ViewModel best practices, accessibility requirements, file organization, integration checklist, code examples, and common patterns**
+- [x] Keyboard shortcuts reference - **✅ Created `Documentation/17-keyboard-shortcuts-reference.md` with comprehensive keyboard shortcuts reference: navigation shortcuts (⌘1-5 for tabs), layout control shortcuts (⌘T for toolbar, ⌘P for player), dialog shortcuts (Enter/Esc), standard macOS shortcuts, keyboard navigation guide (focus order, arrow keys), accessibility information (VoiceOver support), tips and best practices, and quick reference card**
 
 ##### UI Layout Redesign – Remaining Follow-ups (from `16-ui-layout-redesign.md`)
 - [x] Finalise **"New Playlist"** UX:
