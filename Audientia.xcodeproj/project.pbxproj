@@ -739,6 +739,8 @@
 		E29A00212EDA7000000000021 /* MainWindowLayoutViewRedesignTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E29A000D2EDA700000000000D /* MainWindowLayoutViewRedesignTests.swift */; };
 		E29A00262EDA7000000000026 /* HomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E29A00222EDA7000000000022 /* HomeViewModel.swift */; };
 		E29A00272EDA7000000000027 /* HomeViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E29A00232EDA7000000000023 /* HomeViewModelTests.swift */; };
+		E29A00562EDA7000000000056 /* HomeViewModelBDDTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E29A00552EDA7000000000055 /* HomeViewModelBDDTests.swift */; };
+		E29A00582EDA7000000000058 /* HomeViewModelTestHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = E29A00572EDA7000000000057 /* HomeViewModelTestHelpers.swift */; };
 		E29A00482EDA7000000000048 /* HomeContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E29A003A2EDA700000000003A /* HomeContentView.swift */; };
 		E29A004A2EDA700000000004A /* MinimizeButtonTarget.swift in Sources */ = {isa = PBXBuildFile; fileRef = E29A003C2EDA700000000003C /* MinimizeButtonTarget.swift */; };
 		E29A004C2EDA700000000004C /* SidebarComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = E29A003E2EDA700000000003E /* SidebarComponents.swift */; };
@@ -1739,6 +1741,8 @@
 		E29A000D2EDA700000000000D /* MainWindowLayoutViewRedesignTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainWindowLayoutViewRedesignTests.swift; sourceTree = "<group>"; };
 		E29A00222EDA7000000000022 /* HomeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewModel.swift; sourceTree = "<group>"; };
 		E29A00232EDA7000000000023 /* HomeViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewModelTests.swift; sourceTree = "<group>"; };
+		E29A00552EDA7000000000055 /* HomeViewModelBDDTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewModelBDDTests.swift; sourceTree = "<group>"; };
+		E29A00572EDA7000000000057 /* HomeViewModelTestHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewModelTestHelpers.swift; sourceTree = "<group>"; };
 		E29A00282EDA7000000000028 /* LibraryBrowserViewModelFilteringTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LibraryBrowserViewModelFilteringTests.swift; sourceTree = "<group>"; };
 		E29A00302EDA7000000000030 /* PlaylistSidebarViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaylistSidebarViewModel.swift; sourceTree = "<group>"; };
 		E29A00342EDA7000000000034 /* SmartPlaylistViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmartPlaylistViewModel.swift; sourceTree = "<group>"; };
@@ -3333,6 +3337,8 @@
 			isa = PBXGroup;
 			children = (
 				E29A00232EDA7000000000023 /* HomeViewModelTests.swift */,
+				E29A00552EDA7000000000055 /* HomeViewModelBDDTests.swift */,
+				E29A00572EDA7000000000057 /* HomeViewModelTestHelpers.swift */,
 			);
 			path = Home;
 			sourceTree = "<group>";
@@ -4808,6 +4814,8 @@
 				4658C968374E4181A68C3153 /* LayoutPerformanceTests.swift in Sources */,
 				F3A4B5C6D7E8F9A0B1C2D3E /* TabSpecificViewsUIUXTests.swift in Sources */,
 				E29A00272EDA7000000000027 /* HomeViewModelTests.swift in Sources */,
+				E29A00562EDA7000000000056 /* HomeViewModelBDDTests.swift in Sources */,
+				E29A00582EDA7000000000058 /* HomeViewModelTestHelpers.swift in Sources */,
 				04AA22CAE53394F516263075 /* SmartPlaylistRuleBuilderViewModel.swift in Sources */,
 				0CAAA1E035556C74E89C62FD /* SmartPlaylistRuleBuilderViewModelBDDTests.swift in Sources */,
 				0BB926586EC481FEF76945A5 /* SmartPlaylistRuleBuilderViewModelTests.swift in Sources */,
