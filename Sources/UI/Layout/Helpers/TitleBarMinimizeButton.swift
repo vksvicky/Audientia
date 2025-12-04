@@ -59,7 +59,9 @@ enum TitleBarMinimizeButton {
             
             guard let window = window else {
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                    if let retryWindow = NSApplication.shared.windows.first(where: { $0.isMainWindow || $0.isKeyWindow }) {
+                    if let retryWindow = NSApplication.shared.windows.first(
+                        where: { $0.isMainWindow || $0.isKeyWindow }
+                    ) {
                         Self.setup(in: retryWindow, viewModel: viewModel)
                     }
                 }
