@@ -16,8 +16,21 @@ import SwiftUI
 public struct AudioVisualiserView: View {
     @StateObject private var viewModel: AudioVisualiserViewModel
     
-    public init(nowPlayingViewModel: NowPlayingViewModel? = nil, audioEngine: AudioEngine? = nil) {
-        _viewModel = StateObject(wrappedValue: AudioVisualiserViewModel(nowPlayingViewModel: nowPlayingViewModel, audioEngine: audioEngine))
+    init(
+        nowPlayingViewModel: NowPlayingViewModel? = nil,
+        audioEngine: AudioEngine? = nil,
+        viewModel: AudioVisualiserViewModel? = nil
+    ) {
+        if let viewModel = viewModel {
+            _viewModel = StateObject(wrappedValue: viewModel)
+        } else {
+            _viewModel = StateObject(
+                wrappedValue: AudioVisualiserViewModel(
+                    nowPlayingViewModel: nowPlayingViewModel,
+                    audioEngine: audioEngine
+                )
+            )
+        }
     }
     
     public var body: some View {

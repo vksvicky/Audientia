@@ -24,6 +24,8 @@ public final class LibraryBrowserViewModel: ObservableObject {
     @Published public private(set) var grouping: LibraryGrouping = .none
     @Published public private(set) var sortOrder: LibrarySortOrder = .title
     @Published public private(set) var sortDirection: LibrarySortDirection = .ascending
+    @Published public private(set) var browseMode: LibraryBrowseMode = .allTracks
+    @Published public private(set) var selectedGenres: Set<String> = []
     @Published public private(set) var isLoading = false
     @Published public private(set) var lastError: Error?
     @Published public private(set) var hasLoaded = false
@@ -71,8 +73,8 @@ public final class LibraryBrowserViewModel: ObservableObject {
         
         let indexedTracks = await indexer.getAllTracks()
         tracks = sort(tracks: indexedTracks)
-        filteredTracks = tracks
         hasLoaded = true
+        await applyFilters()
         
         Task {
             await preloadArtworks(for: tracks)
@@ -89,19 +91,7 @@ public final class LibraryBrowserViewModel: ObservableObject {
     public func updateSearchText(_ text: String) async {
         searchText = text
         lastError = nil
-        
-        guard text.isEmpty == false else {
-            filteredTracks = tracks
-            return
-        }
-        
-        do {
-            let results = try await searchService.search(query: text)
-            filteredTracks = sort(tracks: results)
-        } catch {
-            lastError = error
-            logger.error("Search failed: \(error.localizedDescription)")
-        }
+        await applyFilters()
     }
     
     public func setViewMode(_ mode: LibraryViewMode) async {
@@ -113,6 +103,22 @@ public final class LibraryBrowserViewModel: ObservableObject {
     public func setGrouping(_ value: LibraryGrouping) async {
         guard value != grouping else { return }
         grouping = value
+        // Update browse mode to match grouping if applicable
+        switch value {
+        case .none:
+            browseMode = .allTracks
+        case .artist:
+            browseMode = .artists
+        case .album:
+            browseMode = .albums
+        case .genre:
+            browseMode = .genres
+        case .year:
+            browseMode = .years
+        case .rating:
+            // Rating doesn't have a browse mode equivalent
+            break
+        }
         await persistConfiguration()
     }
     
@@ -144,6 +150,32 @@ public final class LibraryBrowserViewModel: ObservableObject {
         guard artworkCache[track.id] == nil else { return }
         guard let artwork = await artworkExtractor.extractArtwork(for: track) else { return }
         artworkCache[track.id] = artwork
+    }
+    
+    /// Set the browse mode (All Tracks, Artists, Albums, Genres, Years, Folders)
+    /// - Parameter mode: The browse mode to set
+    public func setBrowseMode(_ mode: LibraryBrowseMode) async {
+        guard mode != browseMode else { return }
+        browseMode = mode
+        await applyFilters()
+    }
+    
+    /// Filter tracks by selected genres
+    /// - Parameter genres: Set of genre names to filter by (empty set clears filter)
+    public func filterByGenres(_ genres: Set<String>) async {
+        selectedGenres = genres
+        await applyFilters()
+    }
+    
+    /// Toggle a genre filter
+    /// - Parameter genre: The genre to toggle
+    public func toggleGenre(_ genre: String) async {
+        if selectedGenres.contains(genre) {
+            selectedGenres.remove(genre)
+        } else {
+            selectedGenres.insert(genre)
+        }
+        await applyFilters()
     }
     
     // MARK: - Helpers
@@ -220,6 +252,66 @@ public final class LibraryBrowserViewModel: ObservableObject {
                     artworkCache[trackID] = artwork
                 }
             }
+        }
+    }
+    
+    /// Apply all active filters (browse mode, genre filter, search)
+    private func applyFilters() async {
+        guard hasLoaded else {
+            filteredTracks = []
+            return
+        }
+        
+        var filtered = tracks
+        filtered = await applyGenreFilter(to: filtered)
+        filtered = await applySearchFilter(to: filtered)
+        filteredTracks = sort(tracks: filtered)
+    }
+    
+    /// Apply genre filter to tracks
+    private func applyGenreFilter(to tracks: [Track]) async -> [Track] {
+        guard !selectedGenres.isEmpty else { return tracks }
+        
+        return tracks.filter { track in
+            guard let trackGenre = track.genre else { return false }
+            return selectedGenres.contains { selectedGenre in
+                trackGenre.caseInsensitiveCompare(selectedGenre) == .orderedSame
+            }
+        }
+    }
+    
+    /// Apply search filter to tracks
+    private func applySearchFilter(to tracks: [Track]) async -> [Track] {
+        guard !searchText.isEmpty else { return tracks }
+        
+        do {
+            let searchResults = try await searchService.search(query: searchText)
+            let searchResultIds = Set(searchResults.map { $0.id })
+            return tracks.filter { searchResultIds.contains($0.id) }
+        } catch {
+            logger.error("Search filter failed: \(error.localizedDescription)")
+            return tracks
+        }
+    }
+}
+
+/// Browse mode for library navigation
+public enum LibraryBrowseMode: String, CaseIterable, Sendable {
+    case allTracks
+    case artists
+    case albums
+    case genres
+    case years
+    case folders
+    
+    public var displayName: String {
+        switch self {
+        case .allTracks: return "All Tracks"
+        case .artists: return "Artists"
+        case .albums: return "Albums"
+        case .genres: return "Genres"
+        case .years: return "Years"
+        case .folders: return "Folders"
         }
     }
 }

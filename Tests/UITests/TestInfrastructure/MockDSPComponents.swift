@@ -237,10 +237,10 @@ final class MockReplayGain: ReplayGainProtocol {
     }
 }
 
-// MARK: - Mock AudioVisualiser
+// MARK: - Mock AudioVisualiser (DSP-specific)
 
 @MainActor
-final class MockAudioVisualiser: AudioVisualiserProtocol {
+final class DSPMockAudioVisualiser: AudioVisualiserProtocol {
     var config: AudioVisualiserConfig
     var frames: [AudioVisualiserFrame] = []
     

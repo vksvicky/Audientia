@@ -75,17 +75,19 @@ final class CompactPlayerControlsTests: XCTestCase {
         let longTitle = String(repeating: "Long Title ", count: 10)
         let track = Track(
             id: UUID(),
-            filePath: "/path/to/track.mp3",
             title: longTitle,
             artist: "Test Artist",
             album: "Test Album",
-            albumArtist: "Test Artist",
-            genre: "Rock",
+            duration: 180.0,
+            filePath: "/path/to/track.mp3",
+            fileSize: 5_000_000,
+            bitrate: 320,
+            sampleRate: 44_100,
+            year: 2024,
             trackNumber: 1,
             discNumber: 1,
-            year: 2024,
-            duration: 180.0,
-            dateAdded: Date()
+            genre: "Rock",
+            rating: nil
         )
         try await mockAudioEngine.loadTrack(track)
         
@@ -190,17 +192,19 @@ final class CompactPlayerControlsBDDTests: XCTestCase {
         // Given: A track is playing with a long title
         let track = Track(
             id: UUID(),
-            filePath: "/path/to/track.mp3",
             title: "Stairway to Heaven - 2007 Remaster",
             artist: "Led Zeppelin",
             album: "Led Zeppelin IV",
-            albumArtist: "Led Zeppelin",
-            genre: "Rock",
+            duration: 482.0,
+            filePath: "/path/to/track.mp3",
+            fileSize: 5_000_000,
+            bitrate: 320,
+            sampleRate: 44_100,
+            year: 1971,
             trackNumber: 4,
             discNumber: 1,
-            year: 1971,
-            duration: 482.0,
-            dateAdded: Date()
+            genre: "Rock",
+            rating: nil
         )
         try await mockAudioEngine.loadTrack(track)
         
@@ -253,7 +257,7 @@ final class CompactPlayerControlsBDDTests: XCTestCase {
     func testScenario_UserExpandsPlayer() {
         // Given: Compact player is displayed
         var expandCalled = false
-        _ = CompactPlayerControls(
+        let controls = CompactPlayerControls(
             nowPlayingViewModel: nowPlayingViewModel,
             onExpand: { expandCalled = true }
         )
@@ -262,7 +266,8 @@ final class CompactPlayerControlsBDDTests: XCTestCase {
         // The expand closure would be triggered
         
         // Then: onExpand callback should be available
-        XCTAssertNotNil({ expandCalled = true }(), "Expand callback should be provided")
+        XCTAssertNotNil(controls, "Compact controls should be created with expand callback")
+        XCTAssertFalse(expandCalled, "Expand callback should not be called during creation")
     }
     
     // MARK: - Scenario: Quick access to playback state toggles
@@ -317,17 +322,19 @@ final class CompactPlayerControlsBDDTests: XCTestCase {
     private func createTestTrack() -> Track {
         Track(
             id: UUID(),
-            filePath: "/path/to/track.mp3",
             title: "Test Track",
             artist: "Test Artist",
             album: "Test Album",
-            albumArtist: "Test Artist",
-            genre: "Rock",
+            duration: 180.0,
+            filePath: "/path/to/track.mp3",
+            fileSize: 5_000_000,
+            bitrate: 320,
+            sampleRate: 44_100,
+            year: 2024,
             trackNumber: 1,
             discNumber: 1,
-            year: 2024,
-            duration: 180.0,
-            dateAdded: Date()
+            genre: "Rock",
+            rating: nil
         )
     }
 }

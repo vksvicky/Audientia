@@ -38,7 +38,6 @@ public final class MockAudioVisualiser: AudioVisualiserProtocol, @unchecked Send
         
         // Simulate some frequency content
         for i in 0..<magnitudeCount {
-            let frequency = Float(i) * Float(sampleRate) / Float(2048) // Assuming 2048 FFT size
             magnitudes[i] = sin(Float(i) * 0.1) * 50.0 + 20.0
         }
         

@@ -72,6 +72,8 @@ final class CollapsiblePlayerBarTests: XCTestCase {
         
         // Then
         XCTAssertNotNil(playerBar, "Player bar should be created with minimize callback")
+        // Note: minimizeCalled would be true if onMinimize was called, but we're just testing creation
+        XCTAssertFalse(minimizeCalled, "Minimize callback should not be called during creation")
     }
     
     // MARK: - Right-[B]ICEP: Boundary Conditions
@@ -97,17 +99,19 @@ final class CollapsiblePlayerBarTests: XCTestCase {
         // Given - track with no artwork
         let track = Track(
             id: UUID(),
-            filePath: "/path/to/track.mp3",
             title: "Test Track",
             artist: "Test Artist",
             album: "Test Album",
-            albumArtist: "Test Artist",
-            genre: "Rock",
+            duration: 180.0,
+            filePath: "/path/to/track.mp3",
+            fileSize: 5_000_000,
+            bitrate: 320,
+            sampleRate: 44_100,
+            year: 2024,
             trackNumber: 1,
             discNumber: 1,
-            year: 2024,
-            duration: 180.0,
-            dateAdded: Date()
+            genre: "Rock",
+            rating: nil
         )
         try await mockAudioEngine.loadTrack(track)
         
@@ -127,17 +131,19 @@ final class CollapsiblePlayerBarTests: XCTestCase {
         // Given - track with zero duration
         let track = Track(
             id: UUID(),
-            filePath: "/path/to/track.mp3",
             title: "Test Track",
             artist: "Test Artist",
             album: "Test Album",
-            albumArtist: "Test Artist",
-            genre: "Rock",
+            duration: 0.0,
+            filePath: "/path/to/track.mp3",
+            fileSize: 5_000_000,
+            bitrate: 320,
+            sampleRate: 44_100,
+            year: 2024,
             trackNumber: 1,
             discNumber: 1,
-            year: 2024,
-            duration: 0.0,
-            dateAdded: Date()
+            genre: "Rock",
+            rating: nil
         )
         mockAudioEngine.duration = 0.0
         try await mockAudioEngine.loadTrack(track)
@@ -300,17 +306,19 @@ final class CollapsiblePlayerBarBDDTests: XCTestCase {
         // Given: A track is playing
         let track = Track(
             id: UUID(),
-            filePath: "/path/to/track.mp3",
             title: "Bohemian Rhapsody",
             artist: "Queen",
             album: "A Night at the Opera",
-            albumArtist: "Queen",
-            genre: "Rock",
+            duration: 354.0,
+            filePath: "/path/to/track.mp3",
+            fileSize: 5_000_000,
+            bitrate: 320,
+            sampleRate: 44_100,
+            year: 1975,
             trackNumber: 11,
             discNumber: 1,
-            year: 1975,
-            duration: 354.0,
-            dateAdded: Date()
+            genre: "Rock",
+            rating: nil
         )
         try await mockAudioEngine.loadTrack(track)
         
@@ -329,17 +337,19 @@ final class CollapsiblePlayerBarBDDTests: XCTestCase {
         // Given: A track is playing with long title
         let track = Track(
             id: UUID(),
-            filePath: "/path/to/track.mp3",
             title: "A Very Long Track Title That Needs To Scroll",
             artist: "An Artist With A Long Name",
             album: "Album",
-            albumArtist: "Artist",
-            genre: "Rock",
+            duration: 180.0,
+            filePath: "/path/to/track.mp3",
+            fileSize: 5_000_000,
+            bitrate: 320,
+            sampleRate: 44_100,
+            year: 2024,
             trackNumber: 1,
             discNumber: 1,
-            year: 2024,
-            duration: 180.0,
-            dateAdded: Date()
+            genre: "Rock",
+            rating: nil
         )
         try await mockAudioEngine.loadTrack(track)
         
@@ -368,6 +378,7 @@ final class CollapsiblePlayerBarBDDTests: XCTestCase {
         
         // Then: Minimize action should be available
         XCTAssertNotNil(playerBar, "Player bar should have minimize capability")
+        XCTAssertFalse(minimizeCalled, "Minimize callback should not be called during creation")
     }
     
     // MARK: - Scenario: Playback controls work in both states
@@ -377,17 +388,19 @@ final class CollapsiblePlayerBarBDDTests: XCTestCase {
         // Given: A track is loaded
         let track = Track(
             id: UUID(),
-            filePath: "/path/to/track.mp3",
             title: "Test Track",
             artist: "Test Artist",
             album: "Test Album",
-            albumArtist: "Test Artist",
-            genre: "Rock",
+            duration: 180.0,
+            filePath: "/path/to/track.mp3",
+            fileSize: 5_000_000,
+            bitrate: 320,
+            sampleRate: 44_100,
+            year: 2024,
             trackNumber: 1,
             discNumber: 1,
-            year: 2024,
-            duration: 180.0,
-            dateAdded: Date()
+            genre: "Rock",
+            rating: nil
         )
         try await mockAudioEngine.loadTrack(track)
         
@@ -425,17 +438,19 @@ final class CollapsiblePlayerBarBDDTests: XCTestCase {
         // Given: A track is playing
         let track = Track(
             id: UUID(),
-            filePath: "/path/to/track.mp3",
             title: "Test Track",
             artist: "Test Artist",
             album: "Test Album",
-            albumArtist: "Test Artist",
-            genre: "Rock",
+            duration: 180.0,
+            filePath: "/path/to/track.mp3",
+            fileSize: 5_000_000,
+            bitrate: 320,
+            sampleRate: 44_100,
+            year: 2024,
             trackNumber: 1,
             discNumber: 1,
-            year: 2024,
-            duration: 180.0,
-            dateAdded: Date()
+            genre: "Rock",
+            rating: nil
         )
         try await mockAudioEngine.loadTrack(track)
         mockAudioEngine.currentPosition = 90.0 // Halfway
@@ -574,17 +589,19 @@ final class CollapsiblePlayerBarPlaybackTests: XCTestCase {
     private func createTestTrack(title: String = "Test Track") -> Track {
         Track(
             id: UUID(),
-            filePath: "/path/to/track.mp3",
             title: title,
             artist: "Test Artist",
             album: "Test Album",
-            albumArtist: "Test Artist",
-            genre: "Rock",
+            duration: 180.0,
+            filePath: "/path/to/track.mp3",
+            fileSize: 5_000_000,
+            bitrate: 320,
+            sampleRate: 44_100,
+            year: 2024,
             trackNumber: 1,
             discNumber: 1,
-            year: 2024,
-            duration: 180.0,
-            dateAdded: Date()
+            genre: "Rock",
+            rating: nil
         )
     }
 }

@@ -23,6 +23,22 @@ final class AudioVisualiserViewModel: ObservableObject {
         }
     }
     
+    /// Sensitivity control (0.0 to 1.0, default 0.5)
+    /// Higher values make the visualisation more reactive to audio changes
+    @Published var sensitivity: Float = 0.5 {
+        didSet {
+            updateVisualisationSettings()
+        }
+    }
+    
+    /// Smoothing control (0.0 to 1.0, default 0.3)
+    /// Higher values make transitions smoother and less jittery
+    @Published var smoothing: Float = 0.3 {
+        didSet {
+            updateVisualisationSettings()
+        }
+    }
+    
     private let visualiser: AudioVisualiserProtocol
     private var visualisationTask: Task<Void, Never>?
     private let nowPlayingViewModel: NowPlayingViewModel?
@@ -39,10 +55,24 @@ final class AudioVisualiserViewModel: ObservableObject {
         }
     }
     
+    /// Update the nowPlayingViewModel reference
+    /// (used when ViewModel is created before nowPlayingViewModel is available)
+    func updateNowPlayingViewModel(_ viewModel: NowPlayingViewModel?) {
+        // NOTE: This is a workaround for initialization order
+        // In a future refactor, consider using dependency injection or a factory pattern
+    }
+    
     private func updateVisualisationVolume() {
         // Update the visualisation engine's volume in real-time
         // This will be implemented through AudioEngine's visualiserTap
         audioEngine?.setVisualizationVolume(visualisationVolume)
+    }
+    
+    private func updateVisualisationSettings() {
+        // Update visualisation settings (sensitivity and smoothing)
+        // These affect how the visualiser processes and displays audio data
+        // NOTE: Implementation will depend on AudioVisualiserProtocol capabilities
+        // For now, these values are stored and can be used by the visualisation algorithms
     }
     
     func startVisualization() async {

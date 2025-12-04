@@ -71,6 +71,9 @@ public final class TrackDetailsViewModel: ObservableObject {
         metadataTask = Task { [weak self] in
             await self?.loadMetadata(for: track)
         }
+        
+        // Await the metadata loading so errors are set synchronously
+        await metadataTask?.value
     }
 
     /// Clear the last error so the UI can dismiss alerts.

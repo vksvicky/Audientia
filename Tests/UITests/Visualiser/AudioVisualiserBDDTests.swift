@@ -14,12 +14,12 @@ import XCTest
 @MainActor
 final class AudioVisualiserBDDTests: XCTestCase {
     
-    private var mockVisualizer: MockAudioVisualiser!
+    private var mockVisualizer: DSPMockAudioVisualiser!
     
     override func setUp() {
         super.setUp()
         let config = AudioVisualiserConfig(fftSize: 1024, smoothingFactor: 0.8, historyLength: 60)
-        mockVisualizer = MockAudioVisualiser(config: config)
+        mockVisualizer = DSPMockAudioVisualiser(config: config)
     }
     
     override func tearDown() {
@@ -97,7 +97,7 @@ final class AudioVisualiserBDDTests: XCTestCase {
     func testFrameHistoryLimit() async throws {
         // Given - Config with history length of 60
         let config = AudioVisualiserConfig(fftSize: 1024, smoothingFactor: 0.8, historyLength: 60)
-        let visualiser = MockAudioVisualiser(config: config)
+        let visualiser = DSPMockAudioVisualiser(config: config)
         
         // When - More frames than history length are processed
         for i in 0..<100 {
@@ -149,7 +149,7 @@ final class AudioVisualiserBDDTests: XCTestCase {
     func testDifferentFFTSizes() async throws {
         // Given - Visualizer with different FFT size
         let config = AudioVisualiserConfig(fftSize: 2048, smoothingFactor: 0.8, historyLength: 60)
-        let visualiser = MockAudioVisualiser(config: config)
+        let visualiser = DSPMockAudioVisualiser(config: config)
         
         // When - Processing audio
         let audioData: [Float] = Array(repeating: 0.5, count: 2048)

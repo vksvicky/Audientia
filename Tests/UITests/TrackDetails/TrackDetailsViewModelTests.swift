@@ -135,7 +135,7 @@ enum MockTrackMetadataProviderError: Error {
     case metadataFailed
 }
 
-final class MockTrackMetadataProvider: TrackMetadataProviding {
+final class MockTrackMetadataProvider: TrackMetadataProviding, @unchecked Sendable {
     var metadata: TrackMetadata?
     var error: Error?
 

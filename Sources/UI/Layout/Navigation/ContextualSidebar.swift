@@ -8,7 +8,9 @@
 //
 
 import AppKit
+import AudioCore
 import DataLayer
+@preconcurrency import Shared
 import SwiftUI
 
 /// Contextual sidebar with:
@@ -21,12 +23,51 @@ struct ContextualSidebar: View {
     
     @StateObject private var statisticsViewModel: LibraryStatisticsViewModel
     
+    /// Action callbacks
+    var onImportFiles: (() -> Void)?
+    var onOpenSettings: (() -> Void)?
+    var onCreatePlaylist: (() -> Void)?
+    
+    /// Library browser ViewModel for filtering (optional, only for Library tab)
+    var libraryBrowserViewModel: LibraryBrowserViewModel?
+    
+    /// Playlist sidebar ViewModel (optional, only for Playlists tab)
+    var playlistSidebarViewModel: PlaylistSidebarViewModel?
+    
+    /// Smart playlist ViewModel (optional, only for Playlists tab)
+    var smartPlaylistViewModel: SmartPlaylistViewModel?
+    
+    /// Device sidebar ViewModel (optional, only for Devices tab)
+    var deviceSidebarViewModel: DeviceSidebarViewModel?
+    
+    /// Audio visualiser ViewModel (optional, only for Visualiser tab)
+    var audioVisualiserViewModel: AudioVisualiserViewModel?
+    
     /// Width of the sidebar
     static let width: CGFloat = 180
     
-    init(selectedTab: Binding<TabItem>, searchText: Binding<String>) {
+    init(
+        selectedTab: Binding<TabItem>,
+        searchText: Binding<String>,
+        onImportFiles: (() -> Void)? = nil,
+        onOpenSettings: (() -> Void)? = nil,
+        onCreatePlaylist: (() -> Void)? = nil,
+        libraryBrowserViewModel: LibraryBrowserViewModel? = nil,
+        playlistSidebarViewModel: PlaylistSidebarViewModel? = nil,
+        smartPlaylistViewModel: SmartPlaylistViewModel? = nil,
+        deviceSidebarViewModel: DeviceSidebarViewModel? = nil,
+        audioVisualiserViewModel: AudioVisualiserViewModel? = nil
+    ) {
         self._selectedTab = selectedTab
         self._searchText = searchText
+        self.onImportFiles = onImportFiles
+        self.onOpenSettings = onOpenSettings
+        self.onCreatePlaylist = onCreatePlaylist
+        self.libraryBrowserViewModel = libraryBrowserViewModel
+        self.playlistSidebarViewModel = playlistSidebarViewModel
+        self.smartPlaylistViewModel = smartPlaylistViewModel
+        self.deviceSidebarViewModel = deviceSidebarViewModel
+        self.audioVisualiserViewModel = audioVisualiserViewModel
         let indexer = LibraryIndexer()
         let calculator = LibraryStatisticsCalculator(indexer: indexer)
         _statisticsViewModel = StateObject(
@@ -101,55 +142,26 @@ struct ContextualSidebar: View {
     // MARK: - Home Tab Navigation
     
     private var homeNavigationContent: some View {
-        VStack(alignment: .leading, spacing: 16) {
-            SidebarSection(title: "QUICK ACCESS") {
-                SidebarNavItem(icon: "clock.arrow.circlepath", title: "Recently Played")
-                SidebarNavItem(icon: "plus.circle", title: "Recently Added")
-                SidebarNavItem(icon: "chart.bar", title: "Most Played")
-                SidebarNavItem(icon: "heart", title: "Favourites")
-            }
-            
-            SidebarSection(title: "ACTIONS") {
-                SidebarActionButton(icon: "plus", title: "Import Files") {
-                    // TODO: Trigger file import
-                }
-                SidebarActionButton(icon: "gearshape", title: "Settings") {
-                    // TODO: Open settings
-                }
-            }
-        }
+        HomeNavigationContent(
+            onImportFiles: onImportFiles,
+            onOpenSettings: onOpenSettings
+        )
     }
     
     // MARK: - Library Tab Navigation
     
     private var libraryNavigationContent: some View {
-        VStack(alignment: .leading, spacing: 16) {
-            SidebarSection(title: "BROWSE BY") {
-                SidebarNavItem(
-                    icon: "music.note.list",
-                    title: "All Tracks",
-                    count: statisticsViewModel.statistics?.trackCount
+        Group {
+            if let viewModel = libraryBrowserViewModel {
+                LibraryNavigationContent(
+                    libraryBrowserViewModel: viewModel,
+                    statisticsViewModel: statisticsViewModel
                 )
-                SidebarNavItem(
-                    icon: "person.2",
-                    title: "Artists",
-                    count: statisticsViewModel.statistics?.artistCount
-                )
-                SidebarNavItem(
-                    icon: "opticaldisc",
-                    title: "Albums",
-                    count: statisticsViewModel.statistics?.albumCount
-                )
-                SidebarNavItem(icon: "guitars", title: "Genres")
-                SidebarNavItem(icon: "calendar", title: "Years")
-                SidebarNavItem(icon: "folder", title: "Folders")
-            }
-            
-            SidebarSection(title: "FILTER BY GENRE") {
-                SidebarFilterItem(title: "Rock")
-                SidebarFilterItem(title: "Jazz")
-                SidebarFilterItem(title: "Classical")
-                SidebarFilterItem(title: "Electronic")
+            } else {
+                Text("No library loaded")
+                    .font(.system(size: 11))
+                    .foregroundColor(.secondary)
+                    .padding(.vertical, 4)
             }
         }
     }
@@ -157,23 +169,19 @@ struct ContextualSidebar: View {
     // MARK: - Playlists Tab Navigation
     
     private var playlistsNavigationContent: some View {
-        VStack(alignment: .leading, spacing: 16) {
-            SidebarSection(title: "PLAYLISTS") {
-                // Placeholder - will be populated from PlaylistManager
+        Group {
+            if let playlistViewModel = playlistSidebarViewModel,
+               let smartViewModel = smartPlaylistViewModel {
+                PlaylistsNavigationContent(
+                    playlistSidebarViewModel: playlistViewModel,
+                    smartPlaylistViewModel: smartViewModel,
+                    onCreatePlaylist: onCreatePlaylist
+                )
+            } else {
                 Text("No playlists")
                     .font(.system(size: 11))
                     .foregroundColor(.secondary)
                     .padding(.vertical, 4)
-            }
-            
-            SidebarActionButton(icon: "plus", title: "New Playlist") {
-                // TODO: Create new playlist
-            }
-            
-            SidebarSection(title: "SMART PLAYLISTS") {
-                SidebarNavItem(icon: "bolt", title: "Recently Added")
-                SidebarNavItem(icon: "bolt", title: "Top Rated")
-                SidebarNavItem(icon: "bolt", title: "5-Star Tracks")
             }
         }
     }
@@ -181,18 +189,14 @@ struct ContextualSidebar: View {
     // MARK: - Devices Tab Navigation
     
     private var devicesNavigationContent: some View {
-        VStack(alignment: .leading, spacing: 16) {
-            SidebarSection(title: "CONNECTED") {
+        Group {
+            if let viewModel = deviceSidebarViewModel {
+                DevicesNavigationContent(deviceSidebarViewModel: viewModel)
+            } else {
                 Text("No devices")
                     .font(.system(size: 11))
                     .foregroundColor(.secondary)
                     .padding(.vertical, 4)
-            }
-            
-            SidebarSection(title: "SYNC OPTIONS") {
-                SidebarRadioItem(title: "Entire Library", isSelected: true)
-                SidebarRadioItem(title: "Selected Playlists", isSelected: false)
-                SidebarRadioItem(title: "Checked Tracks Only", isSelected: false)
             }
         }
     }
@@ -200,36 +204,14 @@ struct ContextualSidebar: View {
     // MARK: - Visualiser Tab Navigation
     
     private var visualiserNavigationContent: some View {
-        VStack(alignment: .leading, spacing: 16) {
-            SidebarSection(title: "VISUALISATION STYLE") {
-                SidebarRadioItem(title: "LED Bars", isSelected: true)
-                SidebarRadioItem(title: "Lumi Bars", isSelected: false)
-                SidebarRadioItem(title: "Radial Spectrum", isSelected: false)
-                SidebarRadioItem(title: "Dual Channel", isSelected: false)
-                SidebarRadioItem(title: "Discrete Frequencies", isSelected: false)
-                SidebarRadioItem(title: "Round Bars Reflex", isSelected: false)
-            }
-            
-            SidebarSection(title: "SETTINGS") {
-                VStack(alignment: .leading, spacing: 8) {
-                    HStack {
-                        Text("Sensitivity")
-                            .font(.system(size: 11))
-                            .foregroundColor(.secondary)
-                        Spacer()
-                    }
-                    Slider(value: .constant(0.5), in: 0...1)
-                        .controlSize(.small)
-                    
-                    HStack {
-                        Text("Smoothing")
-                            .font(.system(size: 11))
-                            .foregroundColor(.secondary)
-                        Spacer()
-                    }
-                    Slider(value: .constant(0.3), in: 0...1)
-                        .controlSize(.small)
-                }
+        Group {
+            if let viewModel = audioVisualiserViewModel {
+                VisualiserNavigationContent(audioVisualiserViewModel: viewModel)
+            } else {
+                Text("No visualiser loaded")
+                    .font(.system(size: 11))
+                    .foregroundColor(.secondary)
+                    .padding(.vertical, 4)
             }
         }
     }
@@ -290,140 +272,6 @@ struct ContextualSidebar: View {
         formatter.allowedUnits = [.useGB, .useMB, .useKB]
         formatter.countStyle = .file
         return formatter.string(fromByteCount: bytes)
-    }
-}
-
-// MARK: - Sidebar Components
-
-private struct SidebarSection<Content: View>: View {
-    let title: String
-    @ViewBuilder let content: () -> Content
-    
-    var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            Text(title)
-                .font(.system(size: 10, weight: .semibold))
-                .foregroundColor(.secondary)
-            
-            content()
-        }
-    }
-}
-
-private struct SidebarNavItem: View {
-    let icon: String
-    let title: String
-    var count: Int?
-    
-    init(icon: String, title: String, count: Int? = nil) {
-        self.icon = icon
-        self.title = title
-        self.count = count
-    }
-    
-    var body: some View {
-        Button(
-            action: {},
-            label: {
-                HStack(spacing: 8) {
-                    Image(systemName: icon)
-                        .font(.system(size: 12))
-                        .foregroundColor(.secondary)
-                        .frame(width: 16)
-                    
-                    Text(title)
-                        .font(.system(size: 12))
-                        .foregroundColor(.primary)
-                    
-                    Spacer()
-                    
-                    if let count = count {
-                        Text("(\(count))")
-                            .font(.system(size: 10))
-                            .foregroundColor(.secondary)
-                    }
-                }
-                .contentShape(Rectangle())
-            }
-        )
-        .buttonStyle(.plain)
-        .padding(.vertical, 2)
-    }
-}
-
-private struct SidebarActionButton: View {
-    let icon: String
-    let title: String
-    let action: () -> Void
-    
-    var body: some View {
-        Button(action: action) {
-            HStack(spacing: 6) {
-                Image(systemName: icon)
-                    .font(.system(size: 11))
-                
-                Text(title)
-                    .font(.system(size: 12))
-            }
-            .foregroundColor(.accentColor)
-        }
-        .buttonStyle(.plain)
-        .padding(.vertical, 4)
-    }
-}
-
-private struct SidebarFilterItem: View {
-    let title: String
-    @State private var isChecked = false
-    
-    var body: some View {
-        Toggle(isOn: $isChecked) {
-            Text(title)
-                .font(.system(size: 12))
-        }
-        .toggleStyle(.checkbox)
-        .padding(.vertical, 1)
-    }
-}
-
-private struct SidebarRadioItem: View {
-    let title: String
-    let isSelected: Bool
-    
-    var body: some View {
-        HStack(spacing: 8) {
-            Image(systemName: isSelected ? "circle.inset.filled" : "circle")
-                .font(.system(size: 10))
-                .foregroundColor(isSelected ? .accentColor : .secondary)
-            
-            Text(title)
-                .font(.system(size: 12))
-                .foregroundColor(.primary)
-        }
-        .padding(.vertical, 2)
-    }
-}
-
-private struct StatRow: View {
-    let icon: String
-    let value: String
-    let label: String?
-    
-    var body: some View {
-        HStack(spacing: 6) {
-            Image(systemName: icon)
-                .foregroundColor(.accentColor)
-                .font(.system(size: 11))
-            
-            Text(value)
-                .font(.system(size: 12, weight: .semibold))
-            
-            if let label = label {
-                Text(label)
-                    .font(.system(size: 11))
-                    .foregroundColor(.secondary)
-            }
-        }
     }
 }
 

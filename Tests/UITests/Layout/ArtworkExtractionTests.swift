@@ -20,10 +20,18 @@ import XCTest
 
 /// Mock artwork extractor for isolated unit testing
 /// Note: This is different from the `MockArtworkExtractor` actor in LibraryBrowserTestMocks
-final class IsolatedArtworkExtractorMock {
-    var extractedArtworkData: Data?
-    var shouldThrowError = false
-    var extractionCallCount = 0
+actor IsolatedArtworkExtractorMock {
+    private var extractedArtworkData: Data?
+    private var shouldThrowError = false
+    private var extractionCallCount = 0
+    
+    func setExtractedArtworkData(_ data: Data?) {
+        extractedArtworkData = data
+    }
+    
+    func setShouldThrowError(_ value: Bool) {
+        shouldThrowError = value
+    }
     
     func extractEmbeddedArtwork(from url: URL) async throws -> Data? {
         extractionCallCount += 1
@@ -33,6 +41,10 @@ final class IsolatedArtworkExtractorMock {
         }
         
         return extractedArtworkData
+    }
+    
+    func getExtractionCallCount() -> Int {
+        extractionCallCount
     }
 }
 
@@ -62,21 +74,22 @@ final class ArtworkExtractionTests: XCTestCase {
     /// Test: Extraction should return nil for files without artwork
     func testExtractionReturnsNilForFilesWithoutArtwork() async {
         // Given: No artwork data
-        mockExtractor.extractedArtworkData = nil
+        await mockExtractor.setExtractedArtworkData(nil)
         
         // When: Extracting artwork
         let result = try? await mockExtractor.extractEmbeddedArtwork(from: URL(fileURLWithPath: "/test.mp3"))
         
         // Then: Should return nil
         XCTAssertNil(result)
-        XCTAssertEqual(mockExtractor.extractionCallCount, 1)
+        let callCount = await mockExtractor.getExtractionCallCount()
+        XCTAssertEqual(callCount, 1)
     }
     
     /// Test: Extraction should return data for files with artwork
     func testExtractionReturnsDataForFilesWithArtwork() async {
         // Given: Mock artwork data
         let imageData = Data([0xFF, 0xD8, 0xFF, 0xE0]) // JPEG header
-        mockExtractor.extractedArtworkData = imageData
+        await mockExtractor.setExtractedArtworkData(imageData)
         
         // When: Extracting artwork
         let result = try? await mockExtractor.extractEmbeddedArtwork(from: URL(fileURLWithPath: "/test.mp3"))
@@ -84,20 +97,22 @@ final class ArtworkExtractionTests: XCTestCase {
         // Then: Should return the data
         XCTAssertNotNil(result)
         XCTAssertEqual(result?.count, 4)
-        XCTAssertEqual(mockExtractor.extractionCallCount, 1)
+        let callCount = await mockExtractor.getExtractionCallCount()
+        XCTAssertEqual(callCount, 1)
     }
     
     /// Test: Extraction should handle errors gracefully
     func testExtractionHandlesErrorsGracefully() async {
         // Given: Extractor configured to throw error
-        mockExtractor.shouldThrowError = true
+        await mockExtractor.setShouldThrowError(true)
         
         // When: Extracting artwork
         let result = try? await mockExtractor.extractEmbeddedArtwork(from: URL(fileURLWithPath: "/test.mp3"))
         
         // Then: Should return nil without crashing
         XCTAssertNil(result)
-        XCTAssertEqual(mockExtractor.extractionCallCount, 1)
+        let callCount = await mockExtractor.getExtractionCallCount()
+        XCTAssertEqual(callCount, 1)
     }
     
     // MARK: - [B]oundary Conditions
@@ -105,7 +120,7 @@ final class ArtworkExtractionTests: XCTestCase {
     /// Test: Extraction should handle empty data
     func testExtractionHandlesEmptyData() async {
         // Given: Empty data
-        mockExtractor.extractedArtworkData = Data()
+        await mockExtractor.setExtractedArtworkData(Data())
         
         // When: Extracting artwork
         let result = try? await mockExtractor.extractEmbeddedArtwork(from: URL(fileURLWithPath: "/test.mp3"))
@@ -119,7 +134,7 @@ final class ArtworkExtractionTests: XCTestCase {
     func testExtractionHandlesLargeArtwork() async {
         // Given: Large artwork data (10MB)
         let largeData = Data(count: 10_000_000)
-        mockExtractor.extractedArtworkData = largeData
+        await mockExtractor.setExtractedArtworkData(largeData)
         
         // When: Extracting artwork
         let result = try? await mockExtractor.extractEmbeddedArtwork(from: URL(fileURLWithPath: "/test.mp3"))
@@ -139,7 +154,7 @@ final class ArtworkExtractionTests: XCTestCase {
             "/music/Émilie/chançon.wav"
         ]
         
-        mockExtractor.extractedArtworkData = Data([0xFF])
+        await mockExtractor.setExtractedArtworkData(Data([0xFF]))
         
         for path in specialPaths {
             // When: Extracting artwork
@@ -149,7 +164,8 @@ final class ArtworkExtractionTests: XCTestCase {
             XCTAssertNotNil(result, "Failed for path: \(path)")
         }
         
-        XCTAssertEqual(mockExtractor.extractionCallCount, specialPaths.count)
+        let callCount = await mockExtractor.getExtractionCallCount()
+        XCTAssertEqual(callCount, specialPaths.count)
     }
     
     // MARK: - [I]nverse Relationships
@@ -158,7 +174,7 @@ final class ArtworkExtractionTests: XCTestCase {
     func testMultipleExtractionsProduceConsistentResults() async {
         // Given: Fixed artwork data
         let imageData = Data([0x89, 0x50, 0x4E, 0x47]) // PNG header
-        mockExtractor.extractedArtworkData = imageData
+        await mockExtractor.setExtractedArtworkData(imageData)
         
         let url = URL(fileURLWithPath: "/test.png")
         
@@ -170,7 +186,8 @@ final class ArtworkExtractionTests: XCTestCase {
         // Then: All results should be identical
         XCTAssertEqual(result1, result2)
         XCTAssertEqual(result2, result3)
-        XCTAssertEqual(mockExtractor.extractionCallCount, 3)
+        let callCount = await mockExtractor.getExtractionCallCount()
+        XCTAssertEqual(callCount, 3)
     }
     
     // MARK: - [C]ross-Checking
@@ -179,7 +196,7 @@ final class ArtworkExtractionTests: XCTestCase {
     func testDifferentFileTypesHandledAppropriately() async {
         // Given: Various audio file types
         let fileTypes = ["mp3", "m4a", "flac", "wav", "aac", "ogg", "opus", "wma"]
-        mockExtractor.extractedArtworkData = Data([0xFF])
+        await mockExtractor.setExtractedArtworkData(Data([0xFF]))
         
         for fileType in fileTypes {
             // When: Extracting artwork
@@ -190,7 +207,8 @@ final class ArtworkExtractionTests: XCTestCase {
             XCTAssertNotNil(result, "Failed for file type: \(fileType)")
         }
         
-        XCTAssertEqual(mockExtractor.extractionCallCount, fileTypes.count)
+        let callCount = await mockExtractor.getExtractionCallCount()
+        XCTAssertEqual(callCount, fileTypes.count)
     }
     
     /// Test: NSImage creation from extracted data should work
@@ -207,7 +225,7 @@ final class ArtworkExtractionTests: XCTestCase {
             0xB4, 0x00, 0x00, 0x00, 0x00, 0x49, 0x45, 0x4E,  // IEND chunk
             0x44, 0xAE, 0x42, 0x60, 0x82
         ])
-        mockExtractor.extractedArtworkData = pngData
+        await mockExtractor.setExtractedArtworkData(pngData)
         
         // When: Extracting and creating NSImage
         if let data = try? await mockExtractor.extractEmbeddedArtwork(from: URL(fileURLWithPath: "/test.png")),
@@ -226,7 +244,7 @@ final class ArtworkExtractionTests: XCTestCase {
     /// Test: Extraction should handle network errors
     func testExtractionHandlesNetworkErrors() async {
         // Given: Network error scenario
-        mockExtractor.shouldThrowError = true
+        await mockExtractor.setShouldThrowError(true)
         
         // When: Attempting extraction
         let result = try? await mockExtractor.extractEmbeddedArtwork(from: URL(fileURLWithPath: "/test.mp3"))
@@ -238,7 +256,7 @@ final class ArtworkExtractionTests: XCTestCase {
     /// Test: Extraction should handle permission errors
     func testExtractionHandlesPermissionErrors() async {
         // Given: File without read permission
-        mockExtractor.shouldThrowError = true
+        await mockExtractor.setShouldThrowError(true)
         
         // When: Attempting extraction
         let result = try? await mockExtractor.extractEmbeddedArtwork(from: URL(fileURLWithPath: "/protected/file.mp3"))
@@ -250,7 +268,7 @@ final class ArtworkExtractionTests: XCTestCase {
     /// Test: Extraction should handle corrupted metadata
     func testExtractionHandlesCorruptedMetadata() async {
         // Given: Invalid data (not valid image format)
-        mockExtractor.extractedArtworkData = Data([0x00, 0x01, 0x02, 0x03])
+        await mockExtractor.setExtractedArtworkData(Data([0x00, 0x01, 0x02, 0x03]))
         
         // When: Extracting and creating image
         let data = try? await mockExtractor.extractEmbeddedArtwork(from: URL(fileURLWithPath: "/test.mp3"))
@@ -266,7 +284,7 @@ final class ArtworkExtractionTests: XCTestCase {
     /// Test: Extraction should complete quickly for standard-sized artwork
     func testExtractionCompletesQuickly() async {
         // Given: Standard artwork data (1MB)
-        mockExtractor.extractedArtworkData = Data(count: 1_000_000)
+        await mockExtractor.setExtractedArtworkData(Data(count: 1_000_000))
         
         let startTime = Date()
         
@@ -278,13 +296,14 @@ final class ArtworkExtractionTests: XCTestCase {
         // Then: Should complete within reasonable time (< 1 second for mock)
         XCTAssertNotNil(result)
         XCTAssertLessThan(duration, 1.0, "Extraction should complete within 1 second")
-        XCTAssertEqual(mockExtractor.extractionCallCount, 1)
+        let callCount = await mockExtractor.getExtractionCallCount()
+        XCTAssertEqual(callCount, 1)
     }
     
     /// Test: Multiple sequential extractions should complete efficiently
     func testSequentialExtractionsHandledEfficiently() async {
         // Given: Multiple files to extract
-        mockExtractor.extractedArtworkData = Data([0xFF])
+        await mockExtractor.setExtractedArtworkData(Data([0xFF]))
         
         let urls = (0..<10).map { URL(fileURLWithPath: "/test\($0).mp3") }
         let startTime = Date()
@@ -297,14 +316,15 @@ final class ArtworkExtractionTests: XCTestCase {
         let duration = Date().timeIntervalSince(startTime)
         
         // Then: All extractions should complete quickly
-        XCTAssertEqual(mockExtractor.extractionCallCount, 10)
+        let callCount = await mockExtractor.getExtractionCallCount()
+        XCTAssertEqual(callCount, 10)
         XCTAssertLessThan(duration, 5.0, "Sequential extractions should complete within 5 seconds")
     }
     
     /// Test: Concurrent extractions should be handled efficiently
     func testConcurrentExtractionsHandledEfficiently() async {
         // Given: Multiple files to extract
-        mockExtractor.extractedArtworkData = Data([0xFF])
+        await mockExtractor.setExtractedArtworkData(Data([0xFF]))
         
         let urls = (0..<10).map { URL(fileURLWithPath: "/test\($0).mp3") }
         let startTime = Date()
@@ -329,7 +349,8 @@ final class ArtworkExtractionTests: XCTestCase {
         let duration = Date().timeIntervalSince(startTime)
         
         // Then: Concurrent extraction should be faster than sequential
-        XCTAssertEqual(mockExtractor.extractionCallCount, 10)
+        let callCount = await mockExtractor.getExtractionCallCount()
+        XCTAssertEqual(callCount, 10)
         XCTAssertLessThan(duration, 5.0, "Concurrent extractions should complete within 5 seconds")
     }
 }

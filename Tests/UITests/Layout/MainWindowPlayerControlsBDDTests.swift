@@ -41,7 +41,7 @@ private enum MockFactory {
     }
 }
 
-/// BDD Tests for MainWindowPlayerControls
+/// BDD Tests for CollapsiblePlayerBar (formerly MainWindowPlayerControls)
 @MainActor
 final class MainWindowPlayerControlsBDDTests: XCTestCase {
     
@@ -79,7 +79,7 @@ final class MainWindowPlayerControlsBDDTests: XCTestCase {
         nowPlayingViewModel.updateState()
         
         // When - I view the player controls
-        let view = MainWindowPlayerControls(nowPlayingViewModel: nowPlayingViewModel, showVisualiser: .constant(false))
+        let view = CollapsiblePlayerBar(nowPlayingViewModel: nowPlayingViewModel, isExpanded: .constant(true), onMinimize: nil)
         
         // Then - I should see the track information
         let hostingController = NSHostingController(rootView: view)
@@ -91,38 +91,19 @@ final class MainWindowPlayerControlsBDDTests: XCTestCase {
     
     // MARK: - BDD Scenario 8: Visualizer Functionality
     
-    /// BDD: As a user, when I click the visualiser button, then the visualiser should toggle
-    func testAsAUserIWantToToggleVisualizer() {
-        // Given - Visualizer is not shown
-        var showVisualiser = false
+    /// BDD: As a user, when I want to toggle the visualiser, then I can access it via the Visualiser tab
+    /// Note: Visualiser functionality has been moved to a separate tab in the main window layout
+    func testAsAUserIWantToAccessVisualizer() {
+        // Given - A track is playing
         let track = MockFactory.makeTrack()
         mockAudioEngine.currentTrack = track
         nowPlayingViewModel.updateState()
         
-        // When - I click the visualiser button
-        showVisualiser.toggle()
+        // When - I view the player controls
+        let view = CollapsiblePlayerBar(nowPlayingViewModel: nowPlayingViewModel, isExpanded: .constant(true), onMinimize: nil)
         
-        // Then - Visualizer should be shown
-        XCTAssertTrue(showVisualiser)
-        
-        // When - I click the visualiser button again
-        showVisualiser.toggle()
-        
-        // Then - Visualizer should be hidden
-        XCTAssertFalse(showVisualiser)
-    }
-    
-    /// BDD: As a user, when visualiser is active, then the visualiser button should show blue
-    func testAsAUserIWantToSeeBlueVisualizerButtonWhenActive() {
-        // Given - Visualizer is shown
-        let track = MockFactory.makeTrack()
-        mockAudioEngine.currentTrack = track
-        nowPlayingViewModel.updateState()
-        
-        // When - I view the player controls with visualiser active
-        let view = MainWindowPlayerControls(nowPlayingViewModel: nowPlayingViewModel, showVisualiser: .constant(true))
-        
-        // Then - Visualizer button should show active state
+        // Then - Player controls should be visible
+        // Note: Visualiser is now accessed via the Visualiser tab, not from player controls
         let hostingController = NSHostingController(rootView: view)
         XCTAssertNotNil(hostingController.view)
     }
@@ -135,7 +116,7 @@ final class MainWindowPlayerControlsBDDTests: XCTestCase {
         nowPlayingViewModel.updateState()
         
         // When - I view the player controls
-        let view = MainWindowPlayerControls(nowPlayingViewModel: nowPlayingViewModel, showVisualiser: .constant(false))
+        let view = CollapsiblePlayerBar(nowPlayingViewModel: nowPlayingViewModel, isExpanded: .constant(true), onMinimize: nil)
         
         // Then - I should see "No track selected"
         let hostingController = NSHostingController(rootView: view)
@@ -266,7 +247,7 @@ final class MainWindowPlayerControlsBDDTests: XCTestCase {
         nowPlayingViewModel.updateState()
         
         // When - I view the player controls
-        let view = MainWindowPlayerControls(nowPlayingViewModel: nowPlayingViewModel, showVisualiser: .constant(false))
+        let view = CollapsiblePlayerBar(nowPlayingViewModel: nowPlayingViewModel, isExpanded: .constant(true), onMinimize: nil)
         
         // Then - Repeat button should show active state
         let hostingController = NSHostingController(rootView: view)
@@ -339,7 +320,7 @@ final class MainWindowPlayerControlsBDDTests: XCTestCase {
         nowPlayingViewModel.updateState()
         
         // When - I view the player controls
-        let view = MainWindowPlayerControls(nowPlayingViewModel: nowPlayingViewModel, showVisualiser: .constant(false))
+        let view = CollapsiblePlayerBar(nowPlayingViewModel: nowPlayingViewModel, isExpanded: .constant(true), onMinimize: nil)
         
         // Then - Previous and next buttons should be disabled
         let hostingController = NSHostingController(rootView: view)
@@ -357,7 +338,7 @@ final class MainWindowPlayerControlsBDDTests: XCTestCase {
         nowPlayingViewModel.updateState()
         
         // When - I view the player controls
-        let view = MainWindowPlayerControls(nowPlayingViewModel: nowPlayingViewModel, showVisualiser: .constant(false))
+        let view = CollapsiblePlayerBar(nowPlayingViewModel: nowPlayingViewModel, isExpanded: .constant(true), onMinimize: nil)
         
         // Then - Previous and next buttons should be enabled
         let hostingController = NSHostingController(rootView: view)
@@ -398,7 +379,7 @@ final class MainWindowPlayerControlsBDDTests: XCTestCase {
         nowPlayingViewModel.updateState()
         
         // When - I view the player controls
-        let view = MainWindowPlayerControls(nowPlayingViewModel: nowPlayingViewModel, showVisualiser: .constant(false))
+        let view = CollapsiblePlayerBar(nowPlayingViewModel: nowPlayingViewModel, isExpanded: .constant(true), onMinimize: nil)
         
         // Then - Shuffle button should show active state
         let hostingController = NSHostingController(rootView: view)
@@ -465,7 +446,7 @@ final class MainWindowPlayerControlsBDDTests: XCTestCase {
         nowPlayingViewModel.updateState()
         
         // When - I view the player controls
-        let view = MainWindowPlayerControls(nowPlayingViewModel: nowPlayingViewModel, showVisualiser: .constant(false))
+        let view = CollapsiblePlayerBar(nowPlayingViewModel: nowPlayingViewModel, isExpanded: .constant(true), onMinimize: nil)
         
         // Then - Repeat button should show active state
         let hostingController = NSHostingController(rootView: view)

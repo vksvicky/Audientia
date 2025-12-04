@@ -8,7 +8,6 @@
 //
 
 import AppKit
-import AVFoundation
 import Shared
 import SwiftUI
 
@@ -361,112 +360,6 @@ struct CollapsiblePlayerBar: View {
     
     /// Extracts artwork for the given track
     private func extractArtworkImage(for track: Track) async -> NSImage? {
-        let fileURL = URL(fileURLWithPath: track.filePath)
-
-        // Try embedded artwork via AVFoundation
-        if let embeddedData = await extractEmbeddedArtworkData(from: fileURL),
-           let image = NSImage(data: embeddedData) {
-            return image
-        }
-
-        // Fallback to sidecar files
-        if let sidecarData = try? loadSidecarArtworkData(for: fileURL),
-           let image = NSImage(data: sidecarData) {
-            return image
-        }
-
-        return nil
-    }
-
-    private func extractEmbeddedArtworkData(from fileURL: URL) async -> Data? {
-        let asset = AVURLAsset(url: fileURL)
-        do {
-            let metadata = try await asset.load(.metadata)
-
-            for item in metadata {
-                let commonKey = item.commonKey
-                let identifier = item.identifier
-                
-                if commonKey == .commonKeyArtwork,
-                   let data = try? await item.load(.dataValue) {
-                    return data
-                }
-                
-                if let idRaw = identifier?.rawValue {
-                    if idRaw.contains("covr"),
-                       let data = try? await item.load(.dataValue) {
-                        return data
-                    }
-                    
-                    if idRaw == "APIC" || idRaw.contains("PICTURE"),
-                       let data = try? await item.load(.dataValue) {
-                        return data
-                    }
-                }
-            }
-        } catch {
-            // Fall back to sidecar files
-        }
-        return nil
-    }
-
-    private func loadSidecarArtworkData(for fileURL: URL) throws -> Data? {
-        let directoryURL = fileURL.deletingLastPathComponent()
-        let baseName = fileURL.deletingPathExtension().lastPathComponent
-        let candidateNames = [baseName, "cover", "folder", "front", "album"]
-        let supportedExtensions = ["png", "jpg", "jpeg", "gif"]
-
-        for name in candidateNames {
-            for ext in supportedExtensions {
-                let candidate = directoryURL.appendingPathComponent("\(name).\(ext)")
-                if FileManager.default.fileExists(atPath: candidate.path),
-                   let data = try? Data(contentsOf: candidate),
-                   !data.isEmpty {
-                    return data
-                }
-            }
-        }
-        return nil
+        await ArtworkExtractor.extractArtworkImage(for: track)
     }
 }
-
-#if DEBUG
-import AudioCore
-
-struct CollapsiblePlayerBar_Previews: PreviewProvider {
-    static var previews: some View {
-        VStack(spacing: 20) {
-            CollapsiblePlayerBar(
-                nowPlayingViewModel: NowPlayingViewModel(audioEngine: PreviewMockAudioEngine()),
-                isExpanded: .constant(true),
-                onMinimize: nil
-            )
-            .frame(width: 800)
-            
-            CollapsiblePlayerBar(
-                nowPlayingViewModel: NowPlayingViewModel(audioEngine: PreviewMockAudioEngine()),
-                isExpanded: .constant(false),
-                onMinimize: nil
-            )
-            .frame(width: 800)
-        }
-        .padding()
-    }
-}
-
-private class PreviewMockAudioEngine: AudioEngineProtocol {
-    var currentTrack: Track?
-    var currentPosition: TimeInterval = 0
-    var duration: TimeInterval = 0
-    var isPlaying: Bool = false
-    var volume: Float = 1.0
-    var isMuted: Bool = false
-    
-    func loadFile(url: URL) async throws {}
-    func play() async throws {}
-    func pause() async {}
-    func stop() async {}
-    func seek(to position: TimeInterval) async {}
-    func setVolume(_ volume: Float) {}
-}
-#endif

@@ -13,7 +13,7 @@ import AudioCore
 import DataLayer
 import ObjectiveC
 import os.log
-import Shared
+@preconcurrency import Shared
 import SwiftUI
 
 /// Main window layout with:
@@ -28,6 +28,14 @@ public struct MainWindowLayoutView: View {
     @StateObject private var nowPlayingViewModel: NowPlayingViewModel
     @StateObject private var libraryBrowserViewModel = LibraryBrowserViewModel()
     @StateObject private var importCoordinator: TrackImportCoordinator
+    // Workaround for Swift compiler type resolution issue:
+    // Declare properties without explicit types, initialize in init() where types resolve correctly
+    // This is a known Swift compiler limitation when types are in subdirectories
+    @StateObject private var homeViewModel: HomeViewModel
+    @StateObject private var playlistSidebarViewModel: PlaylistSidebarViewModel
+    @StateObject private var smartPlaylistViewModel: SmartPlaylistViewModel
+    @StateObject private var deviceSidebarViewModel: DeviceSidebarViewModel
+    @StateObject private var audioVisualiserViewModel: AudioVisualiserViewModel
     
     // MARK: - State
     
@@ -40,17 +48,46 @@ public struct MainWindowLayoutView: View {
     // MARK: - Dependencies
     
     private let audioEngine: AudioEngineProtocol
+    private let layoutStateManager: LayoutStateManagerProtocol
     @Environment(\.dismissWindow) private var dismissWindow
     
     // MARK: - Initialization
     
-    public init(audioEngine: AudioEngineProtocol) {
+    public init(
+        audioEngine: AudioEngineProtocol,
+        layoutStateManager: LayoutStateManagerProtocol = LayoutStateManager()
+    ) {
         self.audioEngine = audioEngine
+        self.layoutStateManager = layoutStateManager
+        let libraryIndexer = LibraryIndexer()
         _nowPlayingViewModel = StateObject(wrappedValue: NowPlayingViewModel(audioEngine: audioEngine))
         _importCoordinator = StateObject(
             wrappedValue: TrackImportCoordinator(
                 audioEngine: audioEngine,
-                indexer: LibraryIndexer()
+                indexer: libraryIndexer
+            )
+        )
+        _homeViewModel = StateObject(
+            wrappedValue: HomeViewModel(
+                listeningHistory: nil, // NOTE: Wire up listening history when available
+                libraryIndexer: libraryIndexer
+            )
+        )
+        let playlistManager = PlaylistManager(indexer: libraryIndexer)
+        _playlistSidebarViewModel = StateObject(
+            wrappedValue: PlaylistSidebarViewModel(playlistManager: playlistManager)
+        )
+        _smartPlaylistViewModel = StateObject(
+            wrappedValue: SmartPlaylistViewModel(libraryIndexer: libraryIndexer)
+        )
+        let deviceSyncManager = DeviceSyncComposer.makeDefaultManager()
+        _deviceSidebarViewModel = StateObject(
+            wrappedValue: DeviceSidebarViewModel(deviceSyncManager: deviceSyncManager)
+        )
+        _audioVisualiserViewModel = StateObject(
+            wrappedValue: AudioVisualiserViewModel(
+                nowPlayingViewModel: nil, // Will be set after initialization
+                audioEngine: audioEngine as? AudioEngine
             )
         )
     }
@@ -79,6 +116,19 @@ public struct MainWindowLayoutView: View {
             )
         }
         .frame(minWidth: 900, minHeight: 500)
+        .task {
+            await loadLayoutState()
+        }
+        .onChange(of: isToolbarExpanded) { _, _ in
+            Task {
+                await saveLayoutState()
+            }
+        }
+        .onChange(of: isPlayerExpanded) { _, _ in
+            Task {
+                await saveLayoutState()
+            }
+        }
         .onAppear {
             setupMinimizeButtonInTitleBar()
         }
@@ -112,8 +162,31 @@ public struct MainWindowLayoutView: View {
             // Contextual Sidebar
             ContextualSidebar(
                 selectedTab: $selectedTab,
-                searchText: $searchText
+                searchText: $searchText,
+                onImportFiles: handleImportFiles,
+                onOpenSettings: handleOpenSettings,
+                onCreatePlaylist: handleCreatePlaylist,
+                libraryBrowserViewModel: libraryBrowserViewModel,
+                playlistSidebarViewModel: playlistSidebarViewModel,
+                smartPlaylistViewModel: smartPlaylistViewModel,
+                deviceSidebarViewModel: deviceSidebarViewModel,
+                audioVisualiserViewModel: audioVisualiserViewModel
             )
+            .onChange(of: searchText) { _, newValue in
+                if selectedTab == .library {
+                    Task {
+                        await libraryBrowserViewModel.updateSearchText(newValue)
+                    }
+                } else if selectedTab == .playlists {
+                    Task {
+                        await playlistSidebarViewModel.updateSearchText(newValue)
+                    }
+                } else if selectedTab == .devices {
+                    Task {
+                        await deviceSidebarViewModel.updateSearchText(newValue)
+                    }
+                }
+            }
             
             Divider()
             
@@ -129,10 +202,15 @@ public struct MainWindowLayoutView: View {
     private var tabContentView: some View {
         switch selectedTab {
         case .home:
-            HomeContentView()
+            HomeContentView(viewModel: homeViewModel)
         case .library:
             LibraryBrowserView(viewModel: libraryBrowserViewModel)
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .task(id: selectedTab) {
+                    if selectedTab == .library {
+                        await libraryBrowserViewModel.loadLibraryIfNeeded()
+                    }
+                }
         case .playlists:
             PlaylistBrowserView(playlistManager: PlaylistManager(indexer: LibraryIndexer()))
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -142,9 +220,14 @@ public struct MainWindowLayoutView: View {
         case .visualiser:
             AudioVisualiserView(
                 nowPlayingViewModel: nowPlayingViewModel,
-                audioEngine: audioEngine as? AudioEngine
+                audioEngine: audioEngine as? AudioEngine,
+                viewModel: audioVisualiserViewModel
             )
             .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .onAppear {
+                // Update ViewModel with current nowPlayingViewModel reference
+                audioVisualiserViewModel.updateNowPlayingViewModel(nowPlayingViewModel)
+            }
         }
     }
     
@@ -153,6 +236,51 @@ public struct MainWindowLayoutView: View {
     private func handleMinimize() {
         if let appDelegate = AppDelegate.shared ?? (NSApplication.shared.delegate as? AppDelegate) {
             appDelegate.minimizeToPlayer(nowPlayingViewModel: nowPlayingViewModel)
+        }
+    }
+    
+    private func handleImportFiles() {
+        Task {
+            let urls = AudioFileDialog.showOpenPanel(allowsMultipleSelection: true)
+            if !urls.isEmpty {
+                do {
+                    try await importCoordinator.importFiles(urls: urls)
+                } catch {
+                    importError = error
+                }
+            }
+        }
+    }
+    
+    private func handleOpenSettings() {
+        // Open macOS Settings window using standard menu action
+        NSApplication.shared.sendAction(Selector(("showPreferencesWindow:")), to: nil, from: nil)
+    }
+    
+    private func handleCreatePlaylist() {
+        // NOTE: Playlist creation dialog will be implemented when playlist creation UI is ready
+        // For now, this is a placeholder that logs the action
+        Logger.userInterface.info("Create playlist action triggered")
+    }
+
+    // MARK: - Layout State Persistence
+    
+    private func loadLayoutState() async {
+        let state = await layoutStateManager.loadLayoutState()
+        isToolbarExpanded = state.isToolbarExpanded
+        isPlayerExpanded = state.isPlayerExpanded
+    }
+    
+    private func saveLayoutState() async {
+        let state = LayoutState(
+            isToolbarExpanded: isToolbarExpanded,
+            isPlayerExpanded: isPlayerExpanded
+        )
+        
+        do {
+            try await layoutStateManager.saveLayoutState(state)
+        } catch {
+            Logger.userInterface.error("Failed to save layout state: \(error.localizedDescription)")
         }
     }
     
@@ -214,134 +342,5 @@ public struct MainWindowLayoutView: View {
         accessory.layoutAttribute = .leading
         
         window.addTitlebarAccessoryViewController(accessory)
-    }
-}
-
-// MARK: - Home Content View
-
-private struct HomeContentView: View {
-    var body: some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: 24) {
-                // Header
-                VStack(alignment: .leading, spacing: 8) {
-                    Text("Welcome to Audientia")
-                        .font(.system(size: 28, weight: .bold))
-                    
-                    Text("Your powerful media library manager")
-                        .font(.system(size: 14))
-                        .foregroundColor(.secondary)
-                }
-                .padding(.top, 20)
-                
-                // Recently Played Section
-                VStack(alignment: .leading, spacing: 12) {
-                    Text("RECENTLY PLAYED")
-                        .font(.system(size: 12, weight: .semibold))
-                        .foregroundColor(.secondary)
-                    
-                    HStack(spacing: 16) {
-                        ForEach(0..<4) { _ in
-                            AlbumPlaceholderView()
-                        }
-                        Spacer()
-                    }
-                }
-                
-                // Recently Added Section
-                VStack(alignment: .leading, spacing: 12) {
-                    Text("RECENTLY ADDED")
-                        .font(.system(size: 12, weight: .semibold))
-                        .foregroundColor(.secondary)
-                    
-                    HStack(spacing: 16) {
-                        ForEach(0..<4) { _ in
-                            AlbumPlaceholderView()
-                        }
-                        Spacer()
-                    }
-                }
-                
-                // Quick Links
-                VStack(alignment: .leading, spacing: 12) {
-                    Text("GET STARTED")
-                        .font(.system(size: 12, weight: .semibold))
-                        .foregroundColor(.secondary)
-                    
-                    VStack(alignment: .leading, spacing: 8) {
-                        if let url = URL(string: "https://github.com/vksvicky/Audientia") {
-                            Link(">> What's New?", destination: url)
-                            Link(">> Introduction", destination: url)
-                            Link(">> Add files to the library", destination: url)
-                            Link(">> Play files", destination: url)
-                            Link(">> Update/Edit your files", destination: url)
-                            Link(">> Sync your files", destination: url)
-                        }
-                    }
-                    .font(.system(size: 13))
-                }
-            }
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .padding(30)
-        }
-    }
-}
-
-// MARK: - Album Placeholder View
-
-private struct AlbumPlaceholderView: View {
-    var body: some View {
-        VStack(spacing: 8) {
-            RoundedRectangle(cornerRadius: 8)
-                .fill(Color.gray.opacity(0.2))
-                .frame(width: 100, height: 100)
-                .overlay(
-                    Image(systemName: "music.note")
-                        .font(.system(size: 30))
-                        .foregroundColor(.secondary)
-                )
-            
-            Text("Album")
-                .font(.system(size: 11))
-                .foregroundColor(.secondary)
-                .lineLimit(1)
-        }
-        .frame(width: 100)
-    }
-}
-
-// MARK: - Minimize Button Target
-
-private class MinimizeButtonTarget: NSObject {
-    let viewModel: NowPlayingViewModel
-    
-    init(viewModel: NowPlayingViewModel) {
-        self.viewModel = viewModel
-        super.init()
-    }
-    
-    @objc func minimize() {
-        DispatchQueue.main.async { [weak self] in
-            guard let self = self else { return }
-            
-            var appDelegate: AppDelegate?
-            appDelegate = AppDelegate.shared
-            
-            if appDelegate == nil {
-                appDelegate = NSApplication.shared.delegate as? AppDelegate
-            }
-            
-            if appDelegate == nil,
-               let window = NSApplication.shared.windows.first(where: { $0.isMainWindow || $0.isKeyWindow }) {
-                appDelegate = window.delegate as? AppDelegate
-            }
-            
-            guard let appDelegate = appDelegate else {
-                Logger.userInterface.error("Failed to get AppDelegate - delegate: \(String(describing: NSApplication.shared.delegate))")
-                return
-            }
-            
-            appDelegate.minimizeToPlayer(nowPlayingViewModel: self.viewModel)
-        }
     }
 }

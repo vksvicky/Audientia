@@ -217,7 +217,8 @@ final class CollapsibleToolbarBDDTests: XCTestCase {
         isExpanded = false
         isExpanded = true
         
-        // Then: Library tab should still be selected
+        // Then: Library tab should still be selected and toolbar state changed
         XCTAssertEqual(selectedTab, .library, "Tab selection should persist through collapse/expand")
+        XCTAssertTrue(isExpanded, "Toolbar should be expanded after toggle")
     }
 }
