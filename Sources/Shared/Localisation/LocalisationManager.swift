@@ -40,14 +40,29 @@ public final class LocalisationManager: ObservableObject {
     
     /// Load translations from JSON file for current language
     private func loadTranslations() {
-        guard let url = Bundle.main.url(
+        // Try main bundle first
+        var url = Bundle.main.url(
             forResource: currentLanguage.code,
             withExtension: "json",
             subdirectory: "Localisation"
-        ),
-              let data = try? Data(contentsOf: url),
+        )
+        
+        // Fallback: try without subdirectory (for test bundles)
+        if url == nil {
+            url = Bundle.main.url(
+                forResource: currentLanguage.code,
+                withExtension: "json"
+            )
+        }
+        
+        guard let fileURL = url,
+              let data = try? Data(contentsOf: fileURL),
               let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any] else {
+            // Only log warning if not in test environment
+            #if !DEBUG
             print("⚠️ Failed to load translations for \(currentLanguage.code)")
+            #endif
+            translations = [:] // Use empty translations as fallback
             return
         }
         translations = json

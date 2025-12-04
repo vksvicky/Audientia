@@ -102,7 +102,7 @@ final class AccessibilityTests: XCTestCase {
         // Then: Each control should have a descriptive accessibility label
         
         let nowPlayingViewModel = NowPlayingViewModel(audioEngine: mockAudioEngine)
-        let view = CompactPlayerControls(nowPlayingViewModel: nowPlayingViewModel)
+        let view = CompactPlayerControls(nowPlayingViewModel: nowPlayingViewModel, onExpand: {})
         SwiftUIViewTestHelpers.verifyViewCreation(view)
         
         // Verify compact controls can be created (implies labels exist)
@@ -120,9 +120,8 @@ final class AccessibilityTests: XCTestCase {
         
         // Toolbar collapse/expand button should have hint
         let toolbar = CollapsibleToolbar(
-            isExpanded: .constant(true),
             selectedTab: .constant(.home),
-            onTabSelected: { _ in }
+            isExpanded: .constant(true)
         )
         SwiftUIViewTestHelpers.verifyViewCreation(toolbar)
         
@@ -258,9 +257,8 @@ final class AccessibilityTests: XCTestCase {
         // Then: All functionality should still be accessible
         
         let toolbar = CollapsibleToolbar(
-            isExpanded: .constant(false),
             selectedTab: .constant(.home),
-            onTabSelected: { _ in }
+            isExpanded: .constant(false)
         )
         SwiftUIViewTestHelpers.verifyViewCreation(toolbar)
         
@@ -331,9 +329,8 @@ final class AccessibilityTests: XCTestCase {
         // and CollapsiblePlayerBar when state changes
         
         let toolbar = CollapsibleToolbar(
-            isExpanded: .constant(true),
             selectedTab: .constant(.home),
-            onTabSelected: { _ in }
+            isExpanded: .constant(true)
         )
         SwiftUIViewTestHelpers.verifyViewCreation(toolbar)
         

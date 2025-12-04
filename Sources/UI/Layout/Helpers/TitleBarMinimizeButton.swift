@@ -19,6 +19,12 @@ enum TitleBarMinimizeButton {
             window.removeTitlebarAccessoryViewController(at: 0)
         }
         
+        // Get the standard window buttons to align vertically with them
+        let closeButton = window.standardWindowButton(.closeButton)
+        let trafficLightFrame = closeButton?.frame ?? NSRect(x: 12, y: 3, width: 12, height: 12)
+        let trafficLightY = trafficLightFrame.origin.y
+        let trafficLightHeight = trafficLightFrame.height
+        
         let button = NSButton()
         if let image = NSImage(systemSymbolName: "minus.circle.fill", accessibilityDescription: nil) {
             button.image = image
@@ -27,15 +33,22 @@ enum TitleBarMinimizeButton {
         button.isBordered = false
         button.imagePosition = .imageOnly
         button.toolTip = "Minimize to Player"
-        button.frame = NSRect(x: 0, y: 0, width: 20, height: 20)
+        
+        // Match traffic light button size and vertical position
+        let buttonSize: CGFloat = trafficLightHeight
+        let buttonY = trafficLightY // Align vertically with traffic lights
+        
+        button.frame = NSRect(x: 0, y: 0, width: buttonSize, height: buttonSize)
         
         let target = MinimizeButtonTarget(viewModel: viewModel)
         button.target = target
         button.action = #selector(MinimizeButtonTarget.minimize)
         
-        let containerView = NSView(frame: NSRect(x: 0, y: 0, width: 80, height: 22))
+        // Container view - with .leading layout, this starts right after traffic lights
+        // Position button at x: 0 (right after traffic lights) and align vertically
+        let containerView = NSView(frame: NSRect(x: 0, y: 0, width: 30, height: 22))
         containerView.addSubview(button)
-        button.frame.origin = NSPoint(x: 60, y: 1)
+        button.frame.origin = NSPoint(x: 0, y: buttonY)
         
         objc_setAssociatedObject(containerView, "minimizeTarget", target, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
         

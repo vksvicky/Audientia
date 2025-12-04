@@ -17,27 +17,11 @@ struct ExpandedPlayerAdditionalControls: View {
     
     var body: some View {
         HStack(spacing: 8) {
-            if onMinimize != nil {
-                minimizeButton
-            }
+            // Minimize button removed - using title bar minimize button instead
             shuffleButton
             loopButton
             volumeControl
         }
-    }
-    
-    private var minimizeButton: some View {
-        Button("Minimize", systemImage: "minus.circle.fill") {
-            onMinimize?()
-        }
-        .labelStyle(.iconOnly)
-        .font(.system(size: 14))
-        .foregroundColor(.secondary)
-        .buttonStyle(.plain)
-        .help("Minimize to Player")
-        .accessibilityLabel("Minimize player")
-        .accessibilityHint("Minimizes the player to a separate window")
-        .accessibilityAddTraits(.isButton)
     }
     
     private var shuffleButton: some View {

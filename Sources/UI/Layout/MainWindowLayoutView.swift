@@ -225,6 +225,8 @@ public struct MainWindowLayoutView: View {
                 audioEngine: audioEngine,
                 audioVisualiserViewModel: audioVisualiserViewModel
             )
+            .id("tab-\(selectedTab.rawValue)") // Force view recreation when tab changes
+            .animation(.default, value: selectedTab) // Animate tab changes
             .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
     }

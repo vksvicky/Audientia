@@ -70,34 +70,38 @@ struct CollapsiblePlayerBar: View {
     // MARK: - Expanded Content
     
     private var expandedContent: some View {
-        HStack(spacing: 16) {
+        HStack(spacing: 12) {
             // Track Info with Album Art
             trackInfoSection
-                .frame(width: 280, alignment: .leading)
+                .frame(minWidth: 200, idealWidth: 280, maxWidth: 300, alignment: .leading)
+                .layoutPriority(1)
             
-            Spacer()
+            Spacer(minLength: 8)
             
             // Seek bar and playback controls
             VStack(spacing: 4) {
                 seekBarView
-                    .frame(width: 320)
+                    .frame(minWidth: 200, idealWidth: 320, maxWidth: 400)
                 
                 ExpandedPlayerTransportControls(nowPlayingViewModel: nowPlayingViewModel)
             }
+            .layoutPriority(2)
             
-            Spacer()
+            Spacer(minLength: 8)
             
             // Additional controls
             ExpandedPlayerAdditionalControls(
                 nowPlayingViewModel: nowPlayingViewModel,
-                onMinimize: onMinimize
+                onMinimize: nil // Minimize button removed - using title bar minimize button instead
             )
-            .frame(width: 200, alignment: .trailing)
+            .frame(minWidth: 150, idealWidth: 200, maxWidth: 250, alignment: .trailing)
+            .layoutPriority(1)
             
             // Collapse button
             collapseButton
+                .layoutPriority(0)
         }
-        .padding(.horizontal, 16)
+        .padding(.horizontal, 12)
     }
     
     // MARK: - Track Info Section
@@ -128,12 +132,27 @@ struct CollapsiblePlayerBar: View {
                             frameWidth: 200
                         )
                     }
-                    .frame(maxWidth: 200)
+                    .frame(maxWidth: .infinity, alignment: .leading)
                 }
             } else {
-                Text("No track selected")
-                    .font(.system(size: 13))
-                    .foregroundColor(.secondary)
+                HStack(spacing: 12) {
+                    // Placeholder for album art to maintain layout
+                    RoundedRectangle(cornerRadius: 4)
+                        .fill(Color.gray.opacity(0.3))
+                        .frame(width: 60, height: 60)
+                        .overlay(
+                            Image(systemName: "music.note")
+                                .font(.system(size: 20))
+                                .foregroundColor(.secondary)
+                        )
+                    
+                    Text("No track selected")
+                        .font(.system(size: 13))
+                        .foregroundColor(.secondary)
+                        .lineLimit(1)
+                        .fixedSize(horizontal: true, vertical: false)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                }
             }
         }
     }
