@@ -57,7 +57,7 @@ struct CompactPlayerControls: View {
                     text: "\(track.title) - \(track.artist)",
                     font: .system(size: 12),
                     foregroundColor: .primary,
-                    scrollSpeed: 30.0,
+                    scrollSpeed: 25.0, // Tuned for smoother, more readable scrolling
                     frameWidth: 200
                 )
             } else {
@@ -130,70 +130,80 @@ struct CompactPlayerControls: View {
     }
     
     private var previousButton: some View {
-        Button("Previous", systemImage: "backward.fill") {
-            Task { try? await nowPlayingViewModel.playPrevious() }
-        }
-        .labelStyle(.iconOnly)
-        .font(.system(size: 10))
-        .buttonStyle(.plain)
-        .disabled(nowPlayingViewModel.queue.count <= 1)
+        CompactControlButton(
+            label: "Previous",
+            systemImage: "backward.fill",
+            isEnabled: nowPlayingViewModel.queue.count > 1,
+            action: {
+                Task { try? await nowPlayingViewModel.playPrevious() }
+            }
+        )
     }
     
     private var playPauseButton: some View {
-        Button(nowPlayingViewModel.isPlaying ? "Pause" : "Play",
-               systemImage: nowPlayingViewModel.isPlaying ? "pause.fill" : "play.fill") {
-            Task {
-                if nowPlayingViewModel.isPlaying {
-                    await nowPlayingViewModel.pause()
-                } else {
-                    try? await nowPlayingViewModel.play()
+        CompactControlButton(
+            label: nowPlayingViewModel.isPlaying ? "Pause" : "Play",
+            systemImage: nowPlayingViewModel.isPlaying ? "pause.fill" : "play.fill",
+            isEnabled: true,
+            isPrimary: true,
+            action: {
+                Task {
+                    if nowPlayingViewModel.isPlaying {
+                        await nowPlayingViewModel.pause()
+                    } else {
+                        try? await nowPlayingViewModel.play()
+                    }
                 }
             }
-        }
-        .labelStyle(.iconOnly)
-        .font(.system(size: 12, weight: .semibold))
-        .foregroundColor(Color.accentColor)
-        .buttonStyle(.plain)
+        )
     }
     
     private var nextButton: some View {
-        Button("Next", systemImage: "forward.fill") {
-            Task { try? await nowPlayingViewModel.playNext() }
-        }
-        .labelStyle(.iconOnly)
-        .font(.system(size: 10))
-        .buttonStyle(.plain)
-        .disabled(nowPlayingViewModel.queue.count <= 1)
+        CompactControlButton(
+            label: "Next",
+            systemImage: "forward.fill",
+            isEnabled: nowPlayingViewModel.queue.count > 1,
+            action: {
+                Task { try? await nowPlayingViewModel.playNext() }
+            }
+        )
     }
     
     private var shuffleButton: some View {
-        Button("Shuffle", systemImage: "shuffle") {
-            nowPlayingViewModel.toggleShuffle()
-        }
-        .labelStyle(.iconOnly)
-        .font(.system(size: 10))
-        .foregroundColor(nowPlayingViewModel.isShuffleEnabled ? Color.accentColor : .secondary)
-        .buttonStyle(.plain)
+        CompactControlButton(
+            label: "Shuffle",
+            systemImage: "shuffle",
+            isEnabled: true,
+            isActive: nowPlayingViewModel.isShuffleEnabled,
+            action: {
+                nowPlayingViewModel.toggleShuffle()
+            }
+        )
     }
     
     private var loopButton: some View {
-        Button("Loop", systemImage: loopIconName) {
-            nowPlayingViewModel.toggleLoopMode()
-        }
-        .labelStyle(.iconOnly)
-        .font(.system(size: 10))
-        .foregroundColor(nowPlayingViewModel.loopMode != .none ? Color.accentColor : .secondary)
-        .buttonStyle(.plain)
+        CompactControlButton(
+            label: "Loop",
+            systemImage: loopIconName,
+            isEnabled: true,
+            isActive: nowPlayingViewModel.loopMode != .none,
+            action: {
+                nowPlayingViewModel.toggleLoopMode()
+            }
+        )
     }
     
     private var muteButton: some View {
-        Button("Mute", systemImage: nowPlayingViewModel.isMuted ? "speaker.slash.fill" : "speaker.wave.2.fill") {
-            nowPlayingViewModel.toggleMute()
-        }
-        .labelStyle(.iconOnly)
-        .font(.system(size: 10))
-        .foregroundColor(nowPlayingViewModel.isMuted ? .red : .secondary)
-        .buttonStyle(.plain)
+        CompactControlButton(
+            label: "Mute",
+            systemImage: nowPlayingViewModel.isMuted ? "speaker.slash.fill" : "speaker.wave.2.fill",
+            isEnabled: true,
+            isActive: nowPlayingViewModel.isMuted,
+            activeColor: .red,
+            action: {
+                nowPlayingViewModel.toggleMute()
+            }
+        )
     }
     
     private var loopIconName: String {
@@ -206,16 +216,117 @@ struct CompactPlayerControls: View {
     // MARK: - Expand Button
     
     private var expandButton: some View {
-        Button(action: onExpand) {
-            Image(systemName: "chevron.up")
-                .font(.system(size: 10, weight: .semibold))
-                .foregroundColor(.secondary)
-                .frame(width: 20, height: 20)
-                .contentShape(Rectangle())
-        }
-        .buttonStyle(.plain)
+        CompactControlButton(
+            label: "Expand",
+            systemImage: "chevron.up",
+            isEnabled: true,
+            action: onExpand
+        )
         .keyboardShortcut("p", modifiers: .command)
         .help("Expand player (⌘P)")
+        .accessibilityHint("Expands the player to show full controls. Press ⌘P to toggle.")
+    }
+}
+
+// MARK: - Compact Control Button with Hover States
+
+private struct CompactControlButton: View {
+    let label: String
+    let systemImage: String
+    let isEnabled: Bool
+    var isPrimary: Bool = false
+    var isActive: Bool = false
+    var activeColor: Color = .accentColor
+    let action: () -> Void
+    
+    @State private var isHovered = false
+    @State private var isPressed = false
+    
+    var body: some View {
+        Button(action: action) {
+            Image(systemName: systemImage)
+                .font(.system(size: isPrimary ? 12 : 10, weight: isPrimary ? .semibold : .regular))
+                .foregroundColor(foregroundColor)
+                .frame(width: 20, height: 20)
+                .contentShape(Rectangle())
+                .background(
+                    Circle()
+                        .fill(backgroundFill)
+                )
+        }
+        .buttonStyle(.plain)
+        .disabled(!isEnabled)
+        .opacity(isEnabled ? 1.0 : 0.5)
+        .onHover { hovering in
+            isHovered = hovering
+        }
+        .pressEvents(onPress: {
+            isPressed = true
+        }, onRelease: {
+            isPressed = false
+        })
+        .accessibilityLabel(accessibilityLabel)
+        .accessibilityHint(accessibilityHint)
+        .accessibilityAddTraits(isActive ? [.isSelected, .isButton] : .isButton)
+        .accessibilityValue(accessibilityValue)
+    }
+    
+    private var accessibilityLabel: String {
+        label
+    }
+    
+    private var accessibilityHint: String {
+        if !isEnabled {
+            return "Button is disabled"
+        } else if isActive {
+            return "\(label) is active. Press to toggle."
+        } else {
+            return "Press to \(label.lowercased())"
+        }
+    }
+    
+    private var accessibilityValue: String {
+        if isActive {
+            return "Active"
+        } else {
+            return ""
+        }
+    }
+    
+    private var foregroundColor: Color {
+        if isActive {
+            return activeColor
+        } else if isPrimary {
+            return Color.accentColor
+        } else {
+            return .secondary
+        }
+    }
+    
+    private var backgroundFill: Color {
+        if isPressed {
+            return Color(NSColor.controlAccentColor).opacity(0.2)
+        } else if isHovered && isEnabled {
+            return Color(NSColor.controlAccentColor).opacity(0.1)
+        } else {
+            return Color.clear
+        }
+    }
+}
+
+// MARK: - Press Events Modifier
+
+private extension View {
+    func pressEvents(onPress: @escaping () -> Void, onRelease: @escaping () -> Void) -> some View {
+        self.simultaneousGesture(
+            DragGesture(minimumDistance: 0)
+                .onChanged { _ in
+                    onPress()
+                }
+                .onEnded { _ in
+                    onRelease()
+                }
+        )
     }
 }
 

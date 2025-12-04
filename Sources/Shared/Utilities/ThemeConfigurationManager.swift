@@ -37,7 +37,7 @@ public actor ThemeConfigurationManager: ThemeConfigurationManagerProtocol {
         return theme
     }
     
-    public func getAvailableThemes() -> [ThemeConfiguration] {
+    public nonisolated func getAvailableThemes() -> [ThemeConfiguration] {
         [
             ThemeConfiguration.light,
             ThemeConfiguration.dark,

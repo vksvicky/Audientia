@@ -27,11 +27,14 @@ struct CollapsibleToolbar: View {
         VStack(spacing: 0) {
             if isExpanded {
                 expandedContent
+                    .transition(.move(edge: .top).combined(with: .opacity))
             } else {
                 collapsedContent
+                    .transition(.move(edge: .top).combined(with: .opacity))
             }
         }
-        .animation(.easeInOut(duration: 0.2), value: isExpanded)
+        .animation(.easeInOut(duration: 0.25), value: isExpanded)
+        .clipped()
     }
     
     private var expandedContent: some View {
@@ -72,6 +75,16 @@ struct CollapsibleToolbar: View {
         .buttonStyle(.plain)
         .keyboardShortcut("t", modifiers: .command)
         .help("Collapse toolbar (⌘T)")
+        .accessibilityLabel("Collapse toolbar")
+        .accessibilityHint("Collapses the toolbar to maximise content area. Press ⌘T to toggle.")
+        .onChange(of: isExpanded) { _, newValue in
+            if !newValue {
+                // Announce when toolbar is collapsed
+                NSAccessibility.post(element: NSApplication.shared, notification: .announcementRequested, userInfo: [
+                    .announcement: "Toolbar collapsed"
+                ])
+            }
+        }
     }
     
     private var expandButton: some View {
@@ -88,6 +101,16 @@ struct CollapsibleToolbar: View {
         .buttonStyle(.plain)
         .keyboardShortcut("t", modifiers: .command)
         .help("Expand toolbar (⌘T)")
+        .accessibilityLabel("Expand toolbar")
+        .accessibilityHint("Expands the toolbar to show navigation tabs. Press ⌘T to toggle.")
+        .onChange(of: isExpanded) { _, newValue in
+            if newValue {
+                // Announce when toolbar is expanded
+                NSAccessibility.post(element: NSApplication.shared, notification: .announcementRequested, userInfo: [
+                    .announcement: "Toolbar expanded"
+                ])
+            }
+        }
     }
 }
 

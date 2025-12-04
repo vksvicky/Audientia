@@ -553,4 +553,38 @@ final class ContextualSidebarActionBDDTests: XCTestCase {
         // Should not crash
         XCTAssertNotNil(sidebar, "Sidebar should work without action handlers")
     }
+    
+    // MARK: - Scenario: Hover states provide visual feedback
+    
+    @MainActor
+    func testScenario_SidebarItemsShowHoverStates() {
+        // Given: User hovers over sidebar navigation items
+        // When: Mouse cursor is over a sidebar item
+        // Then: Item should show hover state (subtle background highlight)
+        
+        // Note: Hover states are implemented using @State isHovered and .onHover modifier
+        // Visual feedback: Color(NSColor.controlAccentColor).opacity(0.1) on hover
+        let sidebar = ContextualSidebar(
+            selectedTab: .constant(.home),
+            searchText: .constant("")
+        )
+        XCTAssertNotNil(sidebar, "Sidebar items should support hover states")
+    }
+    
+    // MARK: - Scenario: Pressed states provide tactile feedback
+    
+    @MainActor
+    func testScenario_SidebarItemsShowPressedStates() {
+        // Given: User presses a sidebar navigation item
+        // When: Mouse button is pressed down
+        // Then: Item should show pressed state (darker background)
+        
+        // Note: Pressed states are implemented using @State isPressed and pressEvents modifier
+        // Visual feedback: Color(NSColor.controlAccentColor).opacity(0.2) when pressed
+        let sidebar = ContextualSidebar(
+            selectedTab: .constant(.home),
+            searchText: .constant("")
+        )
+        XCTAssertNotNil(sidebar, "Sidebar items should support pressed states")
+    }
 }

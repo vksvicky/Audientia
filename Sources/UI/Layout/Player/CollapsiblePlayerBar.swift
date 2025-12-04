@@ -39,16 +39,19 @@ struct CollapsiblePlayerBar: View {
             if isExpanded {
                 expandedContent
                     .frame(height: Self.expandedHeight)
+                    .transition(.move(edge: .bottom).combined(with: .opacity))
             } else {
                 CompactPlayerControls(
                     nowPlayingViewModel: nowPlayingViewModel,
                     onExpand: { isExpanded = true }
                 )
                 .frame(height: Self.collapsedHeight)
+                .transition(.move(edge: .bottom).combined(with: .opacity))
             }
         }
         .background(Color(NSColor.controlBackgroundColor))
-        .animation(.easeInOut(duration: 0.2), value: isExpanded)
+        .animation(.easeInOut(duration: 0.25), value: isExpanded)
+        .clipped()
         .onChange(of: nowPlayingViewModel.currentPosition) { _, newValue in
             if !isSeeking {
                 seekPosition = newValue
@@ -79,14 +82,17 @@ struct CollapsiblePlayerBar: View {
                 seekBarView
                     .frame(width: 320)
                 
-                playbackControlsView
+                ExpandedPlayerTransportControls(nowPlayingViewModel: nowPlayingViewModel)
             }
             
             Spacer()
             
             // Additional controls
-            additionalControlsSection
-                .frame(width: 200, alignment: .trailing)
+            ExpandedPlayerAdditionalControls(
+                nowPlayingViewModel: nowPlayingViewModel,
+                onMinimize: onMinimize
+            )
+            .frame(width: 200, alignment: .trailing)
             
             // Collapse button
             collapseButton
@@ -188,134 +194,6 @@ struct CollapsiblePlayerBar: View {
         .frame(height: 24)
     }
     
-    // MARK: - Playback Controls
-    
-    private var playbackControlsView: some View {
-        HStack(spacing: 8) {
-            previousButton
-            playPauseButton
-            stopButton
-            nextButton
-        }
-    }
-    
-    private var previousButton: some View {
-        Button("Previous", systemImage: "backward.fill") {
-            Task { try? await nowPlayingViewModel.playPrevious() }
-        }
-        .labelStyle(.iconOnly)
-        .font(.system(size: 14))
-        .buttonStyle(.plain)
-        .disabled(nowPlayingViewModel.queue.count <= 1)
-    }
-    
-    private var playPauseButton: some View {
-        Button(nowPlayingViewModel.isPlaying ? "Pause" : "Play",
-               systemImage: nowPlayingViewModel.isPlaying ? "pause.fill" : "play.fill") {
-            Task {
-                if nowPlayingViewModel.isPlaying {
-                    await nowPlayingViewModel.pause()
-                } else {
-                    try? await nowPlayingViewModel.play()
-                }
-            }
-        }
-        .labelStyle(.iconOnly)
-        .font(.system(size: 18, weight: .semibold))
-        .foregroundColor(Color.accentColor)
-        .buttonStyle(.plain)
-    }
-    
-    private var stopButton: some View {
-        Button("Stop", systemImage: "stop.fill") {
-            Task { await nowPlayingViewModel.stop() }
-        }
-        .labelStyle(.iconOnly)
-        .font(.system(size: 14))
-        .buttonStyle(.plain)
-    }
-    
-    private var nextButton: some View {
-        Button("Next", systemImage: "forward.fill") {
-            Task { try? await nowPlayingViewModel.playNext() }
-        }
-        .labelStyle(.iconOnly)
-        .font(.system(size: 14))
-        .buttonStyle(.plain)
-        .disabled(nowPlayingViewModel.queue.count <= 1)
-    }
-    
-    // MARK: - Additional Controls
-    
-    private var additionalControlsSection: some View {
-        HStack(spacing: 8) {
-            if onMinimize != nil {
-                minimizeButton
-            }
-            shuffleButton
-            loopButton
-            volumeControl
-        }
-    }
-    
-    private var minimizeButton: some View {
-        Button("Minimize", systemImage: "minus.circle.fill") {
-            onMinimize?()
-        }
-        .labelStyle(.iconOnly)
-        .font(.system(size: 14))
-        .foregroundColor(.secondary)
-        .buttonStyle(.plain)
-        .help("Minimize to Player")
-    }
-    
-    private var shuffleButton: some View {
-        Button("Shuffle", systemImage: "shuffle") {
-            nowPlayingViewModel.toggleShuffle()
-        }
-        .labelStyle(.iconOnly)
-        .font(.system(size: 14))
-        .foregroundColor(nowPlayingViewModel.isShuffleEnabled ? Color.accentColor : .primary)
-        .buttonStyle(.plain)
-    }
-    
-    private var loopButton: some View {
-        Button("Loop", systemImage: loopIconName) {
-            nowPlayingViewModel.toggleLoopMode()
-        }
-        .labelStyle(.iconOnly)
-        .font(.system(size: 14))
-        .foregroundColor(nowPlayingViewModel.loopMode != .none ? Color.accentColor : .primary)
-        .buttonStyle(.plain)
-    }
-    
-    private var volumeControl: some View {
-        HStack(spacing: 4) {
-            Button("Mute", systemImage: nowPlayingViewModel.isMuted ? "speaker.slash.fill" : "speaker.wave.2.fill") {
-                nowPlayingViewModel.toggleMute()
-            }
-            .labelStyle(.iconOnly)
-            .font(.system(size: 12))
-            .buttonStyle(.plain)
-            
-            Slider(
-                value: Binding(
-                    get: { Double(nowPlayingViewModel.volume) },
-                    set: { nowPlayingViewModel.volume = Float($0) }
-                ),
-                in: 0...1
-            )
-            .frame(width: 100)
-        }
-    }
-    
-    private var loopIconName: String {
-        switch nowPlayingViewModel.loopMode {
-        case .none, .queue: return "repeat"
-        case .track: return "repeat.1"
-        }
-    }
-    
     // MARK: - Collapse Button
     
     private var collapseButton: some View {
@@ -330,6 +208,16 @@ struct CollapsiblePlayerBar: View {
         .buttonStyle(.plain)
         .keyboardShortcut("p", modifiers: .command)
         .help("Collapse player (⌘P)")
+        .accessibilityLabel("Collapse player")
+        .accessibilityHint("Collapses the player to a compact view. Press ⌘P to toggle.")
+        .onChange(of: isExpanded) { _, newValue in
+            if !newValue {
+                // Announce when player is collapsed
+                NSAccessibility.post(element: NSApplication.shared, notification: .announcementRequested, userInfo: [
+                    .announcement: "Player collapsed"
+                ])
+            }
+        }
     }
     
     // MARK: - Helper Functions

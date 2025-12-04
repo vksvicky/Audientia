@@ -117,6 +117,7 @@ struct PlaylistsNavigationContent: View {
     @ObservedObject var playlistSidebarViewModel: PlaylistSidebarViewModel
     @ObservedObject var smartPlaylistViewModel: SmartPlaylistViewModel
     var onCreatePlaylist: (() -> Void)?
+    var onCreateSmartPlaylist: (() -> Void)?
     
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
@@ -130,6 +131,10 @@ struct PlaylistsNavigationContent: View {
             
             SidebarSection(title: "SMART PLAYLISTS") {
                 SmartPlaylistSection(viewModel: smartPlaylistViewModel)
+            }
+            
+            SidebarActionButton(icon: "gearshape", title: "New Smart Playlist") {
+                onCreateSmartPlaylist?()
             }
         }
     }

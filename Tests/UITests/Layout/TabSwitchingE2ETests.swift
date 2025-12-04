@@ -147,8 +147,8 @@ final class TabSwitchingE2ETests: XCTestCase {
         // Then: Sidebar should update to show tab-specific content
         // The ContextualSidebar uses switch statement on selectedTab
         let sidebar = ContextualSidebar(
-            selectedTab: .constant(.home),
-            searchText: .constant("")
+            selectedTab: Binding<TabItem>.constant(.home),
+            searchText: Binding<String>.constant("")
         )
         SwiftUIViewTestHelpers.verifyViewCreation(sidebar)
     }
@@ -263,7 +263,7 @@ final class TabSwitchingE2ETests: XCTestCase {
         // Verify all tabs can be accessed
         let allTabs = TabItem.allCases
         for tab in allTabs {
-            let tabBar = NavigationTabBar(selectedTab: .constant(tab))
+            let tabBar = NavigationTabBar(selectedTab: Binding<TabItem>.constant(tab))
             SwiftUIViewTestHelpers.verifyViewCreation(tabBar)
         }
     }
@@ -279,7 +279,7 @@ final class TabSwitchingE2ETests: XCTestCase {
         // Then: Tab should remain selected, no errors should occur
         // The NavigationTabBar handles this gracefully via binding
         
-        let tabBar = NavigationTabBar(selectedTab: .constant(.home))
+        let tabBar = NavigationTabBar(selectedTab: Binding<TabItem>.constant(.home))
         SwiftUIViewTestHelpers.verifyViewCreation(tabBar)
     }
 }

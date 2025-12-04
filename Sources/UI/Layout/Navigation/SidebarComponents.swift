@@ -34,6 +34,9 @@ struct SidebarNavItem: View {
     var count: Int?
     var action: (() -> Void)?
     
+    @State private var isHovered = false
+    @State private var isPressed = false
+    
     init(icon: String, title: String, count: Int? = nil, action: (() -> Void)? = nil) {
         self.icon = icon
         self.title = title
@@ -64,10 +67,33 @@ struct SidebarNavItem: View {
                     }
                 }
                 .contentShape(Rectangle())
+                .padding(.horizontal, 6)
+                .padding(.vertical, 4)
+                .background(
+                    RoundedRectangle(cornerRadius: 4)
+                        .fill(backgroundFill)
+                )
             }
         )
         .buttonStyle(.plain)
-        .padding(.vertical, 2)
+        .onHover { hovering in
+            isHovered = hovering
+        }
+        .pressEvents(onPress: {
+            isPressed = true
+        }, onRelease: {
+            isPressed = false
+        })
+    }
+    
+    private var backgroundFill: Color {
+        if isPressed {
+            return Color(NSColor.controlAccentColor).opacity(0.2)
+        } else if isHovered {
+            return Color(NSColor.controlAccentColor).opacity(0.1)
+        } else {
+            return Color.clear
+        }
     }
 }
 
@@ -78,6 +104,9 @@ struct SidebarActionButton: View {
     let title: String
     let action: () -> Void
     
+    @State private var isHovered = false
+    @State private var isPressed = false
+    
     var body: some View {
         Button(action: action) {
             HStack(spacing: 6) {
@@ -87,10 +116,44 @@ struct SidebarActionButton: View {
                 Text(title)
                     .font(.system(size: 12))
             }
-            .foregroundColor(.accentColor)
+            .foregroundColor(foregroundColor)
+            .padding(.horizontal, 8)
+            .padding(.vertical, 4)
+            .background(
+                RoundedRectangle(cornerRadius: 4)
+                    .fill(backgroundFill)
+            )
         }
         .buttonStyle(.plain)
-        .padding(.vertical, 4)
+        .onHover { hovering in
+            isHovered = hovering
+        }
+        .pressEvents(onPress: {
+            isPressed = true
+        }, onRelease: {
+            isPressed = false
+        })
+        .accessibilityLabel(title)
+        .accessibilityHint("Press to \(title.lowercased())")
+        .accessibilityAddTraits(.isButton)
+    }
+    
+    private var foregroundColor: Color {
+        if isPressed {
+            return Color.accentColor.opacity(0.8)
+        } else {
+            return Color.accentColor
+        }
+    }
+    
+    private var backgroundFill: Color {
+        if isPressed {
+            return Color.accentColor.opacity(0.2)
+        } else if isHovered {
+            return Color.accentColor.opacity(0.1)
+        } else {
+            return Color.clear
+        }
     }
 }
 
@@ -130,6 +193,9 @@ struct SidebarRadioItem: View {
     let isSelected: Bool
     let action: () -> Void
     
+    @State private var isHovered = false
+    @State private var isPressed = false
+    
     var body: some View {
         Button(action: action) {
             HStack(spacing: 8) {
@@ -141,9 +207,36 @@ struct SidebarRadioItem: View {
                     .font(.system(size: 12))
                     .foregroundColor(.primary)
             }
-            .padding(.vertical, 2)
+            .padding(.horizontal, 6)
+            .padding(.vertical, 4)
+            .background(
+                RoundedRectangle(cornerRadius: 4)
+                    .fill(backgroundFill)
+            )
         }
         .buttonStyle(.plain)
+        .onHover { hovering in
+            isHovered = hovering
+        }
+        .pressEvents(onPress: {
+            isPressed = true
+        }, onRelease: {
+            isPressed = false
+        })
+        .accessibilityLabel(title)
+        .accessibilityHint(isSelected ? "Selected option. Press to change selection." : "Press to select \(title)")
+        .accessibilityAddTraits(isSelected ? [.isSelected, .isButton] : .isButton)
+        .accessibilityValue(isSelected ? "Selected" : "")
+    }
+    
+    private var backgroundFill: Color {
+        if isPressed {
+            return Color(NSColor.controlAccentColor).opacity(0.2)
+        } else if isHovered {
+            return Color(NSColor.controlAccentColor).opacity(0.1)
+        } else {
+            return Color.clear
+        }
     }
 }
 
@@ -169,5 +262,21 @@ struct StatRow: View {
                     .foregroundColor(.secondary)
             }
         }
+    }
+}
+
+// MARK: - Press Events Modifier
+
+private extension View {
+    func pressEvents(onPress: @escaping () -> Void, onRelease: @escaping () -> Void) -> some View {
+        self.simultaneousGesture(
+            DragGesture(minimumDistance: 0)
+                .onChanged { _ in
+                    onPress()
+                }
+                .onEnded { _ in
+                    onRelease()
+                }
+        )
     }
 }

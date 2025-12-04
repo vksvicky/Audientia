@@ -27,6 +27,7 @@ struct ContextualSidebar: View {
     var onImportFiles: (() -> Void)?
     var onOpenSettings: (() -> Void)?
     var onCreatePlaylist: (() -> Void)?
+    var onCreateSmartPlaylist: (() -> Void)?
     
     /// Library browser ViewModel for filtering (optional, only for Library tab)
     var libraryBrowserViewModel: LibraryBrowserViewModel?
@@ -52,6 +53,7 @@ struct ContextualSidebar: View {
         onImportFiles: (() -> Void)? = nil,
         onOpenSettings: (() -> Void)? = nil,
         onCreatePlaylist: (() -> Void)? = nil,
+        onCreateSmartPlaylist: (() -> Void)? = nil,
         libraryBrowserViewModel: LibraryBrowserViewModel? = nil,
         playlistSidebarViewModel: PlaylistSidebarViewModel? = nil,
         smartPlaylistViewModel: SmartPlaylistViewModel? = nil,
@@ -63,6 +65,7 @@ struct ContextualSidebar: View {
         self.onImportFiles = onImportFiles
         self.onOpenSettings = onOpenSettings
         self.onCreatePlaylist = onCreatePlaylist
+        self.onCreateSmartPlaylist = onCreateSmartPlaylist
         self.libraryBrowserViewModel = libraryBrowserViewModel
         self.playlistSidebarViewModel = playlistSidebarViewModel
         self.smartPlaylistViewModel = smartPlaylistViewModel
@@ -175,7 +178,8 @@ struct ContextualSidebar: View {
                 PlaylistsNavigationContent(
                     playlistSidebarViewModel: playlistViewModel,
                     smartPlaylistViewModel: smartViewModel,
-                    onCreatePlaylist: onCreatePlaylist
+                    onCreatePlaylist: onCreatePlaylist,
+                    onCreateSmartPlaylist: onCreateSmartPlaylist
                 )
             } else {
                 Text("No playlists")
@@ -279,9 +283,18 @@ struct ContextualSidebar: View {
 struct ContextualSidebar_Previews: PreviewProvider {
     static var previews: some View {
         HStack(spacing: 0) {
-            ContextualSidebar(selectedTab: .constant(.home), searchText: .constant(""))
-            ContextualSidebar(selectedTab: .constant(.library), searchText: .constant(""))
-            ContextualSidebar(selectedTab: .constant(.visualiser), searchText: .constant(""))
+            ContextualSidebar(
+                selectedTab: Binding<TabItem>.constant(.home),
+                searchText: Binding<String>.constant("")
+            )
+            ContextualSidebar(
+                selectedTab: Binding<TabItem>.constant(.library),
+                searchText: Binding<String>.constant("")
+            )
+            ContextualSidebar(
+                selectedTab: Binding<TabItem>.constant(.visualiser),
+                searchText: Binding<String>.constant("")
+            )
         }
     }
 }

@@ -11,7 +11,6 @@ import AppKit
 import AppKitBridge
 import AudioCore
 import DataLayer
-import ObjectiveC
 import os.log
 @preconcurrency import Shared
 import SwiftUI
@@ -44,6 +43,13 @@ public struct MainWindowLayoutView: View {
     @State private var isToolbarExpanded: Bool = true
     @State private var isPlayerExpanded: Bool = true
     @State private var importError: Error?
+    @State private var showingCreatePlaylistDialog: Bool = false
+    @State private var newPlaylistName: String = ""
+    @State private var playlistCreationError: Error?
+    @State private var showingCreateSmartPlaylistDialog: Bool = false
+    @State private var newSmartPlaylistName: String = ""
+    @State private var smartPlaylistCreationError: Error?
+    @StateObject private var smartPlaylistRuleBuilderViewModel = SmartPlaylistRuleBuilderViewModel()
     
     // MARK: - Dependencies
     
@@ -119,12 +125,14 @@ public struct MainWindowLayoutView: View {
         .task {
             await loadLayoutState()
         }
-        .onChange(of: isToolbarExpanded) { _, _ in
+        .onChange(of: isToolbarExpanded) { oldValue, newValue in
+            Logger.userInterface.debug("Toolbar expanded state changed: \(oldValue) -> \(newValue)")
             Task {
                 await saveLayoutState()
             }
         }
-        .onChange(of: isPlayerExpanded) { _, _ in
+        .onChange(of: isPlayerExpanded) { oldValue, newValue in
+            Logger.userInterface.debug("Player expanded state changed: \(oldValue) -> \(newValue)")
             Task {
                 await saveLayoutState()
             }
@@ -153,6 +161,23 @@ public struct MainWindowLayoutView: View {
                 Text(error.localizedDescription)
             }
         }
+        .sheet(isPresented: $showingCreatePlaylistDialog) {
+            CreatePlaylistDialog(
+                isPresented: $showingCreatePlaylistDialog,
+                playlistName: $newPlaylistName,
+                error: $playlistCreationError,
+                onCreate: createPlaylist
+            )
+        }
+        .sheet(isPresented: $showingCreateSmartPlaylistDialog) {
+            CreateSmartPlaylistDialog(
+                isPresented: $showingCreateSmartPlaylistDialog,
+                playlistName: $newSmartPlaylistName,
+                error: $smartPlaylistCreationError,
+                ruleBuilderViewModel: smartPlaylistRuleBuilderViewModel,
+                onCreate: createSmartPlaylist
+            )
+        }
     }
     
     // MARK: - Main Content Area
@@ -166,6 +191,7 @@ public struct MainWindowLayoutView: View {
                 onImportFiles: handleImportFiles,
                 onOpenSettings: handleOpenSettings,
                 onCreatePlaylist: handleCreatePlaylist,
+                onCreateSmartPlaylist: handleCreateSmartPlaylist,
                 libraryBrowserViewModel: libraryBrowserViewModel,
                 playlistSidebarViewModel: playlistSidebarViewModel,
                 smartPlaylistViewModel: smartPlaylistViewModel,
@@ -191,43 +217,15 @@ public struct MainWindowLayoutView: View {
             Divider()
             
             // Tab-specific Content
-            tabContentView
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-        }
-    }
-    
-    // MARK: - Tab Content View
-    
-    @ViewBuilder
-    private var tabContentView: some View {
-        switch selectedTab {
-        case .home:
-            HomeContentView(viewModel: homeViewModel)
-        case .library:
-            LibraryBrowserView(viewModel: libraryBrowserViewModel)
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .task(id: selectedTab) {
-                    if selectedTab == .library {
-                        await libraryBrowserViewModel.loadLibraryIfNeeded()
-                    }
-                }
-        case .playlists:
-            PlaylistBrowserView(playlistManager: PlaylistManager(indexer: LibraryIndexer()))
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-        case .devices:
-            DeviceSyncView()
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-        case .visualiser:
-            AudioVisualiserView(
+            MainWindowTabContentView(
+                selectedTab: selectedTab,
+                homeViewModel: homeViewModel,
+                libraryBrowserViewModel: libraryBrowserViewModel,
                 nowPlayingViewModel: nowPlayingViewModel,
-                audioEngine: audioEngine as? AudioEngine,
-                viewModel: audioVisualiserViewModel
+                audioEngine: audioEngine,
+                audioVisualiserViewModel: audioVisualiserViewModel
             )
             .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .onAppear {
-                // Update ViewModel with current nowPlayingViewModel reference
-                audioVisualiserViewModel.updateNowPlayingViewModel(nowPlayingViewModel)
-            }
         }
     }
     
@@ -258,10 +256,61 @@ public struct MainWindowLayoutView: View {
     }
     
     private func handleCreatePlaylist() {
-        // NOTE: Playlist creation dialog will be implemented when playlist creation UI is ready
-        // For now, this is a placeholder that logs the action
-        Logger.userInterface.info("Create playlist action triggered")
+        newPlaylistName = ""
+        playlistCreationError = nil
+        showingCreatePlaylistDialog = true
     }
+    
+    private func handleCreateSmartPlaylist() {
+        newSmartPlaylistName = ""
+        smartPlaylistCreationError = nil
+        smartPlaylistRuleBuilderViewModel.clearRules()
+        showingCreateSmartPlaylistDialog = true
+    }
+    
+    // MARK: - Create Playlist Dialog
+    
+    private func createPlaylist() {
+        let name = newPlaylistName.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !name.isEmpty else { return }
+        
+        Task {
+            do {
+                try await playlistSidebarViewModel.createPlaylist(name: name)
+                showingCreatePlaylistDialog = false
+                newPlaylistName = ""
+                playlistCreationError = nil
+            } catch {
+                playlistCreationError = error
+                Logger.userInterface.error("Failed to create playlist: \(error.localizedDescription)")
+            }
+        }
+    }
+    
+    // MARK: - Create Smart Playlist Dialog
+    
+    private func createSmartPlaylist() {
+        let name = newSmartPlaylistName.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !name.isEmpty else { return }
+        guard smartPlaylistRuleBuilderViewModel.isValid else { return }
+        
+        Task {
+            do {
+                let rules = smartPlaylistRuleBuilderViewModel.buildRules()
+                try await playlistSidebarViewModel.createSmartPlaylist(name: name, rules: rules)
+                
+                showingCreateSmartPlaylistDialog = false
+                newSmartPlaylistName = ""
+                smartPlaylistCreationError = nil
+                smartPlaylistRuleBuilderViewModel.clearRules()
+                
+                Logger.userInterface.info("Created smart playlist: \(name)")
+            } catch {
+                smartPlaylistCreationError = error
+                Logger.userInterface.error("Failed to create smart playlist: \(error.localizedDescription)")
+                }
+            }
+        }
 
     // MARK: - Layout State Persistence
     
@@ -287,60 +336,6 @@ public struct MainWindowLayoutView: View {
     // MARK: - Minimize Button Setup
     
     private func setupMinimizeButtonInTitleBar() {
-        let viewModel = nowPlayingViewModel
-        
-        DispatchQueue.main.async {
-            var window: NSWindow?
-            for attempt in 0..<5 {
-                window = NSApplication.shared.windows.first(where: { $0.isMainWindow || $0.isKeyWindow })
-                if window != nil { break }
-                if attempt < 4 {
-                    Thread.sleep(forTimeInterval: 0.1)
-                }
-            }
-            
-            guard let window = window else {
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                    if let retryWindow = NSApplication.shared.windows.first(where: { $0.isMainWindow || $0.isKeyWindow }) {
-                        Self.setupMinimizeButton(in: retryWindow, viewModel: viewModel)
-                    }
-                }
-                return
-            }
-            
-            Self.setupMinimizeButton(in: window, viewModel: viewModel)
-        }
-    }
-    
-    private static func setupMinimizeButton(in window: NSWindow, viewModel: NowPlayingViewModel) {
-        while !window.titlebarAccessoryViewControllers.isEmpty {
-            window.removeTitlebarAccessoryViewController(at: 0)
-        }
-        
-        let button = NSButton()
-        if let image = NSImage(systemSymbolName: "minus.circle.fill", accessibilityDescription: nil) {
-            button.image = image
-        }
-        button.bezelStyle = .texturedRounded
-        button.isBordered = false
-        button.imagePosition = .imageOnly
-        button.toolTip = "Minimize to Player"
-        button.frame = NSRect(x: 0, y: 0, width: 20, height: 20)
-        
-        let target = MinimizeButtonTarget(viewModel: viewModel)
-        button.target = target
-        button.action = #selector(MinimizeButtonTarget.minimize)
-        
-        let containerView = NSView(frame: NSRect(x: 0, y: 0, width: 80, height: 22))
-        containerView.addSubview(button)
-        button.frame.origin = NSPoint(x: 60, y: 1)
-        
-        objc_setAssociatedObject(containerView, "minimizeTarget", target, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
-        
-        let accessory = NSTitlebarAccessoryViewController()
-        accessory.view = containerView
-        accessory.layoutAttribute = .leading
-        
-        window.addTitlebarAccessoryViewController(accessory)
+        TitleBarMinimizeButton.setupAsync(viewModel: nowPlayingViewModel)
     }
 }

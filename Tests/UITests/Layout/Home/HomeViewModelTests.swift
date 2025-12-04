@@ -44,16 +44,17 @@ final class HomeViewModelTests: XCTestCase {
     // MARK: - Right: Are the Results Right?
     
     func testRecentlyPlayedTracks_WhenHistoryExists_ReturnsCorrectTracks() async {
-        // Given: Listening history with events
+        // Given: Listening history with events at different times
         let track1 = createTestTrack(id: UUID(), title: "Track 1")
         let track2 = createTestTrack(id: UUID(), title: "Track 2")
         let track3 = createTestTrack(id: UUID(), title: "Track 3")
         
         await mockLibraryIndexer.setTracks([track1, track2, track3])
         
-        let event1 = ListeningEvent(trackId: track1.id, timestamp: Date(), playDuration: 120, wasSkipped: false)
-        let event2 = ListeningEvent(trackId: track2.id, timestamp: Date(), playDuration: 180, wasSkipped: false)
-        let event3 = ListeningEvent(trackId: track3.id, timestamp: Date(), playDuration: 90, wasSkipped: false)
+        let now = Date()
+        let event1 = ListeningEvent(trackId: track1.id, timestamp: now.addingTimeInterval(-300), playDuration: 120, wasSkipped: false)
+        let event2 = ListeningEvent(trackId: track2.id, timestamp: now.addingTimeInterval(-200), playDuration: 180, wasSkipped: false)
+        let event3 = ListeningEvent(trackId: track3.id, timestamp: now.addingTimeInterval(-100), playDuration: 90, wasSkipped: false)
         
         await mockListeningHistory.recordEvent(event1)
         await mockListeningHistory.recordEvent(event2)
@@ -202,7 +203,8 @@ final class HomeViewModelTests: XCTestCase {
         // Then: Order should match history (most recent first)
         let recentlyPlayed = viewModel.recentlyPlayedTracks
         let recentEvents = await mockListeningHistory.getRecentEvents(limit: 10)
-        let eventTrackIds = recentEvents.reversed().map { $0.trackId }
+        // recentEvents are already sorted newest-first, so map directly
+        let eventTrackIds = recentEvents.map { $0.trackId }
         let trackIds = recentlyPlayed.map { $0.id }
         XCTAssertEqual(trackIds, eventTrackIds, "Track order should match history order")
     }

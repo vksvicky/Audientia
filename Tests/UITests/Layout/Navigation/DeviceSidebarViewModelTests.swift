@@ -368,50 +368,6 @@ final class DeviceSidebarViewModelTests: XCTestCase {
     }
 }
 
-// MARK: - Mock Device Sync Manager
-
-actor MockDeviceSyncManager: DeviceSyncManagerProtocol {
-    private var devices: [Device] = []
-    private var shouldThrowError = false
-    
-    func setDevices(_ devices: [Device]) async {
-        self.devices = devices
-    }
-    
-    func setShouldThrowError(_ shouldThrow: Bool) async {
-        shouldThrowError = shouldThrow
-    }
-    
-    func availableDevices() async -> [Device] {
-        if shouldThrowError {
-            throw NSError(domain: "TestError", code: 1, userInfo: [NSLocalizedDescriptionKey: "Test error"])
-        }
-        return devices
-    }
-    
-    // MARK: - Unused Protocol Methods (required for conformance)
-    
-    func jobs() async -> [SyncJob] {
-        []
-    }
-    
-    func startSync(request: SyncRequest) async throws -> SyncJob {
-        throw NSError(domain: "TestError", code: 1, userInfo: [NSLocalizedDescriptionKey: "Test error"])
-    }
-    
-    func cancel(jobId: UUID) async {
-        // No-op
-    }
-    
-    func resolveConflicts(jobId: UUID, resolutions: [SyncConflictResolution]) async throws -> SyncJob {
-        throw NSError(domain: "TestError", code: 1, userInfo: [NSLocalizedDescriptionKey: "Test error"])
-    }
-    
-    func waitForIdle() async {
-        // No-op
-    }
-}
-
 // MARK: - BDD Tests
 
 /// BDD-style tests for DeviceSidebarViewModel scenarios

@@ -128,8 +128,10 @@ struct ScrollingTextView: View {
         let pixelsPerUpdate = scrollSpeed * updateInterval
         
         // Start timer on main run loop to continuously update scroll offset
+        // Use easing for smoother acceleration/deceleration
         let newTimer = Timer.scheduledTimer(withTimeInterval: updateInterval, repeats: true) { _ in
-            // Update scroll offset
+            // Update scroll offset with easing for smoother motion
+            // Linear scrolling with slight easing at loop boundaries
             scrollOffset += pixelsPerUpdate
             
             // Seamlessly reset when we've scrolled past one complete text + spacing

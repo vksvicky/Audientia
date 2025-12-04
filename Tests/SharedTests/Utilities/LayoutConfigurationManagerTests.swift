@@ -90,7 +90,7 @@ final class LayoutConfigurationManagerTests: XCTestCase {
     
     func testSaveWithStorageError() async {
         // Given: Storage that fails
-        await mockStorage.setShouldFail(true)
+        await mockStorage.setShouldThrowError(true)
         
         // When: Saving
         // Then: Should throw
@@ -100,43 +100,5 @@ final class LayoutConfigurationManagerTests: XCTestCase {
         } catch {
             XCTAssertNotNil(error)
         }
-    }
-}
-
-/// Mock settings storage for testing
-actor MockSettingsStorage: SettingsStorageProtocol {
-    var storage: [String: Data] = [:]
-    var shouldFail = false
-    
-    func setShouldFail(_ value: Bool) {
-        shouldFail = value
-    }
-    
-    func save<T: Codable & Sendable>(_ value: T, forKey key: String) async throws {
-        if shouldFail {
-            throw NSError(domain: "test", code: 1)
-        }
-        let encoder = JSONEncoder()
-        storage[key] = try encoder.encode(value)
-    }
-    
-    func load<T: Codable & Sendable>(_ type: T.Type, forKey key: String) async throws -> T? {
-        guard let data = storage[key] else {
-            return nil
-        }
-        let decoder = JSONDecoder()
-        return try decoder.decode(type, from: data)
-    }
-    
-    func remove(forKey key: String) async throws {
-        storage.removeValue(forKey: key)
-    }
-    
-    func hasValue(forKey key: String) async -> Bool {
-        storage[key] != nil
-    }
-    
-    func clearAll() async throws {
-        storage.removeAll()
     }
 }

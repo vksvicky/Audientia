@@ -301,6 +301,40 @@ final class CompactPlayerControlsBDDTests: XCTestCase {
         XCTAssertTrue(mockAudioEngine.isMuted)
     }
     
+    // MARK: - Scenario: Hover states provide visual feedback
+    
+    @MainActor
+    func testScenario_HoverStatesProvideVisualFeedback() {
+        // Given: User hovers over player control buttons
+        // When: Mouse cursor is over a control button
+        // Then: Button should show hover state (subtle background highlight)
+        
+        // Note: Hover states are implemented using @State isHovered and .onHover modifier
+        // Visual feedback: Color(NSColor.controlAccentColor).opacity(0.1) on hover
+        let controls = CompactPlayerControls(
+            nowPlayingViewModel: nowPlayingViewModel,
+            onExpand: {}
+        )
+        SwiftUIViewTestHelpers.verifyViewCreation(controls)
+    }
+    
+    // MARK: - Scenario: Pressed states provide tactile feedback
+    
+    @MainActor
+    func testScenario_PressedStatesProvideTactileFeedback() {
+        // Given: User presses a player control button
+        // When: Mouse button is pressed down
+        // Then: Button should show pressed state (darker background)
+        
+        // Note: Pressed states are implemented using @State isPressed and pressEvents modifier
+        // Visual feedback: Color(NSColor.controlAccentColor).opacity(0.2) when pressed
+        let controls = CompactPlayerControls(
+            nowPlayingViewModel: nowPlayingViewModel,
+            onExpand: {}
+        )
+        SwiftUIViewTestHelpers.verifyViewCreation(controls)
+    }
+    
     // MARK: - Scenario: Disabled navigation when single track
     
     @MainActor

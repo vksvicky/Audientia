@@ -449,20 +449,8 @@ final class TabSpecificViewsUIUXTests: XCTestCase {
     
     // MARK: - Helper Methods
     
-    private func createTestTrack(id: UUID, title: String, artist: String, rating: Int? = nil) -> Track {
-        Track(
-            id: id,
-            title: title,
-            artist: artist,
-            album: "Test Album",
-            duration: 180.0,
-            filePath: "/test/\(title).mp3",
-            fileSize: 1024 * 1024,
-            bitrate: 320,
-            sampleRate: 44100,
-            rating: rating
-        )
-    }
+    // Note: createTestTrack is provided by XCTestCase extension in HomeViewModelTestHelpers.swift
+    // All calls use explicit parameters, so the extension method works fine
     
     private func createTestPlaylist(id: UUID, name: String) -> Playlist {
         Playlist(id: id, name: name, trackCount: 0, totalDuration: 0.0, isSmart: false)

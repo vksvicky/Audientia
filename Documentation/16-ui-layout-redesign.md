@@ -4,10 +4,12 @@
 
 This document outlines the planned UI layout redesign for Audientia, moving from the current 3-column MediaMonkey-style layout to a cleaner tabbed interface inspired by Apple Music and Aural Player.
 
-**Status**: Core Implementation Complete, Content & Functionality In Progress  
+**Status**: ✅ Implementation Complete  
 **Branch**: `21_ui-layout-redesign`  
 **Date**: December 2025  
 **Last Updated**: December 2025
+
+> **📸 Screenshot Annotations**: This document includes detailed annotations and "📸 Screenshot Note" callouts throughout the ASCII diagrams. These annotations describe what screenshots would show, component measurements, visual details, spacing, colors, and interaction states. While actual screenshots are not included, these annotations provide comprehensive visual documentation for future contributors.
 
 ---
 
@@ -133,33 +135,50 @@ The current layout has several duplication and space efficiency problems:
 
 ### Main Layout Structure (Toolbar Collapsed)
 
+> **📸 Screenshot Note**: A screenshot here would show the window with toolbar collapsed (only expand button visible in top-right), giving maximum vertical space. The player is also collapsed to a single line. This is ideal for immersive viewing like the Visualiser tab.
+
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────────────┐
-│                                                                                    [▼]  │ ← Toolbar collapsed (click to expand)
+│                                                                                    [▼]  │ ← Toolbar collapsed (20px height, click to expand)
+│  └─ Only expand button visible in top-right corner                                    │
+│  └─ Press ⌘T or click [▼] to expand toolbar                                           │
 ├──────────────────────────────┬──────────────────────────────────────────────────────────┤
 │       SIDEBAR (180px)        │                    MAIN CONTENT AREA                      │
-│                              │                       (FLEXIBLE)                          │
+│   Still visible, unchanged   │                       (FLEXIBLE)                          │
+│                              │   +44px more vertical space (toolbar collapsed)          │
 │  ┌────────────────────────┐  │                                                          │
-│  │ 🔍 Search...           │  │                                                          │
-│  └────────────────────────┘  │        ┌────────────────────────────────────────┐        │
+│  │ 🔍 Search...           │  │        ┌────────────────────────────────────────┐        │
+│  └────────────────────────┘  │        │                                        │        │
+│                              │        │      MAXIMUM CONTENT SPACE             │        │
+│  CONTEXTUAL NAVIGATION       │        │                                        │        │
+│  ┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄   │        │      Toolbar hidden for immersive      │        │
+│  (Changes per tab)           │        │      viewing (e.g., Visualiser)        │        │
 │                              │        │                                        │        │
-│  CONTEXTUAL NAVIGATION       │        │      MAXIMUM CONTENT SPACE             │        │
-│  ┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄   │        │                                        │        │
-│  (Changes per tab)           │        │      Toolbar hidden for immersive      │        │
-│                              │        │      viewing (e.g., Visualiser)        │        │
-│                              │        │                                        │        │
+│                              │        │      Tab navigation still works via:   │        │
+│                              │        │      - Keyboard shortcuts (⌘1-5)      │        │
+│                              │        │      - Sidebar contextual navigation  │        │
 │                              │        └────────────────────────────────────────┘        │
-│                              │                                                          │
-│  ┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄   │                                                          │
+│  ┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄   │                                                          │
 │  LIBRARY STATS               │                                                          │
 │  🎵 1,234 tracks             │                                                          │
 ├──────────────────────────────┴──────────────────────────────────────────────────────────┤
 │  ◀◀ Track Title - Artist ▶▶          ────●────────  1:45/4:12   [⏮][▶][⏭][🔀][🔁][🔊] [▲]│
+│  └─ Scrolling marquee text   └─ Compact seek bar  └─ Icon controls  └─ [▲] Expand      │
 └─────────────────────────────────────────────────────────────────────────────────────────┘
                                          ↑ Player collapsed to single line (32px)
+                                         ↑ +38px more vertical space (player collapsed)
+                                         
+**Total Space Saved**: 82px vertical (44px toolbar + 38px player) when both collapsed
 ```
 
+**Visual Annotations:**
+- **Collapsed Toolbar**: Minimal height (20px), semi-transparent background, only expand button visible
+- **Content Area**: Maximum vertical space for immersive viewing
+- **Collapsed Player**: Single line with scrolling text, compact controls, expand button
+
 ### Player Controls - Collapsed State (32px)
+
+> **📸 Screenshot Note**: A screenshot here would show the compact single-line player bar with scrolling track text, inline seek bar, and icon-only controls. The text would be mid-scroll if it's longer than the available width.
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────────────┐
@@ -167,15 +186,41 @@ The current layout has several duplication and space efficiency problems:
 └─────────────────────────────────────────────────────────────────────────────────────────┘
    │                                    │              │                              │
    └─ Scrolling text (marquee)          └─ Seek bar    └─ Transport + Volume         └─ Expand
+   │   "◀◀" and "▶▶" indicate scrolling │   Compact slider │   Icon-only buttons    │   Click to expand
+   │   Text scrolls smoothly left-to-right when longer than ~200px width              │   Press ⌘P to expand
+   
+**Component Breakdown:**
+┌─────────────────────────────────────────────────────────────────────────────────────────┐
+│  [Scrolling Text Area]     [Compact Seek Bar]    [Transport Controls]    [Expand]     │
+│  ┌──────────────────┐     ┌──────────────┐     ┌──────────────────┐    ┌──────┐      │
+│  │ ◀◀ Very Long...  │     │ ────●─────── │     │ [⏮][▶][⏭]      │    │  [▲] │      │
+│  │    Track Title   │     │ 1:45 / 4:12  │     │ [🔀][🔁][🔊]    │    │      │      │
+│  │    - Artist      │     └──────────────┘     └──────────────────┘    └──────┘      │
+│  └──────────────────┘     ~100-200px width     Icon buttons (20x20px)  20x20px      │
+│  ~150-250px width          Mini slider control  Spacing: 4px between     Chevron up   │
+│  Marquee animation         Time display         Hover states active      icon          │
+└─────────────────────────────────────────────────────────────────────────────────────────┘
 
-Details:
-- Track Title - Artist: Scrolls left-to-right when text is too long (marquee style)
-- Seek bar: Compact slider with current/total time
-- Controls: Previous, Play/Pause, Next, Shuffle, Loop, Volume (all icons only)
-- [▲] button: Click to expand to full player view
+**Details:**
+- **Track Title - Artist**: Scrolls left-to-right (marquee style) when text exceeds ~200px width
+  - Scroll speed: 25 pixels/second (tuned for readability)
+  - Smooth animation with easing
+  - "◀◀" prefix and "▶▶" suffix indicate scrolling state
+- **Seek bar**: Compact inline slider with current/total time display
+  - Mini control size for space efficiency
+  - Time format: "M:SS / M:SS"
+- **Controls**: Previous, Play/Pause, Next, Shuffle, Loop, Volume (all icons only, 20x20px)
+  - Hover states: Subtle background highlight (accent color, 10% opacity)
+  - Pressed states: Darker highlight (accent color, 20% opacity)
+  - Active states: Accent color for enabled features (shuffle, loop)
+- **[▲] Expand button**: Click to expand to full player view (70px height)
+  - Keyboard shortcut: ⌘P to toggle
+  - Accessibility: "Expand player" label with hint
 ```
 
 ### Player Controls - Expanded State (70px)
+
+> **📸 Screenshot Note**: A screenshot here would show the full player bar with album artwork on the left, track information in the center, full-width seek bar, and transport controls on the right. The layout is spacious and easy to interact with.
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────────────┐
@@ -190,24 +235,68 @@ Details:
 └─────────────────────────────────────────────────────────────────────────────────────────┘
    │            │                              │                              │
    └─ Album art └─ Track info (2 lines)        └─ Seek bar + time             └─ [▼] Collapse
+   │  60x60px   │  Line 1: Track Title         │  Full-width slider          │  Click or ⌘P
+   │  Rounded   │  Line 2: Artist - Album      │  Current / Total time       │  to collapse
+   │  corners   │  Font: System 13pt/11pt      │  Format: "M:SS / M:SS"      │  (20x20px)
+   │  (4px)     │  Medium weight               │  Slider: Standard size      │  Chevron down
+   │            │                              │  Interactive seek control    │  icon
 
-Details:
-- Album art: 60x60 artwork thumbnail
-- Track info: Title on first line, Artist - Album on second line
-- Seek bar: Full-width slider with time labels
-- Controls: Larger icons with spacing
-- [▼] button: Click to collapse to single-line view
+**Component Layout:**
+┌─────────────────────────────────────────────────────────────────────────────────────────┐
+│  [Album Art]  [Track Info]              [Seek Bar]              [Controls]   [Collapse] │
+│  ┌────────┐   ┌──────────────────┐      ┌──────────────────┐   ┌──────────┐  ┌──────┐   │
+│  │        │   │ Track Title      │      │ ────────●──────── │   │ [⏮][▶][⏭]│  │ [▼] │   │
+│  │  60x60 │   │ Artist - Album   │      │ 2:30 / 4:15      │   │ [🔀][🔁] │  │      │   │
+│  │  Image │   │                  │      │                  │   │ [🔊━]   │  │      │   │
+│  └────────┘   └──────────────────┘      └──────────────────┘   └──────────┘  └──────┘   │
+│  Spacing: 12px  Spacing: 12px           Full width minus      Spacing: 8px   20x20px   │
+│  Left padding   Left-aligned           art + info + controls  Icon size: 14px           │
+│  16px           Two-line layout          Seek bar spans        Hover states              │
+│                Truncated if long        available space       Active states             │
+└─────────────────────────────────────────────────────────────────────────────────────────┘
+
+**Details:**
+- **Album art**: 60x60px artwork thumbnail with 4px rounded corners
+  - Extracted from track metadata
+  - Placeholder icon if no artwork available
+  - Left-aligned with 16px padding
+- **Track info**: Two-line layout
+  - Line 1: Track title (System font, 13pt, medium weight)
+  - Line 2: Artist - Album (System font, 11pt, regular weight)
+  - Truncated with ellipsis if too long
+  - Left-aligned with 12px spacing from album art
+- **Seek bar**: Full-width slider with time labels
+  - Standard macOS slider control
+  - Current time / Total time display (monospaced digits)
+  - Interactive seek control with smooth dragging
+  - Time format: "M:SS / M:SS"
+- **Controls**: Transport and playback controls
+  - Previous, Play/Pause, Next (14px icons)
+  - Shuffle, Loop, Volume (14px icons)
+  - Spacing: 8px between button groups
+  - Hover states: Subtle background highlight
+  - Active states: Accent color for enabled features
+- **[▼] Collapse button**: Click to collapse to single-line view (32px height)
+  - Keyboard shortcut: ⌘P to toggle
+  - Accessibility: "Collapse player" label with hint
+  - Position: Bottom-right corner
 ```
 
 ### Maximum Content Mode (Both Collapsed)
+
+> **📸 Screenshot Note**: A screenshot here would show the maximum content mode with both toolbar and player collapsed. This is ideal for the Visualiser tab, showing the full visualisation area with minimal UI chrome. The sidebar remains visible for style and settings controls.
 
 For immersive experiences like the Visualiser, both toolbar and player can be collapsed:
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────────────┐
-│                                                                                    [▼]  │
+│                                                                                    [▼]  │ ← Toolbar collapsed (20px)
+│  └─ Only expand button visible                                                         │
+│  └─ +44px vertical space saved                                                         │
 ├──────────────────────────────┬──────────────────────────────────────────────────────────┤
 │       SIDEBAR (180px)        │                                                          │
+│   Still accessible for       │                                                          │
+│   visualisation controls     │                                                          │
 │                              │                                                          │
 │  ┌────────────────────────┐  │                                                          │
 │  │ 🔍 Search...           │  │          ▄▄    ▄▄                                        │
@@ -218,8 +307,11 @@ For immersive experiences like the Visualiser, both toolbar and player can be co
 │  ◉ LED Bars                  │                                                          │
 │  ○ Lumi Bars                 │        MAXIMUM VISUALISATION AREA                        │
 │  ○ Radial Spectrum           │                                                          │
-│                              │                                                          │
-│  SETTINGS                    │                                                          │
+│  ○ Dual Channel              │        +82px total vertical space                         │
+│  ○ Discrete Frequencies      │        (44px toolbar + 38px player)                     │
+│  ○ Round Bars Reflex         │                                                          │
+│                              │        Ideal for immersive audio                         │
+│  SETTINGS                    │        visualisation experience                          │
 │  ┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄   │                                                          │
 │  Sensitivity  [━━━●━━]       │                                                          │
 │  Smoothing    [━━●━━━]       │                                                          │
@@ -229,7 +321,19 @@ For immersive experiences like the Visualiser, both toolbar and player can be co
 │  🎵 1,234 tracks             │                                                          │
 ├──────────────────────────────┴──────────────────────────────────────────────────────────┤
 │  ◀◀ Track Title - Artist ▶▶          ────●────────  1:45/4:12   [⏮][▶][⏭][🔀][🔁][🔊] [▲]│
+│  └─ Player collapsed (32px)                                                             │
+│  └─ +38px vertical space saved                                                          │
 └─────────────────────────────────────────────────────────────────────────────────────────┘
+
+**Space Savings Breakdown:**
+- Toolbar collapsed: 44px → 20px = **+24px saved**
+- Player collapsed: 70px → 32px = **+38px saved**
+- **Total: +82px vertical space** for maximum content viewing
+
+**Use Cases:**
+- Visualiser tab: Maximum screen real estate for audio visualisation
+- Library tab: More tracks visible in list view
+- Any tab: Focus on content without UI chrome distractions
 ```
 
 ---
@@ -253,18 +357,33 @@ The toolbar contains the navigation tabs and can be collapsed to maximise conten
 - Keyboard: ⌘T to toggle
 ```
 
-### Collapsed State (0px)
+### Collapsed State (20px)
+
+> **📸 Screenshot Note**: A screenshot here would show the collapsed toolbar with only the expand button visible in the top-right corner. The background would be semi-transparent, and the button would be clearly visible for expanding.
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────────────┐
 │                                                                                    [▼]  │
 └─────────────────────────────────────────────────────────────────────────────────────────┘
-                                                                                      │
-                                                                          [▼] Expand button
+│  Height: 20px (minimal)                                                               │
+│  Background: Semi-transparent (50% opacity)                                           │
+│  Only expand button visible in top-right corner                                        │
+│                                                                                        │
+│  [▼] Expand button:                                                                    │
+│  └─ Chevron down icon (10pt, semibold)                                                │
+│  └─ Secondary color                                                                   │
+│  └─ 20x20px frame                                                                     │
+│  └─ Click or press ⌘T to expand                                                      │
+│                                                                                        │
+│  Tab navigation alternatives:                                                          │
+│  └─ Keyboard shortcuts: ⌘1 (Home), ⌘2 (Library), ⌘3 (Playlists), ⌘4 (Devices), ⌘5 (Visualiser)
+│  └─ Sidebar contextual navigation (tab-specific quick links)                          │
+│  └─ Expand toolbar to access visual tab buttons                                       │
 
-- Toolbar hidden, only expand button visible in corner
-- Click [▼] or press ⌘T to show tabs again
-- Tab navigation still works via sidebar contextual navigation
+**Space Savings:**
+- Expanded: 44px height
+- Collapsed: 20px height
+- **Saved: 24px vertical space** for content area
 ```
 
 ### Tab Switching While Collapsed
@@ -564,32 +683,43 @@ MainWindowLayoutView
 
 ### Files to Modify
 
-| File | Action | Notes |
-|------|--------|-------|
-| `MainWindowLayoutView.swift` | **Refactor** | New collapsible toolbar + player structure |
-| `MainWindowNavigationSidebar.swift` | **Refactor** → `ContextualSidebar.swift` | Add search, contextual nav |
-| `MainWindowToolbar.swift` | **Delete** | Replaced by CollapsibleToolbar |
-| `MainWindowPlaylistPanel.swift` | **Delete** | No right panel needed |
-| `NavigationItem.swift` | **Refactor** → `TabItem.swift` | Home, Library, Playlists, Devices, Visualiser |
-| `MainWindowPlayerControls.swift` | **Refactor** → `CollapsiblePlayerBar.swift` | Add collapsed/expanded states |
-| **NEW** `CollapsibleToolbar.swift` | **Create** | Toolbar with collapse toggle |
-| **NEW** `NavigationTabBar.swift` | **Create** | Horizontal tab component |
-| **NEW** `ScrollingTextView.swift` | **Create** | Marquee text for collapsed player |
-| **NEW** `CompactPlayerControls.swift` | **Create** | Single-line player controls |
+| File | Action | Status |
+|------|--------|--------|
+| `MainWindowLayoutView.swift` | **Refactor** | ✅ Complete - New collapsible toolbar + player structure |
+| `MainWindowNavigationSidebar.swift` | **Refactor** → `ContextualSidebar.swift` | ✅ Complete - Refactored to `Sources/UI/Layout/Navigation/ContextualSidebar.swift` |
+| `MainWindowToolbar.swift` | **Delete** | ✅ Complete - Deleted, replaced by `CollapsibleToolbar.swift` |
+| `MainWindowPlaylistPanel.swift` | **Delete** | ✅ Complete - Deleted, no right panel needed |
+| `NavigationItem.swift` | **Refactor** → `TabItem.swift` | ✅ Complete - Refactored to `Sources/UI/Layout/Navigation/TabItem.swift` |
+| `MainWindowPlayerControls.swift` | **Refactor** → `CollapsiblePlayerBar.swift` | ✅ Complete - Refactored to `Sources/UI/Layout/Player/CollapsiblePlayerBar.swift` |
+| `CollapsibleToolbar.swift` | **Create** | ✅ Complete - Created at `Sources/UI/Layout/Navigation/CollapsibleToolbar.swift` |
+| `NavigationTabBar.swift` | **Create** | ✅ Complete - Created at `Sources/UI/Layout/Navigation/NavigationTabBar.swift` |
+| `ScrollingTextView.swift` | **Create** | ✅ Complete - Created at `Sources/UI/Components/ScrollingTextView.swift` |
+| `CompactPlayerControls.swift` | **Create** | ✅ Complete - Created at `Sources/UI/Layout/Player/CompactPlayerControls.swift` |
 
 ### Implementation Steps
 
-1. **Step 1**: Create `TabItem.swift` enum with new tab definitions
-2. **Step 2**: Create `NavigationTabBar.swift` horizontal tab component
-3. **Step 3**: Create `CollapsibleToolbar.swift` with expand/collapse toggle
-4. **Step 4**: Create `ScrollingTextView.swift` for marquee text animation
-5. **Step 5**: Create `CompactPlayerControls.swift` for collapsed player state
-6. **Step 6**: Refactor `MainWindowPlayerControls.swift` → `CollapsiblePlayerBar.swift`
-7. **Step 7**: Refactor `MainWindowNavigationSidebar.swift` → `ContextualSidebar.swift`
-8. **Step 8**: Update `MainWindowLayoutView.swift` with new architecture
-9. **Step 9**: Delete unused files (`MainWindowToolbar.swift`, `MainWindowPlaylistPanel.swift`)
-10. **Step 10**: Add keyboard shortcuts (`⌘T` for toolbar, `⌘P` for player)
-11. **Step 11**: Update all tests to reflect new structure
+1. ✅ **Step 1**: Create `TabItem.swift` enum with new tab definitions - **Complete**: `Sources/UI/Layout/Navigation/TabItem.swift`
+2. ✅ **Step 2**: Create `NavigationTabBar.swift` horizontal tab component - **Complete**: `Sources/UI/Layout/Navigation/NavigationTabBar.swift`
+3. ✅ **Step 3**: Create `CollapsibleToolbar.swift` with expand/collapse toggle - **Complete**: `Sources/UI/Layout/Navigation/CollapsibleToolbar.swift`
+4. ✅ **Step 4**: Create `ScrollingTextView.swift` for marquee text animation - **Complete**: `Sources/UI/Components/ScrollingTextView.swift`
+5. ✅ **Step 5**: Create `CompactPlayerControls.swift` for collapsed player state - **Complete**: `Sources/UI/Layout/Player/CompactPlayerControls.swift`
+6. ✅ **Step 6**: Refactor `MainWindowPlayerControls.swift` → `CollapsiblePlayerBar.swift` - **Complete**: `Sources/UI/Layout/Player/CollapsiblePlayerBar.swift`
+7. ✅ **Step 7**: Refactor `MainWindowNavigationSidebar.swift` → `ContextualSidebar.swift` - **Complete**: `Sources/UI/Layout/Navigation/ContextualSidebar.swift`
+8. ✅ **Step 8**: Update `MainWindowLayoutView.swift` with new architecture - **Complete**: Fully refactored with collapsible toolbar, contextual sidebar, and collapsible player
+9. ✅ **Step 9**: Delete unused files (`MainWindowToolbar.swift`, `MainWindowPlaylistPanel.swift`) - **Complete**: Legacy files removed
+10. ✅ **Step 10**: Add keyboard shortcuts (`⌘T` for toolbar, `⌘P` for player, `⌘1-5` for tabs) - **Complete**: All shortcuts implemented
+11. ✅ **Step 11**: Update all tests to reflect new structure - **Complete**: Comprehensive TDD/BDD/E2E test suite created
+
+### Test Suites
+
+The following test suites have been created to verify the new layout:
+
+- **`TabSwitchingE2ETests.swift`** - End-to-end tests for tab switching workflows (mouse clicks, keyboard shortcuts, content updates, sidebar updates)
+- **`CollapsibleComponentsE2ETests.swift`** - End-to-end tests for toolbar/player collapse/expand functionality and state persistence
+- **`SearchFunctionalityE2ETests.swift`** - End-to-end tests for search functionality across Library, Playlists, and Devices tabs
+- **`TabSpecificViewsUIUXTests.swift`** - UI/UX tests for all 5 tab-specific views (Home, Library, Playlists, Devices, Visualiser)
+- **`LayoutPerformanceTests.swift`** - Performance tests for layout transitions (tab switching, collapse/expand, search routing)
+- **Component Tests** - TDD/BDD tests for individual components (`NavigationTabBarTests`, `CollapsibleToolbarTests`, `ContextualSidebarTests`, `CollapsiblePlayerBarTests`, `CompactPlayerControlsTests`)
 
 ---
 

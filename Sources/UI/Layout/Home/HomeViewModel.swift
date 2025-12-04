@@ -66,34 +66,35 @@ public final class HomeViewModel: ObservableObject {
         isLoading = true
         error = nil
         
-            // Get recent listening events
-            let events = await listeningHistory.getRecentEvents(limit: limit * 2) // Get more to filter skipped
-            
-            // Filter out skipped tracks and get unique tracks (most recent first)
-            var seenTrackIds = Set<UUID>()
-            var uniqueEvents: [ListeningEvent] = []
-            
-            for event in events.reversed() {
-                if !event.wasSkipped && !seenTrackIds.contains(event.trackId) {
-                    uniqueEvents.append(event)
-                    seenTrackIds.insert(event.trackId)
-                    
-                    if uniqueEvents.count >= limit {
-                        break
-        }
-    }
-}
+        // Get recent listening events (already sorted newest first)
+        let events = await listeningHistory.getRecentEvents(limit: limit * 2) // Get more to filter skipped
         
-        // Map events to tracks (uniqueEvents is already in most recent first order)
-            var tracks: [Track] = []
-        for event in uniqueEvents {
-                if let track = await libraryIndexer.getTrack(by: event.trackId) {
-                    tracks.append(track)
+        // Filter out skipped tracks and get unique tracks (most recent first)
+        var seenTrackIds = Set<UUID>()
+        var uniqueEvents: [ListeningEvent] = []
+        
+        // Events are already in newest-first order from getRecentEvents
+        for event in events {
+            if !event.wasSkipped && !seenTrackIds.contains(event.trackId) {
+                uniqueEvents.append(event)
+                seenTrackIds.insert(event.trackId)
+                
+                if uniqueEvents.count >= limit {
+                    break
                 }
             }
-            
-            recentlyPlayedTracks = tracks
-            isLoading = false
+        }
+        
+        // Map events to tracks (uniqueEvents is already in most recent first order)
+        var tracks: [Track] = []
+        for event in uniqueEvents {
+            if let track = await libraryIndexer.getTrack(by: event.trackId) {
+                tracks.append(track)
+            }
+        }
+        
+        recentlyPlayedTracks = tracks
+        isLoading = false
     }
     
     /// Load recently added tracks

@@ -244,9 +244,9 @@ final class SmartPlaylistViewModelTests: XCTestCase {
         }
         await mockIndexer.setTracks(tracks)
         
-        // When: Loading 5-Star Tracks
+        // When: Loading 5-Star Tracks (no limit to get all 500)
         let startTime = CFAbsoluteTimeGetCurrent()
-        await viewModel.loadTracks(for: .fiveStarTracks)
+        await viewModel.loadTracks(for: .fiveStarTracks, limit: nil)
         let duration = CFAbsoluteTimeGetCurrent() - startTime
         
         // Then: Should complete within reasonable time

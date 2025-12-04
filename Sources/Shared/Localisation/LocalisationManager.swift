@@ -138,4 +138,19 @@ extension LocalisationManager {
     public static let error = "messages.error"
     public static let success = "messages.success"
     public static let warning = "messages.warning"
+    
+    // Playlist keys
+    public static let newPlaylist = "playlist.newPlaylist"
+    public static let newSmartPlaylist = "playlist.newSmartPlaylist"
+    public static let playlistName = "playlist.playlistName"
+    public static let enterPlaylistName = "playlist.enterPlaylistName"
+    public static let create = "playlist.create"
+    public static let createSmartPlaylist = "playlist.createSmartPlaylist"
+    public static let rules = "playlist.rules"
+    public static let addRule = "playlist.addRule"
+    public static let editRule = "playlist.editRule"
+    public static let noRules = "playlist.noRules"
+    public static let addRulesToCreateSmartPlaylist = "playlist.addRulesToCreateSmartPlaylist"
+    public static let playlistCreationError = "playlist.creationError"
+    public static let smartPlaylistCreationError = "playlist.smartPlaylistCreationError"
 }

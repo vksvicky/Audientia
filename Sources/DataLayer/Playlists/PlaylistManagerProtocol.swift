@@ -79,6 +79,7 @@ public protocol PlaylistManagerProtocol: Sendable {
 public enum PlaylistManagerError: Error {
     case playlistNotFound
     case invalidPlaylistName
+    case duplicatePlaylist
     case trackNotFound
     case duplicateTrack
     case invalidRules

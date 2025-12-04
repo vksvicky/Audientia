@@ -582,7 +582,7 @@ targets:
       - path: Sources/UI/Playlists
         group: Sources
         target: UITests
-      - path: Sources/UI/Visualizer
+      - path: Sources/UI/Visualiser
         group: Sources
         target: UITests
       - path: Sources/UI/DeviceSync
@@ -594,7 +594,6 @@ targets:
       - path: Sources/UI/Layout
         group: Sources
         target: UITests
-      - path: Sources/UI/Layout/NavigationItem.swift
         group: Sources
         target: UITests
       - path: Sources/UI/Setup

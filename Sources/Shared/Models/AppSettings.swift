@@ -82,7 +82,8 @@ public class AppSettings: ObservableObject {
         
         // Load track info scroll speed (default: 30 pixels per second)
         let scrollSpeedKey = "audientia.settings.trackInfoScrollSpeed"
-        self.trackInfoScrollSpeed = UserDefaults.standard.object(forKey: scrollSpeedKey) as? Double ?? 30.0
+        // Default to 25.0 for smoother, more readable scrolling (tuned for better UX)
+        self.trackInfoScrollSpeed = UserDefaults.standard.object(forKey: scrollSpeedKey) as? Double ?? 25.0
 
         // Listen for module conflict notifications
         NotificationCenter.default.addObserver(

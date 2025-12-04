@@ -16,9 +16,16 @@ actor MockDeviceSyncManager: DeviceSyncManagerProtocol {
     private var shouldThrowOnStart = false
     private var startSyncError: Error = DeviceSyncError.deviceNotFound
     private(set) var startSyncRequests: [SyncRequest] = []
+    private(set) var lastError: Error?
     
     func availableDevices() async -> [Device] {
-        devices
+        // Note: Protocol doesn't allow throwing, so return empty array when error should occur
+        if shouldThrowOnStart {
+            lastError = startSyncError
+            return []
+        }
+        lastError = nil
+        return devices
     }
     
     func jobs() async -> [SyncJob] {
@@ -54,7 +61,7 @@ actor MockDeviceSyncManager: DeviceSyncManagerProtocol {
 
     // MARK: - Test Helpers
     
-    func setDevices(_ devices: [Device]) {
+    func setDevices(_ devices: [Device]) async {
         self.devices = devices
     }
     
@@ -65,5 +72,12 @@ actor MockDeviceSyncManager: DeviceSyncManagerProtocol {
     func configureStartSyncFailure(shouldFail: Bool, error: Error = DeviceSyncError.deviceNotFound) {
         shouldThrowOnStart = shouldFail
         startSyncError = error
+    }
+    
+    func setShouldThrowError(_ shouldThrow: Bool) async {
+        shouldThrowOnStart = shouldThrow
+        if shouldThrow {
+            startSyncError = NSError(domain: "TestError", code: 1, userInfo: [NSLocalizedDescriptionKey: "Test error"])
+        }
     }
 }

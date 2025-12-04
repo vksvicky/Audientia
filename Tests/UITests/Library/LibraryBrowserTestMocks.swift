@@ -12,9 +12,15 @@ import Foundation
 
 actor MockLibraryIndexer: LibraryIndexerProtocol {
     private var storedTracks: [Track] = []
+    private var shouldThrowError = false
+    private(set) var lastError: Error?
     
     func setTracks(_ tracks: [Track]) {
         storedTracks = tracks
+    }
+    
+    func setShouldThrowError(_ shouldThrow: Bool) async {
+        shouldThrowError = shouldThrow
     }
     
     func index(tracks: [Track]) async throws {
@@ -38,7 +44,13 @@ actor MockLibraryIndexer: LibraryIndexerProtocol {
     }
     
     func getAllTracks() async -> [Track] {
-        storedTracks
+        // Note: Protocol doesn't allow throwing, so return empty array when error should occur
+        if shouldThrowError {
+            lastError = NSError(domain: "TestError", code: 1, userInfo: [NSLocalizedDescriptionKey: "Test error"])
+            return []
+        }
+        lastError = nil
+        return storedTracks
     }
 }
 

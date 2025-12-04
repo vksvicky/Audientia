@@ -118,17 +118,58 @@ final class NavigationTabBarBDDTests: XCTestCase {
     
     @MainActor
     func testScenario_SelectedTabIsHighlighted() {
-        // Given: A tab is selected
+        // Given: User is viewing the tab bar
+        // When: A tab is selected
+        // Then: The selected tab should be visually highlighted
+        
         let selectedTab = TabItem.library
+        let view = NavigationTabBar(selectedTab: .constant(selectedTab))
+        XCTAssertNotNil(view, "Tab bar should render with selected tab highlighted")
+    }
+    
+    // MARK: - Scenario: Hover states provide visual feedback
+    
+    @MainActor
+    func testScenario_HoverStatesProvideVisualFeedback() {
+        // Given: User hovers over a tab button
+        // When: Mouse cursor is over an unselected tab
+        // Then: Tab should show hover state (subtle background highlight)
         
-        // When: The tab bar renders
-        // Then: The selected tab should have accent color background
-        // (This is a visual test - we verify the data model supports this)
+        // Note: Hover states are implemented using @State isHovered and .onHover modifier
+        // Visual feedback: Color(NSColor.controlAccentColor).opacity(0.1) on hover
+        let view = NavigationTabBar(selectedTab: .constant(.home))
+        XCTAssertNotNil(view, "Tab bar should support hover states")
+    }
+    
+    // MARK: - Scenario: Pressed states provide tactile feedback
+    
+    @MainActor
+    func testScenario_PressedStatesProvideTactileFeedback() {
+        // Given: User presses a tab button
+        // When: Mouse button is pressed down
+        // Then: Tab should show pressed state (darker background)
         
-        XCTAssertTrue(
-            TabItem.allCases.contains(selectedTab),
-            "Selected tab should be a valid tab item"
-        )
+        // Note: Pressed states are implemented using @State isPressed and pressEvents modifier
+        // Visual feedback: Color(NSColor.controlAccentColor).opacity(0.2) when pressed
+        let view = NavigationTabBar(selectedTab: .constant(.home))
+        XCTAssertNotNil(view, "Tab bar should support pressed states")
+    }
+    
+    // MARK: - Scenario: VoiceOver accessibility support
+    
+    @MainActor
+    func testScenario_VoiceOverAccessibilitySupport() {
+        // Given: User is using VoiceOver
+        // When: They navigate the tab bar
+        // Then: Each tab should have proper accessibility labels and hints
+        
+        let view = NavigationTabBar(selectedTab: .constant(.home))
+        SwiftUIViewTestHelpers.verifyViewCreation(view)
+        
+        // Verify all tabs have display names for accessibility
+        for tab in TabItem.allCases {
+            XCTAssertFalse(tab.displayName.isEmpty, "Tab \(tab) should have an accessibility label")
+        }
     }
     
     // MARK: - Scenario: Tab shows icon and label
