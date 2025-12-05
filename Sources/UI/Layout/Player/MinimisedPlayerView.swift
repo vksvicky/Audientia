@@ -21,21 +21,7 @@ public struct MinimisedPlayerView: View {
     
     public var body: some View {
         VStack(spacing: 0) {
-            // Window controls and restore button
-            HStack {
-                Spacer()
-                Button(action: onRestore, label: {
-                    Image(systemName: "arrow.up.left.and.arrow.down.right")
-                        .font(.system(size: 10))
-                        .foregroundColor(.secondary)
-                })
-                .buttonStyle(.plain)
-                .help("Restore")
-            }
-            .padding(.horizontal, 8)
-            .padding(.top, 4)
-            
-            // Compact player content
+            // Compact player content (maximize button is in title bar)
             HStack(spacing: 12) {
                 // Album art or placeholder
                 Group {

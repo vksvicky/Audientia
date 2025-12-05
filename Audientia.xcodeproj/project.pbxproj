@@ -616,6 +616,10 @@
 		E239E3F42EE2194A006545A7 /* CreatePlaylistDialog.swift in Sources */ = {isa = PBXBuildFile; fileRef = E239E3EE2EE2194A006545A7 /* CreatePlaylistDialog.swift */; };
 		E239E3F72EE21957006545A7 /* TitleBarMinimizeButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = E239E3F52EE21957006545A7 /* TitleBarMinimizeButton.swift */; };
 		E239E3F82EE21957006545A7 /* TitleBarMinimizeButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = E239E3F52EE21957006545A7 /* TitleBarMinimizeButton.swift */; };
+		8BEA52A7B4CA411AB87C2DCD /* MaximizeButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47C8438E4A2A4320A2E62FCC /* MaximizeButtonView.swift */; };
+		992136986B4D49F796E11C95 /* MaximizeButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47C8438E4A2A4320A2E62FCC /* MaximizeButtonView.swift */; };
+		1A7921AC98A94C3488454C7F /* TitleBarMaximizeButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E7429EDFAE5469B93088020 /* TitleBarMaximizeButton.swift */; };
+		EEF3D08546314393A2E2B0C4 /* TitleBarMaximizeButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E7429EDFAE5469B93088020 /* TitleBarMaximizeButton.swift */; };
 		E239E3FA2EE2195F006545A7 /* MainWindowTabContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E239E3F92EE2195F006545A7 /* MainWindowTabContentView.swift */; };
 		E239E3FB2EE2195F006545A7 /* MainWindowTabContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E239E3F92EE2195F006545A7 /* MainWindowTabContentView.swift */; };
 		E239E3FE2EE21970006545A7 /* ExpandedPlayerAdditionalControls.swift in Sources */ = {isa = PBXBuildFile; fileRef = E239E3FC2EE21970006545A7 /* ExpandedPlayerAdditionalControls.swift */; };
@@ -1683,6 +1687,8 @@
 		E239E3EE2EE2194A006545A7 /* CreatePlaylistDialog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreatePlaylistDialog.swift; sourceTree = "<group>"; };
 		E239E3EF2EE2194A006545A7 /* CreateSmartPlaylistDialog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateSmartPlaylistDialog.swift; sourceTree = "<group>"; };
 		E239E3F52EE21957006545A7 /* TitleBarMinimizeButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TitleBarMinimizeButton.swift; sourceTree = "<group>"; };
+		47C8438E4A2A4320A2E62FCC /* MaximizeButtonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MaximizeButtonView.swift; sourceTree = "<group>"; };
+		9E7429EDFAE5469B93088020 /* TitleBarMaximizeButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TitleBarMaximizeButton.swift; sourceTree = "<group>"; };
 		E239E3F92EE2195F006545A7 /* MainWindowTabContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainWindowTabContentView.swift; sourceTree = "<group>"; };
 		E239E3FC2EE21970006545A7 /* ExpandedPlayerAdditionalControls.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpandedPlayerAdditionalControls.swift; sourceTree = "<group>"; };
 		E239E3FD2EE21970006545A7 /* ExpandedPlayerTransportControls.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpandedPlayerTransportControls.swift; sourceTree = "<group>"; };
@@ -3235,6 +3241,8 @@
 			isa = PBXGroup;
 			children = (
 				E239E3F52EE21957006545A7 /* TitleBarMinimizeButton.swift */,
+				47C8438E4A2A4320A2E62FCC /* MaximizeButtonView.swift */,
+				9E7429EDFAE5469B93088020 /* TitleBarMaximizeButton.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -4599,6 +4607,8 @@
 				4B2452539B79DE28C8048F5F /* AutoTaggingProgressView.swift in Sources */,
 				8AAFADFAFCD7BB1021CF82AA /* AutoTaggingProgressViewModel.swift in Sources */,
 				E239E3F82EE21957006545A7 /* TitleBarMinimizeButton.swift in Sources */,
+				8BEA52A7B4CA411AB87C2DCD /* MaximizeButtonView.swift in Sources */,
+				1A7921AC98A94C3488454C7F /* TitleBarMaximizeButton.swift in Sources */,
 				3A3D5E7F76A7CB9E93037F5F /* BatchTagOperationsView.swift in Sources */,
 				878A70C65CE129F4A7E9B169 /* BatchTagOperationsViewModel.swift in Sources */,
 				E2407FB42ED70A500054F668 /* TrackDetailsDependencies.swift in Sources */,
@@ -4867,6 +4877,8 @@
 				0BD873897D5D22D3D16A7A51 /* PlaylistEditorViewModelTests.swift in Sources */,
 				FD0A05A8960DBDAE8C4D77B2 /* PlaylistEditorViewTests.swift in Sources */,
 				E239E3F72EE21957006545A7 /* TitleBarMinimizeButton.swift in Sources */,
+				992136986B4D49F796E11C95 /* MaximizeButtonView.swift in Sources */,
+				EEF3D08546314393A2E2B0C4 /* TitleBarMaximizeButton.swift in Sources */,
 				7110ADFD454955A1206C7190 /* PlaylistViewModel.swift in Sources */,
 				D0D05DC2F777253B5BE5C77D /* PlaylistViewModelBDDTests.swift in Sources */,
 				A29084876FA277C14873FAA7 /* PlaylistViewModelTests.swift in Sources */,

@@ -125,6 +125,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     private var setupWizardWindow: NSWindow?
     var mainWindow: NSWindow?
     var minimisedPlayerWindow: NSWindow?
+    private var minimisedPlayerWindowDelegate: MinimisedPlayerWindowDelegate?
     private var shortcutsDisabled = false
     var isMinimised = false
     
@@ -401,7 +402,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         // Create minimised player window
         let playerWindow = NSWindow(
             contentRect: NSRect(x: 0, y: 0, width: 400, height: 80),
-            styleMask: [.borderless, .fullSizeContentView],
+            styleMask: [.titled, .closable],
             backing: .buffered,
             defer: false
         )
@@ -412,6 +413,14 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         playerWindow.hasShadow = true
         playerWindow.isReleasedWhenClosed = false
         playerWindow.isOpaque = true
+        
+        // Hide minimize and maximize buttons, keep only close button
+        if let minimizeButton = playerWindow.standardWindowButton(.miniaturizeButton) {
+            minimizeButton.isHidden = true
+        }
+        if let zoomButton = playerWindow.standardWindowButton(.zoomButton) {
+            zoomButton.isHidden = true
+        }
         
         // Position window centered on screen (or centered relative to main window if available)
         if let screen = NSScreen.main {
@@ -446,6 +455,22 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         hostingView.frame = NSRect(x: 0, y: 0, width: 400, height: 80)
         
         playerWindow.contentView = hostingView
+        
+        // Set window delegate to handle close button (traffic light)
+        // Store delegate in property to prevent immediate deallocation (delegate is weak)
+        let windowDelegate = MinimisedPlayerWindowDelegate(
+            onClose: { [weak self] in
+                self?.closeMinimisedPlayer()
+            }
+        )
+        playerWindow.delegate = windowDelegate
+        minimisedPlayerWindowDelegate = windowDelegate
+        
+        // Setup maximize/restore button in title bar (aligned with traffic lights)
+        TitleBarMaximizeButton.setup(in: playerWindow) { [weak self] in
+            self?.restoreFromPlayer()
+        }
+        
         playerWindow.makeKeyAndOrderFront(nil)
         
         minimisedPlayerWindow = playerWindow
@@ -460,11 +485,41 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         // Close minimised window
         minimisedPlayerWindow?.close()
         minimisedPlayerWindow = nil
+        minimisedPlayerWindowDelegate = nil
         
         // Show main window
         mainWindow?.makeKeyAndOrderFront(nil)
         
         isMinimised = false
         Logger.userInterface.info("Restored from player window")
+    }
+    
+    @MainActor
+    func closeMinimisedPlayer() {
+        guard isMinimised else { return }
+        
+        // Close minimised window
+        minimisedPlayerWindow?.close()
+        minimisedPlayerWindow = nil
+        minimisedPlayerWindowDelegate = nil
+        
+        // Don't restore main window - just close the minimized player
+        isMinimised = false
+        Logger.userInterface.info("Closed minimised player window")
+    }
+}
+
+/// Window delegate for minimized player window to handle close button (traffic light)
+class MinimisedPlayerWindowDelegate: NSObject, NSWindowDelegate {
+    let onClose: () -> Void
+    
+    init(onClose: @escaping () -> Void) {
+        self.onClose = onClose
+        super.init()
+    }
+    
+    func windowShouldClose(_ sender: NSWindow) -> Bool {
+        onClose()
+        return true  // Allow window to close after cleanup
     }
 }
