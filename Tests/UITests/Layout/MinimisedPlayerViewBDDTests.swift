@@ -76,8 +76,7 @@ final class MinimisedPlayerViewBDDTests: XCTestCase {
         // When - I view the minimised player
         let view = MinimisedPlayerView(
             nowPlayingViewModel: nowPlayingViewModel,
-            onRestore: { self.restoreCallbackInvoked = true },
-            onClose: {}
+            onRestore: { self.restoreCallbackInvoked = true }
         )
         
         // Then - I should see the track information
@@ -94,8 +93,7 @@ final class MinimisedPlayerViewBDDTests: XCTestCase {
         // Given - I am viewing the minimised player
         let view = MinimisedPlayerView(
             nowPlayingViewModel: nowPlayingViewModel,
-            onRestore: { self.restoreCallbackInvoked = true },
-            onClose: {}
+            onRestore: { self.restoreCallbackInvoked = true }
         )
         
         // When - I click the restore button
@@ -119,8 +117,7 @@ final class MinimisedPlayerViewBDDTests: XCTestCase {
         
         let view = MinimisedPlayerView(
             nowPlayingViewModel: nowPlayingViewModel,
-            onRestore: { self.restoreCallbackInvoked = true },
-            onClose: {}
+            onRestore: { self.restoreCallbackInvoked = true }
         )
         _ = view.body
         
@@ -148,8 +145,7 @@ final class MinimisedPlayerViewBDDTests: XCTestCase {
         
         let view = MinimisedPlayerView(
             nowPlayingViewModel: nowPlayingViewModel,
-            onRestore: { self.restoreCallbackInvoked = true },
-            onClose: {}
+            onRestore: { self.restoreCallbackInvoked = true }
         )
         _ = view.body
         
@@ -172,8 +168,7 @@ final class MinimisedPlayerViewBDDTests: XCTestCase {
         // When - I view the minimised player
         let view = MinimisedPlayerView(
             nowPlayingViewModel: nowPlayingViewModel,
-            onRestore: { self.restoreCallbackInvoked = true },
-            onClose: {}
+            onRestore: { self.restoreCallbackInvoked = true }
         )
         
         // Then - I should see the player in a stopped state
@@ -195,8 +190,7 @@ final class MinimisedPlayerViewBDDTests: XCTestCase {
         // When - I view the minimised player
         let view = MinimisedPlayerView(
             nowPlayingViewModel: nowPlayingViewModel,
-            onRestore: { self.restoreCallbackInvoked = true },
-            onClose: {}
+            onRestore: { self.restoreCallbackInvoked = true }
         )
         _ = view.body
         
@@ -217,8 +211,7 @@ final class MinimisedPlayerViewBDDTests: XCTestCase {
         // When - I view the minimised player
         let view = MinimisedPlayerView(
             nowPlayingViewModel: nowPlayingViewModel,
-            onRestore: { self.restoreCallbackInvoked = true },
-            onClose: {}
+            onRestore: { self.restoreCallbackInvoked = true }
         )
         
         // Then - Placeholder should be shown (music.note icon)
@@ -236,8 +229,7 @@ final class MinimisedPlayerViewBDDTests: XCTestCase {
         
         let view = MinimisedPlayerView(
             nowPlayingViewModel: nowPlayingViewModel,
-            onRestore: { self.restoreCallbackInvoked = true },
-            onClose: {}
+            onRestore: { self.restoreCallbackInvoked = true }
         )
         _ = view.body
         

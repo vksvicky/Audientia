@@ -67,8 +67,7 @@ final class MinimisedPlayerViewTests: XCTestCase {
         // When: Creating MinimisedPlayerView
         let view = MinimisedPlayerView(
             nowPlayingViewModel: nowPlayingViewModel,
-            onRestore: { self.restoreCalled = true },
-            onClose: {}
+            onRestore: { self.restoreCalled = true }
         )
         
         // Then: View should be created
@@ -87,8 +86,7 @@ final class MinimisedPlayerViewTests: XCTestCase {
         // When: View is rendered
         let view = MinimisedPlayerView(
             nowPlayingViewModel: nowPlayingViewModel,
-            onRestore: { self.restoreCalled = true },
-            onClose: {}
+            onRestore: { self.restoreCalled = true }
         )
         
         // Then: View should display track information
@@ -105,8 +103,7 @@ final class MinimisedPlayerViewTests: XCTestCase {
         // When: View is rendered
         let view = MinimisedPlayerView(
             nowPlayingViewModel: nowPlayingViewModel,
-            onRestore: { self.restoreCalled = true },
-            onClose: {}
+            onRestore: { self.restoreCalled = true }
         )
         
         // Then: View should handle no track state
@@ -126,8 +123,7 @@ final class MinimisedPlayerViewTests: XCTestCase {
         // When: View is rendered
         let view = MinimisedPlayerView(
             nowPlayingViewModel: nowPlayingViewModel,
-            onRestore: { self.restoreCalled = true },
-            onClose: {}
+            onRestore: { self.restoreCalled = true }
         )
         
         // Then: Previous/Next buttons should be disabled
@@ -145,8 +141,7 @@ final class MinimisedPlayerViewTests: XCTestCase {
         // When: View is rendered
         let view = MinimisedPlayerView(
             nowPlayingViewModel: nowPlayingViewModel,
-            onRestore: { self.restoreCalled = true },
-            onClose: {}
+            onRestore: { self.restoreCalled = true }
         )
         
         // Then: Previous/Next buttons should be disabled
@@ -164,8 +159,7 @@ final class MinimisedPlayerViewTests: XCTestCase {
         // When: View is rendered
         let view = MinimisedPlayerView(
             nowPlayingViewModel: nowPlayingViewModel,
-            onRestore: { self.restoreCalled = true },
-            onClose: {}
+            onRestore: { self.restoreCalled = true }
         )
         
         // Then: View should handle long title gracefully
@@ -179,8 +173,7 @@ final class MinimisedPlayerViewTests: XCTestCase {
         // Given: View is created
         let view = MinimisedPlayerView(
             nowPlayingViewModel: nowPlayingViewModel,
-            onRestore: { self.restoreCalled = true },
-            onClose: {}
+            onRestore: { self.restoreCalled = true }
         )
         
         // When: Track changes
@@ -205,7 +198,6 @@ final class MinimisedPlayerViewTests: XCTestCase {
         let view = MinimisedPlayerView(
             nowPlayingViewModel: nowPlayingViewModel,
             onRestore: { callbackInvoked = true },
-            onClose: {}
         )
         
         // When: Restore button is tapped (simulated by calling onRestore)
@@ -233,8 +225,7 @@ final class MinimisedPlayerViewTests: XCTestCase {
         // When: View is rendered during playback
         let view = MinimisedPlayerView(
             nowPlayingViewModel: nowPlayingViewModel,
-            onRestore: { self.restoreCalled = true },
-            onClose: {}
+            onRestore: { self.restoreCalled = true }
         )
         
         // Then: View should show playing state
@@ -252,8 +243,7 @@ final class MinimisedPlayerViewTests: XCTestCase {
         
         let view = MinimisedPlayerView(
             nowPlayingViewModel: nowPlayingViewModel,
-            onRestore: { self.restoreCalled = true },
-            onClose: {}
+            onRestore: { self.restoreCalled = true }
         )
         _ = view.body
         
@@ -280,8 +270,7 @@ final class MinimisedPlayerViewTests: XCTestCase {
         // When: View is rendered
         let view = MinimisedPlayerView(
             nowPlayingViewModel: nowPlayingViewModel,
-            onRestore: { self.restoreCalled = true },
-            onClose: {}
+            onRestore: { self.restoreCalled = true }
         )
         
         // Then: Should not crash
@@ -332,8 +321,7 @@ final class MinimisedPlayerViewTests: XCTestCase {
         
         let view = MinimisedPlayerView(
             nowPlayingViewModel: nowPlayingViewModel,
-            onRestore: { self.restoreCalled = true },
-            onClose: {}
+            onRestore: { self.restoreCalled = true }
         )
         _ = view.body
         

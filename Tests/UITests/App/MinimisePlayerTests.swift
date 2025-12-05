@@ -208,27 +208,36 @@ final class MinimisePlayerTests: XCTestCase {
     
     // MARK: - Window Configuration
     
-    func testMinimisedWindowHasCorrectProperties() {
+    func testMinimisedWindowHasCorrectProperties() async {
         // Given: AppDelegate
         // When: Minimizing to player
         appDelegate.minimizeToPlayer(nowPlayingViewModel: nowPlayingViewModel)
+        
+        // Wait for async positioning to complete
+        try? await Task.sleep(nanoseconds: 100_000_000) // 0.1 seconds
         
         // Then: Window should have correct properties
         let window = appDelegate.minimisedPlayerWindow
         XCTAssertNotNil(window)
         XCTAssertEqual(window?.frame.width, 400)
-        XCTAssertEqual(window?.frame.height, 80)
+        // Window height includes title bar (~32px) + content (80px) = ~112px
+        // Check that content height is 80, not total frame height
+        let contentHeight = window?.contentView?.frame.height ?? 0
+        XCTAssertEqual(contentHeight, 80, accuracy: 1.0, "Content height should be 80")
         XCTAssertEqual(window?.level, .floating)
         XCTAssertTrue(window?.isMovableByWindowBackground ?? false)
     }
     
-    func testMinimisedWindowIsPositionedCorrectly() {
+    func testMinimisedWindowIsPositionedCorrectly() async {
         // Given: AppDelegate with main window positioned
         appDelegate.mainWindow?.setFrameOrigin(NSPoint(x: 100, y: 100))
         let mainWindowFrame = appDelegate.mainWindow?.frame ?? NSRect.zero
         
         // When: Minimizing to player
         appDelegate.minimizeToPlayer(nowPlayingViewModel: nowPlayingViewModel)
+        
+        // Wait for async positioning to complete
+        try? await Task.sleep(nanoseconds: 200_000_000) // 0.2 seconds
         
         // Then: Window should be positioned (centered relative to main window or screen)
         let window = appDelegate.minimisedPlayerWindow
