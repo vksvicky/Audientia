@@ -1,5 +1,5 @@
 //
-//  AppDelegate+MenuManagement.swift
+//  AppDelegateMenuManagement.swift
 //  Audientia
 //
 //  Menu and keyboard shortcut management extension for AppDelegate
@@ -51,3 +51,4 @@ extension AppDelegate {
         }
     }
 }
+

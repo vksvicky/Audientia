@@ -1,5 +1,5 @@
 //
-//  AppDelegate+DependencyManagement.swift
+//  AppDelegateDependencyManagement.swift
 //  Audientia
 //
 //  Dependency checking extension for AppDelegate
@@ -12,7 +12,7 @@ import Foundation
 import Shared
 
 extension AppDelegate {
-    private func checkDependenciesOnFirstLaunch() {
+    func checkDependenciesOnFirstLaunch() {
         let hasChecked = UserDefaults.standard.bool(forKey: hasCheckedDependenciesKey)
         
         // Only check on first launch

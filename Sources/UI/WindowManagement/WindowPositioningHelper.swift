@@ -9,6 +9,7 @@
 
 import AppKit
 import Foundation
+import os.log
 import Shared
 
 /// Helper methods for window positioning
@@ -36,8 +37,7 @@ enum WindowPositioningHelper {
                     window.setFrame(validFrame, display: false)
                 }
                 Logger.userInterface.debug(
-                    "Restored minimized player window position from saved state: "
-                    + "\(NSStringFromRect(validFrame))"
+                    "Restored minimized player window position from saved state: \(NSStringFromRect(validFrame))"
                 )
             } else {
                 // Use default centering logic

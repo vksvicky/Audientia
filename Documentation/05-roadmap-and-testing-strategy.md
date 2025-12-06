@@ -171,8 +171,8 @@ Based on `Documentation/16-ui-layout-redesign.md` Implementation Plan:
   - [x] Resolve or document acceptable TODO comments - **✅ Converted to NOTE comments**
   - [x] Type body length in `CollapsiblePlayerBar.swift` (338 lines) - **✅ Acceptable: Complex UI component, rule configured as warning: 300, error: 500 (currently 338, within error threshold)**
 - [x] State persistence for toolbar/player collapse states - **✅ `LayoutState` model and `LayoutStateManager` created, integrated into `MainWindowLayoutView` with load on appear and save on change, TDD/BDD tests complete**
-- [ ] Accessibility improvements (VoiceOver support, keyboard navigation)
-- [ ] Polish animations and transitions
+- [x] Accessibility improvements (VoiceOver support, keyboard navigation) - **✅ Comprehensive accessibility implementation with VoiceOver labels, hints, traits, keyboard navigation, and announcements. AccessibilityTests.swift created with Right-BICEP coverage. AboutViewAccessibilityTests added for About window accessibility.**
+- [x] Polish animations and transitions - **✅ Enhanced animations with .move(edge:) transitions, .opacity effects, 0.25s duration, and .clipped() modifier. Comprehensive E2E tests verify all four toolbar/player state combinations. Layout stability verified with proper frame constraints.**
 - [x] Verify all tab switching works correctly - **✅ Mouse clicks: NavigationTabBar buttons update `selectedTab` binding, Keyboard shortcuts: Each tab has ⌘1-5 shortcuts wired via `.keyboardShortcut()`, Content updates: `tabContentView` uses switch statement to show correct view, Sidebar updates: ContextualSidebar switches content based on `selectedTab`, Search routing: Search text routed to correct ViewModel based on active tab, Library tab: Auto-loads library data when switched to via `.task(id: selectedTab)`**
 - [x] Verify search works in all tabs - **✅ Library tab: Search filters tracks via `LibrarySearch`, Playlists tab: Search filters playlists by name, Devices tab: Search filters devices by name, Home/Visualiser tabs: No search needed (curated content)**
 - [x] Verify contextual sidebar updates correctly per tab - **✅ Sidebar uses `switch` statement on `selectedTab` binding to show tab-specific content: Home (Quick Access actions), Library (Browse By + Genre Filters), Playlists (Playlists List + Smart Playlists), Devices (Device List + Sync Options), Visualiser (Visualisation Style + Settings). All content properly wired to respective ViewModels.**
@@ -220,7 +220,7 @@ Based on `Documentation/16-ui-layout-redesign.md` Implementation Plan:
 - [x] Ensure all features are accessible and functional from the UI - **✅ Setup wizard accessible via File menu (⇧⌘S), notification settings in Settings → General, language settings in Settings → Language**
 - [x] Polish user experience and interactions - **✅ Setup wizard improvements, notification system, language selection with live spelling preview**
 - [x] Verify end-to-end workflows - **✅ Setup wizard → library scan → notification flow verified, language change → UI update flow verified**
-- [ ] Complete About screen menu wiring QA
+- [x] Complete About screen menu wiring QA - **✅ Comprehensive TDD/BDD tests created: AboutMenuConfiguratorTests (Right-BICEP coverage), AboutMenuConfiguratorBDDTests (user scenarios), AboutViewTests (Right-BICEP coverage), AboutViewBDDTests (user scenarios), AboutMenuIntegrationTests (end-to-end workflow), AboutViewAccessibilityTests (VoiceOver/keyboard navigation). All tests follow TDD/BDD principles with mocking support.**
 - [x] Fix any remaining integration issues - **✅ Notification permission flow, library scan notifications, duplicate scan prevention, LanguageSettingsView Form syntax and localisation key access**
 
 ### Areas of Focus
@@ -293,7 +293,7 @@ Based on `Documentation/16-ui-layout-redesign.md` Implementation Plan:
 - [x] **Advanced controls (replay, skip, loop)** – ✅ Replay, skip ±10s, and loop mode toggles interact with the engine and expose loop state.
 - [x] **Setup Wizard** – ✅ First-launch wizard with library location setup, preferences configuration, and support information. Features clickable navigation between steps, library scanning with progress bar, background scan notifications with sound, and scan results display. Integrated with `LibraryScanCoordinator` for automatic scanning after wizard completion and when library locations change.
 - [x] **Notification Permission Management** – ✅ `NotificationPermissionManager` for centralized notification permission handling. Settings UI for viewing permission status, requesting permissions, and opening System Settings. Integrated with library scanning for background scan completion notifications.
-- [ ] **About screen with app icon and version info** – Custom About window code exists, but the standard macOS Settings/About menu wiring still needs QA.
+- [x] **About screen with app icon and version info** – **✅ Custom About window implemented with AboutView displaying app name, version, module versions, and copyright. AboutMenuConfigurator wires menu item to custom handler. Comprehensive TDD/BDD tests created following Right-BICEP principles with mocking support.**
 - [x] **Resources folder and Assets.xcassets configured** – Asset pipeline is in place and reflected in the build.
 
 **Testing & Quality:**

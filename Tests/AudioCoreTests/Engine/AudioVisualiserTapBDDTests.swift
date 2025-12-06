@@ -33,8 +33,8 @@ final class AudioVisualiserTapBDDTests: XCTestCase {
     override func tearDownWithError() throws {
         // Ensure cleanup happens synchronously to prevent hanging
         visualiserTap?.cleanup()
-        // Give a brief moment for cleanup to complete
-        try? await Task.sleep(nanoseconds: 50_000_000) // 50ms
+        // Give a brief moment for cleanup to complete (synchronous wait)
+        RunLoop.current.run(until: Date(timeIntervalSinceNow: 0.05)) // 50ms
         visualiserTap = nil
         visualiser = nil
         try super.tearDownWithError()
@@ -88,6 +88,10 @@ final class AudioVisualiserTapBDDTests: XCTestCase {
                 "Frame after resume should be same or newer"
             )
         }
+        
+        // Cleanup: Stop the audio to prevent hanging
+        visualiserTap.stop()
+        try await Task.sleep(nanoseconds: 50_000_000) // 50ms for cleanup
     }
     
     /// BDD: Given a playing track with visualisation, when I stop and play again,
@@ -146,6 +150,10 @@ final class AudioVisualiserTapBDDTests: XCTestCase {
             1.5,
             "Visualization should resume quickly after stop->play (within 1.5 seconds)"
         )
+        
+        // Cleanup: Stop the audio to prevent hanging
+        visualiserTap.stop()
+        try await Task.sleep(nanoseconds: 50_000_000) // 50ms for cleanup
     }
     
     // MARK: - Right-[B]ICEP: Boundary Conditions
@@ -181,6 +189,10 @@ final class AudioVisualiserTapBDDTests: XCTestCase {
             let frame = await visualiser.latestFrame()
             XCTAssertNotNil(frame, "Should have frames after resume cycle \(cycle)")
         }
+        
+        // Cleanup: Stop the audio to prevent hanging
+        visualiserTap.stop()
+        try await Task.sleep(nanoseconds: 50_000_000) // 50ms for cleanup
     }
     
     /// BDD: Given a stopped track, when I play multiple times,
@@ -222,6 +234,10 @@ final class AudioVisualiserTapBDDTests: XCTestCase {
         // Then - Verify operations completed
         // Note: We're testing that play/stop/play cycle works, not frame generation
         XCTAssertTrue(playSuccess && playAgainSuccess, "Both play operations should succeed")
+        
+        // Cleanup: Stop the audio to prevent hanging
+        visualiserTap.stop()
+        try await Task.sleep(nanoseconds: 50_000_000) // 50ms for cleanup
     }
     
     // MARK: - Right-BIC[E]P: Forcing Error Conditions
@@ -287,5 +303,9 @@ final class AudioVisualiserTapBDDTests: XCTestCase {
             1.5,
             "Visualization should start quickly after stop->play (within 1.5 seconds)"
         )
+        
+        // Cleanup: Stop the audio to prevent hanging
+        visualiserTap.stop()
+        try await Task.sleep(nanoseconds: 50_000_000) // 50ms for cleanup
     }
 }

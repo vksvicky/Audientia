@@ -1,5 +1,5 @@
 //
-//  AppDelegate+WindowSetup.swift
+//  AppDelegateWindowSetup.swift
 //  Audientia
 //
 //  Window setup and menu configuration extension for AppDelegate
@@ -14,7 +14,7 @@ import Shared
 import SwiftUI
 
 extension AppDelegate {
-    private func setupCustomAboutMenu() {
+    func setupCustomAboutMenu() {
         // Replace the default About menu item with a custom one
         DispatchQueue.main.async { [weak self] in
             guard let self = self else { return }
@@ -119,3 +119,4 @@ extension AppDelegate {
         }
     }
 }
+

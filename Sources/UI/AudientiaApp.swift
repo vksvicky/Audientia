@@ -118,18 +118,18 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         return NSApplication.shared.delegate as? AppDelegate
     }
     
-    private let dependencyChecker = DependencyChecker()
-    private let hasCheckedDependenciesKey = "hasCheckedDependencies"
-    private let aboutMenuConfigurator = AboutMenuConfigurator()
-    private let setupWizardMenuConfigurator = SetupWizardMenuConfigurator()
+    let dependencyChecker = DependencyChecker()
+    let hasCheckedDependenciesKey = "hasCheckedDependencies"
+    let aboutMenuConfigurator = AboutMenuConfigurator()
+    let setupWizardMenuConfigurator = SetupWizardMenuConfigurator()
     let windowStateManager = WindowStateManager() // Internal for testing
-    private var setupWizardWindow: NSWindow?
+    var setupWizardWindow: NSWindow?
     var mainWindow: NSWindow?
     var minimisedPlayerWindow: NSWindow?
-    private var minimisedPlayerWindowDelegate: MinimisedPlayerWindowDelegate?
-    private var shortcutsDisabled = false
+    var minimisedPlayerWindowDelegate: MinimisedPlayerWindowDelegate?
+    var shortcutsDisabled = false
     var isMinimised = false
-    private var shouldRestoreMinimizedState = false
+    var shouldRestoreMinimizedState = false
     
     override init() {
         super.init()
@@ -234,7 +234,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         // Position window using helper
         WindowPositioningHelper.positionMinimisedPlayerWindow(
             playerWindow,
-            savedState: nil, // Will be loaded in helper
+            savedState: nil as WindowState?, // Will be loaded in helper
             mainWindowFrame: mainWindowFrame,
             windowStateManager: windowStateManager
         ) { [weak self] in
@@ -323,8 +323,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         do {
             try await windowStateManager.saveWindowState(windowState)
             Logger.userInterface.info(
-                "Window state saved successfully: frame=\(NSStringFromRect(frame)), "
-                + "isMinimised=\(isMinimisedState)"
+                "Window state saved successfully: frame=\(NSStringFromRect(frame)), isMinimised=\(isMinimisedState)"
             )
         } catch {
             Logger.userInterface.error("Failed to save window state: \(error.localizedDescription)")
@@ -404,8 +403,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     @MainActor
     func restoreMinimizedStateIfNeeded(nowPlayingViewModel: NowPlayingViewModel) {
         Logger.userInterface.info(
-            "restoreMinimizedStateIfNeeded called, "
-            + "shouldRestoreMinimizedState=\(self.shouldRestoreMinimizedState)"
+            "restoreMinimizedStateIfNeeded called, shouldRestoreMinimizedState=\(self.shouldRestoreMinimizedState)"
         )
         
         // Check both the flag and the saved state directly (in case of timing issues)

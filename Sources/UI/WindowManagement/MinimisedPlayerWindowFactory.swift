@@ -19,7 +19,7 @@ enum MinimisedPlayerWindowFactory {
         nowPlayingViewModel: NowPlayingViewModel,
         onRestore: @escaping () -> Void,
         onClose: @escaping () -> Void
-    ) -> (window: NSWindow, delegate: NSWindowDelegate) {
+    ) -> (window: NSWindow, delegate: MinimisedPlayerWindowDelegate) {
         // Create minimised player window
         let playerWindow = NSWindow(
             contentRect: NSRect(x: 0, y: 0, width: 400, height: 80),
