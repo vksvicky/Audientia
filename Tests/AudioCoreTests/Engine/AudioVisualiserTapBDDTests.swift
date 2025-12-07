@@ -33,8 +33,9 @@ final class AudioVisualiserTapBDDTests: XCTestCase {
     override func tearDownWithError() throws {
         // Ensure cleanup happens synchronously to prevent hanging
         visualiserTap?.cleanup()
-        // Give a brief moment for cleanup to complete (synchronous wait)
-        RunLoop.current.run(until: Date(timeIntervalSinceNow: 0.05)) // 50ms
+        // Give a brief moment for cleanup to complete
+        // Note: Using Thread.sleep instead of RunLoop in tearDown (not async context)
+        Thread.sleep(forTimeInterval: 0.05) // 50ms
         visualiserTap = nil
         visualiser = nil
         try super.tearDownWithError()
@@ -91,6 +92,7 @@ final class AudioVisualiserTapBDDTests: XCTestCase {
         
         // Cleanup: Stop the audio to prevent hanging
         visualiserTap.stop()
+        // Wait for cleanup to complete
         try await Task.sleep(nanoseconds: 50_000_000) // 50ms for cleanup
     }
     
@@ -153,6 +155,7 @@ final class AudioVisualiserTapBDDTests: XCTestCase {
         
         // Cleanup: Stop the audio to prevent hanging
         visualiserTap.stop()
+        // Wait for cleanup to complete
         try await Task.sleep(nanoseconds: 50_000_000) // 50ms for cleanup
     }
     
@@ -192,6 +195,7 @@ final class AudioVisualiserTapBDDTests: XCTestCase {
         
         // Cleanup: Stop the audio to prevent hanging
         visualiserTap.stop()
+        // Wait for cleanup to complete
         try await Task.sleep(nanoseconds: 50_000_000) // 50ms for cleanup
     }
     
@@ -237,6 +241,7 @@ final class AudioVisualiserTapBDDTests: XCTestCase {
         
         // Cleanup: Stop the audio to prevent hanging
         visualiserTap.stop()
+        // Wait for cleanup to complete
         try await Task.sleep(nanoseconds: 50_000_000) // 50ms for cleanup
     }
     
@@ -306,6 +311,7 @@ final class AudioVisualiserTapBDDTests: XCTestCase {
         
         // Cleanup: Stop the audio to prevent hanging
         visualiserTap.stop()
+        // Wait for cleanup to complete
         try await Task.sleep(nanoseconds: 50_000_000) // 50ms for cleanup
     }
 }

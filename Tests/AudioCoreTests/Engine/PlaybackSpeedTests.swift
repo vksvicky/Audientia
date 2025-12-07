@@ -126,45 +126,4 @@ final class PlaybackSpeedTests: XCTestCase {
         XCTAssertEqual(engine.playbackSpeed, originalSpeed)
     }
 }
-
-// MARK: - Mock Native Audio Engine
-
-@MainActor
-final class MockNativeAudioEngine: NativeAudioEngineProtocol {
-    var currentPosition: TimeInterval = 0.0
-    var duration: TimeInterval = 0.0
-    var lastSetRate: Float = 1.0
-    
-    func loadFile(_ path: String) async -> Bool {
-        true
-    }
-    
-    func play() async -> Bool {
-        true
-    }
-    
-    func pause() {
-        // Mock implementation
-    }
-    
-    func stop() {
-        // Mock implementation
-    }
-    
-    func seek(to position: TimeInterval) async -> Bool {
-        true
-    }
-    
-    func setVolume(_ volume: Float) {
-        // Mock implementation
-    }
-    
-    func setRate(_ rate: Float) {
-        lastSetRate = rate
-    }
-    
-    func getRate() -> Float {
-        lastSetRate
-    }
-}
 #endif

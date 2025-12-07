@@ -39,6 +39,13 @@ excluded:
   - Carthage
   - .swiftpm
 
+# Test files often need to be longer for comprehensive test coverage
+# Allow blanket disables in test files
+blanket_disable_command:
+  severity: warning
+  excluded:
+    - "**/Tests/**/*.swift"
+
 # Line length
 line_length:
   warning: 120

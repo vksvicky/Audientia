@@ -24,6 +24,7 @@ final class MockNativeAudioEngine: NativeAudioEngineProtocol {
     var currentPosition: TimeInterval = 0.0
     var duration: TimeInterval = 2.0
     var nextLoadDuration: TimeInterval?
+    var lastSetRate: Float = 1.0
 
     func loadFile(_ path: String) async -> Bool {
         loadFileCalls.append(path)
@@ -57,5 +58,13 @@ final class MockNativeAudioEngine: NativeAudioEngineProtocol {
 
     func setVolume(_ volume: Float) {
         volumeValues.append(volume)
+    }
+    
+    func setRate(_ rate: Float) {
+        lastSetRate = rate
+    }
+    
+    func getRate() -> Float {
+        lastSetRate
     }
 }

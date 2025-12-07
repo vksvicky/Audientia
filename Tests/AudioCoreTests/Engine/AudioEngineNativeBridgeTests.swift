@@ -30,7 +30,7 @@ final class AudioEngineNativeBridgeTests: XCTestCase {
 
         // Then
         XCTAssertEqual(nativeEngine.loadFileCalls, [track.filePath])
-        XCTAssertEqual(engine.state, .stopped)
+        XCTAssertEqual(engine.state, PlaybackState.stopped)
     }
 
     func testPlayPauseAndStopDelegateToNativeEngine() async throws {
@@ -65,7 +65,7 @@ final class AudioEngineNativeBridgeTests: XCTestCase {
         await fixture.engine.pause()
 
         XCTAssertEqual(fixture.nativeEngine.pauseCallCount, 1)
-        XCTAssertEqual(fixture.engine.state, .paused)
+        XCTAssertEqual(fixture.engine.state, PlaybackState.paused)
     }
 
     func testResumeDelegatesToNativeEngine() async throws {
@@ -76,7 +76,7 @@ final class AudioEngineNativeBridgeTests: XCTestCase {
         try await fixture.engine.resume()
 
         XCTAssertEqual(fixture.nativeEngine.playCallCount, initialPlayCount + 1)
-        XCTAssertEqual(fixture.engine.state, .playing)
+        XCTAssertEqual(fixture.engine.state, PlaybackState.playing)
     }
 
     func testSkipForwardUsesNativeSeek() async throws {
@@ -116,7 +116,7 @@ final class AudioEngineNativeBridgeTests: XCTestCase {
         try await fixture.engine.seek(to: 42)
 
         XCTAssertEqual(fixture.nativeEngine.seekCalls.last, 42)
-        XCTAssertEqual(fixture.engine.state, .playing)
+        XCTAssertEqual(fixture.engine.state, PlaybackState.playing)
     }
 
     func testSeekClampsToDuration() async throws {
@@ -138,18 +138,18 @@ final class AudioEngineNativeBridgeTests: XCTestCase {
 
         XCTAssertEqual(fixture.nativeEngine.seekCalls.last, 0)
         XCTAssertEqual(fixture.nativeEngine.playCallCount, initialPlayCount + 1)
-        XCTAssertEqual(fixture.engine.state, .playing)
+        XCTAssertEqual(fixture.engine.state, PlaybackState.playing)
     }
 
     func testTrackLoopModeReplaysCurrentTrack() async throws {
         let fixture = try await makePlayingEngine(title: "LoopTrack", duration: 1)
-        fixture.engine.setLoopMode(.track)
+        fixture.engine.setLoopMode(LoopMode.track)
         fixture.nativeEngine.seekCalls.removeAll()
 
         await simulateCompletion(nativeEngine: fixture.nativeEngine)
 
         XCTAssertTrue(fixture.nativeEngine.seekCalls.contains(0))
-        XCTAssertEqual(fixture.engine.state, .playing)
+        XCTAssertEqual(fixture.engine.state, PlaybackState.playing)
     }
 
     func testQueueLoopModeRestartsPlaylistAfterFinalTrack() async throws {
@@ -168,7 +168,7 @@ final class AudioEngineNativeBridgeTests: XCTestCase {
             nativeEngine: nativeEngine
         )
 
-        engine.setLoopMode(.queue)
+        engine.setLoopMode(LoopMode.queue)
         engine.addToQueue(track1)
         engine.addToQueue(track2)
 
@@ -212,9 +212,9 @@ final class AudioEngineNativeBridgeTests: XCTestCase {
         engine.addToQueue(track)
         try await engine.loadTrack(track)
         try await engine.play()
-        engine.setLoopMode(.none) // Explicitly set loop mode to none
+        engine.setLoopMode(LoopMode.none) // Explicitly set loop mode to none
 
-        XCTAssertEqual(engine.state, .playing, "Should be playing")
+        XCTAssertEqual(engine.state, PlaybackState.playing, "Should be playing")
         XCTAssertEqual(engine.queue.count, 1, "Queue should have 1 track")
         let initialLoadCount = nativeEngine.loadFileCalls.count
 
@@ -226,7 +226,7 @@ final class AudioEngineNativeBridgeTests: XCTestCase {
         // Then - Playback should stop (not replay the same track)
         // The track should not be reloaded
         XCTAssertEqual(nativeEngine.loadFileCalls.count, initialLoadCount, "Track should only be loaded once, not reloaded")
-        XCTAssertEqual(engine.state, .stopped, "Playback should stop when single track completes with loop mode off")
+        XCTAssertEqual(engine.state, PlaybackState.stopped, "Playback should stop when single track completes with loop mode off")
     }
 
     /// BDD: Given a single track playing with loop mode track, when the track completes, then it should replay
@@ -252,9 +252,9 @@ final class AudioEngineNativeBridgeTests: XCTestCase {
         engine.addToQueue(track)
         try await engine.loadTrack(track)
         try await engine.play()
-        engine.setLoopMode(.track) // Set loop mode to track
+        engine.setLoopMode(LoopMode.track) // Set loop mode to track
 
-        XCTAssertEqual(engine.state, .playing, "Should be playing")
+        XCTAssertEqual(engine.state, PlaybackState.playing, "Should be playing")
 
         // When - Track completes (simulate reaching end)
         nativeEngine.currentPosition = 10.0

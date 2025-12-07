@@ -97,7 +97,7 @@ enum TitleBarMinimizeButton {
         let (buttonSize, buttonY) = getTrafficLightDimensions(from: window)
         let button = createMinimizeButton(size: buttonSize)
         setupButtonImages(for: button, size: buttonSize)
-        let (containerView, target) = createButtonContainer(
+        let (containerView, _) = createButtonContainer(
             button: button,
             size: buttonSize,
             yPosition: buttonY,

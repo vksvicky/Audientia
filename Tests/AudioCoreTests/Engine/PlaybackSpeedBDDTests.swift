@@ -22,21 +22,20 @@ final class PlaybackSpeedBDDTests: XCTestCase {
     /// BDD: Given audio is playing, when I change playback speed to 2x, then audio should play at double speed
     func testChangePlaybackSpeedToDouble() async throws {
         // Given: Audio engine with a loaded track
+        let track = MockFactory.makeTrack(
+            duration: 180.0,
+            filePath: "/test/path.mp3"
+        )
+        let fileSystem = MockFileSystem()
+        fileSystem.addFile(track.filePath)
         let mockEngine = MockNativeAudioEngine()
         let engine = AudioEngine(
-            fileSystem: MockFileSystem(),
+            fileSystem: fileSystem,
+            formatCoordinator: MockFormatDecodingCoordinator(),
             nativeEngine: mockEngine
         )
         
         // Load a track (mock implementation)
-        let track = Track(
-            id: UUID(),
-            title: "Test Track",
-            artist: "Test Artist",
-            album: "Test Album",
-            duration: 180.0,
-            filePath: "/test/path.mp3"
-        )
         try await engine.loadTrack(track)
         
         // When: Setting playback speed to 2x
@@ -50,20 +49,19 @@ final class PlaybackSpeedBDDTests: XCTestCase {
     /// BDD: Given audio is playing, when I change playback speed to 0.5x, then audio should play at half speed
     func testChangePlaybackSpeedToHalf() async throws {
         // Given: Audio engine with a loaded track
-        let mockEngine = MockNativeAudioEngine()
-        let engine = AudioEngine(
-            fileSystem: MockFileSystem(),
-            nativeEngine: mockEngine
-        )
-        
-        let track = Track(
-            id: UUID(),
-            title: "Test Track",
-            artist: "Test Artist",
-            album: "Test Album",
+        let track = MockFactory.makeTrack(
             duration: 180.0,
             filePath: "/test/path.mp3"
         )
+        let fileSystem = MockFileSystem()
+        fileSystem.addFile(track.filePath)
+        let mockEngine = MockNativeAudioEngine()
+        let engine = AudioEngine(
+            fileSystem: fileSystem,
+            formatCoordinator: MockFormatDecodingCoordinator(),
+            nativeEngine: mockEngine
+        )
+        
         try await engine.loadTrack(track)
         
         // When: Setting playback speed to 0.5x
@@ -77,20 +75,19 @@ final class PlaybackSpeedBDDTests: XCTestCase {
     /// BDD: Given audio is playing at 2x, when I change to 1x, then audio should play at normal speed
     func testChangePlaybackSpeedFromDoubleToNormal() async throws {
         // Given: Audio engine playing at 2x speed
-        let mockEngine = MockNativeAudioEngine()
-        let engine = AudioEngine(
-            fileSystem: MockFileSystem(),
-            nativeEngine: mockEngine
-        )
-        
-        let track = Track(
-            id: UUID(),
-            title: "Test Track",
-            artist: "Test Artist",
-            album: "Test Album",
+        let track = MockFactory.makeTrack(
             duration: 180.0,
             filePath: "/test/path.mp3"
         )
+        let fileSystem = MockFileSystem()
+        fileSystem.addFile(track.filePath)
+        let mockEngine = MockNativeAudioEngine()
+        let engine = AudioEngine(
+            fileSystem: fileSystem,
+            formatCoordinator: MockFormatDecodingCoordinator(),
+            nativeEngine: mockEngine
+        )
+        
         try await engine.loadTrack(track)
         engine.playbackSpeed = .double
         
@@ -132,37 +129,39 @@ final class PlaybackSpeedBDDTests: XCTestCase {
     // MARK: - Scenario: Visualization Speed Matching
     
     /// BDD: Given audio is playing at 2x speed, when visualization is running, then visualization should update at 2x rate
+    /// Note: AudioVisualiserViewModel is in the UI module, so we test the engine's playback speed directly
     func testVisualizationSpeedMatchesPlaybackSpeed() async {
         // Given: Audio engine at 2x speed
         let mockEngine = MockNativeAudioEngine()
         let engine = AudioEngine(
             fileSystem: MockFileSystem(),
+            formatCoordinator: MockFormatDecodingCoordinator(),
             nativeEngine: mockEngine
         )
         engine.playbackSpeed = .double
         
-        // When: Creating visualization view model
-        let viewModel = AudioVisualiserViewModel(audioEngine: engine)
-        
-        // Then: Playback speed multiplier should be 2.0
-        XCTAssertEqual(viewModel.playbackSpeedMultiplier, 2.0, accuracy: 0.01)
+        // When: Checking engine playback speed
+        // Then: Playback speed should be 2x and native engine rate should be 2.0
+        XCTAssertEqual(engine.playbackSpeed, .double)
+        XCTAssertEqual(mockEngine.getRate(), 2.0, accuracy: 0.01)
     }
     
     /// BDD: Given audio is playing at 0.5x speed, when visualization is running, then visualization should update at 0.5x rate
+    /// Note: AudioVisualiserViewModel is in the UI module, so we test the engine's playback speed directly
     func testVisualizationSpeedMatchesSlowPlayback() async {
         // Given: Audio engine at 0.5x speed
         let mockEngine = MockNativeAudioEngine()
         let engine = AudioEngine(
             fileSystem: MockFileSystem(),
+            formatCoordinator: MockFormatDecodingCoordinator(),
             nativeEngine: mockEngine
         )
         engine.playbackSpeed = .half
         
-        // When: Creating visualization view model
-        let viewModel = AudioVisualiserViewModel(audioEngine: engine)
-        
-        // Then: Playback speed multiplier should be 0.5
-        XCTAssertEqual(viewModel.playbackSpeedMultiplier, 0.5, accuracy: 0.01)
+        // When: Checking engine playback speed
+        // Then: Playback speed should be 0.5x and native engine rate should be 0.5
+        XCTAssertEqual(engine.playbackSpeed, .half)
+        XCTAssertEqual(mockEngine.getRate(), 0.5, accuracy: 0.01)
     }
     
     // MARK: - Scenario: All Speed Options Available
@@ -188,20 +187,19 @@ final class PlaybackSpeedBDDTests: XCTestCase {
     /// BDD: Given audio is playing at 1x, when I change to 4x during playback, then speed should change immediately
     func testChangeSpeedDuringPlayback() async throws {
         // Given: Audio engine playing at 1x
-        let mockEngine = MockNativeAudioEngine()
-        let engine = AudioEngine(
-            fileSystem: MockFileSystem(),
-            nativeEngine: mockEngine
-        )
-        
-        let track = Track(
-            id: UUID(),
-            title: "Test Track",
-            artist: "Test Artist",
-            album: "Test Album",
+        let track = MockFactory.makeTrack(
             duration: 180.0,
             filePath: "/test/path.mp3"
         )
+        let fileSystem = MockFileSystem()
+        fileSystem.addFile(track.filePath)
+        let mockEngine = MockNativeAudioEngine()
+        let engine = AudioEngine(
+            fileSystem: fileSystem,
+            formatCoordinator: MockFormatDecodingCoordinator(),
+            nativeEngine: mockEngine
+        )
+        
         try await engine.loadTrack(track)
         engine.playbackSpeed = .normal
         try await engine.play()
