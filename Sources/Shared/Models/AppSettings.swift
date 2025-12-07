@@ -60,6 +60,14 @@ public class AppSettings: ObservableObject {
             }
         }
     }
+    
+    /// Playback speed (0.5x, 0.75x, 1.0x, 1.5x, 2.0x, 4.0x)
+    /// Default: 1.0x (normal speed)
+    @Published public var playbackSpeed: PlaybackSpeed = .normal {
+        didSet {
+            UserDefaults.standard.set(playbackSpeed.rawValue, forKey: "audientia.settings.playbackSpeed")
+        }
+    }
 
     // MARK: - Initialisation
 
@@ -84,6 +92,15 @@ public class AppSettings: ObservableObject {
         let scrollSpeedKey = "audientia.settings.trackInfoScrollSpeed"
         // Default to 25.0 for smoother, more readable scrolling (tuned for better UX)
         self.trackInfoScrollSpeed = UserDefaults.standard.object(forKey: scrollSpeedKey) as? Double ?? 25.0
+        
+        // Load playback speed (default: 1.0x normal speed)
+        let playbackSpeedKey = "audientia.settings.playbackSpeed"
+        if let savedSpeed = UserDefaults.standard.object(forKey: playbackSpeedKey) as? Double,
+           let speed = PlaybackSpeed(rawValue: savedSpeed) {
+            self.playbackSpeed = speed
+        } else {
+            self.playbackSpeed = .normal
+        }
 
         // Listen for module conflict notifications
         NotificationCenter.default.addObserver(

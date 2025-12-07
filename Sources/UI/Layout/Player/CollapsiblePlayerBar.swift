@@ -81,7 +81,7 @@ struct CollapsiblePlayerBar: View {
             // Seek bar and playback controls
             VStack(spacing: 4) {
                 seekBarView
-                    .frame(minWidth: 200, idealWidth: 320, maxWidth: 400)
+                    .frame(minWidth: 200, idealWidth: 280, maxWidth: 350)
                 
                 ExpandedPlayerTransportControls(nowPlayingViewModel: nowPlayingViewModel)
             }

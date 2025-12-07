@@ -96,6 +96,22 @@ float CAudioEngineGetVolume(CAudioEngineRef engine) {
   return cppEngine->getVolume();
 }
 
+void CAudioEngineSetRate(CAudioEngineRef engine, float rate) {
+  if (engine) {
+    auto *cppEngine =
+        reinterpret_cast<audientia::audio::CAudioEngine *>(engine);
+    cppEngine->setRate(rate);
+  }
+}
+
+float CAudioEngineGetRate(CAudioEngineRef engine) {
+  if (!engine) {
+    return 1.0f;
+  }
+  auto *cppEngine = reinterpret_cast<audientia::audio::CAudioEngine *>(engine);
+  return cppEngine->getRate();
+}
+
 int CAudioEngineIsPlaying(CAudioEngineRef engine) {
   if (!engine) {
     return 0;

@@ -37,6 +37,15 @@ public final class NowPlayingViewModel: ObservableObject {
         }
     }
     
+    /// Current playback speed
+    @Published public var playbackSpeed: PlaybackSpeed = .normal {
+        didSet {
+            Task {
+                await setPlaybackSpeed(playbackSpeed)
+            }
+        }
+    }
+    
     /// Last error that occurred
     @Published public private(set) var lastError: Error?
     
@@ -90,6 +99,14 @@ public final class NowPlayingViewModel: ObservableObject {
     /// - Parameter audioEngine: The audio engine to control
     public init(audioEngine: AudioEngineProtocol) {
         self.audioEngine = audioEngine
+        
+        // Load saved playback speed from AppSettings and sync with engine
+        if let engine = audioEngine as? AudioEngine {
+            self.playbackSpeed = engine.playbackSpeed
+        } else {
+            self.playbackSpeed = AppSettings.shared.playbackSpeed
+        }
+        
         setupObservers()
         Logger.userInterface.info("NowPlayingViewModel initialised")
     }
@@ -224,6 +241,18 @@ public final class NowPlayingViewModel: ObservableObject {
         audioEngine.setVolume(clampedVolume)
         updateState()
         Logger.userInterface.debug("Volume changed to \(clampedVolume, privacy: .public)")
+    }
+    
+    /// Set playback speed
+    /// - Parameter speed: Playback speed to set
+    private func setPlaybackSpeed(_ speed: PlaybackSpeed) async {
+        if let engine = audioEngine as? AudioEngine {
+            engine.playbackSpeed = speed
+            // Save to AppSettings
+            AppSettings.shared.playbackSpeed = speed
+            updateState()
+            Logger.userInterface.debug("Playback speed changed to \(speed.displayName, privacy: .public)")
+        }
     }
     
     /// Play next track in queue

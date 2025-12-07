@@ -83,6 +83,15 @@ public final class AudioEngine: AudioEngineProtocol {
         }
     }
     
+    /// Current playback speed
+    public var playbackSpeed: PlaybackSpeed = .normal {
+        didSet {
+            let rate = Float(self.playbackSpeed.rawValue)
+            nativeEngine.setRate(rate)
+            Logger.audio.debug("Playback speed set to \(self.playbackSpeed.displayName) (rate: \(rate))")
+        }
+    }
+    
     /// Current loop mode
     public var loopMode: LoopMode = .none
     
@@ -132,7 +141,12 @@ public final class AudioEngine: AudioEngineProtocol {
         self.nativeEngine = CAudioEngine()
         self.visualiser = AudioVisualiser()
         self.visualiserTap = AudioVisualiserTap(visualiser: self.visualiser)
-        Logger.audio.debug("AudioEngine initialised")
+        
+        // Load saved playback speed from AppSettings
+        let savedSpeed = AppSettings.shared.playbackSpeed
+        self.playbackSpeed = savedSpeed
+        
+        Logger.audio.debug("AudioEngine initialised with playback speed: \(savedSpeed.displayName)")
     }
     
     /// Initialise AudioEngine with custom dependencies (mainly for testing)

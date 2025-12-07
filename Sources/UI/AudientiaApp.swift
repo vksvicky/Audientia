@@ -163,6 +163,12 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                 window.styleMask.insert(.miniaturizable)
                 window.collectionBehavior = [.fullScreenPrimary, .fullScreenAllowsTiling]
                 
+                // Disable automatic window restoration to prevent conflicts
+                window.isRestorable = false
+                
+                // Ensure window is visible
+                window.makeKeyAndOrderFront(nil)
+                
                 // Restore window state (position and minimized mode)
                 Task { [weak self] in
                     await self?.restoreWindowState()
@@ -353,18 +359,26 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         if !wasMinimised, let mainWindow = mainWindow {
             // Ensure frame is on a valid screen
             let validFrame = ensureFrameOnScreen(frame)
-            mainWindow.setFrame(validFrame, display: false)
+            mainWindow.setFrame(validFrame, display: true)
+            mainWindow.makeKeyAndOrderFront(nil)
             Logger.userInterface.info("Restored window position: \(NSStringFromRect(validFrame))")
+        } else if wasMinimised {
+            // If was minimized, hide main window immediately - it will be restored by restoreMinimizedStateIfNeeded
+            mainWindow?.orderOut(nil)
+            Logger.userInterface.info("App was in minimized player mode, hiding main window")
+        } else if let mainWindow = mainWindow {
+            // Fallback: ensure window is visible
+            mainWindow.makeKeyAndOrderFront(nil)
         }
         
         // Store flag to restore minimized state after view model is available
         if wasMinimised {
             self.shouldRestoreMinimizedState = true
             let shouldRestore = self.shouldRestoreMinimizedState
-            Logger.userInterface.info(
-                "App was in minimized player mode, will restore after view model is available, "
-                + "shouldRestoreMinimizedState=\(shouldRestore)"
-            )
+            let message = "App was in minimized player mode, " +
+                "will restore after view model is available, " +
+                "shouldRestoreMinimizedState=\(shouldRestore)"
+            Logger.userInterface.info("\(message)")
         } else {
             Logger.userInterface.info("App was in main window mode")
         }

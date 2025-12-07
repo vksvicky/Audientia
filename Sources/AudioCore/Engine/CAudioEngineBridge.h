@@ -33,6 +33,9 @@ double CAudioEngineGetDuration(CAudioEngineRef engine);
 void CAudioEngineSetVolume(CAudioEngineRef engine, float volume);
 float CAudioEngineGetVolume(CAudioEngineRef engine);
 
+void CAudioEngineSetRate(CAudioEngineRef engine, float rate);
+float CAudioEngineGetRate(CAudioEngineRef engine);
+
 int CAudioEngineIsPlaying(CAudioEngineRef engine);
 int CAudioEngineIsPaused(CAudioEngineRef engine);
 int CAudioEngineIsStopped(CAudioEngineRef engine);

@@ -120,6 +120,7 @@ struct CompactPlayerControls: View {
             
             shuffleButton
             loopButton
+            playbackSpeedButton
             
             Divider()
                 .frame(height: 16)
@@ -191,6 +192,32 @@ struct CompactPlayerControls: View {
                 nowPlayingViewModel.toggleLoopMode()
             }
         )
+    }
+    
+    private var playbackSpeedButton: some View {
+        Menu {
+            ForEach(PlaybackSpeed.allCases, id: \.self) { speed in
+                Button {
+                    nowPlayingViewModel.playbackSpeed = speed
+                } label: {
+                    HStack {
+                        Text(speed.displayName)
+                        if speed == nowPlayingViewModel.playbackSpeed {
+                            Image(systemName: "checkmark")
+                        }
+                    }
+                }
+            }
+        } label: {
+            CompactControlButton(
+                label: "Playback Speed",
+                systemImage: "speedometer",
+                isEnabled: true,
+                isActive: false,
+                action: {}
+            )
+        }
+        .menuStyle(.borderlessButton)
     }
     
     private var muteButton: some View {

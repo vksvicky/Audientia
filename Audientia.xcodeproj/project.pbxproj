@@ -626,6 +626,11 @@
 		E204E3132EE47F3600190266 /* MinimisedPlayerWindowDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E204E3032EE47F3600190266 /* MinimisedPlayerWindowDelegate.swift */; };
 		E204E3142EE47F3600190266 /* WindowStateManagerHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = E204E3062EE47F3600190266 /* WindowStateManagerHelper.swift */; };
 		E204E3152EE47F3600190266 /* AppDelegateMenuManagement.swift in Sources */ = {isa = PBXBuildFile; fileRef = E204E3012EE47F3600190266 /* AppDelegateMenuManagement.swift */; };
+		E204E3172EE5D25E00190266 /* PlaybackSpeed.swift in Sources */ = {isa = PBXBuildFile; fileRef = E204E3162EE5D25E00190266 /* PlaybackSpeed.swift */; };
+		E204E3192EE5D26D00190266 /* PlaybackSpeedControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = E204E3182EE5D26D00190266 /* PlaybackSpeedControl.swift */; };
+		E204E31A2EE5D26D00190266 /* PlaybackSpeedControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = E204E3182EE5D26D00190266 /* PlaybackSpeedControl.swift */; };
+		E204E31D2EE5D28100190266 /* PlaybackSpeedBDDTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E204E31B2EE5D28100190266 /* PlaybackSpeedBDDTests.swift */; };
+		E204E31E2EE5D28100190266 /* PlaybackSpeedTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E204E31C2EE5D28100190266 /* PlaybackSpeedTests.swift */; };
 		E205E7EE21EB9D1D8B92FEEE /* invalid_truncated.wav in Resources */ = {isa = PBXBuildFile; fileRef = 0F70F8CA32EC96BF6BE2FAF0 /* invalid_truncated.wav */; };
 		E21112642EDA69DB006ED306 /* LibraryScanCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2969B402ED99275006755EB /* LibraryScanCoordinator.swift */; };
 		E239E3F12EE2194A006545A7 /* CreateSmartPlaylistDialog.swift in Sources */ = {isa = PBXBuildFile; fileRef = E239E3EF2EE2194A006545A7 /* CreateSmartPlaylistDialog.swift */; };
@@ -1707,6 +1712,10 @@
 		E204E3042EE47F3600190266 /* MinimisedPlayerWindowFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MinimisedPlayerWindowFactory.swift; sourceTree = "<group>"; };
 		E204E3052EE47F3600190266 /* WindowPositioningHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindowPositioningHelper.swift; sourceTree = "<group>"; };
 		E204E3062EE47F3600190266 /* WindowStateManagerHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindowStateManagerHelper.swift; sourceTree = "<group>"; };
+		E204E3162EE5D25E00190266 /* PlaybackSpeed.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaybackSpeed.swift; sourceTree = "<group>"; };
+		E204E3182EE5D26D00190266 /* PlaybackSpeedControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaybackSpeedControl.swift; sourceTree = "<group>"; };
+		E204E31B2EE5D28100190266 /* PlaybackSpeedBDDTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaybackSpeedBDDTests.swift; sourceTree = "<group>"; };
+		E204E31C2EE5D28100190266 /* PlaybackSpeedTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaybackSpeedTests.swift; sourceTree = "<group>"; };
 		E207DAC8956ECCBA97F28A44 /* DeviceDiscoveryServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceDiscoveryServiceTests.swift; sourceTree = "<group>"; };
 		E239E3EE2EE2194A006545A7 /* CreatePlaylistDialog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreatePlaylistDialog.swift; sourceTree = "<group>"; };
 		E239E3EF2EE2194A006545A7 /* CreateSmartPlaylistDialog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateSmartPlaylistDialog.swift; sourceTree = "<group>"; };
@@ -2489,6 +2498,7 @@
 		57C4892ED78B1A24CFFC55DA /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				E204E3162EE5D25E00190266 /* PlaybackSpeed.swift */,
 				E263B8B32EE18BDC007C9EF5 /* LayoutState.swift */,
 				E2969B3C2ED903A8006755EB /* SetupWizardStep.swift */,
 				8230F867B5A3C8DC8BA9F951 /* Album.swift */,
@@ -3209,6 +3219,8 @@
 		CCED6318AEED82A54CE9A9EA /* Engine */ = {
 			isa = PBXGroup;
 			children = (
+				E204E31B2EE5D28100190266 /* PlaybackSpeedBDDTests.swift */,
+				E204E31C2EE5D28100190266 /* PlaybackSpeedTests.swift */,
 				E23DB8492EDBB8BA007AC259 /* AudioVisualiserTapBDDTests.swift */,
 				F4860645CAF21051967BFBA6 /* AdvancedPlaybackTests.swift */,
 				CE8B8FF5A9E3969EC3664870 /* AudioEngineFormatDetectionTests.swift */,
@@ -3641,6 +3653,7 @@
 		F55719BCAA414FCCA3173D6A /* Playback */ = {
 			isa = PBXGroup;
 			children = (
+				E204E3182EE5D26D00190266 /* PlaybackSpeedControl.swift */,
 				624C4F84C5AB474690C1777E /* PlaybackCoordinator.swift */,
 				5ACD38CB5732460AA6D68E9E /* TrackImportCoordinator.swift */,
 			);
@@ -4452,6 +4465,8 @@
 				B63E654681A1F3E5A6F7861F /* AudioNormalisationTests.swift in Sources */,
 				E23DB84A2EDBB8BA007AC259 /* AudioVisualiserTapBDDTests.swift in Sources */,
 				250C7FE70D1B1796477D56A0 /* AudioVisualiserBDDTests.swift in Sources */,
+				E204E31D2EE5D28100190266 /* PlaybackSpeedBDDTests.swift in Sources */,
+				E204E31E2EE5D28100190266 /* PlaybackSpeedTests.swift in Sources */,
 				9824FB77888640773A9CC076 /* AudioVisualiserTests.swift in Sources */,
 				C7A4E82486E669E65E5C594C /* CAudioEngineTests.swift in Sources */,
 				F94246682AFFD1AA1F381EB6 /* CrossfadeBDDTests.swift in Sources */,
@@ -4615,6 +4630,7 @@
 				E29A001A2EDA700000000001A /* MinimisedPlayerView.swift in Sources */,
 				E2969B432ED99275006755EB /* ScanResultsView.swift in Sources */,
 				E29A00142EDA7000000000014 /* TabItem.swift in Sources */,
+				E204E31A2EE5D26D00190266 /* PlaybackSpeedControl.swift in Sources */,
 				E29A00152EDA7000000000015 /* NavigationTabBar.swift in Sources */,
 				E29A00162EDA7000000000016 /* CollapsibleToolbar.swift in Sources */,
 				E29A00172EDA7000000000017 /* ContextualSidebar.swift in Sources */,
@@ -4778,6 +4794,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E204E3192EE5D26D00190266 /* PlaybackSpeedControl.swift in Sources */,
 				E2840D512EDA664B00AB8F12 /* SetupWizardView.swift in Sources */,
 				E2840D522EDA664B00AB8F12 /* SetupWizardViewModel.swift in Sources */,
 				E2840D4E2EDA663A00AB8F12 /* MainWindowLayoutView.swift in Sources */,
@@ -5013,6 +5030,7 @@
 				E263B8B42EE18BDC007C9EF5 /* LayoutState.swift in Sources */,
 				FE0614B6187E1A7285B9422B /* AudioFormats.swift in Sources */,
 				094F19F37CBA7F2E057C96DB /* AutoVersionUpdate.swift in Sources */,
+				E204E3172EE5D25E00190266 /* PlaybackSpeed.swift in Sources */,
 				E23DB88A2EDE24C0007AC259 /* LocalisationManager.swift in Sources */,
 				E23DB88B2EDE24C0007AC259 /* Language.swift in Sources */,
 				24D66D5E77071565BB1DB94E /* DependencyChecker.swift in Sources */,

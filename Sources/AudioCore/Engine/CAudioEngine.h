@@ -68,6 +68,15 @@ public:
   /// @return Current volume
   float getVolume() const;
 
+  /// Set playback rate (0.5 to 2.0 for AVAudioPlayer, higher rates may be
+  /// clamped)
+  /// @param rate Playback rate multiplier
+  void setRate(float rate);
+
+  /// Get current playback rate
+  /// @return Current playback rate
+  float getRate() const;
+
   /// Check if engine is currently playing
   /// @return true if playing, false otherwise
   bool isPlaying() const;

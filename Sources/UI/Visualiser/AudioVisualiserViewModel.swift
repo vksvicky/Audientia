@@ -23,6 +23,9 @@ final class AudioVisualiserViewModel: ObservableObject {
         }
     }
     
+    /// Current playback speed multiplier (affects visualization update rate)
+    @Published var playbackSpeedMultiplier: Double = 1.0
+    
     /// Sensitivity control (0.0 to 1.0, default 0.5)
     /// Higher values make the visualisation more reactive to audio changes
     @Published var sensitivity: Float = 0.5 {
@@ -41,7 +44,7 @@ final class AudioVisualiserViewModel: ObservableObject {
     
     private let visualiser: AudioVisualiserProtocol
     private var visualisationTask: Task<Void, Never>?
-    private let nowPlayingViewModel: NowPlayingViewModel?
+    private var nowPlayingViewModel: NowPlayingViewModel?
     private weak var audioEngine: AudioEngine?
     
     init(nowPlayingViewModel: NowPlayingViewModel? = nil, audioEngine: AudioEngine? = nil) {
@@ -58,8 +61,18 @@ final class AudioVisualiserViewModel: ObservableObject {
     /// Update the nowPlayingViewModel reference
     /// (used when ViewModel is created before nowPlayingViewModel is available)
     func updateNowPlayingViewModel(_ viewModel: NowPlayingViewModel?) {
-        // NOTE: This is a workaround for initialization order
-        // In a future refactor, consider using dependency injection or a factory pattern
+        self.nowPlayingViewModel = viewModel
+        // Update playback speed multiplier when view model changes
+        updatePlaybackSpeedMultiplier()
+    }
+    
+    /// Update playback speed multiplier from audio engine or view model
+    private func updatePlaybackSpeedMultiplier() {
+        if let engine = audioEngine {
+            playbackSpeedMultiplier = engine.playbackSpeed.rawValue
+        } else if let viewModel = nowPlayingViewModel {
+            playbackSpeedMultiplier = viewModel.playbackSpeed.rawValue
+        }
     }
     
     private func updateVisualisationVolume() {
@@ -76,81 +89,103 @@ final class AudioVisualiserViewModel: ObservableObject {
     }
     
     func startVisualization() async {
-        // Run visualisation in its own task to avoid blocking the main thread
-        // This runs independently and is memory efficient (only stores current frame)
         let visualiser = self.visualiser
         let nowPlayingViewModel = self.nowPlayingViewModel
         
         visualisationTask = Task {
             var lastFrameTimestamp: Date?
             var consecutiveFallbacks = 0
-            var wasPlaying = false // Track previous playback state to detect resume
-            let maxFallbacks = 10 // Only use fallback if no real frames for 10 iterations (about 83ms)
+            var wasPlaying = false
+            let maxFallbacks = 10
             
             while !Task.isCancelled {
-                let isCurrentlyPlaying = await MainActor.run {
-                    nowPlayingViewModel?.isPlaying ?? false
-                }
+                let (isCurrentlyPlaying, currentSpeed) = await getPlaybackState(from: nowPlayingViewModel)
+                await updatePlaybackSpeedMultiplier(currentSpeed)
                 
-                // Detect transition from paused/stopped to playing (resume or restart)
-                // This handles both pause→play and stop→play transitions
                 let justResumed = !wasPlaying && isCurrentlyPlaying
                 wasPlaying = isCurrentlyPlaying
                 
-                // Poll for latest frame from visualiser (non-blocking)
-                // Prioritize real audio data over fallback
                 if let frame = await visualiser.latestFrame() {
-                    // Check if this is a new frame (different timestamp)
-                    let isNewFrame = lastFrameTimestamp != frame.timestamp
-                    
-                    if isNewFrame {
-                        await MainActor.run {
-                            self.currentFrame = frame
-                            self.fftSize = frame.fftSize
-                        }
-                        lastFrameTimestamp = frame.timestamp
-                        consecutiveFallbacks = 0 // Reset fallback counter when we get real data
-                    }
+                    await handleNewFrame(frame, &lastFrameTimestamp, &consecutiveFallbacks)
                 } else {
-                    consecutiveFallbacks += 1
-                    
-                    // If we just resumed, immediately show fallback frames to avoid blank screen
-                    // Otherwise, wait for maxFallbacks to ensure we prioritize real audio data
-                    let shouldShowFallback = justResumed || consecutiveFallbacks >= maxFallbacks
-                    
-                    // Only use fallback if we haven't received real frames for a while
-                    // This ensures we prioritize real audio data from AudioVisualiserTap
-                    if shouldShowFallback,
-                       let nowPlayingViewModel = nowPlayingViewModel,
-                       nowPlayingViewModel.isPlaying {
-                        // Fallback only if playing and no real frames available after waiting
-                        await MainActor.run {
-                            self.createFallbackFrame()
-                        }
-                        // Reset counter after showing fallback to avoid rapid updates
-                        if justResumed {
-                            consecutiveFallbacks = maxFallbacks - 1
-                        }
-                    } else if let nowPlayingViewModel = nowPlayingViewModel,
-                              !nowPlayingViewModel.isPlaying,
-                              nowPlayingViewModel.currentTrack != nil {
-                        // Paused/stopped - keep last frame or show static
-                        await MainActor.run {
-                            // Always show static frame when paused to maintain visual continuity
-                            // This prevents blank screen when pausing
-                            if self.currentFrame == nil {
-                                self.createStaticFrame()
-                            }
-                        }
-                    }
+                    await handleNoFrame(
+                        justResumed: justResumed,
+                        consecutiveFallbacks: &consecutiveFallbacks,
+                        maxFallbacks: maxFallbacks,
+                        nowPlayingViewModel: nowPlayingViewModel
+                    )
                 }
                 
-                // Update at ~120 FPS (8.33ms intervals) for ultra-responsive visualisation
-                // This provides the smoothest, most real-time visual feedback
-                // The task is cancelled when view disappears, preventing memory leaks
-                try? await Task.sleep(nanoseconds: 8_333_333)
+                let interval = calculateUpdateInterval()
+                try? await Task.sleep(nanoseconds: interval)
             }
         }
+    }
+    
+    private func getPlaybackState(from viewModel: NowPlayingViewModel?) async -> (Bool, Double) {
+        await MainActor.run {
+            (
+                viewModel?.isPlaying ?? false,
+                viewModel?.playbackSpeed.rawValue ?? 1.0
+            )
+        }
+    }
+    
+    private func updatePlaybackSpeedMultiplier(_ speed: Double) async {
+        await MainActor.run {
+            playbackSpeedMultiplier = speed
+        }
+    }
+    
+    private func handleNewFrame(
+        _ frame: AudioVisualiserFrame,
+        _ lastFrameTimestamp: inout Date?,
+        _ consecutiveFallbacks: inout Int
+    ) async {
+        let isNewFrame = lastFrameTimestamp != frame.timestamp
+        if isNewFrame {
+            await MainActor.run {
+                self.currentFrame = frame
+                self.fftSize = frame.fftSize
+            }
+            lastFrameTimestamp = frame.timestamp
+            consecutiveFallbacks = 0
+        }
+    }
+    
+    private func handleNoFrame(
+        justResumed: Bool,
+        consecutiveFallbacks: inout Int,
+        maxFallbacks: Int,
+        nowPlayingViewModel: NowPlayingViewModel?
+    ) async {
+        consecutiveFallbacks += 1
+        let shouldShowFallback = justResumed || consecutiveFallbacks >= maxFallbacks
+        
+        if shouldShowFallback,
+           let viewModel = nowPlayingViewModel,
+           viewModel.isPlaying {
+            await MainActor.run {
+                self.createFallbackFrame()
+            }
+            if justResumed {
+                consecutiveFallbacks = maxFallbacks - 1
+            }
+        } else if let viewModel = nowPlayingViewModel,
+                  !viewModel.isPlaying,
+                  viewModel.currentTrack != nil {
+            await MainActor.run {
+                if self.currentFrame == nil {
+                    self.createStaticFrame()
+                }
+            }
+        }
+    }
+    
+    private func calculateUpdateInterval() -> UInt64 {
+        let baseInterval: UInt64 = 8_333_333
+        let speedAdjustedInterval = UInt64(Double(baseInterval) / playbackSpeedMultiplier)
+        return max(2_000_000, min(50_000_000, speedAdjustedInterval))
     }
     
     func stopVisualization() {

@@ -138,7 +138,10 @@ public struct MainWindowLayoutView: View {
             }
         }
         .onAppear {
-            setupMinimizeButtonInTitleBar()
+            // Setup minimize button after a small delay to ensure window is ready
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                setupMinimizeButtonInTitleBar()
+            }
             // Restore minimized state if app was in minimized mode when it closed
             if let appDelegate = AppDelegate.shared ?? (NSApplication.shared.delegate as? AppDelegate) {
                 appDelegate.restoreMinimizedStateIfNeeded(nowPlayingViewModel: nowPlayingViewModel)

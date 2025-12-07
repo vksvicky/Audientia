@@ -26,6 +26,8 @@
 - (NSTimeInterval)getDuration;
 - (void)setVolume:(float)volume;
 - (float)getVolume;
+- (void)setRate:(float)rate;
+- (float)getRate;
 - (BOOL)isPlaying;
 - (BOOL)isPaused;
 - (BOOL)isStopped;
@@ -119,6 +121,23 @@
 
 - (float)getVolume {
     return _volume;
+}
+
+- (void)setRate:(float)rate {
+    if (self.player) {
+        // AVAudioPlayer rate range is 0.5 to 2.0, but we support up to 4.0
+        // For rates > 2.0, we'll need to handle differently or clamp
+        // For now, clamp to AVAudioPlayer's supported range
+        float clampedRate = MAX(0.5f, MIN(2.0f, rate));
+        self.player.rate = clampedRate;
+    }
+}
+
+- (float)getRate {
+    if (self.player) {
+        return self.player.rate;
+    }
+    return 1.0f;
 }
 
 - (BOOL)isPlaying {
@@ -222,6 +241,19 @@ void CAudioEngine::setVolume(float volume) {
 
 float CAudioEngine::getVolume() const {
     return pImpl->volume;
+}
+
+void CAudioEngine::setRate(float rate) {
+    if (pImpl->bridge) {
+        [pImpl->bridge setRate:rate];
+    }
+}
+
+float CAudioEngine::getRate() const {
+    if (!pImpl->bridge) {
+        return 1.0f;
+    }
+    return [pImpl->bridge getRate];
 }
 
 bool CAudioEngine::isPlaying() const {

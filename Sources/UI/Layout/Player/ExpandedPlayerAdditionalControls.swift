@@ -20,6 +20,7 @@ struct ExpandedPlayerAdditionalControls: View {
             // Minimize button removed - using title bar minimize button instead
             shuffleButton
             loopButton
+            playbackSpeedControl
             volumeControl
         }
     }
@@ -80,6 +81,10 @@ struct ExpandedPlayerAdditionalControls: View {
         case .track: return "Loop track"
         case .queue: return "Loop queue"
         }
+    }
+    
+    private var playbackSpeedControl: some View {
+        PlaybackSpeedControl(playbackSpeed: $nowPlayingViewModel.playbackSpeed)
     }
     
     private var volumeControl: some View {

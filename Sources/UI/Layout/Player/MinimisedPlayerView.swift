@@ -22,110 +22,142 @@ public struct MinimisedPlayerView: View {
     public var body: some View {
         VStack(spacing: 0) {
             // Compact player content (maximize button is in title bar)
-            HStack(spacing: 12) {
-                // Album art or placeholder
-                Group {
-                    if let artworkImage = artworkImage {
-                        Image(nsImage: artworkImage)
-                            .resizable()
-                            .scaledToFill()
-                    } else {
-                        RoundedRectangle(cornerRadius: 4)
-                            .fill(Color.gray.opacity(0.3))
-                            .overlay(
-                                Image(systemName: "music.note")
-                                    .font(.system(size: 16))
-                                    .foregroundColor(.secondary)
-                            )
-                    }
-                }
-                .frame(width: 40, height: 40)
-                .clipShape(RoundedRectangle(cornerRadius: 4))
-                
-                // Track info or app name
-                VStack(alignment: .leading, spacing: 2) {
-                    if let track = nowPlayingViewModel.currentTrack {
-                        ScrollingTextView(
-                            text: track.title,
-                            font: .system(size: 11, weight: .medium),
-                            foregroundColor: .primary,
-                            scrollSpeed: AppSettings.shared.trackInfoScrollSpeed,
-                            frameWidth: 140
-                        )
-                        ScrollingTextView(
-                            text: track.artist,
-                            font: .system(size: 9),
-                            foregroundColor: .secondary,
-                            scrollSpeed: AppSettings.shared.trackInfoScrollSpeed,
-                            frameWidth: 140
-                        )
-                    } else {
-                        Text("Audientia")
-                            .font(.system(size: 12, weight: .semibold))
-                            .foregroundColor(.primary)
-                        Text("No track selected")
-                            .font(.system(size: 9))
-                            .foregroundColor(.secondary)
-                    }
-                }
-                .frame(width: 140, alignment: .leading)
-                
-                Spacer()
-                
-                // Playback controls - centered
+            VStack(spacing: 4) {
+                // Top row: Track info and controls
                 HStack(spacing: 8) {
-                    Button(action: { Task { try? await nowPlayingViewModel.playPrevious() } }, label: {
-                        Image(systemName: "backward.fill")
-                            .font(.system(size: 12))
-                            .foregroundColor(.primary)
-                    })
-                    .buttonStyle(.plain)
-                    .disabled(nowPlayingViewModel.queue.count <= 1)
-                    
-                    Button(action: {
-                        Task {
-                            if nowPlayingViewModel.isPlaying {
-                                await nowPlayingViewModel.pause()
-                            } else {
-                                try? await nowPlayingViewModel.play()
-                            }
+                    // Album art or placeholder
+                    Group {
+                        if let artworkImage = artworkImage {
+                            Image(nsImage: artworkImage)
+                                .resizable()
+                                .scaledToFill()
+                        } else {
+                            RoundedRectangle(cornerRadius: 4)
+                                .fill(Color.gray.opacity(0.3))
+                                .overlay(
+                                    Image(systemName: "music.note")
+                                        .font(.system(size: 14))
+                                        .foregroundColor(.secondary)
+                                )
                         }
-                    }, label: {
-                        Image(systemName: nowPlayingViewModel.isPlaying ? "pause.fill" : "play.fill")
-                            .font(.system(size: 16, weight: .semibold))
-                            .foregroundColor(Color("AccentColor"))
-                    })
-                    .buttonStyle(.plain)
+                    }
+                    .frame(width: 50, height: 50)
+                    .clipShape(RoundedRectangle(cornerRadius: 4))
                     
-                    Button(action: { Task { await nowPlayingViewModel.stop() } }, label: {
-                        Image(systemName: "stop.fill")
-                            .font(.system(size: 12))
-                            .foregroundColor(.primary)
-                    })
-                    .buttonStyle(.plain)
+                    // Track info or app name
+                    VStack(alignment: .leading, spacing: 2) {
+                        if let track = nowPlayingViewModel.currentTrack {
+                            ScrollingTextView(
+                                text: track.title,
+                                font: .system(size: 11, weight: .medium),
+                                foregroundColor: .primary,
+                                scrollSpeed: AppSettings.shared.trackInfoScrollSpeed,
+                                frameWidth: 120
+                            )
+                            ScrollingTextView(
+                                text: track.artist,
+                                font: .system(size: 9),
+                                foregroundColor: .secondary,
+                                scrollSpeed: AppSettings.shared.trackInfoScrollSpeed,
+                                frameWidth: 120
+                            )
+                        } else {
+                            Text("Audientia")
+                                .font(.system(size: 12, weight: .semibold))
+                                .foregroundColor(.primary)
+                            Text("No track selected")
+                                .font(.system(size: 9))
+                                .foregroundColor(.secondary)
+                        }
+                    }
+                    .frame(width: 120, alignment: .leading)
                     
-                    Button(action: { Task { try? await nowPlayingViewModel.playNext() } }, label: {
-                        Image(systemName: "forward.fill")
-                            .font(.system(size: 12))
-                            .foregroundColor(.primary)
-                    })
-                    .buttonStyle(.plain)
-                    .disabled(nowPlayingViewModel.queue.count <= 1)
+                    Spacer(minLength: 4)
+                    
+                    // Playback controls
+                    HStack(spacing: 6) {
+                        Button(action: { Task { try? await nowPlayingViewModel.playPrevious() } }, label: {
+                            Image(systemName: "backward.fill")
+                                .font(.system(size: 11))
+                                .foregroundColor(.primary)
+                        })
+                        .buttonStyle(.plain)
+                        .disabled(nowPlayingViewModel.queue.count <= 1)
+                        
+                        Button(action: {
+                            Task {
+                                if nowPlayingViewModel.isPlaying {
+                                    await nowPlayingViewModel.pause()
+                                } else {
+                                    try? await nowPlayingViewModel.play()
+                                }
+                            }
+                        }, label: {
+                            Image(systemName: nowPlayingViewModel.isPlaying ? "pause.fill" : "play.fill")
+                                .font(.system(size: 14, weight: .semibold))
+                                .foregroundColor(Color("AccentColor"))
+                        })
+                        .buttonStyle(.plain)
+                        
+                        Button(action: { Task { await nowPlayingViewModel.stop() } }, label: {
+                            Image(systemName: "stop.fill")
+                                .font(.system(size: 11))
+                                .foregroundColor(.primary)
+                        })
+                        .buttonStyle(.plain)
+                        
+                        Button(action: { Task { try? await nowPlayingViewModel.playNext() } }, label: {
+                            Image(systemName: "forward.fill")
+                                .font(.system(size: 11))
+                                .foregroundColor(.primary)
+                        })
+                        .buttonStyle(.plain)
+                        .disabled(nowPlayingViewModel.queue.count <= 1)
+                        
+                        // Playback Speed Control
+                        PlaybackSpeedControl(playbackSpeed: $nowPlayingViewModel.playbackSpeed)
+                    }
                 }
                 
-                Spacer()
-                
-                // Menu/playlist icon
-                Button(action: {}, label: {
-                    Image(systemName: "line.3.horizontal")
-                        .font(.system(size: 14))
-                        .foregroundColor(.secondary)
-                })
-                .buttonStyle(.plain)
+                // Bottom row: Seek bar
+                HStack(spacing: 8) {
+                    Spacer()
+                        .frame(width: 50 + 8) // Match artwork width + spacing
+                    
+                    VStack(spacing: 2) {
+                        Slider(
+                            value: Binding(
+                                get: { nowPlayingViewModel.currentPosition },
+                                set: { newValue in
+                                    Task {
+                                        await nowPlayingViewModel.seek(to: newValue)
+                                    }
+                                }
+                            ),
+                            in: 0...max(nowPlayingViewModel.duration, 1.0)
+                        )
+                        .controlSize(.mini)
+                        .disabled(nowPlayingViewModel.duration <= 0)
+                        
+                        HStack {
+                            Text(formatTime(nowPlayingViewModel.currentPosition))
+                                .font(.system(size: 8))
+                                .foregroundColor(.secondary)
+                                .monospacedDigit()
+                            
+                            Spacer()
+                            
+                            Text(formatTime(nowPlayingViewModel.duration))
+                                .font(.system(size: 8))
+                                .foregroundColor(.secondary)
+                                .monospacedDigit()
+                        }
+                    }
+                    .frame(maxWidth: .infinity)
+                }
             }
-            .padding(.horizontal, 16)
-            .padding(.vertical, 10)
-            .frame(height: 60)
+            .padding(.horizontal, 12)
+            .padding(.vertical, 8)
         }
         .frame(width: 400, height: 80)
         .background(
@@ -161,6 +193,13 @@ public struct MinimisedPlayerView: View {
         .onAppear {
             loadArtwork()
         }
+    }
+    
+    private func formatTime(_ time: TimeInterval) -> String {
+        guard time.isFinite && !time.isNaN else { return "0:00" }
+        let minutes = Int(time) / 60
+        let seconds = Int(time) % 60
+        return String(format: "%d:%02d", minutes, seconds)
     }
     
     private func loadArtwork() {

@@ -40,35 +40,48 @@ public struct NowPlayingView: View {
     // MARK: - Body
     
     public var body: some View {
-        VStack(spacing: 20) {
-            // Import Button
-            importButtonView
+        ScrollView {
+            VStack(spacing: 12) {
+                // Import Button
+                importButtonView
 
-            // Track Information
-            trackInformationView
+                // Track Information
+                trackInformationView
 
-            // Progress Slider
-            progressSliderView
+                Divider()
 
-            // Playback Controls
-            playbackControlsView
+                // Progress Slider
+                progressSliderView
 
-            // Advanced Controls (Replay, Skip, Loop)
-            advancedControlsView
+                // Playback Controls
+                playbackControlsView
 
-            // Volume Control
-            volumeControlView
+                Divider()
 
-            // Playback State Indicator
-            playbackStateIndicatorView
-            
-            // Queue Display
-            if !viewModel.queue.isEmpty {
-                queueView
+                // Advanced Controls (Replay, Skip, Loop)
+                advancedControlsView
+
+                // Volume Control
+                volumeControlView
+                
+                // Playback Speed Control
+                playbackSpeedControlView
+
+                Divider()
+
+                // Playback State Indicator
+                playbackStateIndicatorView
+                
+                // Queue Display
+                if !viewModel.queue.isEmpty {
+                    Divider()
+                    queueView
+                }
             }
+            .padding(12)
+            .frame(maxWidth: .infinity, alignment: .top)
         }
-        .padding()
-        .frame(minWidth: 400, minHeight: 300)
+        .frame(minWidth: 600, minHeight: 500)
         .onAppear {
             Logger.userInterface.info("NowPlayingView appeared")
         }
@@ -280,6 +293,18 @@ private extension NowPlayingView {
             
             Image(systemName: "speaker.wave.3.fill")
                 .foregroundColor(.secondary)
+        }
+    }
+    
+    // MARK: - Playback Speed Control View
+    
+    var playbackSpeedControlView: some View {
+        HStack(spacing: 12) {
+            Image(systemName: "speedometer")
+                .foregroundColor(.secondary)
+                .font(.system(size: 14))
+            
+            PlaybackSpeedControl(playbackSpeed: $viewModel.playbackSpeed)
         }
     }
     

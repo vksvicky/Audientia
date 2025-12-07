@@ -36,6 +36,16 @@ public final class CAudioEngine {
         }
     }
     
+    /// Playback rate (0.5 to 2.0, higher rates may be clamped by AVAudioPlayer)
+    public var rate: Float {
+        get {
+            cppEngine.getRate()
+        }
+        set {
+            cppEngine.setRate(newValue)
+        }
+    }
+    
     /// Convenience property: is engine playing?
     public var isPlaying: Bool {
         cppEngine.isPlaying()
@@ -135,6 +145,17 @@ public final class CAudioEngine {
         self.volume = volume
     }
     
+    /// Set playback rate
+    /// - Parameter rate: Playback rate multiplier
+    public func setRate(_ rate: Float) {
+        self.rate = rate
+    }
+    
+    /// Get current playback rate
+    public func getRate() -> Float {
+        rate
+    }
+    
     // MARK: - Private Methods
     
     private func updateState() {
@@ -213,6 +234,14 @@ private nonisolated final class CAudioEngineWrapper {
         CAudioEngineGetVolume(cppEngine)
     }
     
+    func setRate(_ rate: Float) {
+        CAudioEngineSetRate(cppEngine, rate)
+    }
+    
+    func getRate() -> Float {
+        CAudioEngineGetRate(cppEngine)
+    }
+    
     func isPlaying() -> Bool {
         CAudioEngineIsPlaying(cppEngine) != 0
     }
@@ -265,6 +294,12 @@ func CAudioEngineSetVolume(_ engine: CAudioEngineRef, _ volume: Float)
 
 @_silgen_name("CAudioEngineGetVolume")
 func CAudioEngineGetVolume(_ engine: CAudioEngineRef) -> Float
+
+@_silgen_name("CAudioEngineSetRate")
+func CAudioEngineSetRate(_ engine: CAudioEngineRef, _ rate: Float)
+
+@_silgen_name("CAudioEngineGetRate")
+func CAudioEngineGetRate(_ engine: CAudioEngineRef) -> Float
 
 @_silgen_name("CAudioEngineIsPlaying")
 func CAudioEngineIsPlaying(_ engine: CAudioEngineRef) -> Int32

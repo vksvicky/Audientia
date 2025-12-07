@@ -34,7 +34,8 @@ enum WindowPositioningHelper {
                 // Restore saved position
                 let validFrame = WindowStateManagerHelper.ensureFrameOnScreen(savedState.frame)
                 await MainActor.run {
-                    window.setFrame(validFrame, display: false)
+                    window.setFrame(validFrame, display: true)
+                    window.makeKeyAndOrderFront(nil)
                 }
                 Logger.userInterface.debug(
                     "Restored minimized player window position from saved state: \(NSStringFromRect(validFrame))"
@@ -58,8 +59,15 @@ enum WindowPositioningHelper {
                         }
                         
                         window.setFrameOrigin(NSPoint(x: centerX, y: centerY))
+                        window.makeKeyAndOrderFront(nil)
                     }
                 }
+            }
+            
+            // Ensure window is visible after positioning
+            await MainActor.run {
+                window.makeKeyAndOrderFront(nil)
+                NSApp.activate(ignoringOtherApps: true)
             }
             
             // Complete callback

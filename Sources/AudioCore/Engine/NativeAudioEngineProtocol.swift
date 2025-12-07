@@ -18,4 +18,6 @@ protocol NativeAudioEngineProtocol: AnyObject {
     func stop()
     func seek(to position: TimeInterval) async -> Bool
     func setVolume(_ volume: Float)
+    func setRate(_ rate: Float)
+    func getRate() -> Float
 }

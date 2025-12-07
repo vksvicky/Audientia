@@ -92,105 +92,21 @@ private class HoverButton: NSButton {
 /// Helper for setting up minimize button in title bar
 enum TitleBarMinimizeButton {
     static func setup(in window: NSWindow, viewModel: NowPlayingViewModel) {
-        while !window.titlebarAccessoryViewControllers.isEmpty {
-            window.removeTitlebarAccessoryViewController(at: 0)
-        }
+        removeExistingMinimizeButtons(from: window)
         
-        // Get the standard window buttons to align vertically with them
-        let closeButton = window.standardWindowButton(.closeButton)
-        let trafficLightFrame = closeButton?.frame ?? NSRect(x: 12, y: 3, width: 12, height: 12)
-        let trafficLightY = trafficLightFrame.origin.y
-        let trafficLightHeight = trafficLightFrame.height
-        
-        // App accent color (#5B8DEE / RGB: 0.357, 0.553, 0.933)
-        let accentColor = NSColor(red: 0.357, green: 0.553, blue: 0.933, alpha: 1.0)
-        // Default color is also blue (#5B8DEE) - same as accent color
-        let defaultColor = accentColor
-        
-        // Create hover-aware button with custom icon
-        let button = HoverButton()
-        button.accentColor = accentColor
-        button.defaultColor = defaultColor
-        
-        // Match traffic light button size and vertical position
-        let buttonSize: CGFloat = trafficLightHeight
-        let buttonY = trafficLightY // Align vertically with traffic lights
-        
-        // Load default icon (MinimizeIcon - circle with two squares)
-        let defaultIcon = NSImage(named: "MinimizeIcon")
-        // Load hover icon (MinimizeIconHover - overlapping rectangles)
-        let hoverIcon = NSImage(named: "MinimizeIconHover")
-        
-        if let defaultImage = defaultIcon {
-            // Store original images (don't copy yet, we'll draw them when needed)
-            button.defaultImage = defaultImage
-            // Store hover image directly (don't copy, use original)
-            if let hover = hoverIcon {
-                button.hoverImage = hover
-            } else {
-                button.hoverImage = defaultImage
-            }
-            
-            // Set default image initially - no template, no tinting, use image as-is
-            let resizedDefault = defaultImage.copy() as? NSImage ?? defaultImage
-            resizedDefault.size = NSSize(width: buttonSize, height: buttonSize)
-            resizedDefault.isTemplate = false  // Don't use template - use image as-is
-            button.image = resizedDefault
-            
-            // No tinting - use image colors as-is
-            if #available(macOS 10.14, *) {
-                button.contentTintColor = nil
-            }
-        } else {
-            // Fallback: use system symbol if custom icon not found
-            if let systemImage = NSImage(systemSymbolName: "arrow.down.right.and.arrow.up.left", accessibilityDescription: nil) {
-                button.defaultImage = systemImage
-                button.hoverImage = systemImage
-                systemImage.isTemplate = true
-                systemImage.size = NSSize(width: buttonSize, height: buttonSize)
-                button.image = systemImage
-                if #available(macOS 10.14, *) {
-                    button.contentTintColor = defaultColor
-                }
-            }
-        }
-        
-        button.bezelStyle = .texturedRounded
-        button.isBordered = false
-        button.imagePosition = .imageOnly
-        button.imageScaling = .scaleProportionallyUpOrDown
-        button.toolTip = "Minimise to Player"
-        button.wantsLayer = false
-        
-        button.frame = NSRect(x: 0, y: 0, width: buttonSize, height: buttonSize)
-        
-        // Create circular container view to match traffic lights style
-        let circularContainer = NSView(frame: NSRect(x: 0, y: 0, width: buttonSize, height: buttonSize))
-        circularContainer.wantsLayer = true
-        circularContainer.layer?.cornerRadius = buttonSize / 2
-        circularContainer.layer?.masksToBounds = true
-        
-        // Add button to circular container
-        button.frame = NSRect(x: 0, y: 0, width: buttonSize, height: buttonSize)
-        circularContainer.addSubview(button)
-        
-        let target = MinimizeButtonTarget(viewModel: viewModel)
-        button.target = target
-        button.action = #selector(MinimizeButtonTarget.minimize)
-        button.isEnabled = true
-        
-        // Container view - with .leading layout, this starts right after traffic lights
-        // Position button at x: 0 (right after traffic lights) and align vertically
-        let containerView = NSView(frame: NSRect(x: 0, y: 0, width: 30, height: 22))
-        containerView.addSubview(circularContainer)
-        circularContainer.frame.origin = NSPoint(x: 0, y: buttonY)
-        
-        objc_setAssociatedObject(containerView, "minimizeTarget", target, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+        let (buttonSize, buttonY) = getTrafficLightDimensions(from: window)
+        let button = createMinimizeButton(size: buttonSize)
+        setupButtonImages(for: button, size: buttonSize)
+        let (containerView, target) = createButtonContainer(
+            button: button,
+            size: buttonSize,
+            yPosition: buttonY,
+            viewModel: viewModel
+        )
         
         let accessory = NSTitlebarAccessoryViewController()
         accessory.view = containerView
         accessory.layoutAttribute = .leading
-        
         window.addTitlebarAccessoryViewController(accessory)
         
         // Setup tracking after the view is in the window hierarchy and laid out
@@ -199,23 +115,138 @@ enum TitleBarMinimizeButton {
         }
     }
     
+    private static func removeExistingMinimizeButtons(from window: NSWindow) {
+        var indicesToRemove: [Int] = []
+        for (index, accessory) in window.titlebarAccessoryViewControllers.enumerated() {
+            let view = accessory.view
+            let target = objc_getAssociatedObject(view, "minimizeTarget")
+            if target != nil {
+                indicesToRemove.append(index)
+            }
+        }
+        for index in indicesToRemove.reversed() {
+            window.removeTitlebarAccessoryViewController(at: index)
+        }
+    }
+    
+    private static func getTrafficLightDimensions(from window: NSWindow) -> (size: CGFloat, y: CGFloat) {
+        let closeButton = window.standardWindowButton(.closeButton)
+        let trafficLightFrame = closeButton?.frame ?? NSRect(x: 12, y: 3, width: 12, height: 12)
+        let trafficLightY = trafficLightFrame.origin.y
+        let trafficLightHeight = trafficLightFrame.height
+        return (trafficLightHeight, trafficLightY)
+    }
+    
+    private static func createMinimizeButton(size: CGFloat) -> HoverButton {
+        let accentColor = NSColor(red: 0.357, green: 0.553, blue: 0.933, alpha: 1.0)
+        let button = HoverButton()
+        button.accentColor = accentColor
+        button.defaultColor = accentColor
+        button.bezelStyle = .texturedRounded
+        button.isBordered = false
+        button.imagePosition = .imageOnly
+        button.imageScaling = .scaleProportionallyUpOrDown
+        button.toolTip = "Minimise to Player"
+        button.wantsLayer = false
+        button.frame = NSRect(x: 0, y: 0, width: size, height: size)
+        return button
+    }
+    
+    private static func setupButtonImages(for button: HoverButton, size: CGFloat) {
+        let defaultIcon = NSImage(named: "MinimizeIcon")
+        let hoverIcon = NSImage(named: "MinimizeIconHover")
+        
+        if let defaultImage = defaultIcon {
+            button.defaultImage = defaultImage
+            button.hoverImage = hoverIcon ?? defaultImage
+            
+            let resizedDefault = defaultImage.copy() as? NSImage ?? defaultImage
+            resizedDefault.size = NSSize(width: size, height: size)
+            resizedDefault.isTemplate = false
+            button.image = resizedDefault
+            
+            if #available(macOS 10.14, *) {
+                button.contentTintColor = nil
+            }
+        } else {
+            if let systemImage = NSImage(
+                systemSymbolName: "arrow.down.right.and.arrow.up.left",
+                accessibilityDescription: nil
+            ) {
+                button.defaultImage = systemImage
+                button.hoverImage = systemImage
+                systemImage.isTemplate = true
+                systemImage.size = NSSize(width: size, height: size)
+                button.image = systemImage
+                if #available(macOS 10.14, *) {
+                    button.contentTintColor = button.defaultColor
+                }
+            }
+        }
+    }
+    
+    private static func createButtonContainer(
+        button: HoverButton,
+        size: CGFloat,
+        yPosition: CGFloat,
+        viewModel: NowPlayingViewModel
+    ) -> (containerView: NSView, target: MinimizeButtonTarget) {
+        let circularContainer = NSView(frame: NSRect(x: 0, y: 0, width: size, height: size))
+        circularContainer.wantsLayer = true
+        circularContainer.layer?.cornerRadius = size / 2
+        circularContainer.layer?.masksToBounds = true
+        circularContainer.addSubview(button)
+        
+        let target = MinimizeButtonTarget(viewModel: viewModel)
+        button.target = target
+        button.action = #selector(MinimizeButtonTarget.minimize)
+        button.isEnabled = true
+        
+        let containerView = NSView(frame: NSRect(x: 0, y: 0, width: 30, height: 22))
+        containerView.addSubview(circularContainer)
+        circularContainer.frame.origin = NSPoint(x: 0, y: yPosition)
+        
+        objc_setAssociatedObject(
+            containerView,
+            "minimizeTarget",
+            target,
+            .OBJC_ASSOCIATION_RETAIN_NONATOMIC
+        )
+        
+        return (containerView, target)
+    }
+    
     static func setupAsync(viewModel: NowPlayingViewModel) {
         DispatchQueue.main.async {
             var window: NSWindow?
-            for attempt in 0..<5 {
-                window = NSApplication.shared.windows.first(where: { $0.isMainWindow || $0.isKeyWindow })
+            for attempt in 0..<10 {
+                window = NSApplication.shared.windows.first(where: {
+                    ($0.isMainWindow || $0.isKeyWindow) &&
+                    $0.titlebarAccessoryViewControllers.isEmpty == false ||
+                    $0.standardWindowButton(.closeButton) != nil
+                })
                 if window != nil { break }
-                if attempt < 4 {
+                if attempt < 9 {
                     Thread.sleep(forTimeInterval: 0.1)
                 }
             }
             
             guard let window = window else {
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                // Retry after a longer delay
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                     if let retryWindow = NSApplication.shared.windows.first(
                         where: { $0.isMainWindow || $0.isKeyWindow }
                     ) {
                         Self.setup(in: retryWindow, viewModel: viewModel)
+                    } else {
+                        // Final retry
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+                            if let finalWindow = NSApplication.shared.windows.first(
+                                where: { $0.isMainWindow || $0.isKeyWindow }
+                            ) {
+                                Self.setup(in: finalWindow, viewModel: viewModel)
+                            }
+                        }
                     }
                 }
                 return
