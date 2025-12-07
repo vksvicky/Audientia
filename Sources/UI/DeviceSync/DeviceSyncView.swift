@@ -161,8 +161,9 @@ public struct DeviceSyncView: View {
     }
     
     private var actionButtons: some View {
-        HStack {
-            Button("Start Sync") {
+        let localisation = LocalisationManager.shared
+        return HStack {
+            Button(localisation[LocalisationManager.startSync]) {
                 Task {
                     await viewModel.startSync(tracks: tracks)
                 }
@@ -170,26 +171,27 @@ public struct DeviceSyncView: View {
             .buttonStyle(.borderedProminent)
             .disabled(viewModel.selectedDevice == nil || tracks.isEmpty)
             
-            Button("Transcoding Settings") {
+            Button(localisation[LocalisationManager.transcodingSettings]) {
                 showTranscodeSettings = true
             }
             
-            Button("Transcoding Progress") {
+            Button(localisation[LocalisationManager.transcodingProgress]) {
                 showTranscodeProgress = true
             }
             
-            Button("Reload Jobs") {
+            Button(localisation[LocalisationManager.reloadJobs]) {
                 Task { await viewModel.reloadJobs() }
             }
             
-            Button("Reload Tracks") {
+            Button(localisation[LocalisationManager.reloadTracks]) {
                 Task { await reloadTracks() }
             }
         }
     }
     
     private var statusBanner: some View {
-        VStack(alignment: .leading, spacing: 4) {
+        let localisation = LocalisationManager.shared
+        return VStack(alignment: .leading, spacing: 4) {
             if let message = viewModel.infoMessage {
                 Label(message, systemImage: "checkmark.seal")
                     .foregroundColor(.green)
@@ -199,13 +201,16 @@ public struct DeviceSyncView: View {
                     .foregroundColor(.red)
             }
             if isLoadingTracks {
-                Label("Loading tracks…", systemImage: "arrow.triangle.2.circlepath")
+                Label(localisation[LocalisationManager.loadingTracks], systemImage: "arrow.triangle.2.circlepath")
                     .foregroundColor(.secondary)
             } else if tracks.isEmpty {
-                Label("No tracks available for sync.", systemImage: "music.note.list")
+                Label(localisation[LocalisationManager.noTracksAvailable], systemImage: "music.note.list")
                     .foregroundColor(.secondary)
             } else {
-                Label("\(tracks.count) tracks ready for sync", systemImage: "music.note.list")
+                Label(
+                    "\(tracks.count) \(localisation[LocalisationManager.tracksReadyForSync])",
+                    systemImage: "music.note.list"
+                )
                     .foregroundColor(.secondary)
             }
         }

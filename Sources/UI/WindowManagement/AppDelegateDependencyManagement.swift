@@ -44,12 +44,13 @@ extension AppDelegate {
     
     @MainActor
     private func showDependencyAlert(message: String, missingRequired: [DependencyInfo]) {
+        let localisation = LocalisationManager.shared
         let alert = NSAlert()
-        alert.messageText = "Missing Required Dependencies"
+        alert.messageText = localisation[LocalisationManager.missingRequiredDependencies]
         alert.informativeText = message
         alert.alertStyle = .warning
-        alert.addButton(withTitle: "Open Installation Instructions")
-        alert.addButton(withTitle: "OK")
+        alert.addButton(withTitle: localisation[LocalisationManager.openInstallationInstructions])
+        alert.addButton(withTitle: localisation[LocalisationManager.apply])
         
         let response = alert.runModal()
         
@@ -62,10 +63,11 @@ extension AppDelegate {
                 NSWorkspace.shared.open(instructionsURL)
             } else {
                 // Fallback: open Terminal with installation commands
+                let installMsg = localisation[LocalisationManager.installingDependencies]
                 let script = """
                 tell application "Terminal"
                     activate
-                    do script "echo 'Installing dependencies...' && brew install ffmpeg chromaprint"
+                    do script "echo '\(installMsg)' && brew install ffmpeg chromaprint"
                 end tell
                 """
                 if let appleScript = NSAppleScript(source: script) {

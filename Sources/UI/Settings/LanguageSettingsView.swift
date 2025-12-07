@@ -11,12 +11,13 @@ import Shared
 import SwiftUI
 
 /// View for language settings
+@MainActor
 struct LanguageSettingsView: View {
     @ObservedObject private var appSettings = AppSettings.shared
     @ObservedObject private var localisation = LocalisationManager.shared
     
     var body: some View {
-        Form(content: {
+        Form {
             Section {
                 Picker(localisation[LocalisationManager.language], selection: $appSettings.language) {
                     ForEach(Language.allCases, id: \.self) { language in
@@ -27,12 +28,10 @@ struct LanguageSettingsView: View {
                 .pickerStyle(.radioGroup)
                 
                 VStack(alignment: .leading, spacing: 8) {
-                    Text("Language Selection")
+                    Text(localisation[LocalisationManager.languageSelection])
                         .font(.caption)
                         .foregroundColor(.secondary)
-                    Text("Choose your preferred language for the application interface. " +
-                         "British English uses British spelling (visualiser, colour, minimise). " +
-                         "American English uses American spelling (visualiser, color, minimize).")
+                    Text(localisation[LocalisationManager.languageDescription])
                         .font(.caption)
                         .foregroundColor(.secondary)
                         .fixedSize(horizontal: false, vertical: true)
@@ -45,22 +44,22 @@ struct LanguageSettingsView: View {
             Section {
                 VStack(alignment: .leading, spacing: 12) {
                     PreviewRow(
-                        key: "Audio " + (appSettings.language == .britishEnglish ? "Visualiser" : "Visualizer"),
+                        key: localisation[LocalisationManager.audioVisualiser],
                         value: localisation[LocalisationManager.audioVisualiser]
                     )
                     PreviewRow(
-                        key: appSettings.language == .britishEnglish ? "Minimise" : "Minimize",
+                        key: localisation[LocalisationManager.minimise],
                         value: localisation[LocalisationManager.minimise]
                     )
                     PreviewRow(
-                        key: appSettings.language == .britishEnglish ? "Visualiser Settings" : "Visualizer Settings",
+                        key: localisation[LocalisationManager.visualiserSettings],
                         value: localisation[LocalisationManager.visualiserSettings]
                     )
                 }
             } header: {
-                Text("Preview")
+                Text(localisation[LocalisationManager.languagePreview])
             }
-        })
+        }
         .padding()
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
     }

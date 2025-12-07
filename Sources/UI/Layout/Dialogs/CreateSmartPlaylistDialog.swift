@@ -8,6 +8,7 @@
 //
 
 import DataLayer
+import Shared
 import SwiftUI
 
 /// Dialog for creating a new smart playlist
@@ -19,16 +20,17 @@ struct CreateSmartPlaylistDialog: View {
     var onCreate: () -> Void
     
     var body: some View {
-        VStack(spacing: 20) {
-            Text("New Smart Playlist")
+        let localisation = LocalisationManager.shared
+        return VStack(spacing: 20) {
+            Text(localisation[LocalisationManager.newSmartPlaylist])
                 .font(.title2)
                 .fontWeight(.semibold)
             
             VStack(alignment: .leading, spacing: 12) {
-                Text("Playlist Name")
+                Text(localisation[LocalisationManager.playlistName])
                     .font(.headline)
                 
-                TextField("Enter smart playlist name", text: $playlistName)
+                TextField(localisation[LocalisationManager.enterSmartPlaylistName], text: $playlistName)
                     .textFieldStyle(.roundedBorder)
             }
             
@@ -36,7 +38,7 @@ struct CreateSmartPlaylistDialog: View {
             
             // Rule builder
             VStack(alignment: .leading, spacing: 12) {
-                Text("Rules")
+                Text(localisation[LocalisationManager.rules])
                     .font(.headline)
                 
                 SmartPlaylistRuleBuilderView(viewModel: ruleBuilderViewModel)
@@ -50,7 +52,7 @@ struct CreateSmartPlaylistDialog: View {
             }
             
             HStack {
-                Button("Cancel") {
+                Button(localisation[LocalisationManager.cancel]) {
                     isPresented = false
                     playlistName = ""
                     error = nil
@@ -60,7 +62,7 @@ struct CreateSmartPlaylistDialog: View {
                 
                 Spacer()
                 
-                Button("Create") {
+                Button(localisation[LocalisationManager.create]) {
                     onCreate()
                 }
                 .buttonStyle(.borderedProminent)
@@ -76,22 +78,23 @@ struct CreateSmartPlaylistDialog: View {
     }
     
     private func errorMessage(for error: Error) -> String {
+        let localisation = LocalisationManager.shared
         if let playlistError = error as? PlaylistManagerError {
             switch playlistError {
             case .invalidPlaylistName:
-                return "Please enter a valid playlist name."
+                return localisation[LocalisationManager.invalidPlaylistName]
             case .duplicatePlaylist:
-                return "A playlist with this name already exists."
+                return localisation[LocalisationManager.duplicatePlaylist]
             case .playlistNotFound:
-                return "Playlist not found."
+                return localisation[LocalisationManager.playlistNotFound]
             case .trackNotFound:
-                return "Track not found."
+                return localisation[LocalisationManager.trackNotFound]
             case .duplicateTrack:
-                return "Track is already in the playlist."
+                return localisation[LocalisationManager.duplicateTrack]
             case .invalidRules:
-                return "Invalid playlist rules."
+                return localisation[LocalisationManager.invalidRules]
             case .operationFailed:
-                return "Operation failed. Please try again."
+                return localisation[LocalisationManager.operationFailed]
             }
         }
         return error.localizedDescription

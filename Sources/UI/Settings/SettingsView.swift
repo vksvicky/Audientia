@@ -32,21 +32,40 @@ public struct SettingsView: View {
     }
     
     public var body: some View {
-        NavigationSplitView {
+        HSplitView {
             // Sidebar with categories
             List(selection: $selectedCategory) {
                 ForEach(SettingsCategory.allCases, id: \.self) { category in
-                    NavigationLink(value: category) {
-                        Label(category.displayName, systemImage: category.iconName)
+                    HStack {
+                        Image(systemName: category.iconName)
+                            .frame(width: 20)
+                        Text(category.displayName)
                     }
+                    .tag(category)
                 }
             }
-            .navigationTitle("Settings")
-            .frame(minWidth: 200)
-        } detail: {
+            .frame(minWidth: 200, idealWidth: 250)
+            .listStyle(.sidebar)
+            
             // Detail view for selected category
-            settingsDetailView
-                .navigationTitle(selectedCategory.displayName)
+            VStack(spacing: 0) {
+                // Title bar
+                HStack {
+                    Text(selectedCategory.displayName)
+                        .font(.title2)
+                        .fontWeight(.semibold)
+                    Spacer()
+                }
+                .padding()
+                .background(Color(NSColor.controlBackgroundColor))
+                
+                // Content
+                ScrollView {
+                    settingsDetailView
+                        .frame(maxWidth: .infinity, alignment: .topLeading)
+                }
+            }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
         .frame(minWidth: 800, minHeight: 600)
         .task {
@@ -85,15 +104,17 @@ enum SettingsCategory: String, CaseIterable {
     case language
     case advanced
     
+    @MainActor
     var displayName: String {
+        let localisation = LocalisationManager.shared
         switch self {
-        case .general: return "General"
-        case .library: return "Library"
-        case .playback: return "Playback"
-        case .audio: return "Audio/DSP"
-        case .appearance: return "Appearance"
-        case .language: return "Language"
-        case .advanced: return "Advanced"
+        case .general: return localisation[LocalisationManager.general]
+        case .library: return localisation[LocalisationManager.library]
+        case .playback: return localisation[LocalisationManager.playback]
+        case .audio: return localisation[LocalisationManager.audio]
+        case .appearance: return localisation[LocalisationManager.appearance]
+        case .language: return localisation[LocalisationManager.language]
+        case .advanced: return localisation[LocalisationManager.advanced]
         }
     }
     
@@ -126,38 +147,39 @@ private struct GeneralSettingsView: View {
     
     var body: some View {
         Form {
-            Section("Startup") {
-                Toggle("Show splash screen on startup", isOn: $settings.showSplashScreen)
-                    .help("Display the splash screen when the application launches")
+            Section(LocalisationManager.shared[LocalisationManager.startup]) {
+                Toggle(
+                    LocalisationManager.shared[LocalisationManager.showSplashScreen],
+                    isOn: $settings.showSplashScreen
+                )
+                    .help(LocalisationManager.shared[LocalisationManager.showSplashScreenHelp])
             }
             
-            Section("Notifications") {
+            Section(LocalisationManager.shared[LocalisationManager.notifications]) {
                 VStack(alignment: .leading, spacing: 4) {
-                    Text("Status: \(notificationManager.statusDescription)")
-                        .fontWeight(.semibold)
                     Text(
-                        """
-                        Audientia sends notifications when background library scans finish.
-                        You can review newly added files right away.
-                        """
+                        "\(LocalisationManager.shared[LocalisationManager.notificationStatus]) "
+                        + "\(notificationManager.statusDescription)"
                     )
+                        .fontWeight(.semibold)
+                    Text(LocalisationManager.shared[LocalisationManager.notificationDescription])
                         .font(.caption)
                         .foregroundColor(.secondary)
                 }
                 
                 HStack {
-                    Button("Request Permission") {
+                    Button(LocalisationManager.shared[LocalisationManager.requestPermission]) {
                         Task { await notificationManager.requestPermissionFromSettings() }
                     }
-                    Button("Open System Settings") {
+                    Button(LocalisationManager.shared[LocalisationManager.openSystemSettings]) {
                         notificationManager.openSystemSettings()
                     }
                 }
             }
             
-            Section("Window") {
+            Section(LocalisationManager.shared[LocalisationManager.window]) {
                 // Window settings will go here
-                Text("Window management settings")
+                Text(LocalisationManager.shared[LocalisationManager.windowManagementSettings])
             }
         }
         .task {
@@ -177,9 +199,9 @@ private struct LibrarySettingsView: View {
     
     var body: some View {
         Form {
-            Section("Library View") {
+            Section(LocalisationManager.shared[LocalisationManager.library]) {
                 // Library view configuration will go here
-                Text("Library view settings")
+                Text(LocalisationManager.shared[LocalisationManager.libraryViewSettings])
             }
         }
         .padding()
@@ -193,9 +215,9 @@ private struct PlaybackSettingsView: View {
     
     var body: some View {
         Form {
-            Section("Track Info Display") {
+            Section(LocalisationManager.shared[LocalisationManager.trackInfoDisplay]) {
                 VStack(alignment: .leading, spacing: 8) {
-                    Text("Scroll Speed")
+                    Text(LocalisationManager.shared[LocalisationManager.scrollSpeed])
                         .font(.headline)
                     
                     HStack {
@@ -204,21 +226,19 @@ private struct PlaybackSettingsView: View {
                             in: 10...100,
                             step: 5
                         )
-                        Text("\(Int(appSettings.trackInfoScrollSpeed)) px/s")
+                        Text(
+                            "\(Int(appSettings.trackInfoScrollSpeed)) "
+                            + "\(LocalisationManager.shared[LocalisationManager.pxPerSecond])"
+                        )
                             .frame(width: 60, alignment: .trailing)
                             .monospacedDigit()
                     }
                     
-                    Text(
-                        "Long track titles scroll."
-                    )
+                    Text(LocalisationManager.shared[LocalisationManager.longTrackTitlesScroll])
                         .font(.caption)
                         .foregroundColor(.secondary)
                     
-                    Text(
-                        "Adjust the scroll speed " +
-                        "(10-100 px/s)."
-                    )
+                    Text(LocalisationManager.shared[LocalisationManager.adjustScrollSpeed])
                         .font(.caption)
                         .foregroundColor(.secondary)
                 }
@@ -235,9 +255,9 @@ private struct AppearanceSettingsView: View {
     
     var body: some View {
         Form {
-            Section("Theme") {
+            Section(LocalisationManager.shared[LocalisationManager.themeTheme]) {
                 // Theme selector will be integrated here
-                Text("Theme settings")
+                Text(LocalisationManager.shared[LocalisationManager.themeSettings])
             }
         }
         .padding()
@@ -251,8 +271,8 @@ private struct AdvancedSettingsView: View {
     
     var body: some View {
         Form {
-            Section("Reset") {
-                Button("Reset All Settings to Defaults") {
+            Section(LocalisationManager.shared[LocalisationManager.reset]) {
+                Button(LocalisationManager.shared[LocalisationManager.resetAllSettings]) {
                     Task {
                         try? await viewModel.resetToDefaults()
                     }

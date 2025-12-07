@@ -113,12 +113,12 @@ public struct BatchTagOperationsView: View {
             }
         }
         .formStyle(.grouped)
-        .navigationTitle("Batch Tag Operations")
+        .navigationTitle(LocalisationManager.shared[LocalisationManager.batchTagOperations])
         .alert(
-            "Error",
+            LocalisationManager.shared[LocalisationManager.error],
             isPresented: $showingError,
             actions: {
-                Button("OK", role: .cancel) { }
+                Button(LocalisationManager.shared[LocalisationManager.apply], role: .cancel) { }
             },
             message: {
                 Text(errorMessage)

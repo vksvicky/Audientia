@@ -8,6 +8,7 @@
 //
 
 import DataLayer
+import Shared
 import SwiftUI
 
 /// Dialog for creating a new playlist
@@ -18,16 +19,17 @@ struct CreatePlaylistDialog: View {
     var onCreate: () -> Void
     
     var body: some View {
-        VStack(spacing: 20) {
-            Text("New Playlist")
+        let localisation = LocalisationManager.shared
+        return VStack(spacing: 20) {
+            Text(localisation[LocalisationManager.newPlaylist])
                 .font(.title2)
                 .fontWeight(.semibold)
             
             VStack(alignment: .leading, spacing: 8) {
-                Text("Playlist Name")
+                Text(localisation[LocalisationManager.playlistName])
                     .font(.headline)
                 
-                TextField("Enter playlist name", text: $playlistName)
+                TextField(localisation[LocalisationManager.enterPlaylistNamePlaceholder], text: $playlistName)
                     .textFieldStyle(.roundedBorder)
                     .onSubmit {
                         onCreate()
@@ -35,13 +37,13 @@ struct CreatePlaylistDialog: View {
             }
             
             if let error = error {
-                Text(errorMessage(for: error))
+                Text(errorMessage(for: error, localisation: localisation))
                     .font(.caption)
                     .foregroundColor(.red)
             }
             
             HStack {
-                Button("Cancel") {
+                Button(localisation[LocalisationManager.cancel]) {
                     isPresented = false
                     playlistName = ""
                     error = nil
@@ -50,7 +52,7 @@ struct CreatePlaylistDialog: View {
                 
                 Spacer()
                 
-                Button("Create") {
+                Button(localisation[LocalisationManager.create]) {
                     onCreate()
                 }
                 .buttonStyle(.borderedProminent)
@@ -62,23 +64,23 @@ struct CreatePlaylistDialog: View {
         .frame(width: 400)
     }
     
-    private func errorMessage(for error: Error) -> String {
+    private func errorMessage(for error: Error, localisation: LocalisationManager) -> String {
         if let playlistError = error as? PlaylistManagerError {
             switch playlistError {
             case .invalidPlaylistName:
-                return "Please enter a valid playlist name."
+                return localisation[LocalisationManager.invalidPlaylistName]
             case .duplicatePlaylist:
-                return "A playlist with this name already exists."
+                return localisation[LocalisationManager.duplicatePlaylist]
             case .playlistNotFound:
-                return "Playlist not found."
+                return localisation[LocalisationManager.playlistNotFound]
             case .trackNotFound:
-                return "Track not found."
+                return localisation[LocalisationManager.trackNotFound]
             case .duplicateTrack:
-                return "Track is already in the playlist."
+                return localisation[LocalisationManager.duplicateTrack]
             case .invalidRules:
-                return "Invalid playlist rules."
+                return localisation[LocalisationManager.invalidRules]
             case .operationFailed:
-                return "Operation failed. Please try again."
+                return localisation[LocalisationManager.operationFailed]
             }
         }
         return error.localizedDescription

@@ -63,17 +63,29 @@ public struct TrackDetailsView: View {
         ScrollView {
             VStack(alignment: .leading, spacing: 24) {
                 header(for: track)
-                TrackDetailSection(title: "Summary", rows: viewModel.summaryRows)
-                TrackDetailSection(title: "Audio", rows: viewModel.audioRows)
-                TrackDetailSection(title: "File", rows: viewModel.fileRows)
+                TrackDetailSection(
+                    title: LocalisationManager.shared[LocalisationManager.summary],
+                    rows: viewModel.summaryRows
+                )
+                TrackDetailSection(
+                    title: LocalisationManager.shared[LocalisationManager.trackDetailsAudio],
+                    rows: viewModel.audioRows
+                )
+                TrackDetailSection(
+                    title: LocalisationManager.shared[LocalisationManager.file],
+                    rows: viewModel.fileRows
+                )
 
                 if viewModel.isLoadingMetadata {
-                    ProgressView("Loading metadata…")
+                    ProgressView(LocalisationManager.shared[LocalisationManager.loadingMetadata])
                         .controlSize(.small)
                 }
 
                 if !viewModel.tagRows.isEmpty {
-                    TrackDetailSection(title: "Insights", rows: viewModel.tagRows)
+                    TrackDetailSection(
+                        title: LocalisationManager.shared[LocalisationManager.insights],
+                        rows: viewModel.tagRows
+                    )
                 }
 
                 MLClassificationView(viewModel: classificationViewModel, track: track)
@@ -120,9 +132,9 @@ public struct TrackDetailsView: View {
             Image(systemName: "info.circle")
                 .font(.system(size: 42))
                 .foregroundColor(.secondary)
-            Text("Select a track")
+            Text(LocalisationManager.shared[LocalisationManager.selectTrack])
                 .font(.title3)
-            Text("Choose a track from the Library or Playlist panel to see its details.")
+            Text(LocalisationManager.shared[LocalisationManager.chooseTrack])
                 .foregroundColor(.secondary)
                 .multilineTextAlignment(.center)
                 .frame(maxWidth: 260)

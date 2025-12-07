@@ -300,9 +300,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     /// Save current window state (position and minimized mode)
     @MainActor
     private func saveWindowState() async {
+        let windowExists = self.minimisedPlayerWindow != nil
         Logger.userInterface.info(
-            "saveWindowState: Starting, isMinimised=\(self.isMinimised), "
-            + "minimisedPlayerWindow exists=\(self.minimisedPlayerWindow != nil)"
+            "saveWindowState: Starting, isMinimised=\(self.isMinimised), minimisedPlayerWindow exists=\(windowExists)"
         )
         
         guard let (frame, isMinimisedState) = WindowStateManagerHelper.getCurrentWindowState(
@@ -360,9 +360,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         // Store flag to restore minimized state after view model is available
         if wasMinimised {
             self.shouldRestoreMinimizedState = true
+            let shouldRestore = self.shouldRestoreMinimizedState
             Logger.userInterface.info(
                 "App was in minimized player mode, will restore after view model is available, "
-                + "shouldRestoreMinimizedState=\(self.shouldRestoreMinimizedState)"
+                + "shouldRestoreMinimizedState=\(shouldRestore)"
             )
         } else {
             Logger.userInterface.info("App was in main window mode")

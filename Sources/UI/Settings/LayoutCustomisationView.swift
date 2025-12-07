@@ -25,19 +25,20 @@ public struct LayoutCustomisationView: View {
     }
     
     public var body: some View {
-        Form {
-            Section("Layout Mode") {
-                Picker("Layout Mode", selection: Binding(
+        let localisation = LocalisationManager.shared
+        return Form {
+            Section(localisation[LocalisationManager.layoutMode]) {
+                Picker(localisation[LocalisationManager.layoutMode], selection: Binding(
                     get: { viewModel.currentLayout.layoutMode },
                     set: { viewModel.setLayoutMode($0) }
                 )) {
                     ForEach(LayoutMode.allCases, id: \.self) { mode in
-                        Text(mode.displayName).tag(mode)
+                        Text(modeDisplayName(mode, localisation: localisation)).tag(mode)
                     }
                 }
             }
             
-            Section("Panel Visibility") {
+            Section(localisation[LocalisationManager.panelVisibility]) {
                 ForEach(LayoutPanel.allCases, id: \.self) { panel in
                     Toggle(
                         panel.displayName,
@@ -49,7 +50,7 @@ public struct LayoutCustomisationView: View {
                 }
             }
             
-            Section("Panel Sizes") {
+            Section(localisation[LocalisationManager.panelSizes]) {
                 ForEach(LayoutPanel.allCases, id: \.self) { panel in
                     if viewModel.currentLayout.panelVisibility[panel] ?? false {
                         VStack(alignment: .leading) {
@@ -62,7 +63,10 @@ public struct LayoutCustomisationView: View {
                                 in: 100...800,
                                 step: 10
                             )
-                            Text("\(Int(viewModel.currentLayout.panelSizes[panel] ?? 300)) points")
+                            Text(
+                                "\(Int(viewModel.currentLayout.panelSizes[panel] ?? 300)) "
+                                + "\(localisation[LocalisationManager.points])"
+                            )
                                 .font(.caption)
                                 .foregroundColor(.secondary)
                         }
@@ -71,14 +75,14 @@ public struct LayoutCustomisationView: View {
             }
             
             Section {
-                Button("Save Layout") {
+                Button(localisation[LocalisationManager.saveLayout]) {
                     Task {
                         await viewModel.saveLayout()
                     }
                 }
                 .disabled(viewModel.isSaving)
                 
-                Button("Reset to Defaults") {
+                Button(localisation[LocalisationManager.resetToDefaults]) {
                     Task {
                         await viewModel.resetToDefault()
                     }
@@ -89,8 +93,8 @@ public struct LayoutCustomisationView: View {
         .task {
             await viewModel.loadLayout()
         }
-        .alert("Error", isPresented: .constant(viewModel.lastError != nil)) {
-            Button("OK") {
+        .alert(localisation[LocalisationManager.error], isPresented: .constant(viewModel.lastError != nil)) {
+            Button(localisation[LocalisationManager.apply]) {
                 viewModel.clearLastError()
             }
         } message: {
@@ -98,8 +102,11 @@ public struct LayoutCustomisationView: View {
                 Text(error.localizedDescription)
             }
         }
-        .alert("Success", isPresented: .constant(viewModel.successMessage != nil)) {
-            Button("OK") {
+        .alert(
+            localisation[LocalisationManager.layoutSuccess],
+            isPresented: .constant(viewModel.successMessage != nil)
+        ) {
+            Button(localisation[LocalisationManager.apply]) {
                 viewModel.clearSuccessMessage()
             }
         } message: {
@@ -112,13 +119,12 @@ public struct LayoutCustomisationView: View {
 
 // MARK: - Display Names
 
-extension LayoutMode {
-    var displayName: String {
-        switch self {
-        case .horizontalSplit: return "Horizontal Split"
-        case .verticalSplit: return "Vertical Split"
-        case .tabbed: return "Tabbed"
-        case .floating: return "Floating"
-        }
+@MainActor
+private func modeDisplayName(_ mode: LayoutMode, localisation: LocalisationManager) -> String {
+    switch mode {
+    case .horizontalSplit: return localisation[LocalisationManager.horizontalSplit]
+    case .verticalSplit: return localisation[LocalisationManager.verticalSplit]
+    case .tabbed: return localisation[LocalisationManager.tabbed]
+    case .floating: return localisation[LocalisationManager.floating]
     }
 }

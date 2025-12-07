@@ -25,10 +25,11 @@ public struct ScanResultsView: View {
     
     public var body: some View {
         if let results = coordinator.scanResults {
+            let localisation = LocalisationManager.shared
             VStack(spacing: 0) {
                 // Orange header
                 HStack {
-                    Text("Scan results")
+                    Text(localisation[LocalisationManager.scanResultsTitle])
                         .font(.system(size: 14, weight: .semibold))
                         .foregroundColor(.white)
                     Spacer()
@@ -45,27 +46,39 @@ public struct ScanResultsView: View {
                 
                 // Dark gray body
                 VStack(alignment: .leading, spacing: 16) {
-                    Text("Search and update took \(results.formattedDuration)")
+                    Text("\(localisation[LocalisationManager.searchAndUpdateTook]) \(results.formattedDuration)")
                         .font(.system(size: 13))
                         .foregroundColor(.primary)
                     
-                    Text("Added \(results.newFiles) new files")
+                    Text(
+                        "\(localisation[LocalisationManager.addedNewFiles]) \(results.newFiles) "
+                        + "\(localisation[LocalisationManager.newFiles])"
+                    )
                         .font(.system(size: 13))
                         .foregroundColor(.primary)
                     
-                    Text("Updated \(results.updatedFiles) files")
+                    Text(
+                        "\(localisation[LocalisationManager.updatedFiles]) \(results.updatedFiles) "
+                        + "\(localisation[LocalisationManager.files])"
+                    )
                         .font(.system(size: 13))
                         .foregroundColor(.primary)
                     
-                    Text("Failed to add \(results.failedFiles) files")
+                    Text(
+                        "\(localisation[LocalisationManager.failedToAdd]) \(results.failedFiles) "
+                        + "\(localisation[LocalisationManager.files])"
+                    )
                         .font(.system(size: 13))
                         .foregroundColor(.primary)
                     
                     HStack(spacing: 4) {
-                        Text("Skipped \(results.skippedFiles) files (filtered or disabled in")
+                        Text(
+                            "\(localisation[LocalisationManager.skippedFiles]) \(results.skippedFiles) "
+                            + "\(localisation[LocalisationManager.filesFilteredOrDisabled])"
+                        )
                             .font(.system(size: 13))
                             .foregroundColor(.primary)
-                        Text("Library settings")
+                        Text(localisation[LocalisationManager.librarySettings])
                             .foregroundColor(Color("AccentColor"))
                             .font(.system(size: 13))
                             .underline()
@@ -74,7 +87,7 @@ public struct ScanResultsView: View {
                             .foregroundColor(.primary)
                     }
                     
-                    Toggle("Don't show this again", isOn: $coordinator.dontShowResultsAgain)
+                    Toggle(localisation[LocalisationManager.dontShowAgain], isOn: $coordinator.dontShowResultsAgain)
                         .font(.system(size: 12))
                         .padding(.top, 8)
                 }
@@ -85,7 +98,7 @@ public struct ScanResultsView: View {
                 // Footer with close button
                 HStack {
                     Spacer()
-                    Button("CLOSE") {
+                    Button(localisation[LocalisationManager.scanResultsClose]) {
                         if coordinator.dontShowResultsAgain {
                             UserDefaults.standard.set(true, forKey: "audientia.scan.dontShowResults")
                         }
@@ -101,6 +114,8 @@ public struct ScanResultsView: View {
             .background(Color(NSColor.windowBackgroundColor))
             .cornerRadius(8)
             .shadow(radius: 10)
+        } else {
+            EmptyView()
         }
     }
 }

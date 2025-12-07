@@ -1,9 +1,10 @@
 # Roadmap and Testing Strategy
 
-## Current Development Phase: UI Layout Redesign
+## Current Development Phase: UI Layout Redesign - COMPLETE ✅
 
 **Branch**: `21_ui-layout-redesign`  
-**Focus**: Implement the new UI layout with collapsible toolbar, contextual sidebar, and collapsible player controls.
+**Status**: ✅ **COMPLETE** - All UI Layout Redesign implementation, testing, and documentation complete  
+**Next Phase**: Phase 6 - Plugin System or Phase 7 - Polish & Optimization
 
 ### Recent Updates (Dec 2025)
 - **✅ Home Tab Content Implementation**: Implemented "Recently Played" and "Recently Added" sections with real data:
@@ -67,6 +68,14 @@
 - **✅ Queue Display in Main Window**: Added queue view to the "Playing" navigation section. Users can now see all queued tracks with track numbers, artist info, and remove buttons.
 - **✅ LanguageSettingsView Bug Fixes**: Fixed Form trailing closure compiler error and localisation key access issues.
 - **✅ Language Settings Integration**: LanguageSettingsView now fully functional with British/American English selection, live spelling preview, and proper localization system integration.
+- **✅ UI Layout Redesign Code Quality & Maintenance**: Completed final polish and fixes:
+  - **SwiftLint Compliance**: Fixed all SwiftLint violations including force unwrapping (replaced with guard statements), trailing newline violations, and long line warnings
+  - **File Naming Convention**: Renamed all files with '+' characters to standard naming (AppDelegate+DependencyManagement.swift → AppDelegateDependencyManagement.swift, etc.)
+  - **Compilation Fixes**: Resolved all compilation errors related to AppDelegate extensions, Logger imports, and type assignments
+  - **Test Stability**: Fixed AudioVisualiserTapBDDTests hanging issues by adding proper cleanup (stop + synchronous RunLoop wait) to all test methods
+  - **Code Organization**: Refactored large AppDelegate class into modular helper files and extensions to reduce file/class length and improve maintainability
+  - **Window State Persistence**: Fixed window state persistence bugs ensuring minimized/maximized state and window position restore correctly on app relaunch
+  - **Git Integration**: All changes committed and pushed to GitHub with comprehensive commit messages
 
 ### UI Layout Redesign Details
 - **Design Document**: `Documentation/16-ui-layout-redesign.md`
@@ -948,26 +957,28 @@ See [`Scripts/build_guide.md`](../Scripts/build_guide.md) for detailed build ins
 - [x] **[P]**: Settings load < 100ms, layout render < 50ms, theme switch < 200ms - **✅ Performance tests implemented: SettingsStorageTests includes save/load performance tests for 100 operations, all manager operations are async and efficient, UserDefaults operations are fast (< 100ms for typical operations)**
 - [x] **Edge**: Unicode in settings, very large library views, multiple windows, concurrent settings changes - **✅ Tests handle Unicode characters in keys and values, special characters in settings, concurrent saves (withTaskGroup), empty configurations, all panel combinations, all theme identifiers, all view modes and grouping options**
 
-### Phase 6: Plugin System (Weeks 49-56)
+### Phase 6: Plugin System (Weeks 49-56) - NOT STARTED
+
+**Status**: ⏳ **PENDING** - Ready to begin after UI Layout Redesign completion
 
 #### 6.1 Plugin Runtime (Weeks 49-52)
 
 **Backend (PluginSystem):**
-- JavaScriptCore runtime setup
-- Plugin sandboxing
-- Plugin API (Swift → JS bridge)
-- Plugin lifecycle management
+- [ ] JavaScriptCore runtime setup
+- [ ] Plugin sandboxing
+- [ ] Plugin API (Swift → JS bridge)
+- [ ] Plugin lifecycle management
 
 **UI:**
-- Plugin manager
-- Plugin installation/removal
-- Plugin settings
+- [ ] Plugin manager
+- [ ] Plugin installation/removal
+- [ ] Plugin settings
 
 **Tests:**
-- **TDD**: Plugin runtime, API bridge
-- **Unit**: Plugin execution, sandbox isolation
-- **Integration**: Load plugin, execute, verify results
-- **BDD**: "As a developer, I want to create a plugin that fetches lyrics"
+- [ ] **TDD**: Plugin runtime, API bridge
+- [ ] **Unit**: Plugin execution, sandbox isolation
+- [ ] **Integration**: Load plugin, execute, verify results
+- [ ] **BDD**: "As a developer, I want to create a plugin that fetches lyrics"
 
 **Right-BICEP:**
 - **[Right]**: Verify plugins execute correctly, return expected results
@@ -981,22 +992,22 @@ See [`Scripts/build_guide.md`](../Scripts/build_guide.md) for detailed build ins
 #### 6.2 Plugin SDK & Examples (Weeks 53-56)
 
 **Backend:**
-- Plugin SDK documentation
-- Example plugins (Last.fm scrobbler, Discogs metadata)
-- Audio visualizer plugins (spectrum analyzer, waveform, oscilloscope, VU meters)
-- Plugin marketplace infrastructure
+- [ ] Plugin SDK documentation
+- [ ] Example plugins (Last.fm scrobbler, Discogs metadata)
+- [ ] Audio visualizer plugins (spectrum analyzer, waveform, oscilloscope, VU meters)
+- [ ] Plugin marketplace infrastructure
 
 **UI:**
-- Plugin browser
-- Plugin documentation viewer
-- Visualizer plugin integration (replaceable visualizer views)
+- [ ] Plugin browser
+- [ ] Plugin documentation viewer
+- [ ] Visualizer plugin integration (replaceable visualizer views)
 
 **Tests:**
-- **TDD**: SDK APIs, example plugins, visualizer plugin APIs
-- **Unit**: SDK function coverage, visualizer plugin rendering
-- **Integration**: Example plugins end-to-end, visualizer plugins with audio feed
-- **BDD**: "As a user, I want to install a Last.fm scrobbler plugin"
-- **BDD**: "As a user, I want to install a custom audio visualizer plugin"
+- [ ] **TDD**: SDK APIs, example plugins, visualizer plugin APIs
+- [ ] **Unit**: SDK function coverage, visualizer plugin rendering
+- [ ] **Integration**: Example plugins end-to-end, visualizer plugins with audio feed
+- [ ] **BDD**: "As a user, I want to install a Last.fm scrobbler plugin"
+- [ ] **BDD**: "As a user, I want to install a custom audio visualizer plugin"
 
 **Right-BICEP:**
 - **[Right]**: Verify example plugins work as documented, verify visualizer plugins render correctly
@@ -1009,28 +1020,30 @@ See [`Scripts/build_guide.md`](../Scripts/build_guide.md) for detailed build ins
 
 ---
 
-### Phase 7: Polish & Optimization (Weeks 57-64)
+### Phase 7: Polish & Optimization (Weeks 57-64) - IN PROGRESS
+
+**Status**: 🔄 **IN PROGRESS** - Some items complete, others pending
 
 #### 7.1 UI/UX Refinement
-- Accessibility (VoiceOver, keyboard navigation)
-- Dark mode optimization
-- Window management
-- Performance profiling and optimization
+- [x] Accessibility (VoiceOver, keyboard navigation) - **✅ Comprehensive accessibility implementation complete with VoiceOver labels, hints, traits, keyboard navigation, and announcements. AccessibilityTests.swift created with Right-BICEP coverage.**
+- [ ] Dark mode optimization - **⏳ PENDING**: Theme system exists but may need refinement
+- [x] Window management - **✅ Window state persistence implemented (position, minimized/maximized state)**
+- [ ] Performance profiling and optimization - **⏳ PENDING**: Basic performance tests exist, may need deeper profiling
 
 #### 7.2 Integration & Ecosystem
-- Apple Music library import
-- iCloud Drive integration
-- System media controls
-- Share extensions
+- [ ] Apple Music library import - **⏳ PENDING**
+- [ ] iCloud Drive integration - **⏳ PENDING**
+- [ ] System media controls - **⏳ PENDING**
+- [ ] Share extensions - **⏳ PENDING**
 
 #### 7.3 Documentation & Release
 - [x] Build and distribution documentation - **✅ Build guide (`Scripts/build_guide.md`), dependencies documentation (`Scripts/dependencies.md`), installation instructions (`Scripts/INSTALL_INSTRUCTIONS.md`) created**
 - [x] Build script system - **✅ 4 build scripts for different distribution scenarios (universal/silicon, with/without libraries), automated DMG creation, dependency checking integration**
 - [x] Dependency checking system - **✅ Pre-installation script (`check_dependencies.sh`), runtime checker (`DependencyChecker.swift`), first-launch checks integrated into app**
-- [ ] User documentation
-- [ ] Developer documentation
-- [ ] API documentation
-- [ ] Release preparation
+- [x] User documentation - **✅ User guide created (`Documentation/18-user-guide-ui-layout.md`)**
+- [x] Developer documentation - **✅ Developer guide created (`Documentation/19-developer-guide-extending-tabs.md`)**
+- [ ] API documentation - **⏳ PENDING**: Code documentation exists but may need formal API docs
+- [ ] Release preparation - **⏳ PENDING**: Code signing, notarization, release checklist
 
 ---
 
@@ -1228,6 +1241,60 @@ See [`Scripts/build_guide.md`](../Scripts/build_guide.md) for detailed build ins
 - **[E]**: Incompatible plugins, plugins with memory leaks, plugins that crash, missing dependencies
 - **[P]**: Plugin load < 100ms, plugin execution < 5% CPU overhead, no performance degradation
 - **Edge**: Plugins with system calls, plugins with network access, plugin conflicts, version mismatches
+
+---
+
+## Next Steps & Priorities
+
+### Immediate Next Steps (Recommended Order)
+
+1. **Phase 7.1 - UI/UX Refinement Completion** (High Priority)
+   - [ ] Dark mode optimization and testing
+   - [ ] Performance profiling and optimization
+   - [ ] Final accessibility audit and improvements
+
+2. **Phase 7.3 - Documentation & Release Preparation** (High Priority)
+   - [ ] API documentation generation
+   - [ ] Code signing and notarization setup
+   - [ ] Release checklist completion
+   - [ ] Final release testing
+
+3. **Phase 6 - Plugin System** (Medium Priority)
+   - [ ] JavaScriptCore runtime setup
+   - [ ] Plugin API design and implementation
+   - [ ] Plugin manager UI
+   - [ ] Example plugins
+
+4. **Phase 7.2 - Integration & Ecosystem** (Lower Priority)
+   - [ ] Apple Music library import
+   - [ ] iCloud Drive integration
+   - [ ] System media controls
+   - [ ] Share extensions
+
+5. **Phase 8 - Winamp-Inspired Features** (Future Enhancement)
+   - [ ] Gapless playback enhancement
+   - [ ] Advanced visualizations
+   - [ ] Internet radio/streaming
+   - [ ] CD ripping
+
+### Decision Point
+
+**Choose one of the following paths:**
+
+**Option A: Polish & Release** (Recommended for MVP)
+- Complete Phase 7.1 and 7.3
+- Focus on release readiness
+- Defer Plugin System to post-release
+
+**Option B: Feature Expansion**
+- Begin Phase 6 (Plugin System)
+- Add extensibility before release
+- Defer polish to post-release
+
+**Option C: Winamp Features**
+- Begin Phase 8 (Winamp-inspired features)
+- Add advanced playback features
+- Defer plugin system
 
 ---
 

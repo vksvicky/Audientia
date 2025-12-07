@@ -43,15 +43,48 @@
     "title": "Settings",
     "categories": {
       "general": "General",
-      "audio": "Audio",
+      "library": "Library",
       "playback": "Playback",
+      "audio": "Audio/DSP",
       "appearance": "Appearance",
       "advanced": "Advanced",
       "language": "Language"
     },
     "theme": "Theme",
     "scrollSpeed": "Scroll Speed",
-    "trackInfoScrollSpeed": "Track Info Scroll Speed"
+    "trackInfoScrollSpeed": "Track Info Scroll Speed",
+    "startup": {
+      "title": "Startup",
+      "showSplashScreen": "Show splash screen on startup",
+      "showSplashScreenHelp": "Display the splash screen when the application launches"
+    },
+    "notifications": {
+      "title": "Notifications",
+      "status": "Status:",
+      "description": "Audientia sends notifications when background library scans finish. You can review newly added files right away.",
+      "requestPermission": "Request Permission",
+      "openSystemSettings": "Open System Settings"
+    },
+    "window": {
+      "title": "Window",
+      "managementSettings": "Window management settings"
+    },
+    "library": {
+      "viewSettings": "Library view settings"
+    },
+    "playback": {
+      "trackInfoDisplay": "Track Info Display",
+      "longTrackTitlesScroll": "Long track titles scroll.",
+      "adjustScrollSpeed": "Adjust the scroll speed (10-100 px/s).",
+      "pxPerSecond": "px/s"
+    },
+    "appearance": {
+      "themeSettings": "Theme settings"
+    },
+    "advanced": {
+      "reset": "Reset",
+      "resetAllSettings": "Reset All Settings to Defaults"
+    }
   },
   "actions": {
     "minimise": "Minimise",
@@ -67,5 +100,183 @@
     "error": "Error",
     "success": "Success",
     "warning": "Warning"
+  },
+  "language": {
+    "selection": "Language Selection",
+    "description": "Choose your preferred language for the application interface. British English uses British spelling (visualiser, colour, minimise). American English uses American spelling (visualiser, color, minimize).",
+    "preview": "Preview"
+  },
+  "home": {
+    "welcome": "Welcome to Audientia",
+    "subtitle": "Your powerful media library manager",
+    "getStarted": "Get Started",
+    "whatsNew": ">> What's New?",
+    "introduction": ">> Introduction",
+    "addFiles": ">> Add files to the library",
+    "playFiles": ">> Play files",
+    "updateFiles": ">> Update/Edit your files",
+    "syncFiles": ">> Sync your files",
+    "recentlyPlayed": "RECENTLY PLAYED",
+    "noRecentlyPlayed": "No recently played tracks",
+    "recentlyAdded": "RECENTLY ADDED",
+    "noRecentlyAdded": "No recently added tracks",
+    "mostPlayed": "MOST PLAYED",
+    "noMostPlayed": "No most played tracks",
+    "favourites": "FAVOURITES",
+    "noFavourites": "No favourite tracks",
+    "album": "Album"
+  },
+  "playlist": {
+    "title": "Playlists",
+    "newPlaylist": "New Playlist",
+    "newSmartPlaylist": "New Smart Playlist",
+    "createPlaylist": "Create Playlist",
+    "playlistName": "Playlist Name",
+    "enterPlaylistName": "Enter a new name for the playlist.",
+    "enterSmartPlaylistName": "Enter smart playlist name",
+    "loading": "Loading playlists...",
+    "noPlaylists": "No Playlists",
+    "createFirstPlaylist": "Create your first playlist to get started",
+    "rename": "Rename",
+    "delete": "Delete",
+    "smartPlaylistRules": "Smart Playlist Rules",
+    "clearAll": "Clear All",
+    "noRules": "No Rules",
+    "addRulesToCreate": "Add rules to create a smart playlist",
+    "rules": "Rules",
+    "addRule": "Add Rule",
+    "editRule": "Edit Rule",
+    "updateRule": "Update Rule",
+    "field": "Field",
+    "operator": "Operator",
+    "value": "Value",
+    "logicalOperator": "Logical Operator",
+    "and": "AND",
+    "or": "OR",
+    "none": "None",
+    "create": "Create",
+    "createSmartPlaylist": "Create Smart Playlist",
+    "addRulesToCreateSmartPlaylist": "Add rules to create a smart playlist",
+    "creationError": "Playlist Creation Error",
+    "smartPlaylistCreationError": "Smart Playlist Creation Error",
+    "errors": {
+      "invalidPlaylistName": "Please enter a valid playlist name.",
+      "duplicatePlaylist": "A playlist with this name already exists.",
+      "playlistNotFound": "Playlist not found.",
+      "trackNotFound": "Track not found.",
+      "duplicateTrack": "Track is already in the playlist.",
+      "invalidRules": "Invalid playlist rules.",
+      "operationFailed": "Operation failed. Please try again."
+    }
+  },
+  "trackDetails": {
+    "selectTrack": "Select a track",
+    "chooseTrack": "Choose a track from the Library or Playlist panel to see its details.",
+    "summary": "Summary",
+    "audio": "Audio",
+    "file": "File",
+    "insights": "Insights",
+    "loadingMetadata": "Loading metadata…"
+  },
+  "metadataLookup": {
+    "title": "Metadata Lookup",
+    "lookupMetadata": "Lookup Metadata",
+    "applySelection": "Apply Selection",
+    "mergeStrategy": "Merge Strategy",
+    "fillMissing": "Fill Missing",
+    "highestConfidence": "Highest Confidence",
+    "mostComplete": "Most Complete",
+    "conservative": "Conservative",
+    "matches": "Matches",
+    "noMatches": "No matches yet. Tap \"Lookup Metadata\" to begin.",
+    "confidence": "Confidence"
+  },
+  "about": {
+    "modulesAndPlugins": "Modules & Plugins"
+  },
+  "deviceSync": {
+    "startSync": "Start Sync",
+    "transcodingSettings": "Transcoding Settings",
+    "transcodingProgress": "Transcoding Progress",
+    "reloadJobs": "Reload Jobs",
+    "reloadTracks": "Reload Tracks",
+    "loadingTracks": "Loading tracks…",
+    "noTracksAvailable": "No tracks available for sync.",
+    "tracksReadyForSync": "tracks ready for sync"
+  },
+  "scanResults": {
+    "title": "Scan results",
+    "searchAndUpdateTook": "Search and update took",
+    "addedNewFiles": "Added",
+    "newFiles": "new files",
+    "updatedFiles": "Updated",
+    "files": "files",
+    "failedToAdd": "Failed to add",
+    "skippedFiles": "Skipped",
+    "filesFilteredOrDisabled": "files (filtered or disabled in",
+    "librarySettings": "Library settings",
+    "dontShowAgain": "Don't show this again",
+    "close": "CLOSE"
+  },
+  "layout": {
+    "layoutMode": "Layout Mode",
+    "panelVisibility": "Panel Visibility",
+    "panelSizes": "Panel Sizes",
+    "points": "points",
+    "saveLayout": "Save Layout",
+    "resetToDefaults": "Reset to Defaults",
+    "horizontalSplit": "Horizontal Split",
+    "verticalSplit": "Vertical Split",
+    "tabbed": "Tabbed",
+    "floating": "Floating",
+    "success": "Success"
+  },
+  "playlist": {
+    "enterPlaylistName": "Enter playlist name",
+    "delete": "Delete Playlist",
+    "rename": "Rename Playlist",
+    "deleteConfirmation": "Are you sure you want to delete \"{name}\"? This action cannot be undone.",
+    "invalidPlaylistName": "Please enter a valid playlist name.",
+    "duplicatePlaylist": "A playlist with this name already exists.",
+    "playlistNotFound": "Playlist not found.",
+    "trackNotFound": "Track not found.",
+    "duplicateTrack": "Track is already in the playlist.",
+    "invalidRules": "Invalid playlist rules.",
+    "operationFailed": "Operation failed. Please try again."
+  },
+  "theme": {
+    "theme": "Theme",
+    "resetToDefault": "Reset to Default"
+  },
+  "batchTag": {
+    "title": "Batch Tag Operations",
+    "error": "Error"
+  },
+  "dependencies": {
+    "missingRequired": "Missing Required Dependencies",
+    "openInstallationInstructions": "Open Installation Instructions",
+    "installingDependencies": "Installing dependencies..."
+  },
+  "smartPlaylist": {
+    "fieldTitle": "Title",
+    "fieldArtist": "Artist",
+    "fieldAlbum": "Album",
+    "fieldGenre": "Genre",
+    "fieldYear": "Year",
+    "fieldRating": "Rating",
+    "fieldPlayCount": "Play Count",
+    "fieldDateAdded": "Date Added",
+    "fieldDuration": "Duration",
+    "operatorEquals": "equals",
+    "operatorContains": "contains",
+    "operatorStartsWith": "starts with",
+    "operatorEndsWith": "ends with",
+    "operatorGreaterThan": ">",
+    "operatorLessThan": "<",
+    "operatorGreaterThanOrEqual": ">=",
+    "operatorLessThanOrEqual": "<=",
+    "operatorNotEquals": "not equals",
+    "logicalAnd": "AND",
+    "logicalOr": "OR"
   }
 }

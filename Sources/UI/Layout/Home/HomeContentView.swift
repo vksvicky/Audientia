@@ -19,10 +19,10 @@ struct HomeContentView: View {
             VStack(alignment: .leading, spacing: 24) {
                 // Header
                 VStack(alignment: .leading, spacing: 8) {
-                    Text("Welcome to Audientia")
+                    Text(LocalisationManager.shared[LocalisationManager.welcome])
                         .font(.system(size: 28, weight: .bold))
                     
-                    Text("Your powerful media library manager")
+                    Text(LocalisationManager.shared[LocalisationManager.subtitle])
                         .font(.system(size: 14))
                         .foregroundColor(.secondary)
                 }
@@ -42,18 +42,18 @@ struct HomeContentView: View {
                 
                 // Quick Links
                 VStack(alignment: .leading, spacing: 12) {
-                    Text("Get Started")
+                    Text(LocalisationManager.shared[LocalisationManager.getStarted])
                         .font(.system(size: 12, weight: .semibold))
                         .foregroundColor(.secondary)
                     
                     VStack(alignment: .leading, spacing: 8) {
                         if let url = URL(string: "https://github.com/vksvicky/Audientia") {
-                            Link(">> What's New?", destination: url)
-                            Link(">> Introduction", destination: url)
-                            Link(">> Add files to the library", destination: url)
-                            Link(">> Play files", destination: url)
-                            Link(">> Update/Edit your files", destination: url)
-                            Link(">> Sync your files", destination: url)
+                            Link(LocalisationManager.shared[LocalisationManager.whatsNew], destination: url)
+                            Link(LocalisationManager.shared[LocalisationManager.introduction], destination: url)
+                            Link(LocalisationManager.shared[LocalisationManager.addFiles], destination: url)
+                            Link(LocalisationManager.shared[LocalisationManager.playFiles], destination: url)
+                            Link(LocalisationManager.shared[LocalisationManager.updateFiles], destination: url)
+                            Link(LocalisationManager.shared[LocalisationManager.syncFiles], destination: url)
                         }
                     }
                     .font(.system(size: 13))
@@ -71,7 +71,7 @@ struct HomeContentView: View {
     
     private var recentlyPlayedSection: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text("RECENTLY PLAYED")
+            Text(LocalisationManager.shared[LocalisationManager.recentlyPlayed])
                 .font(.system(size: 12, weight: .semibold))
                 .foregroundColor(.secondary)
             
@@ -79,13 +79,13 @@ struct HomeContentView: View {
                 HStack {
                     ProgressView()
                         .scaleEffect(0.8)
-                    Text("Loading...")
+                    Text(LocalisationManager.shared[LocalisationManager.loading])
                         .font(.system(size: 11))
                         .foregroundColor(.secondary)
                 }
                 .padding(.vertical, 20)
             } else if viewModel.recentlyPlayedTracks.isEmpty {
-                Text("No recently played tracks")
+                Text(LocalisationManager.shared[LocalisationManager.noRecentlyPlayed])
                     .font(.system(size: 11))
                     .foregroundColor(.secondary)
                     .padding(.vertical, 20)
@@ -106,7 +106,7 @@ struct HomeContentView: View {
     
     private var recentlyAddedSection: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text("RECENTLY ADDED")
+            Text(LocalisationManager.shared[LocalisationManager.recentlyAdded])
                 .font(.system(size: 12, weight: .semibold))
                 .foregroundColor(.secondary)
             
@@ -114,13 +114,13 @@ struct HomeContentView: View {
                 HStack {
                     ProgressView()
                         .scaleEffect(0.8)
-                    Text("Loading...")
+                    Text(LocalisationManager.shared[LocalisationManager.loading])
                         .font(.system(size: 11))
                         .foregroundColor(.secondary)
                 }
                 .padding(.vertical, 20)
             } else if viewModel.recentlyAddedTracks.isEmpty {
-                Text("No recently added tracks")
+                Text(LocalisationManager.shared[LocalisationManager.noRecentlyAdded])
                     .font(.system(size: 11))
                     .foregroundColor(.secondary)
                     .padding(.vertical, 20)
@@ -141,7 +141,7 @@ struct HomeContentView: View {
     
     private var mostPlayedSection: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text("MOST PLAYED")
+            Text(LocalisationManager.shared[LocalisationManager.mostPlayed])
                 .font(.system(size: 12, weight: .semibold))
                 .foregroundColor(.secondary)
             
@@ -149,13 +149,13 @@ struct HomeContentView: View {
                 HStack {
                     ProgressView()
                         .scaleEffect(0.8)
-                    Text("Loading...")
+                    Text(LocalisationManager.shared[LocalisationManager.loading])
                         .font(.system(size: 11))
                         .foregroundColor(.secondary)
                 }
                 .padding(.vertical, 20)
             } else if viewModel.mostPlayedTracks.isEmpty {
-                Text("No most played tracks")
+                Text(LocalisationManager.shared[LocalisationManager.noMostPlayed])
                     .font(.system(size: 11))
                     .foregroundColor(.secondary)
                     .padding(.vertical, 20)
@@ -176,7 +176,7 @@ struct HomeContentView: View {
     
     private var favouritesSection: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text("FAVOURITES")
+            Text(LocalisationManager.shared[LocalisationManager.favourites])
                 .font(.system(size: 12, weight: .semibold))
                 .foregroundColor(.secondary)
             
@@ -184,13 +184,13 @@ struct HomeContentView: View {
                 HStack {
                     ProgressView()
                         .scaleEffect(0.8)
-                    Text("Loading...")
+                    Text(LocalisationManager.shared[LocalisationManager.loading])
                         .font(.system(size: 11))
                         .foregroundColor(.secondary)
                 }
                 .padding(.vertical, 20)
             } else if viewModel.favouriteTracks.isEmpty {
-                Text("No favourite tracks")
+                Text(LocalisationManager.shared[LocalisationManager.noFavourites])
                     .font(.system(size: 11))
                     .foregroundColor(.secondary)
                     .padding(.vertical, 20)
@@ -254,7 +254,7 @@ private struct AlbumPlaceholderView: View {
                         .foregroundColor(.secondary)
                 )
             
-            Text("Album")
+            Text(LocalisationManager.shared[LocalisationManager.homeAlbum])
                 .font(.system(size: 11))
                 .foregroundColor(.secondary)
                 .lineLimit(1)

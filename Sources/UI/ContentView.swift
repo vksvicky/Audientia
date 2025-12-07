@@ -42,8 +42,8 @@ struct ContentView: View {
                     }
                 }
             }
-            .alert("Import Error", isPresented: $showImportError) {
-                Button("OK") {
+            .alert(LocalisationManager.shared[LocalisationManager.error], isPresented: $showImportError) {
+                Button(LocalisationManager.shared[LocalisationManager.apply]) {
                     importError = nil
                     showImportError = false
                 }

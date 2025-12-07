@@ -71,36 +71,50 @@ public struct PlaylistBrowserView: View {
         .sheet(isPresented: $showingCreateDialog) {
             createPlaylistDialog
         }
-        .alert("Delete Playlist", isPresented: $showingDeleteConfirmation, presenting: playlistToDelete) { playlist in
-            Button("Cancel", role: .cancel) { }
-            Button("Delete", role: .destructive) {
-                Task {
-                    try? await viewModel.deletePlaylist(id: playlist.id)
+        .alert(
+            LocalisationManager.shared[LocalisationManager.delete],
+            isPresented: $showingDeleteConfirmation,
+            presenting: playlistToDelete
+        ) { playlist in
+            let localisation = LocalisationManager.shared
+            return Group {
+                Button(localisation[LocalisationManager.cancel], role: .cancel) { }
+                Button(localisation[LocalisationManager.delete], role: .destructive) {
+                    Task {
+                        try? await viewModel.deletePlaylist(id: playlist.id)
+                    }
                 }
             }
         } message: { playlist in
-            Text("Are you sure you want to delete \"\(playlist.name)\"? This action cannot be undone.")
+            let localisation = LocalisationManager.shared
+            let message = localisation[LocalisationManager.deleteConfirmation]
+                .replacingOccurrences(of: "{name}", with: playlist.name)
+            return Text(message)
         }
-        .alert("Rename Playlist", isPresented: $showingRenameDialog) {
-            TextField("Playlist Name", text: $renameText)
-            Button("Cancel", role: .cancel) { }
-            Button("Rename") {
-                if let playlist = selectedPlaylist {
-                    Task {
-                        try? await viewModel.updatePlaylistName(id: playlist.id, name: renameText)
+        .alert(LocalisationManager.shared[LocalisationManager.rename], isPresented: $showingRenameDialog) {
+            let localisation = LocalisationManager.shared
+            return Group {
+                TextField(localisation[LocalisationManager.playlistName], text: $renameText)
+                Button(localisation[LocalisationManager.cancel], role: .cancel) { }
+                Button(localisation[LocalisationManager.rename]) {
+                    if let playlist = selectedPlaylist {
+                        Task {
+                            try? await viewModel.updatePlaylistName(id: playlist.id, name: renameText)
+                        }
                     }
                 }
             }
         } message: {
-            Text("Enter a new name for the playlist.")
+            Text(LocalisationManager.shared[LocalisationManager.enterPlaylistName])
         }
     }
     
     // MARK: - Header View
     
     private var headerView: some View {
-        HStack {
-            Text("Playlists")
+        let localisation = LocalisationManager.shared
+        return HStack {
+            Text(localisation[LocalisationManager.playlistTitle])
                 .font(.title2)
                 .fontWeight(.semibold)
             
@@ -110,7 +124,7 @@ public struct PlaylistBrowserView: View {
                 newPlaylistName = ""
                 showingCreateDialog = true
             }, label: {
-                Label("New Playlist", systemImage: "plus")
+                Label(localisation[LocalisationManager.newPlaylist], systemImage: "plus")
             })
             .buttonStyle(.borderedProminent)
         }
@@ -123,7 +137,7 @@ public struct PlaylistBrowserView: View {
     private var loadingView: some View {
         VStack {
             ProgressView()
-            Text("Loading playlists...")
+            Text(LocalisationManager.shared[LocalisationManager.playlistLoading])
                 .foregroundColor(.secondary)
                 .padding(.top, 8)
         }
@@ -133,16 +147,17 @@ public struct PlaylistBrowserView: View {
     // MARK: - Empty State View
     
     private var emptyStateView: some View {
-        VStack(spacing: 16) {
+        let localisation = LocalisationManager.shared
+        return VStack(spacing: 16) {
             Image(systemName: "music.note.list")
                 .font(.system(size: 48))
                 .foregroundColor(.secondary)
             
-            Text("No Playlists")
+            Text(localisation[LocalisationManager.noPlaylists])
                 .font(.title3)
                 .fontWeight(.semibold)
             
-            Text("Create your first playlist to get started")
+            Text(localisation[LocalisationManager.createFirstPlaylist])
                 .font(.body)
                 .foregroundColor(.secondary)
             
@@ -150,7 +165,7 @@ public struct PlaylistBrowserView: View {
                 newPlaylistName = ""
                 showingCreateDialog = true
             }, label: {
-                Label("Create Playlist", systemImage: "plus")
+                Label(localisation[LocalisationManager.createPlaylist], systemImage: "plus")
             })
             .buttonStyle(.borderedProminent)
             .padding(.top, 8)
@@ -194,26 +209,27 @@ public struct PlaylistBrowserView: View {
     // MARK: - Create Playlist Dialog
     
     private var createPlaylistDialog: some View {
-        VStack(spacing: 20) {
-            Text("New Playlist")
+        let localisation = LocalisationManager.shared
+        return VStack(spacing: 20) {
+            Text(localisation[LocalisationManager.newPlaylist])
                 .font(.title2)
                 .fontWeight(.semibold)
             
-            TextField("Playlist Name", text: $newPlaylistName)
+            TextField(localisation[LocalisationManager.playlistName], text: $newPlaylistName)
                 .textFieldStyle(.roundedBorder)
                 .onSubmit {
                     createPlaylist()
                 }
             
             HStack {
-                Button("Cancel") {
+                Button(localisation[LocalisationManager.cancel]) {
                     showingCreateDialog = false
                 }
                 .keyboardShortcut(.cancelAction)
                 
                 Spacer()
                 
-                Button("Create") {
+                Button(localisation[LocalisationManager.create]) {
                     createPlaylist()
                 }
                 .buttonStyle(.borderedProminent)

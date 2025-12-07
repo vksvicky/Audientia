@@ -49,9 +49,10 @@ public struct MetadataLookupView: View {
     }
     
     private var headerSection: some View {
-        VStack(alignment: .leading, spacing: 8) {
+        let localisation = LocalisationManager.shared
+        return VStack(alignment: .leading, spacing: 8) {
             HStack {
-                Text("Metadata Lookup")
+                Text(localisation[LocalisationManager.metadataLookupTitle])
                     .font(.largeTitle).bold()
                 Spacer()
                 if viewModel.isLookingUp {
@@ -65,7 +66,7 @@ public struct MetadataLookupView: View {
                 .foregroundStyle(.secondary)
             
             HStack(spacing: 12) {
-                Button("Lookup Metadata") {
+                Button(localisation[LocalisationManager.lookupMetadata]) {
                     Task {
                         await viewModel.performLookup()
                     }
@@ -73,7 +74,7 @@ public struct MetadataLookupView: View {
                 .buttonStyle(.borderedProminent)
                 .disabled(viewModel.currentTrack == nil || viewModel.isLookingUp)
                 
-                Button("Apply Selection") {
+                Button(localisation[LocalisationManager.applySelection]) {
                     _ = viewModel.applySelectedMatch()
                 }
                 .buttonStyle(.bordered)
@@ -83,25 +84,27 @@ public struct MetadataLookupView: View {
     }
     
     private var strategySection: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            Text("Merge Strategy")
+        let localisation = LocalisationManager.shared
+        return VStack(alignment: .leading, spacing: 8) {
+            Text(localisation[LocalisationManager.mergeStrategy])
                 .font(.headline)
-            Picker("Merge Strategy", selection: $viewModel.mergeStrategy) {
-                Text("Fill Missing").tag(MergeStrategy.fillMissing)
-                Text("Highest Confidence").tag(MergeStrategy.highestConfidence)
-                Text("Most Complete").tag(MergeStrategy.mostComplete)
-                Text("Conservative").tag(MergeStrategy.conservative)
+            Picker(localisation[LocalisationManager.mergeStrategy], selection: $viewModel.mergeStrategy) {
+                Text(localisation[LocalisationManager.fillMissing]).tag(MergeStrategy.fillMissing)
+                Text(localisation[LocalisationManager.highestConfidence]).tag(MergeStrategy.highestConfidence)
+                Text(localisation[LocalisationManager.mostComplete]).tag(MergeStrategy.mostComplete)
+                Text(localisation[LocalisationManager.conservative]).tag(MergeStrategy.conservative)
             }
             .pickerStyle(.segmented)
         }
     }
     
     private var matchesSection: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            Text("Matches")
+        let localisation = LocalisationManager.shared
+        return VStack(alignment: .leading, spacing: 8) {
+            Text(localisation[LocalisationManager.matches])
                 .font(.headline)
             if viewModel.matches.isEmpty {
-                Text("No matches yet. Tap \"Lookup Metadata\" to begin.")
+                Text(localisation[LocalisationManager.noMatches])
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
             } else {

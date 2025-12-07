@@ -51,7 +51,7 @@ public struct AboutView: View {
                     
                     // Module/Plugin Versions
                     VStack(alignment: .leading, spacing: 12) {
-                        Text("Modules & Plugins")
+                        Text(LocalisationManager.shared[LocalisationManager.modulesAndPlugins])
                             .font(.system(size: 14, weight: .semibold))
                             .padding(.bottom, 4)
                         

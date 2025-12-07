@@ -153,11 +153,11 @@ public struct MainWindowLayoutView: View {
                 }
             }
         }
-        .alert("Import Error", isPresented: Binding(
+        .alert(LocalisationManager.shared[LocalisationManager.error], isPresented: Binding(
             get: { importError != nil },
             set: { if !$0 { importError = nil } }
         )) {
-            Button("OK") {
+            Button(LocalisationManager.shared[LocalisationManager.apply]) {
                 importError = nil
             }
         } message: {

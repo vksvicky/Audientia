@@ -25,9 +25,10 @@ public struct ThemeSelectorView: View {
     }
     
     public var body: some View {
-        Form {
-            Section("Theme") {
-                Picker("Theme", selection: Binding(
+        let localisation = LocalisationManager.shared
+        return Form {
+            Section(localisation[LocalisationManager.themeTheme]) {
+                Picker(localisation[LocalisationManager.themeTheme], selection: Binding(
                     get: { viewModel.currentTheme },
                     set: { theme in
                         Task {
@@ -43,7 +44,7 @@ public struct ThemeSelectorView: View {
             }
             
             Section {
-                Button("Reset to Default") {
+                Button(localisation[LocalisationManager.resetToDefault]) {
                     Task {
                         await viewModel.resetToDefault()
                     }
@@ -55,8 +56,8 @@ public struct ThemeSelectorView: View {
         .task {
             await viewModel.loadThemes()
         }
-        .alert("Error", isPresented: .constant(viewModel.lastError != nil)) {
-            Button("OK") {
+        .alert(localisation[LocalisationManager.error], isPresented: .constant(viewModel.lastError != nil)) {
+            Button(localisation[LocalisationManager.apply]) {
                 viewModel.clearLastError()
             }
         } message: {
@@ -64,8 +65,8 @@ public struct ThemeSelectorView: View {
                 Text(error.localizedDescription)
             }
         }
-        .alert("Success", isPresented: .constant(viewModel.successMessage != nil)) {
-            Button("OK") {
+        .alert(localisation[LocalisationManager.success], isPresented: .constant(viewModel.successMessage != nil)) {
+            Button(localisation[LocalisationManager.apply]) {
                 viewModel.clearSuccessMessage()
             }
         } message: {

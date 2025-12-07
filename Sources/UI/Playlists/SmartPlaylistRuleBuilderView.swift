@@ -71,8 +71,9 @@ public struct SmartPlaylistRuleBuilderView: View {
     // MARK: - Header View
     
     private var headerView: some View {
-        HStack {
-            Text("Smart Playlist Rules")
+        let localisation = LocalisationManager.shared
+        return HStack {
+            Text(localisation[LocalisationManager.smartPlaylistRules])
                 .font(.title2)
                 .fontWeight(.semibold)
             
@@ -82,7 +83,7 @@ public struct SmartPlaylistRuleBuilderView: View {
                 Button(action: {
                     viewModel.clearRules()
                 }, label: {
-                    Label("Clear All", systemImage: "trash")
+                    Label(localisation[LocalisationManager.clearAll], systemImage: "trash")
                 })
             }
         }
@@ -91,16 +92,17 @@ public struct SmartPlaylistRuleBuilderView: View {
     // MARK: - Empty State View
     
     private var emptyStateView: some View {
-        VStack(spacing: 16) {
+        let localisation = LocalisationManager.shared
+        return VStack(spacing: 16) {
             Image(systemName: "gearshape")
                 .font(.system(size: 48))
                 .foregroundColor(.secondary)
             
-            Text("No Rules")
+            Text(localisation[LocalisationManager.noRules])
                 .font(.title3)
                 .fontWeight(.semibold)
             
-            Text("Add rules to create a smart playlist")
+            Text(localisation[LocalisationManager.addRulesToCreate])
                 .font(.body)
                 .foregroundColor(.secondary)
         }
@@ -110,8 +112,9 @@ public struct SmartPlaylistRuleBuilderView: View {
     // MARK: - Rules List View
     
     private var rulesListView: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            Text("Rules")
+        let localisation = LocalisationManager.shared
+        return VStack(alignment: .leading, spacing: 12) {
+            Text(localisation[LocalisationManager.rules])
                 .font(.headline)
             
             ForEach(Array(viewModel.rules.enumerated()), id: \.offset) { index, rule in
@@ -139,13 +142,18 @@ public struct SmartPlaylistRuleBuilderView: View {
     // MARK: - Add Rule Form View
     
     private var addRuleFormView: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            Text(editingRuleIndex == nil ? "Add Rule" : "Edit Rule")
+        let localisation = LocalisationManager.shared
+        return VStack(alignment: .leading, spacing: 12) {
+            Text(
+                editingRuleIndex == nil
+                    ? localisation[LocalisationManager.addRule]
+                    : localisation[LocalisationManager.editRule]
+            )
                 .font(.headline)
             
             HStack(spacing: 12) {
                 // Field selector
-                Picker("Field", selection: $selectedField) {
+                Picker(localisation[LocalisationManager.field], selection: $selectedField) {
                     ForEach([
                         SmartPlaylistRule.Field.title,
                         .artist,
@@ -161,7 +169,7 @@ public struct SmartPlaylistRuleBuilderView: View {
                 .frame(width: 120)
                 
                 // Operator selector
-                Picker("Operator", selection: $selectedOperator) {
+                Picker(localisation[LocalisationManager.operator], selection: $selectedOperator) {
                     ForEach([
                         SmartPlaylistRule.Operator.equals,
                         .contains,
@@ -179,15 +187,18 @@ public struct SmartPlaylistRuleBuilderView: View {
                 .frame(width: 140)
                 
                 // Value input
-                TextField("Value", text: $ruleValue)
+                TextField(localisation[LocalisationManager.value], text: $ruleValue)
                     .textFieldStyle(.roundedBorder)
                 
                 // Logical operator (only show if there are existing rules)
                 if !viewModel.rules.isEmpty {
                     Picker("", selection: $selectedLogicalOperator) {
-                        Text("None").tag(nil as SmartPlaylistRule.LogicalOperator?)
-                        Text("AND").tag(SmartPlaylistRule.LogicalOperator.and as SmartPlaylistRule.LogicalOperator?)
-                        Text("OR").tag(SmartPlaylistRule.LogicalOperator.or as SmartPlaylistRule.LogicalOperator?)
+                        Text(localisation[LocalisationManager.none])
+                            .tag(nil as SmartPlaylistRule.LogicalOperator?)
+                        Text(localisation[LocalisationManager.and])
+                            .tag(SmartPlaylistRule.LogicalOperator.and as SmartPlaylistRule.LogicalOperator?)
+                        Text(localisation[LocalisationManager.or])
+                            .tag(SmartPlaylistRule.LogicalOperator.or as SmartPlaylistRule.LogicalOperator?)
                     }
                     .frame(width: 80)
                 }
@@ -195,7 +206,7 @@ public struct SmartPlaylistRuleBuilderView: View {
             
             HStack {
                 if editingRuleIndex != nil {
-                    Button("Cancel") {
+                    Button(localisation[LocalisationManager.cancel]) {
                         editingRuleIndex = nil
                         resetForm()
                     }
@@ -203,7 +214,11 @@ public struct SmartPlaylistRuleBuilderView: View {
                 
                 Spacer()
                 
-                Button(editingRuleIndex == nil ? "Add Rule" : "Update Rule") {
+                Button(
+                    editingRuleIndex == nil
+                        ? localisation[LocalisationManager.addRule]
+                        : localisation[LocalisationManager.updateRule]
+                ) {
                     if let index = editingRuleIndex {
                         viewModel.updateRule(
                             at: index,
@@ -243,7 +258,10 @@ public struct SmartPlaylistRuleBuilderView: View {
                 Logger.userInterface.info("Built smart playlist rules: \(rules.rules.count) rules")
                 // In a full implementation, this would create the smart playlist
             }, label: {
-                Label("Create Smart Playlist", systemImage: "checkmark.circle.fill")
+                Label(
+                    LocalisationManager.shared[LocalisationManager.createSmartPlaylist],
+                    systemImage: "checkmark.circle.fill"
+                )
             })
             .buttonStyle(.borderedProminent)
             .disabled(!viewModel.isValid)
@@ -260,30 +278,32 @@ public struct SmartPlaylistRuleBuilderView: View {
     }
     
     private func fieldDisplayName(_ field: SmartPlaylistRule.Field) -> String {
+        let localisation = LocalisationManager.shared
         switch field {
-        case .title: return "Title"
-        case .artist: return "Artist"
-        case .album: return "Album"
-        case .genre: return "Genre"
-        case .year: return "Year"
-        case .rating: return "Rating"
-        case .playCount: return "Play Count"
-        case .dateAdded: return "Date Added"
-        case .duration: return "Duration"
+        case .title: return localisation[LocalisationManager.fieldTitle]
+        case .artist: return localisation[LocalisationManager.fieldArtist]
+        case .album: return localisation[LocalisationManager.fieldAlbum]
+        case .genre: return localisation[LocalisationManager.fieldGenre]
+        case .year: return localisation[LocalisationManager.fieldYear]
+        case .rating: return localisation[LocalisationManager.fieldRating]
+        case .playCount: return localisation[LocalisationManager.fieldPlayCount]
+        case .dateAdded: return localisation[LocalisationManager.fieldDateAdded]
+        case .duration: return localisation[LocalisationManager.fieldDuration]
         }
     }
     
     private func operatorDisplayName(_ op: SmartPlaylistRule.Operator) -> String {
+        let localisation = LocalisationManager.shared
         switch op {
-        case .equals: return "equals"
-        case .contains: return "contains"
-        case .startsWith: return "starts with"
-        case .endsWith: return "ends with"
-        case .greaterThan: return ">"
-        case .lessThan: return "<"
-        case .greaterThanOrEqual: return ">="
-        case .lessThanOrEqual: return "<="
-        case .notEquals: return "not equals"
+        case .equals: return localisation[LocalisationManager.operatorEquals]
+        case .contains: return localisation[LocalisationManager.operatorContains]
+        case .startsWith: return localisation[LocalisationManager.operatorStartsWith]
+        case .endsWith: return localisation[LocalisationManager.operatorEndsWith]
+        case .greaterThan: return localisation[LocalisationManager.operatorGreaterThan]
+        case .lessThan: return localisation[LocalisationManager.operatorLessThan]
+        case .greaterThanOrEqual: return localisation[LocalisationManager.operatorGreaterThanOrEqual]
+        case .lessThanOrEqual: return localisation[LocalisationManager.operatorLessThanOrEqual]
+        case .notEquals: return localisation[LocalisationManager.operatorNotEquals]
         }
     }
 }
@@ -343,30 +363,32 @@ private struct RuleRowView: View {
     }
     
     private func fieldDisplayName(_ field: SmartPlaylistRule.Field) -> String {
+        let localisation = LocalisationManager.shared
         switch field {
-        case .title: return "Title"
-        case .artist: return "Artist"
-        case .album: return "Album"
-        case .genre: return "Genre"
-        case .year: return "Year"
-        case .rating: return "Rating"
-        case .playCount: return "Play Count"
-        case .dateAdded: return "Date Added"
-        case .duration: return "Duration"
+        case .title: return localisation[LocalisationManager.fieldTitle]
+        case .artist: return localisation[LocalisationManager.fieldArtist]
+        case .album: return localisation[LocalisationManager.fieldAlbum]
+        case .genre: return localisation[LocalisationManager.fieldGenre]
+        case .year: return localisation[LocalisationManager.fieldYear]
+        case .rating: return localisation[LocalisationManager.fieldRating]
+        case .playCount: return localisation[LocalisationManager.fieldPlayCount]
+        case .dateAdded: return localisation[LocalisationManager.fieldDateAdded]
+        case .duration: return localisation[LocalisationManager.fieldDuration]
         }
     }
     
     private func operatorDisplayName(_ op: SmartPlaylistRule.Operator) -> String {
+        let localisation = LocalisationManager.shared
         switch op {
-        case .equals: return "equals"
-        case .contains: return "contains"
-        case .startsWith: return "starts with"
-        case .endsWith: return "ends with"
-        case .greaterThan: return ">"
-        case .lessThan: return "<"
-        case .greaterThanOrEqual: return ">="
-        case .lessThanOrEqual: return "<="
-        case .notEquals: return "not equals"
+        case .equals: return localisation[LocalisationManager.operatorEquals]
+        case .contains: return localisation[LocalisationManager.operatorContains]
+        case .startsWith: return localisation[LocalisationManager.operatorStartsWith]
+        case .endsWith: return localisation[LocalisationManager.operatorEndsWith]
+        case .greaterThan: return localisation[LocalisationManager.operatorGreaterThan]
+        case .lessThan: return localisation[LocalisationManager.operatorLessThan]
+        case .greaterThanOrEqual: return localisation[LocalisationManager.operatorGreaterThanOrEqual]
+        case .lessThanOrEqual: return localisation[LocalisationManager.operatorLessThanOrEqual]
+        case .notEquals: return localisation[LocalisationManager.operatorNotEquals]
         }
     }
 }
