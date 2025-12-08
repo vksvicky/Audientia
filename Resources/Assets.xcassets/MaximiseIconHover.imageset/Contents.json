@@ -1,17 +1,17 @@
 {
   "images" : [
     {
-      "filename" : "Maximise.png",
+      "filename" : "MaximiseHoverIcon.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
-      "filename" : "Maximise 1.png",
+      "filename" : "MaximiseHoverIcon 1.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
-      "filename" : "Maximise 2.png",
+      "filename" : "MaximiseHoverIcon 2.png",
       "idiom" : "universal",
       "scale" : "3x"
     }

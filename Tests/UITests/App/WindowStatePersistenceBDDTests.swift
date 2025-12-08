@@ -7,8 +7,10 @@
 //  Copyright © 2025 CycleRunCode Club. All rights reserved.
 //
 
+// swiftlint:disable type_body_length
+// swiftlint:disable file_length
+// swiftlint:disable blanket_disable_command
 // Test files often need to be longer to cover comprehensive scenarios
-// Using :next to disable for the entire class declaration
 
 import AppKit
 import CoreGraphics
@@ -22,8 +24,6 @@ import XCTest
 @testable import Shared
 
 @MainActor
-// swiftlint:disable:next type_body_length
-// swiftlint:disable:next file_length
 final class WindowStatePersistenceBDDTests: XCTestCase {
     var appDelegate: AppDelegate!
     var mockAudioEngine: MockAudioEngine!
@@ -507,6 +507,8 @@ final class WindowStatePersistenceBDDTests: XCTestCase {
             XCTAssertNotNil(appDelegate.minimisedPlayerWindow, "Minimized player window should exist after cycle \(cycle)")
             // Main window should be hidden (not visible) when minimized
             // Note: orderOut(nil) hides the window, making isVisible false
+            // Wait a bit for window state to update after orderOut
+            try await Task.sleep(nanoseconds: 100_000_000) // 0.1 seconds for window state update
             if let mainWindow = appDelegate.mainWindow {
                 XCTAssertFalse(mainWindow.isVisible, "Main window should be hidden after cycle \(cycle)")
             } else {
