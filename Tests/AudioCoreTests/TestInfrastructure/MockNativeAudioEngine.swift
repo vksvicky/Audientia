@@ -16,10 +16,19 @@ final class MockNativeAudioEngine: NativeAudioEngineProtocol {
     var stopCallCount = 0
     var seekCalls: [TimeInterval] = []
     var volumeValues: [Float] = []
+    
+    // Alias for test compatibility - returns Double array from Float array
+    var setVolumeCalls: [Double] {
+        volumeValues.map { Double($0) }
+    }
 
     var loadResult = true
     var playResult = true
     var seekResult = true
+    var shouldPlaySucceed: Bool {
+        get { playResult }
+        set { playResult = newValue }
+    }
 
     var currentPosition: TimeInterval = 0.0
     var duration: TimeInterval = 2.0

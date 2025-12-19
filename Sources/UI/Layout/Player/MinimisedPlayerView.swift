@@ -116,6 +116,35 @@ public struct MinimisedPlayerView: View {
                         
                         // Playback Speed Control
                         PlaybackSpeedControl(playbackSpeed: $nowPlayingViewModel.playbackSpeed)
+                        
+                        // Gain Control Button
+                        Button(action: {
+                            nowPlayingViewModel.toggleGainControl()
+                        }, label: {
+                            Image(systemName: "waveform")
+                                .font(.system(size: 11))
+                                .foregroundColor(
+                                    nowPlayingViewModel.isGainControlEnabled
+                                        ? Color.accentColor
+                                        : .primary
+                                )
+                        })
+                        .buttonStyle(.plain)
+                        .frame(width: 16, height: 16) // Fixed frame to prevent alignment shifts
+                        .accessibilityLabel("Gain Control")
+                        .accessibilityHint(
+                            nowPlayingViewModel.isGainControlEnabled
+                                ? "Gain control is enabled. Press to disable."
+                                : "Gain control is disabled. Press to enable."
+                        )
+                        .accessibilityAddTraits(
+                            nowPlayingViewModel.isGainControlEnabled
+                                ? [.isSelected, .isButton]
+                                : .isButton
+                        )
+                        .accessibilityValue(
+                            nowPlayingViewModel.isGainControlEnabled ? "Enabled" : "Disabled"
+                        )
                     }
                 }
                 

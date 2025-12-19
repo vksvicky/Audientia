@@ -8,18 +8,6 @@
 
 ### Recent Updates (Dec 2025)
 - **✅ Test Fixes & Quality Improvements**: Fixed multiple test issues and improved test reliability:
-  - **Window State Persistence BDD Tests**: Fixed test assertions in `WindowStatePersistenceBDDTests` - changed `XCTAssertNil` to `XCTAssertFalse` for window visibility checks (window visibility is a Bool, not Optional). Added comprehensive BDD test scenarios for window state persistence including immediate state saving on view changes, state restoration after crashes/restarts, multiple minimize/maximize cycles (stress tests), and permutation/combination tests for various sequences of minimize/maximize operations.
-  - **Swift 6 Concurrency Fixes**: Fixed `AudioVisualiserTapBDDTests` - replaced `RunLoop.current.run(until:)` with `Thread.sleep(forTimeInterval:)` in `tearDownWithError` (non-async context) to fix Swift 6 concurrency errors. Removed `RunLoop` usage from async test methods.
-  - **Compilation Error Fixes**: Fixed compilation errors in test files:
-    - Resolved ambiguous enum cases in `InvalidFileBDDScenarios.swift`, `AudioEngineNativeBridgeTests.swift`, and `AudioEngineTestHelpers.swift` by explicitly qualifying enum cases (e.g., `PlaybackState.stopped`, `LoopMode.queue`, `AudioEngineError.trackLoadFailed`)
-    - Fixed `MockNativeAudioEngine` type ambiguity by ensuring only one definition exists and is correctly imported
-    - Fixed `PlaybackSpeedBDDTests` - added missing `Track` initialization parameters (`fileSize`, `bitrate`, `sampleRate`) and file system setup (`fileSystem.addFile(track.filePath)`) to ensure tracks are known to the mock file system
-  - **Code Quality Fixes**: Fixed SwiftLint warnings:
-    - Fixed unused immutable value 'target' warning in `TitleBarMinimizeButton.swift` by changing `let (containerView, target)` to `let (containerView, _)`
-    - Updated SwiftLint configuration (`.swiftlint.yml`) to allow blanket disables in test files for comprehensive test coverage (test files often need to be longer than standard limits)
-    - Fixed SwiftLint disable comment syntax in `WindowStatePersistenceBDDTests.swift` to properly disable `type_body_length` and `file_length` rules for test files
-  - **Test Stability**: All tests now passing, compilation errors resolved, SwiftLint warnings addressed
-- **✅ Home Tab Content Implementation**: Implemented "Recently Played" and "Recently Added" sections with real data:
   - **HomeViewModel**: Created ViewModel with `ListeningHistoryProtocol` and `LibraryIndexerProtocol` integration for loading recently played/added tracks
   - **TDD Tests**: Comprehensive Right-BICEP test coverage (boundary conditions, inverse relationships, error handling, performance, edge cases)
   - **BDD Tests**: User scenario tests for viewing recently played tracks, handling empty history, skipping tracks, and graceful degradation
@@ -575,15 +563,15 @@ See [`Scripts/build_guide.md`](../Scripts/build_guide.md) for detailed build ins
 #### 1.1 Audio Playback Engine (Weeks 5-8)
 
 **Backend (AudioCore):**
-- [x] C++ playback engine with CoreAudio integration - **✅ CAudioEngine (C++) with AVFoundation bridge implemented, Swift wrapper complete with async/await (loadFile, play, seek) for non-blocking I/O**
+- [x] C++ playback engine with CoreAudio integration - **✅ CAudioEngine (C++) with AVFoundation bridge implemented, Swift wrapper complete with async/await (loadFile, play, seek) for non-blocking I/O. Code organization: Extracted AudioEngine functionality into separate extension files (AudioEngine_QueueManagement, AudioEngine_GainControl, AudioEngine_Normalization, AudioEngine_QueueNavigation, AudioEngine_PlaybackControl, AudioEngine_PositionTracking, AudioEngine_Playback) to reduce file/class length. Changed private to internal for extension-accessible properties (updateGainMultiplier, gainControl, normaliser, positionUpdateTask, positionUpdateInterval). Fixed string interpolation for NormalizationMode. Renamed all extension files from + to _ format.**
 - [x] Format decoder abstraction (FFmpeg wrapper) - **✅ FormatDecodingCoordinator with AVFoundation primary decoder (async/await, modern APIs) and FFmpeg-backed FLAC decoder with proper STREAMINFO parsing, unit + integration tests in place**
-- [x] Playback queue management - **✅ Implemented with add/remove/clear/reorder operations**
-- [x] Seek and position tracking - **✅ Implemented with position updates and seek operations**
-- [x] Volume control and mute - **✅ Volume control implemented (setVolume/getVolume), mute functionality with toggleMute() and volume preservation**
-- [x] Queue navigation - **✅ playNext() and playPrevious() implemented with queue history tracking for bidirectional navigation**
-- [x] Replay functionality - **✅ replay() method to restart current track from beginning**
-- [x] Skip functionality - **✅ skipForward() and skipBackward() with 10-second default increments**
-- [x] Loop modes - **✅ LoopMode enum (none/track/queue) with toggleLoopMode() and automatic loop handling on track completion**
+- [x] Playback queue management - **✅ Implemented with add/remove/clear/reorder operations. Extracted to AudioEngine_QueueManagement.swift extension.**
+- [x] Seek and position tracking - **✅ Implemented with position updates and seek operations. Extracted to AudioEngine_PositionTracking.swift extension.**
+- [x] Volume control and mute - **✅ Volume control implemented (setVolume/getVolume), mute functionality with toggleMute() and volume preservation. Extracted to AudioEngine_PlaybackControl.swift extension.**
+- [x] Queue navigation - **✅ playNext() and playPrevious() implemented with queue history tracking for bidirectional navigation. Extracted to AudioEngine_QueueNavigation.swift extension.**
+- [x] Replay functionality - **✅ replay() method to restart current track from beginning. Extracted to AudioEngine_PlaybackControl.swift extension.**
+- [x] Skip functionality - **✅ skipForward() and skipBackward() with 10-second default increments. Extracted to AudioEngine_PlaybackControl.swift extension.**
+- [x] Loop modes - **✅ LoopMode enum (none/track/queue) with toggleLoopMode() and automatic loop handling on track completion. Extracted to AudioEngine_PlaybackControl.swift extension.**
 
 **UI (SwiftUI):**
 - [x] Now Playing view with basic controls - **✅ NowPlayingView implemented with track information display, play/pause controls, integrated with ContentView**
@@ -597,7 +585,7 @@ See [`Scripts/build_guide.md`](../Scripts/build_guide.md) for detailed build ins
 - [x] Loop mode toggle - **✅ Loop mode button with visual states (none/track/queue), shows active state with blue color, help text for each mode**
 
 **Tests:**
-- [x] **TDD**: Write tests for each playback operation first - **✅ All tests written before implementation (Swift AudioEngine and C++ CAudioEngine), AdvancedPlaybackTests.swift with comprehensive coverage**
+- [x] **TDD**: Write tests for each playback operation first - **✅ All tests written before implementation (Swift AudioEngine and C++ CAudioEngine), AdvancedPlaybackTests.swift with comprehensive coverage. Fixed compilation errors: type conversions in AudioEngineGainControlBDDTests, assertion errors, unused variables, closure arguments. Fixed test failures: testGainChangeUpdatesVolume (added refreshGain call), testUserNormalizesTrackToEBUR128Loudness (fixed MockAudioNormaliser), testUserFineTunesVolumeWithSmallAdjustments and testGlobalGainDefaultsToZero (added UserDefaults cleanup).**
 - [x] **Unit**: Playback state machine, queue management, seek accuracy - **✅ PlaybackStateMachineTests, QueueManagementTests, SeekAndPositionTests, CAudioEngineTests implemented with comprehensive concurrency tests (race conditions, cancellation, parallel operations)**
 - [x] **Unit**: Advanced playback features - **✅ AdvancedPlaybackTests.swift with TDD tests for queue navigation, mute, replay, skip, and loop modes following Right-BICEP principles**
 - [x] **Integration**: End-to-end playback with real audio files - **✅ FFmpeg decoder + AudioEngine integration verified against runtime-generated FLAC fixtures with proper STREAMINFO block parsing**
@@ -605,6 +593,7 @@ See [`Scripts/build_guide.md`](../Scripts/build_guide.md) for detailed build ins
 - [x] **BDD**: "As a user, I want to play a track and see progress update" - **✅ PlaybackProgressBDDTests implemented with 11 comprehensive user scenario tests (play/pause/resume/seek progress updates, interactive seeking, smooth progress tracking, loading states). Tests use polling for CI robustness instead of fixed sleeps.**
 - [x] **BDD**: Advanced playback scenarios - **✅ BDD-style tests in AdvancedPlaybackTests for queue navigation, mute toggle, replay, skip, and loop mode scenarios**
 - [x] **BDD**: Invalid file handling scenarios - **✅ InvalidFileBDDScenarios and FileValidationFixtureTests with comprehensive BDD tests for corrupt/empty/truncated files. All tests fail clearly when fixtures are missing (no silent skipping). Tests gracefully handle missing fixtures for individual formats.**
+- [x] **Performance Tests**: Performance test improvements - **✅ Refactored testNormalizationAnalysisPerformance from measure block with DispatchSemaphore to manual timing using CFAbsoluteTimeGetCurrent() for async operations, significantly improving test speed**
 
 **Right-BICEP:**
 - [x] **[Right]**: Verify audio output matches expected format/sample rate - **✅ Tests verify state transitions and decoder metadata accuracy**

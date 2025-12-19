@@ -68,6 +68,15 @@ public class AppSettings: ObservableObject {
             UserDefaults.standard.set(playbackSpeed.rawValue, forKey: "audientia.settings.playbackSpeed")
         }
     }
+    
+    /// Audio gain control enabled/disabled
+    /// When disabled, gain is set to 0 dB (no effect)
+    /// Default: true (enabled)
+    @Published public var isGainControlEnabled: Bool {
+        didSet {
+            UserDefaults.standard.set(isGainControlEnabled, forKey: "audientia.settings.isGainControlEnabled")
+        }
+    }
 
     // MARK: - Initialisation
 
@@ -101,6 +110,10 @@ public class AppSettings: ObservableObject {
         } else {
             self.playbackSpeed = .normal
         }
+        
+        // Load gain control enabled state (default: true)
+        let gainControlEnabledKey = "audientia.settings.isGainControlEnabled"
+        self.isGainControlEnabled = UserDefaults.standard.object(forKey: gainControlEnabledKey) as? Bool ?? true
 
         // Listen for module conflict notifications
         NotificationCenter.default.addObserver(

@@ -7,9 +7,6 @@
 //  Copyright © 2025 CycleRunCode Club. All rights reserved.
 //
 
-// swiftlint:disable type_body_length
-// swiftlint:disable file_length
-// swiftlint:disable blanket_disable_command
 // Test files often need to be longer to cover comprehensive scenarios
 
 import AppKit
@@ -23,6 +20,8 @@ import XCTest
 @testable import AudioCore
 @testable import Shared
 
+// swiftlint:disable file_length
+// swiftlint:disable type_body_length
 @MainActor
 final class WindowStatePersistenceBDDTests: XCTestCase {
     var appDelegate: AppDelegate!
@@ -145,13 +144,13 @@ final class WindowStatePersistenceBDDTests: XCTestCase {
     func testUserMinimizesRestoresAndMinimizesAgain() async throws {
         // Given - I have minimized, restored, and minimized again
         appDelegate.minimizeToPlayer(nowPlayingViewModel: nowPlayingViewModel)
-        try await Task.sleep(nanoseconds: 100_000_000)
+        try await Task.sleep(nanoseconds: 500_000_000) // Wait for positioning and state save
         
         appDelegate.restoreFromPlayer()
-        try await Task.sleep(nanoseconds: 100_000_000)
+        try await Task.sleep(nanoseconds: 500_000_000) // Wait for state save
         
         appDelegate.minimizeToPlayer(nowPlayingViewModel: nowPlayingViewModel)
-        try await Task.sleep(nanoseconds: 200_000_000) // Wait for positioning and save
+        try await Task.sleep(nanoseconds: 500_000_000) // Wait for positioning and state save
         
         // When - I check the saved state
         let savedState = await appDelegate.windowStateManager.loadWindowState()
@@ -221,7 +220,7 @@ final class WindowStatePersistenceBDDTests: XCTestCase {
         // Then - The app should be set to restore minimized state
         // Note: We can't directly test shouldRestoreMinimizedState as it's private,
         // but we can test that restoreMinimizedStateIfNeeded works
-        appDelegate.restoreMinimizedStateIfNeeded(nowPlayingViewModel: nowPlayingViewModel)
+        await appDelegate.restoreMinimizedStateIfNeeded(nowPlayingViewModel: nowPlayingViewModel)
         try await Task.sleep(nanoseconds: 200_000_000)
         
         XCTAssertTrue(appDelegate.isMinimised, "App should be in minimized mode")
@@ -361,7 +360,7 @@ final class WindowStatePersistenceBDDTests: XCTestCase {
         
         // Then - The app should be set to restore minimized state
         // Note: shouldRestoreMinimizedState is private, but we can test restoreMinimizedStateIfNeeded
-        newAppDelegate.restoreMinimizedStateIfNeeded(nowPlayingViewModel: nowPlayingViewModel)
+        await newAppDelegate.restoreMinimizedStateIfNeeded(nowPlayingViewModel: nowPlayingViewModel)
         try await Task.sleep(nanoseconds: 500_000_000) // Wait for restore
         
         XCTAssertTrue(newAppDelegate.isMinimised, "App should restore to minimized mode after crash")
@@ -433,7 +432,7 @@ final class WindowStatePersistenceBDDTests: XCTestCase {
         
         // When - I restore window state (simulating app launch from Xcode)
         await newAppDelegate.restoreWindowState()
-        newAppDelegate.restoreMinimizedStateIfNeeded(nowPlayingViewModel: nowPlayingViewModel)
+        await newAppDelegate.restoreMinimizedStateIfNeeded(nowPlayingViewModel: nowPlayingViewModel)
         try await Task.sleep(nanoseconds: 500_000_000) // Wait for restore
         
         // Then - The app should restore to minimized view
@@ -656,15 +655,15 @@ final class WindowStatePersistenceBDDTests: XCTestCase {
         
         // When - I call minimize multiple times in a row
         appDelegate.minimizeToPlayer(nowPlayingViewModel: nowPlayingViewModel)
-        try await Task.sleep(nanoseconds: 200_000_000)
+        try await Task.sleep(nanoseconds: 500_000_000) // Wait for positioning and state save
         
         // Second minimize call (should be idempotent)
         appDelegate.minimizeToPlayer(nowPlayingViewModel: nowPlayingViewModel)
-        try await Task.sleep(nanoseconds: 200_000_000)
+        try await Task.sleep(nanoseconds: 500_000_000) // Wait for positioning and state save
         
         // Third minimize call (should be idempotent)
         appDelegate.minimizeToPlayer(nowPlayingViewModel: nowPlayingViewModel)
-        try await Task.sleep(nanoseconds: 200_000_000)
+        try await Task.sleep(nanoseconds: 500_000_000) // Wait for positioning and state save
         
         // Then - App should still be in minimized state (only one window)
         XCTAssertTrue(appDelegate.isMinimised, "App should be in minimized state")
@@ -726,11 +725,11 @@ final class WindowStatePersistenceBDDTests: XCTestCase {
         for (index, (action, expectedMinimized)) in sequence.enumerated() {
             if action == "minimize" {
                 appDelegate.minimizeToPlayer(nowPlayingViewModel: nowPlayingViewModel)
+                try await Task.sleep(nanoseconds: 500_000_000) // Wait for positioning and state save
             } else {
                 appDelegate.restoreFromPlayer()
+                try await Task.sleep(nanoseconds: 500_000_000) // Wait for state save
             }
-            
-            try await Task.sleep(nanoseconds: 300_000_000) // Wait for state save
             
             // Then - State should match expected
             XCTAssertEqual(
@@ -816,10 +815,11 @@ final class WindowStatePersistenceBDDTests: XCTestCase {
         for (action, expectedMinimized) in sequence1 {
             if action == "minimize" {
                 appDelegate.minimizeToPlayer(nowPlayingViewModel: nowPlayingViewModel)
+                try await Task.sleep(nanoseconds: 500_000_000) // Wait for positioning and state save
             } else {
                 appDelegate.restoreFromPlayer()
+                try await Task.sleep(nanoseconds: 500_000_000) // Wait for state save
             }
-            try await Task.sleep(nanoseconds: 200_000_000)
             
             XCTAssertEqual(
                 appDelegate.isMinimised,
@@ -896,19 +896,19 @@ final class WindowStatePersistenceBDDTests: XCTestCase {
         // When - I perform quick succession of minimize -> maximize -> minimize
         // Minimize
         appDelegate.minimizeToPlayer(nowPlayingViewModel: nowPlayingViewModel)
-        try await Task.sleep(nanoseconds: 300_000_000)
+        try await Task.sleep(nanoseconds: 500_000_000) // Wait for positioning and state save
         let state1 = await appDelegate.windowStateManager.loadWindowState()
         savedStates.append(state1)
         
         // Maximize
         appDelegate.restoreFromPlayer()
-        try await Task.sleep(nanoseconds: 300_000_000)
+        try await Task.sleep(nanoseconds: 500_000_000) // Wait for state save
         let state2 = await appDelegate.windowStateManager.loadWindowState()
         savedStates.append(state2)
         
         // Minimize again
         appDelegate.minimizeToPlayer(nowPlayingViewModel: nowPlayingViewModel)
-        try await Task.sleep(nanoseconds: 300_000_000)
+        try await Task.sleep(nanoseconds: 500_000_000) // Wait for positioning and state save
         let state3 = await appDelegate.windowStateManager.loadWindowState()
         savedStates.append(state3)
         
@@ -935,19 +935,19 @@ final class WindowStatePersistenceBDDTests: XCTestCase {
         
         // When - I perform extended sequence: M -> X -> M -> X -> M
         appDelegate.minimizeToPlayer(nowPlayingViewModel: nowPlayingViewModel)
-        try await Task.sleep(nanoseconds: 300_000_000)
+        try await Task.sleep(nanoseconds: 500_000_000) // Wait for positioning and state save
         
         appDelegate.restoreFromPlayer()
-        try await Task.sleep(nanoseconds: 300_000_000)
+        try await Task.sleep(nanoseconds: 500_000_000) // Wait for state save
         
         appDelegate.minimizeToPlayer(nowPlayingViewModel: nowPlayingViewModel)
-        try await Task.sleep(nanoseconds: 300_000_000)
+        try await Task.sleep(nanoseconds: 500_000_000) // Wait for positioning and state save
         
         appDelegate.restoreFromPlayer()
-        try await Task.sleep(nanoseconds: 300_000_000)
+        try await Task.sleep(nanoseconds: 500_000_000) // Wait for state save
         
         appDelegate.minimizeToPlayer(nowPlayingViewModel: nowPlayingViewModel)
-        try await Task.sleep(nanoseconds: 300_000_000)
+        try await Task.sleep(nanoseconds: 500_000_000) // Wait for positioning and state save
         
         // Then - Final state should be minimized
         XCTAssertTrue(appDelegate.isMinimised, "Final state should be minimized")
@@ -969,7 +969,7 @@ final class WindowStatePersistenceBDDTests: XCTestCase {
         newAppDelegate.mainWindow = newWindow
         
         await newAppDelegate.restoreWindowState()
-        newAppDelegate.restoreMinimizedStateIfNeeded(nowPlayingViewModel: nowPlayingViewModel)
+        await newAppDelegate.restoreMinimizedStateIfNeeded(nowPlayingViewModel: nowPlayingViewModel)
         try await Task.sleep(nanoseconds: 500_000_000)
         
         XCTAssertTrue(newAppDelegate.isMinimised, "Should restore to minimized state after restart")
@@ -1052,10 +1052,11 @@ final class WindowStatePersistenceBDDTests: XCTestCase {
             for action in sequence {
                 if action == "M" {
                     appDelegate.minimizeToPlayer(nowPlayingViewModel: nowPlayingViewModel)
+                    try await Task.sleep(nanoseconds: 500_000_000) // Wait for positioning and state save
                 } else {
                     appDelegate.restoreFromPlayer()
+                    try await Task.sleep(nanoseconds: 500_000_000) // Wait for state save
                 }
-                try await Task.sleep(nanoseconds: 200_000_000)
             }
             
             // Verify final state
@@ -1084,20 +1085,20 @@ final class WindowStatePersistenceBDDTests: XCTestCase {
         
         // When - I minimize
         appDelegate.minimizeToPlayer(nowPlayingViewModel: nowPlayingViewModel)
-        try await Task.sleep(nanoseconds: 300_000_000)
+        try await Task.sleep(nanoseconds: 500_000_000) // Wait for positioning and state save
         XCTAssertTrue(appDelegate.isMinimised, "Should be minimized")
         let firstWindow = appDelegate.minimisedPlayerWindow
         XCTAssertNotNil(firstWindow, "First minimized window should exist")
         
         // Close the minimized window (simulate user closing it)
         appDelegate.closeMinimisedPlayer()
-        try await Task.sleep(nanoseconds: 300_000_000)
+        try await Task.sleep(nanoseconds: 500_000_000) // Wait for state save
         XCTAssertFalse(appDelegate.isMinimised, "Should not be minimized after closing")
         XCTAssertNil(appDelegate.minimisedPlayerWindow, "Minimized window should not exist")
         
         // Minimize again
         appDelegate.minimizeToPlayer(nowPlayingViewModel: nowPlayingViewModel)
-        try await Task.sleep(nanoseconds: 300_000_000)
+        try await Task.sleep(nanoseconds: 500_000_000) // Wait for positioning and state save
         XCTAssertTrue(appDelegate.isMinimised, "Should be minimized again")
         let secondWindow = appDelegate.minimisedPlayerWindow
         XCTAssertNotNil(secondWindow, "Second minimized window should exist")
@@ -1178,5 +1179,6 @@ final class WindowStatePersistenceBDDTests: XCTestCase {
         XCTAssertFalse(stateHistory[3].hasMinimizedWindow, "After second maximize: window should not exist")
     }
 }
+// swiftlint:enable type_body_length
 
 #endif

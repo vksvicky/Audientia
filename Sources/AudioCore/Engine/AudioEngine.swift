@@ -65,8 +65,32 @@ public final class AudioEngine: AudioEngineProtocol {
                 volume = clamped
                 return
             }
-            nativeEngine.setVolume(clamped)
-            Logger.audio.debug("Volume set to \(clamped)")
+            applyVolumeWithGain(baseVolume: clamped)
+        }
+    }
+    
+    /// Apply volume with gain control (if available)
+    /// - Parameter baseVolume: Base volume (0.0 to 1.0)
+    private func applyVolumeWithGain(baseVolume: Float) {
+        // Check if gain control is enabled in settings
+        let gainMultiplier = AppSettings.shared.isGainControlEnabled ? currentGainMultiplier : 1.0
+        let effectiveVolume = baseVolume * gainMultiplier
+        let clampedVolume = max(0.0, min(1.0, effectiveVolume))
+        nativeEngine.setVolume(clampedVolume)
+        Logger.audio.debug("Volume set to \(baseVolume), effective volume with gain: \(clampedVolume)")
+    }
+    
+    /// Update cached gain multiplier when track loads or gain changes
+    internal func updateGainMultiplier() async {
+        if let gainControl = gainControl, let track = currentTrack, AppSettings.shared.isGainControlEnabled {
+            let effectiveGain = await gainControl.getEffectiveGain(for: track)
+            currentGainMultiplier = gainControl.gainDBToLinear(effectiveGain)
+            // Reapply volume with new gain
+            applyVolumeWithGain(baseVolume: volume)
+        } else {
+            currentGainMultiplier = 1.0
+            // Reapply volume without gain
+            applyVolumeWithGain(baseVolume: volume)
         }
     }
     
@@ -115,8 +139,8 @@ public final class AudioEngine: AudioEngineProtocol {
     
     // MARK: - Private Properties
     
-    private var positionUpdateTask: Task<Void, Never>?
-    private let positionUpdateInterval: TimeInterval = 0.1 // Update every 100ms
+    internal var positionUpdateTask: Task<Void, Never>?
+    internal let positionUpdateInterval: TimeInterval = 0.1 // Update every 100ms
     private let fileSystem: FileSystemProtocol
     private let formatCoordinator: FormatDecodingCoordinating
     let nativeEngine: NativeAudioEngineProtocol
@@ -127,6 +151,15 @@ public final class AudioEngine: AudioEngineProtocol {
     
     /// Audio visualiser for real-time spectrum analysis
     public let visualiser: AudioVisualiserProtocol
+    
+    /// Audio gain control (optional)
+    internal let gainControl: AudioGainControlProtocol?
+    
+    /// Audio normaliser (optional)
+    internal let normaliser: AudioNormalisationProtocol?
+    
+    /// Current gain multiplier (cached for synchronous volume updates)
+    private var currentGainMultiplier: Float = 1.0
     
     // MARK: - Initialisation
     
@@ -141,6 +174,8 @@ public final class AudioEngine: AudioEngineProtocol {
         self.nativeEngine = CAudioEngine()
         self.visualiser = AudioVisualiser()
         self.visualiserTap = AudioVisualiserTap(visualiser: self.visualiser)
+        self.gainControl = AudioGainControl()
+        self.normaliser = AudioNormaliser()
         
         // Load saved playback speed from AppSettings
         let savedSpeed = AppSettings.shared.playbackSpeed
@@ -153,17 +188,25 @@ public final class AudioEngine: AudioEngineProtocol {
     /// - Parameters:
     ///   - fileSystem: File system abstraction
     ///   - formatCoordinator: Format decoder coordinator
+    ///   - nativeEngine: Native audio engine protocol
+    ///   - visualiser: Audio visualiser protocol (optional)
+    ///   - gainControl: Audio gain control protocol (optional)
+    ///   - normaliser: Audio normaliser protocol (optional)
     @MainActor
     init(
         fileSystem: FileSystemProtocol,
         formatCoordinator: FormatDecodingCoordinating = DefaultFormatDecodingCoordinator(),
         nativeEngine: NativeAudioEngineProtocol,
-        visualiser: AudioVisualiserProtocol? = nil
+        visualiser: AudioVisualiserProtocol? = nil,
+        gainControl: AudioGainControlProtocol? = nil,
+        normaliser: AudioNormalisationProtocol? = nil
     ) {
         self.fileSystem = fileSystem
         self.formatCoordinator = formatCoordinator
         self.nativeEngine = nativeEngine
         self.visualiser = visualiser ?? AudioVisualiser()
+        self.gainControl = gainControl
+        self.normaliser = normaliser
         Logger.audio.debug("AudioEngine initialised with custom dependencies")
     }
     
@@ -224,34 +267,21 @@ public final class AudioEngine: AudioEngineProtocol {
         }
         
         // Reset position - attempt to load into native engine
-        // If format detection failed, native engine failure is also non-fatal (for testing invalid files)
         let formatDetectionFailed = detectedFormat == nil && lastFormatDetectionError != nil
         let nativeLoadSucceeded = await nativeEngine.loadFile(track.filePath)
         
         if !nativeLoadSucceeded {
-            // If format detection also failed, this is likely an invalid/corrupt file
-            // Allow the load to "succeed" for testing purposes, but mark the error
-            if formatDetectionFailed {
-                // For invalid files, we allow the track to be "loaded" but with errors
-                // This allows tests to check lastFormatDetectionError
-                currentPosition = 0.0
-                currentTrack = track
-                state = .error("Format detection and native engine load both failed")
-                Logger.audio.warning(
-                    "Track loaded with errors (format detection and native engine both failed): \(track.title)"
-                )
-                return
-            } else {
-                // Format detection succeeded but native engine failed - this is a real error
-                let error = AudioEngineError.trackLoadFailed("Unable to open audio file: \(track.filePath)")
-                state = .error(error.errorDescription ?? "File not found")
-                Logger.audio.error("Failed to load track: \(error.localizedDescription)")
-                throw error
-            }
+            try handleNativeLoadFailure(
+                track: track,
+                formatDetectionFailed: formatDetectionFailed
+            )
         }
         
         currentPosition = nativeEngine.currentPosition
         currentTrack = track
+        
+        // Update gain multiplier for new track
+        await updateGainMultiplier()
         
         // Setup audio tap for visualisation if available
         // This provides real-time audio data for the visualiser
@@ -264,434 +294,26 @@ public final class AudioEngine: AudioEngineProtocol {
         Logger.audio.info("Track loaded successfully: \(track.title)")
     }
     
-    // MARK: - Playback Control
-    
-    /// Start playback
-    /// - Throws: AudioEngineError if playback cannot start
-    public func play() async throws {
-        // Check if queue has tracks but no current track
-        if currentTrack == nil && !queue.isEmpty {
-            let nextTrack = queue.removeFirst()
-            try await loadTrack(nextTrack)
-            // Track is now loaded, add to history (this is the first track)
-            queueHistory.append(nextTrack)
-            currentQueueIndex = queueHistory.count - 1
-        }
-        
-        guard let track = currentTrack else {
-            // If no track is loaded, check if queue is empty
-            if queue.isEmpty {
-                throw AudioEngineError.queueEmpty
-            } else {
-                // This shouldn't happen as we load from queue above,
-                // but handle it just in case
-                throw AudioEngineError.noTrackLoaded
-            }
-        }
-        
-        Logger.audio.info("Starting playback: \(track.title)")
-        
-        // Start main playback engine (actual audio playback)
-        guard await nativeEngine.play() else {
-            throw AudioEngineError.trackLoadFailed("Native audio engine failed to start playback")
-        }
-        
-        // Start visualiser tap for real-time audio data (runs in parallel, no audio output)
-        // This provides real audio samples for visualisation
-        // Sync with current playback position if available
-        let currentPos = currentPosition
-        if visualiserTap?.play(startPosition: currentPos > 0 ? currentPos : nil) == false {
-            Logger.audio.warning("Failed to start visualiser tap, visualisation may not work")
-        }
-        
-        // Start position tracking
-        startPositionTracking()
-        
-        state = .playing
-        Logger.audio.debug("Playback started")
-    }
-    
-    /// Pause playback
-    /// Made async to support concurrent operations and non-blocking I/O
-    public func pause() async {
-        guard state == .playing else {
-            Logger.audio.debug("Pause called but not playing (state: \(String(describing: self.state)))")
-            return
-        }
-        
-        Logger.audio.info("Pausing playback")
-        stopPositionTracking()
-        visualiserTap?.pause()
-        nativeEngine.pause()
-        state = .paused
-    }
-    
-    /// Resume playback
-    /// - Throws: AudioEngineError if resume fails
-    public func resume() async throws {
-        guard state == .paused else {
-            if self.state == .stopped {
-                throw AudioEngineError.noTrackLoaded
-            }
-            Logger.audio.debug("Resume called but not paused (state: \(String(describing: self.state)))")
-            return
-        }
-        
-        guard currentTrack != nil else {
-            throw AudioEngineError.noTrackLoaded
-        }
-        
-        Logger.audio.info("Resuming playback")
-        guard await nativeEngine.play() else {
-            throw AudioEngineError.trackLoadFailed("Native audio engine failed to resume playback")
-        }
-        
-        // Restart visualiser tap for real-time audio data (runs in parallel, no audio output)
-        // This ensures visualisation continues after resume
-        // Sync with current playback position if available
-        let currentPos = currentPosition
-        if visualiserTap?.play(startPosition: currentPos > 0 ? currentPos : nil) == false {
-            Logger.audio.warning("Failed to restart visualiser tap on resume, visualisation may not work")
-        }
-        
-        startPositionTracking()
-        state = .playing
-    }
-    
-    /// Stop playback and reset position
-    /// Made async to support concurrent operations and non-blocking I/O
-    public func stop() async {
-        Logger.audio.info("Stopping playback")
-        stopPositionTracking()
-        visualiserTap?.stop()
-        nativeEngine.stop()
-        currentPosition = 0.0
-        state = .stopped
-    }
-    
-    // MARK: - Queue Management
-    
-    /// Add a track to the playback queue
-    /// - Parameter track: The track to add
-    public func addToQueue(_ track: Track) {
-        queue.append(track)
-        Logger.audio.debug(
-            "Added track to queue: \(track.title) (queue size: \(self.queue.count))"
-        )
-    }
-    
-    /// Remove a track from the playback queue
-    /// - Parameter track: The track to remove
-    public func removeFromQueue(_ track: Track) {
-        queue.removeAll { $0.id == track.id }
-        Logger.audio.debug(
-            "Removed track from queue: \(track.title) (queue size: \(self.queue.count))"
-        )
-    }
-    
-    /// Clear the playback queue
-    public func clearQueue() {
-        queue.removeAll()
-        Logger.audio.debug("Queue cleared")
-    }
-    
-    /// Move a track in the queue
-    /// - Parameters:
-    ///   - from: Source index
-    ///   - to: Destination index
-    public func moveTrack(
-        from sourceIndex: Int,
-        to destinationIndex: Int
-    ) {
-        guard sourceIndex >= 0 && sourceIndex < self.queue.count,
-              destinationIndex >= 0 &&
-              destinationIndex < self.queue.count else {
-            let message = "Invalid queue indices: from=\(sourceIndex), " +
-                "to=\(destinationIndex), count=\(self.queue.count)"
-            Logger.audio.warning("\(message)")
-            return
-        }
-        
-        let track = queue.remove(at: sourceIndex)
-        queue.insert(track, at: destinationIndex)
-        Logger.audio.debug(
-            "Moved track in queue: from=\(sourceIndex), to=\(destinationIndex)"
-        )
-    }
-}
-
-// MARK: - Queue Navigation Extension
-extension AudioEngine {
-    /// Play next track in queue
-    /// - Throws: AudioEngineError if no next track available
-    public func playNext() async throws {
-        Logger.audio.info("Play next requested")
-        
-        // Check if we have a next track in queue
-        if !queue.isEmpty {
-            let nextTrack = queue.removeFirst()
-            // Ensure current track is in history (should already be there from play() or previous playNext())
-            if let current = currentTrack {
-                // Only add if not already the last item in history
-                if queueHistory.isEmpty || queueHistory.last?.id != current.id {
-                    queueHistory.append(current)
-                    currentQueueIndex = queueHistory.count - 1
-                }
-            }
-            try await loadTrack(nextTrack)
-            // Add the next track to history
-            queueHistory.append(nextTrack)
-            currentQueueIndex = queueHistory.count - 1
-            try await play()
-            Logger.audio.info("Advanced to next track: \(nextTrack.title)")
-            return
-        }
-        
-        // Check loop mode
-        if loopMode == .queue && !queueHistory.isEmpty {
-            // Restart from beginning of history
-            let firstTrack = queueHistory[0]
-            queueHistory.removeAll()
-            currentQueueIndex = -1
-            try await loadTrack(firstTrack)
-            try await play()
-            Logger.audio.info("Looped to first track in queue")
-            return
-        }
-        
-        throw AudioEngineError.queueEmpty
-    }
-    
-    /// Play previous track in queue
-    /// - Throws: AudioEngineError if no previous track available
-    public func playPrevious() async throws {
-        Logger.audio.info("Play previous requested")
-        
-        // Check if we have history to go back to
-        guard currentQueueIndex > 0 else {
-            throw AudioEngineError.queueEmpty
-        }
-        
-        // Get previous track from history
-        let previousIndex = currentQueueIndex - 1
-        let previousTrack = queueHistory[previousIndex]
-        
-        // Move current track back to queue if it exists
-        if let current = currentTrack {
-            queue.insert(current, at: 0)
-        }
-        
-        // Update index before loading previous track
-        currentQueueIndex = previousIndex
-        try await loadTrack(previousTrack)
-        try await play()
-        Logger.audio.info("Went back to previous track: \(previousTrack.title)")
-    }
-}
-
-// MARK: - Volume Control Extension
-extension AudioEngine {
-    /// Set volume level
-    /// - Parameter volume: Volume level (0.0 to 1.0)
-    public func setVolume(_ volume: Float) {
-        self.volume = volume
-    }
-    
-    /// Set muted state
-    /// - Parameter muted: Whether to mute
-    public func setMuted(_ muted: Bool) {
-        self.isMuted = muted
-    }
-    
-    /// Toggle mute state
-    public func toggleMute() {
-        isMuted.toggle()
-    }
-}
-
-// MARK: - Seek and Position Extension
-extension AudioEngine {
-    /// Seek to a specific position
-    /// - Parameter position: Target position in seconds
-    /// - Throws: AudioEngineError if seek fails
-    public func seek(to position: TimeInterval) async throws {
-        guard currentTrack != nil else {
-            throw AudioEngineError.noTrackLoaded
-        }
-        
-        // Clamp position to valid range
-        let clampedPosition = max(0.0, min(position, duration))
-        
-        guard clampedPosition >= 0.0 && clampedPosition <= duration else {
-            throw AudioEngineError.invalidSeekPosition
-        }
-        
-        Logger.audio.debug("Seeking to position: \(clampedPosition)s")
-        guard await nativeEngine.seek(to: clampedPosition) else {
-            throw AudioEngineError.trackLoadFailed("Native audio engine failed to seek to \(clampedPosition)")
-        }
-        // Update position from native engine (it may have clamped the value)
-        currentPosition = nativeEngine.currentPosition
-    }
-    
-    /// Seek by a relative amount
-    /// - Parameter offset: Amount to seek (positive = forward, negative = backward)
-    /// - Throws: AudioEngineError if seek fails
-    public func seek(by offset: TimeInterval) async throws {
-        let newPosition = currentPosition + offset
-        try await seek(to: newPosition)
-    }
-}
-
-// MARK: - Advanced Playback Extension
-extension AudioEngine {
-    /// Replay current track from beginning
-    /// - Throws: AudioEngineError if no track loaded
-    public func replay() async throws {
-        Logger.audio.info("Replay requested")
-        guard currentTrack != nil else {
-            throw AudioEngineError.noTrackLoaded
-        }
-        
-        try await seek(to: 0.0)
-        if state == .paused {
-            try await resume()
-        } else if state == .stopped {
-            try await play()
-        }
-        Logger.audio.info("Track replayed from beginning")
-    }
-    
-    /// Skip forward by specified seconds
-    /// - Parameter seconds: Number of seconds to skip forward
-    /// - Throws: AudioEngineError if seek fails
-    public func skipForward(seconds: TimeInterval) async throws {
-        let newPosition = min(currentPosition + seconds, duration)
-        try await seek(to: newPosition)
-        Logger.audio.debug("Skipped forward \(seconds) seconds")
-    }
-    
-    /// Skip backward by specified seconds
-    /// - Parameter seconds: Number of seconds to skip backward
-    /// - Throws: AudioEngineError if seek fails
-    public func skipBackward(seconds: TimeInterval) async throws {
-        let newPosition = max(currentPosition - seconds, 0.0)
-        try await seek(to: newPosition)
-        Logger.audio.debug("Skipped backward \(seconds) seconds")
-    }
-    
-    // MARK: - Loop Control
-    
-    /// Set loop mode
-    /// - Parameter mode: Loop mode to set
-    public func setLoopMode(_ mode: LoopMode) {
-        self.loopMode = mode
-        Logger.audio.debug("Loop mode set to: \(mode)")
-    }
-    
-    /// Toggle loop mode (none -> track -> queue -> none)
-    public func toggleLoopMode() {
-        switch self.loopMode {
-        case .none:
-            self.loopMode = .track
-        case .track:
-            self.loopMode = .queue
-        case .queue:
-            self.loopMode = .none
-        }
-        Logger.audio.debug("Loop mode toggled to: \(self.loopMode)")
-    }
-    
-    // MARK: - Shuffle Control
-    
-    /// Toggle shuffle mode
-    public func toggleShuffle() {
-        self.isShuffleEnabled.toggle()
-        Logger.audio.debug("Shuffle mode toggled to: \(self.isShuffleEnabled)")
-        
-        // If shuffle is enabled, shuffle the queue
-        if self.isShuffleEnabled && !self.queue.isEmpty {
-            self.queue.shuffle()
-            Logger.audio.debug("Queue shuffled: \(self.queue.count) tracks")
+    /// Handle native engine load failure
+    private func handleNativeLoadFailure(
+        track: Track,
+        formatDetectionFailed: Bool
+    ) throws {
+        if formatDetectionFailed {
+            // For invalid files, allow the track to be "loaded" but with errors
+            currentPosition = 0.0
+            currentTrack = track
+            state = .error("Format detection and native engine load both failed")
+            Logger.audio.warning(
+                "Track loaded with errors (format detection and native engine both failed): \(track.title)"
+            )
+        } else {
+            // Format detection succeeded but native engine failed - this is a real error
+            let error = AudioEngineError.trackLoadFailed("Unable to open audio file: \(track.filePath)")
+            state = .error(error.errorDescription ?? "File not found")
+            Logger.audio.error("Failed to load track: \(error.localizedDescription)")
+            throw error
         }
     }
     
-    /// Set shuffle mode
-    /// - Parameter enabled: Whether shuffle is enabled
-    public func setShuffle(_ enabled: Bool) {
-        self.isShuffleEnabled = enabled
-        Logger.audio.debug("Shuffle mode set to: \(enabled)")
-        
-        // If shuffle is enabled, shuffle the queue
-        if self.isShuffleEnabled && !self.queue.isEmpty {
-            self.queue.shuffle()
-            Logger.audio.debug("Queue shuffled: \(self.queue.count) tracks")
-        }
-    }
-}
-
-// MARK: - Visualization Extension
-extension AudioEngine {
-    /// Set visualisation volume (0.0 to 1.0)
-    /// Controls the output volume of the visualisation engine
-    /// - Parameter volume: Volume level (0.0 to 1.0), will be clamped
-    public func setVisualizationVolume(_ volume: Float) {
-        let clamped = max(0.0, min(1.0, volume))
-        visualiserTap?.volume = clamped
-    }
-    
-    /// Get current visualisation volume
-    /// - Returns: Current visualisation volume (0.0 to 1.0)
-    public func getVisualizationVolume() -> Float {
-        visualiserTap?.volume ?? 1.0
-    }
-}
-
-// MARK: - Position Tracking Extension
-extension AudioEngine {
-    func startPositionTracking() {
-        stopPositionTracking()
-        
-        positionUpdateTask = Task { [weak self] in
-            while !Task.isCancelled {
-                guard let self = self else { break }
-                
-                if self.state == .playing {
-                    self.currentPosition = self.nativeEngine.currentPosition
-                    
-                    // Check if we've reached the end using detected duration when available
-                    let playbackDuration = self.duration
-                    if playbackDuration > 0 {
-                        // Check if position is at or very close to the end (within 0.2s tolerance)
-                        // This accounts for timing precision while ensuring we catch completion
-                        let isAtEnd = self.currentPosition >= playbackDuration - 0.2
-                        
-                        if isAtEnd {
-                            // Clamp position to duration to avoid showing values beyond track length
-                            self.currentPosition = min(self.currentPosition, playbackDuration)
-                            
-                            // Only trigger completion once - use a flag to prevent multiple calls
-                            // Stop position tracking temporarily to prevent race conditions
-                            self.stopPositionTracking()
-                            
-                            // Auto-advance to next track or stop
-                            await self.handleTrackCompletion()
-                            
-                            // Restart position tracking if still playing (e.g., next track started)
-                            if self.state == .playing {
-                                self.startPositionTracking()
-                            }
-                        }
-                    }
-                }
-                
-                try? await Task.sleep(nanoseconds: UInt64(self.positionUpdateInterval * 1_000_000_000))
-            }
-        }
-    }
-    
-    func stopPositionTracking() {
-        positionUpdateTask?.cancel()
-        positionUpdateTask = nil
-    }
 }

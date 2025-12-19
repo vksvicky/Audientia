@@ -362,11 +362,42 @@ public final class NowPlayingViewModel: ObservableObject {
         audioEngine.isShuffleEnabled
     }
     
+    /// Is gain control enabled
+    public var isGainControlEnabled: Bool {
+        AppSettings.shared.isGainControlEnabled
+    }
+    
     /// Toggle shuffle mode
     public func toggleShuffle() {
         audioEngine.toggleShuffle()
         updateState()
         Logger.userInterface.info("Shuffle toggled: \(self.audioEngine.isShuffleEnabled, privacy: .public)")
+    }
+    
+    /// Toggle gain control
+    public func toggleGainControl() {
+        AppSettings.shared.isGainControlEnabled.toggle()
+        
+        // If disabling, set global gain to 0 dB to remove effect
+        if !AppSettings.shared.isGainControlEnabled {
+            Task {
+                if let engine = audioEngine as? AudioEngine {
+                    // Access gain control through engine and set to 0 dB
+                    // Note: This requires accessing the internal gainControl
+                    // For now, we'll refresh the gain which will apply the 0 dB if disabled
+                    await engine.refreshGain()
+                }
+            }
+        } else {
+            // If enabling, refresh gain to apply saved settings
+            Task {
+                if let engine = audioEngine as? AudioEngine {
+                    await engine.refreshGain()
+                }
+            }
+        }
+        
+        Logger.userInterface.info("Gain control toggled: \(AppSettings.shared.isGainControlEnabled, privacy: .public)")
     }
 
     // MARK: - Queue Management

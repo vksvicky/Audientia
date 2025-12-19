@@ -11,12 +11,48 @@ import os.log
 import Shared
 import SwiftUI
 
+// MARK: - Window Accessor
+
+/// ViewModifier to access the NSWindow from SwiftUI view hierarchy
+struct WindowAccessor: NSViewRepresentable {
+    let callback: (NSWindow?) -> Void
+    
+    func makeNSView(context: Context) -> NSView {
+        let view = WindowTrackingView(callback: callback)
+        return view
+    }
+    
+    func updateNSView(_ nsView: NSView, context: Context) {
+        // Window will be captured when view moves to window
+    }
+}
+
+/// NSView subclass that tracks when it's added to a window
+private class WindowTrackingView: NSView {
+    let callback: (NSWindow?) -> Void
+    
+    init(callback: @escaping (NSWindow?) -> Void) {
+        self.callback = callback
+        super.init(frame: .zero)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    override func viewDidMoveToWindow() {
+        super.viewDidMoveToWindow()
+        DispatchQueue.main.async { [weak self] in
+            self?.callback(self?.window)
+        }
+    }
+}
+
 @main
 struct AudientiaApp: App {
     @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
     @StateObject private var settings = AppSettings.shared
     @State private var showSplashScreen = false
-    @State private var showMainWindow = false
 
     init() {
         // Update versions on app launch
@@ -27,11 +63,9 @@ struct AudientiaApp: App {
     var body: some Scene {
         WindowGroup {
             ZStack {
-                // Main content - only visible when splash is dismissed
-                if showMainWindow {
-                    ContentView()
-                        .environmentObject(settings)
-                }
+                // Main content - always visible so window is created
+                ContentView()
+                    .environmentObject(settings)
                 
                 // Splash screen - covers everything when visible
                 if showSplashScreen && settings.showSplashScreen {
@@ -41,26 +75,49 @@ struct AudientiaApp: App {
                         .allowsHitTesting(true)
                 }
             }
+            .background(WindowAccessor { window in
+                // Capture the window when it's available from SwiftUI view hierarchy
+                // Only capture if it's not a sheet, not the minimised player, and not an About window
+                guard let window = window,
+                      !window.isSheet,
+                      window != appDelegate.minimisedPlayerWindow,
+                      !window.title.contains("About"),
+                      window.title.isEmpty || window.title == "Audientia" else {
+                    return
+                }
+                
+                // Only configure once
+                guard appDelegate.mainWindow == nil else { return }
+                
+                appDelegate.mainWindow = window
+                if window.title.isEmpty {
+                    window.title = "Audientia"
+                }
+                
+                // Ensure window is visible immediately - this is critical
+                window.makeKeyAndOrderFront(nil)
+                NSApplication.shared.activate(ignoringOtherApps: true)
+                
+                // Configure window properties
+                Task { @MainActor in
+                    appDelegate.configureMainWindow(window)
+                }
+            })
             .onAppear {
                 Task { await NotificationPermissionManager.shared.ensureInitialPromptIfNeeded() }
+                
                 // Show splash screen on app launch if enabled
                 if settings.showSplashScreen {
                     showSplashScreen = true
-                    showMainWindow = false
-                    // Hide main window and disable shortcuts while splash is showing
-                    appDelegate.hideMainWindow()
                     appDelegate.disableKeyboardShortcuts()
                     
-                    // Auto-dismiss after 10 seconds, then show main window and setup wizard if needed
+                    // Auto-dismiss after 10 seconds
                     Task {
                         try? await Task.sleep(nanoseconds: 10_000_000_000)
                         await MainActor.run {
                             withAnimation(.easeOut(duration: 0.3)) {
                                 showSplashScreen = false
                             }
-                            // Show main window and re-enable shortcuts
-                            showMainWindow = true
-                            appDelegate.showMainWindow()
                             appDelegate.enableKeyboardShortcuts()
                             
                             // Show setup wizard after splash screen dismisses
@@ -72,8 +129,6 @@ struct AudientiaApp: App {
                         }
                     }
                 } else {
-                    // If splash is disabled, show main window immediately
-                    showMainWindow = true
                     // Show setup wizard immediately if needed
                     if SetupWizardViewModel.shouldShowWizard() {
                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
@@ -86,9 +141,9 @@ struct AudientiaApp: App {
         .defaultSize(width: 1200, height: 800)
         .windowResizability(.contentSize)
         .windowStyle(.automatic)
+        .handlesExternalEvents(matching: Set(["*"])) // Allow window to handle all external events
         .commands {
             // Replace "New Window" with "Setup Wizard" in File menu
-            // This is the proper SwiftUI way and won't be overwritten
             CommandGroup(replacing: .newItem) {
                 Button("Setup Wizard...") {
                     Logger.userInterface.info("Setup Wizard menu item clicked")
@@ -105,6 +160,7 @@ struct AudientiaApp: App {
         }
     }
 }
+
 class AppDelegate: NSObject, NSApplicationDelegate {
     // Static reference to the AppDelegate instance
     private static var _sharedInstance: AppDelegate?
@@ -130,53 +186,58 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     var shortcutsDisabled = false
     var isMinimised = false
     var shouldRestoreMinimizedState = false
+    private var hasConfiguredMainWindow = false
     
     override init() {
         super.init()
-        // Store this instance as the shared delegate
-        AppDelegate._sharedInstance = self
-        // Ensure NSApplication knows about it
-        // @NSApplicationDelegateAdaptor should set this, but we ensure it's set
-        NSApplication.shared.delegate = self
+        AppDelegate._sharedInstance = self // Set static instance
     }
     
     func applicationDidFinishLaunching(_ notification: Notification) {
-        // Ensure we're set as the delegate (reassigning is safe and ensures correctness)
+        // Ensure we're set as the delegate
         NSApplication.shared.delegate = self
         
-        // Customize About panel to show only our version format
+        // Activate the app
+        NSApplication.shared.activate(ignoringOtherApps: true)
+        
+        // Customize About panel
         setupCustomAboutMenu()
         
-        // Setup wizard menu item is now handled by SwiftUI's .commands modifier
-        // This ensures it persists when SwiftUI recreates the menu bar
-        
-        // Check dependencies on first launch (only once)
+        // Check dependencies on first launch
         checkDependenciesOnFirstLaunch()
         
-        // Store reference to main window and configure it
-        DispatchQueue.main.async { [weak self] in
-            if let window = NSApplication.shared.windows.first {
-                self?.mainWindow = window
-                // Configure window: minimum size, allow maximize/minimize
-                window.minSize = NSSize(width: 1000, height: 600)
-                window.styleMask.insert(.resizable)
-                window.styleMask.insert(.miniaturizable)
-                window.collectionBehavior = [.fullScreenPrimary, .fullScreenAllowsTiling]
+        // Simple, reliable fallback: ensure at least one window is visible
+        // WindowAccessor should handle the main window, but this ensures something shows up
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [weak self] in
+            // If main window still not configured, find and show any non-sheet window
+            if self?.hasConfiguredMainWindow == false {
+                // Find any window that could be the main window
+                let candidateWindows = NSApplication.shared.windows.filter {
+                    !$0.isSheet &&
+                    $0.title != "Settings" &&
+                    $0.title != "Audientia Player" &&
+                    !$0.title.contains("About")
+                }
                 
-                // Disable automatic window restoration to prevent conflicts
-                window.isRestorable = false
-                
-                // Ensure window is visible
-                window.makeKeyAndOrderFront(nil)
-                
-                // Restore window state (position and minimized mode)
-                Task { [weak self] in
-                    await self?.restoreWindowState()
+                if let window = candidateWindows.first {
+                    self?.mainWindow = window
+                    if window.title.isEmpty {
+                        window.title = "Audientia"
+                    }
+                    window.makeKeyAndOrderFront(nil)
+                    NSApplication.shared.activate(ignoringOtherApps: true)
+                    Task { @MainActor in
+                        self?.configureMainWindow(window)
+                    }
+                } else {
+                    // Last resort: show any window
+                    if let window = NSApplication.shared.windows.first(where: { !$0.isSheet }) {
+                        window.makeKeyAndOrderFront(nil)
+                        NSApplication.shared.activate(ignoringOtherApps: true)
+                    }
                 }
             }
         }
-        
-        // Note: Setup wizard is now shown after splash screen dismisses (handled in onAppear)
     }
     
     @MainActor
@@ -187,11 +248,27 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     
     @MainActor
     func showMainWindow() {
-        mainWindow?.makeKeyAndOrderFront(nil)
+        if let window = mainWindow {
+            window.makeKeyAndOrderFront(nil)
+            Logger.userInterface.info("Main window explicitly shown via showMainWindow()")
+        } else {
+            // Try to find the window if mainWindow is nil
+            if let window = NSApplication.shared.windows.first(where: { !$0.isSheet }) {
+                self.mainWindow = window
+                window.makeKeyAndOrderFront(nil)
+                Logger.userInterface.info("Main window found and shown via showMainWindow()")
+            } else {
+                Logger.userInterface.warning("Cannot show main window - window not found")
+            }
+        }
     }
     
     func applicationDidBecomeActive(_ notification: Notification) {
-        // Menu is now managed by SwiftUI's .commands modifier
+        // Ensure window is visible when app becomes active
+        if let window = mainWindow, !window.isVisible, !isMinimised {
+            window.makeKeyAndOrderFront(nil)
+            Logger.userInterface.info("App became active - ensuring main window is visible")
+        }
     }
     
     func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool {
@@ -218,10 +295,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         // Get main window frame before hiding it (for centering)
         let mainWindowFrame = mainWindow?.frame ?? NSRect.zero
         
-        // Hide main window
-        mainWindow?.orderOut(nil)
-        
-        // Create minimised player window using factory
+        // Create minimised player window using factory first
         let (playerWindow, windowDelegate) = MinimisedPlayerWindowFactory.createWindow(
             nowPlayingViewModel: nowPlayingViewModel,
             onRestore: { [weak self] in
@@ -232,20 +306,35 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             }
         )
         
+        // Only hide main window if minimized player window was successfully created
         playerWindow.makeKeyAndOrderFront(nil)
         minimisedPlayerWindow = playerWindow
         minimisedPlayerWindowDelegate = windowDelegate
         isMinimised = true
         
+        // Now hide the main window since minimized player is ready
+        mainWindow?.orderOut(nil)
+        
+        // Save state immediately after setting minimized state
+        // This ensures the state is saved even if positioning is delayed
+        Task { @MainActor in
+            await saveWindowState()
+        }
+        
         // Position window using helper
         WindowPositioningHelper.positionMinimisedPlayerWindow(
             playerWindow,
-            savedState: nil as WindowState?, // Will be loaded in helper
+            savedState: nil, // Will load from windowStateManager
             mainWindowFrame: mainWindowFrame,
-            windowStateManager: windowStateManager
-        ) { [weak self] in
-            await self?.saveWindowState()
-        }
+            windowStateManager: windowStateManager,
+            onComplete: { [weak self] in
+                // Save state again after positioning is complete to capture final frame
+                guard let self = self else { return }
+                Task { @MainActor in
+                    await self.saveWindowState()
+                }
+            }
+        )
         
         Logger.userInterface.info("Minimised to player window")
     }
@@ -265,9 +354,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         isMinimised = false
         
         // Save the new state (main window mode) immediately so it persists
-        // This is necessary because if the user restores and then closes the app,
-        // we want to remember they're in main window mode, not minimized mode
-        Task {
+        Task { @MainActor in
             await saveWindowState()
         }
         
@@ -278,8 +365,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     func closeMinimisedPlayer() {
         guard isMinimised else { return }
         
-        // Save state before closing (app will terminate after this)
-        Task {
+        // Save state before closing (while window still exists)
+        Task { @MainActor in
             await saveWindowState()
         }
         
@@ -288,162 +375,47 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         minimisedPlayerWindow = nil
         minimisedPlayerWindowDelegate = nil
         
-        // Don't restore main window - just close the minimized player
+        // Reset minimized state and restore main window
         isMinimised = false
-        Logger.userInterface.info("Closed minimised player window")
-    }
-    
-    // MARK: - Window State Persistence
-    
-    /// Save window state immediately (public for window delegate)
-    @MainActor
-    func saveWindowStateImmediate() async {
-        Logger.userInterface.info("saveWindowStateImmediate: Starting save")
-        await saveWindowState()
-        Logger.userInterface.info("saveWindowStateImmediate: Save finished")
-    }
-    
-    /// Save current window state (position and minimized mode)
-    @MainActor
-    private func saveWindowState() async {
-        let windowExists = self.minimisedPlayerWindow != nil
-        Logger.userInterface.info(
-            "saveWindowState: Starting, isMinimised=\(self.isMinimised), minimisedPlayerWindow exists=\(windowExists)"
-        )
+        mainWindow?.makeKeyAndOrderFront(nil)
         
-        guard let (frame, isMinimisedState) = WindowStateManagerHelper.getCurrentWindowState(
-            minimisedPlayerWindow: minimisedPlayerWindow,
-            isMinimised: isMinimised,
-            mainWindow: mainWindow
-        ) else {
-            Logger.userInterface.warning("No window available to save state")
+        // Save state after closing (main window mode)
+        Task { @MainActor in
+            await saveWindowState()
+        }
+    }
+    
+    /// Configure the main window with settings
+    @MainActor
+    func configureMainWindow(_ window: NSWindow) {
+        // Only configure if not already configured for this window
+        guard !hasConfiguredMainWindow || mainWindow == window else { return }
+        
+        // If already configured for this window, skip
+        if hasConfiguredMainWindow && mainWindow == window {
             return
         }
         
-        let windowState = WindowState(
-            frame: frame,
-            isMaximized: false, // We don't track maximized state separately
-            isMinimised: isMinimisedState
-        )
+        mainWindow = window
+        hasConfiguredMainWindow = true
         
-        do {
-            try await windowStateManager.saveWindowState(windowState)
-            Logger.userInterface.info(
-                "Window state saved successfully: frame=\(NSStringFromRect(frame)), isMinimised=\(isMinimisedState)"
-            )
-        } catch {
-            Logger.userInterface.error("Failed to save window state: \(error.localizedDescription)")
-        }
-    }
-    
-    /// Restore window state (position and minimized mode)
-    @MainActor
-    func restoreWindowState() async {
-        Logger.userInterface.info("restoreWindowState: Attempting to load saved window state")
-        let savedState = await windowStateManager.loadWindowState()
+        // Configure window: minimum size, allow maximize/minimize
+        window.minSize = NSSize(width: 1000, height: 600)
+        window.styleMask.insert(.resizable)
+        window.styleMask.insert(.miniaturizable)
+        window.collectionBehavior = [.fullScreenPrimary, .fullScreenAllowsTiling]
+        window.isRestorable = false
         
-        guard let savedState = savedState else {
-            // No saved state, use defaults
-            Logger.userInterface.info("No saved window state found, using defaults")
-            return
-        }
+        // Ensure window is visible
+        window.makeKeyAndOrderFront(nil)
         
-        let frame = savedState.frame
-        let wasMinimised = savedState.isMinimised
+        Logger.userInterface.info("Main window configured: \(window.title)")
         
-        Logger.userInterface.info(
-            "Restoring window state: frame=\(NSStringFromRect(frame)), wasMinimised=\(wasMinimised)"
-        )
-        
-        // Restore window position (only if not minimized, as minimized will be handled separately)
-        if !wasMinimised, let mainWindow = mainWindow {
-            // Ensure frame is on a valid screen
-            let validFrame = ensureFrameOnScreen(frame)
-            mainWindow.setFrame(validFrame, display: true)
-            mainWindow.makeKeyAndOrderFront(nil)
-            Logger.userInterface.info("Restored window position: \(NSStringFromRect(validFrame))")
-        } else if wasMinimised {
-            // If was minimized, hide main window immediately - it will be restored by restoreMinimizedStateIfNeeded
-            mainWindow?.orderOut(nil)
-            Logger.userInterface.info("App was in minimized player mode, hiding main window")
-        } else if let mainWindow = mainWindow {
-            // Fallback: ensure window is visible
-            mainWindow.makeKeyAndOrderFront(nil)
-        }
-        
-        // Store flag to restore minimized state after view model is available
-        if wasMinimised {
-            self.shouldRestoreMinimizedState = true
-            let shouldRestore = self.shouldRestoreMinimizedState
-            let message = "App was in minimized player mode, " +
-                "will restore after view model is available, " +
-                "shouldRestoreMinimizedState=\(shouldRestore)"
-            Logger.userInterface.info("\(message)")
-        } else {
-            Logger.userInterface.info("App was in main window mode")
-        }
-    }
-    
-    /// Ensure the frame is on a valid screen
-    @MainActor
-    func ensureFrameOnScreen(_ frame: CGRect) -> CGRect {
-        // Check if frame is on any screen
-        let screens = NSScreen.screens
-        for screen in screens {
-            let screenFrame = screen.frame
-            if screenFrame.intersects(frame) {
-                // Frame is on this screen, return as-is
-                return frame
-            }
-        }
-        
-        // Frame is not on any screen, center on main screen
-        if let mainScreen = NSScreen.main {
-            let screenFrame = mainScreen.visibleFrame
-            let centeredX = screenFrame.midX - frame.width / 2
-            let centeredY = screenFrame.midY - frame.height / 2
-            return CGRect(
-                x: centeredX,
-                y: centeredY,
-                width: frame.width,
-                height: frame.height
-            )
-        }
-        
-        // Fallback to original frame
-        return frame
-    }
-    
-    /// Restore minimized state if needed (called when view model is available)
-    @MainActor
-    func restoreMinimizedStateIfNeeded(nowPlayingViewModel: NowPlayingViewModel) {
-        Logger.userInterface.info(
-            "restoreMinimizedStateIfNeeded called, shouldRestoreMinimizedState=\(self.shouldRestoreMinimizedState)"
-        )
-        
-        // Check both the flag and the saved state directly (in case of timing issues)
-        Task {
-            var shouldRestore = self.shouldRestoreMinimizedState
-            
-            // If flag is not set, check saved state directly
-            if !shouldRestore {
-                if let savedState = await self.windowStateManager.loadWindowState(), savedState.isMinimised {
-                    Logger.userInterface.info("Found saved minimized state, will restore")
-                    shouldRestore = true
-                }
-            }
-            
-            guard shouldRestore else {
-                Logger.userInterface.info("No need to restore minimized state")
-                return
-            }
-            
-            self.shouldRestoreMinimizedState = false
-            
-            // Restore minimized player mode (position will be restored in minimizeToPlayer)
-            Logger.userInterface.info("Restoring minimized player state on app launch")
-            self.minimizeToPlayer(nowPlayingViewModel: nowPlayingViewModel)
-            Logger.userInterface.info("Restored minimized player state on app launch")
+        // Restore window state (position and minimized mode) after a short delay
+        // to let SwiftUI finish setting up the window
+        Task { [weak self] in
+            try? await Task.sleep(nanoseconds: 300_000_000) // 0.3 second delay
+            await self?.restoreWindowState()
         }
     }
 }

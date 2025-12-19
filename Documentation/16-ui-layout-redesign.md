@@ -761,4 +761,3 @@ The following test suites have been created to verify the new layout:
 - [Aural Player](https://github.com/kartik-venugopal/aural-player) - Winamp-inspired macOS audio player
 - Apple Music - Tabbed interface pattern
 - MediaMonkey - Multi-pane layout (current inspiration, being replaced)
-

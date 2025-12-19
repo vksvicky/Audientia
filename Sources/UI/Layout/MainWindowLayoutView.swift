@@ -144,7 +144,9 @@ public struct MainWindowLayoutView: View {
             }
             // Restore minimized state if app was in minimized mode when it closed
             if let appDelegate = AppDelegate.shared ?? (NSApplication.shared.delegate as? AppDelegate) {
-                appDelegate.restoreMinimizedStateIfNeeded(nowPlayingViewModel: nowPlayingViewModel)
+                Task {
+                    await appDelegate.restoreMinimizedStateIfNeeded(nowPlayingViewModel: nowPlayingViewModel)
+                }
             }
         }
         .onAudioFilesDropped { urls in

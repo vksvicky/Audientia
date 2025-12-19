@@ -109,10 +109,19 @@ public final class AudioGainControl: AudioGainControlProtocol, @unchecked Sendab
 /// Actor for thread-safe gain operations
 private actor GainActor {
     /// Global gain in dB (default: 0.0)
-    private var globalGain: Float = 0.0
+    /// Persisted to UserDefaults for app restarts
+    private var globalGain: Float
     
     /// Per-track gains indexed by track ID
     private var trackGains: [UUID: Float] = [:]
+    
+    /// UserDefaults key for persisting global gain
+    private let globalGainKey = "audientia.settings.globalGain"
+    
+    init() {
+        // Load persisted global gain on initialization, default to 0.0 if not set
+        self.globalGain = UserDefaults.standard.object(forKey: globalGainKey) as? Float ?? 0.0
+    }
     
     func getTrackGain(for trackID: UUID) -> Float? {
         trackGains[trackID]
@@ -132,6 +141,8 @@ private actor GainActor {
     
     func setGlobalGain(_ gain: Float) {
         globalGain = gain
+        // Persist to UserDefaults for app restarts
+        UserDefaults.standard.set(gain, forKey: globalGainKey)
     }
     
     func getEffectiveGain(for trackID: UUID) -> Float {

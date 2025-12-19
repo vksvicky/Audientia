@@ -18,14 +18,19 @@ import XCTest
 final class AudioGainControlTests: XCTestCase {
     
     var gainControl: AudioGainControl!
+    private let globalGainKey = "audientia.settings.globalGain"
     
     override func setUp() async throws {
         try await super.setUp()
+        // Clear persisted global gain to ensure tests start with clean state
+        UserDefaults.standard.removeObject(forKey: globalGainKey)
         gainControl = AudioGainControl()
     }
     
     override func tearDown() async throws {
         gainControl = nil
+        // Clean up persisted global gain after test
+        UserDefaults.standard.removeObject(forKey: globalGainKey)
         try await super.tearDown()
     }
     
