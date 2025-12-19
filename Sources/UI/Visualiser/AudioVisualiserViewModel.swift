@@ -20,10 +20,8 @@ final class AudioVisualiserViewModel: ObservableObject {
     @Published var visualisationMode: VisualisationMode = .discreteFrequencies {
         didSet {
             // Save visualization mode for restoration on app restart
-            // Defer to avoid publishing changes during view updates
-            Task { @MainActor in
-                AppSettings.shared.lastVisualisationMode = visualisationMode.rawValue
-            }
+            // Save synchronously to ensure immediate persistence and avoid race conditions in tests
+            AppSettings.shared.lastVisualisationMode = visualisationMode.rawValue
         }
     }
     @Published var visualisationVolume: Float = 1.0 {

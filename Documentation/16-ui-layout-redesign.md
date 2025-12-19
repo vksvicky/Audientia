@@ -7,7 +7,7 @@ This document outlines the planned UI layout redesign for Audientia, moving from
 **Status**: ✅ Implementation Complete  
 **Branch**: `21_ui-layout-redesign`  
 **Date**: December 2025  
-**Last Updated**: December 2025
+**Last Updated**: December 2025 (Visualisation Mode Persistence Fix)
 
 > **📸 Screenshot Annotations**: This document includes detailed annotations and "📸 Screenshot Note" callouts throughout the ASCII diagrams. These annotations describe what screenshots would show, component measurements, visual details, spacing, colors, and interaction states. While actual screenshots are not included, these annotations provide comprehensive visual documentation for future contributors.
 
@@ -894,6 +894,12 @@ This checklist verifies that the implementation matches the documentation and th
   - [x] Fixed duplicate `AudioEngine` creation in `ContentView.swift` (removed initializer from `@State` property)
   - [x] Removed duplicate "Mute toggled" log from `NowPlayingViewModel.toggleMute()` (AudioEngine already logs mute state)
   - [x] Fixed M4A playback tests to check `lastFormatDetectionError` instead of engine state for corrupted file handling
+- [x] **Visualisation Mode Persistence Fix** - Fixed race condition in visualisation mode saving
+  - [x] Changed `AudioVisualiserViewModel.visualisationMode` save from async `Task` to synchronous save
+  - [x] Eliminated race condition where async saves from previous tests could overwrite cleared state in `setUp()`
+  - [x] Simplified test code by removing unnecessary `Task.sleep()` calls since save is now synchronous
+  - [x] Fixed `testUserChangesModeGetsSaved` test failure caused by stale state from previous test runs
+  - [x] Tests now properly isolated with synchronous saves ensuring immediate persistence
 
 ### ✅ Documentation
 
