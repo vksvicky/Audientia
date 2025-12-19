@@ -5,6 +5,8 @@ import Foundation
 public struct AudioVisualiserConfig: Equatable, Sendable {
     private static let minimumFFTSize = 256
     private static let maximumFFTSize = 8192
+    private static let minimumProcessingRate = 1
+    private static let maximumProcessingRate = 100
     
     /// Number of samples used for the FFT (must be power of two)
     public let fftSize: Int
@@ -15,10 +17,21 @@ public struct AudioVisualiserConfig: Equatable, Sendable {
     /// Number of frames retained in history for UI consumption
     public let historyLength: Int
     
-    public init(fftSize: Int = 1024, smoothingFactor: Float = 0.3, historyLength: Int = 5) {
+    /// Processing rate: process every Nth buffer (1 = all buffers, 2 = every 2nd, etc.)
+    /// Higher values reduce CPU usage by skipping buffers
+    /// Default: 1 (process all buffers for maximum quality)
+    public let processingRate: Int
+    
+    public init(
+        fftSize: Int = 1024,
+        smoothingFactor: Float = 0.3,
+        historyLength: Int = 5,
+        processingRate: Int = 1
+    ) {
         self.fftSize = AudioVisualiserConfig.clampFFTSize(fftSize)
         self.smoothingFactor = AudioVisualiserConfig.clampSmoothing(smoothingFactor)
         self.historyLength = max(1, historyLength)
+        self.processingRate = AudioVisualiserConfig.clampProcessingRate(processingRate)
     }
     
     private static func clampFFTSize(_ value: Int) -> Int {
@@ -36,6 +49,10 @@ public struct AudioVisualiserConfig: Equatable, Sendable {
     
     private static func clampSmoothing(_ value: Float) -> Float {
         max(0.0, min(0.95, value))
+    }
+    
+    private static func clampProcessingRate(_ value: Int) -> Int {
+        max(minimumProcessingRate, min(maximumProcessingRate, value))
     }
 }
 

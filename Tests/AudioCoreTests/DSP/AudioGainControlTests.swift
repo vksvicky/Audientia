@@ -22,8 +22,10 @@ final class AudioGainControlTests: XCTestCase {
     
     override func setUp() async throws {
         try await super.setUp()
-        // Clear persisted global gain to ensure tests start with clean state
+        // Clear persisted global gain BEFORE creating new instance
+        // This ensures GainActor reads the cleared value (0.0 default) on init
         UserDefaults.standard.removeObject(forKey: globalGainKey)
+        UserDefaults.standard.synchronize() // Ensure UserDefaults is written
         gainControl = AudioGainControl()
     }
     

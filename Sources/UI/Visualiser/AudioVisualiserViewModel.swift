@@ -212,9 +212,13 @@ final class AudioVisualiserViewModel: ObservableObject {
     }
     
     private func calculateUpdateInterval() -> UInt64 {
-        let baseInterval: UInt64 = 8_333_333
+        // Base interval: ~120Hz (8.33ms) for smooth visualization
+        // With CPU optimization: increase interval to reduce CPU usage
+        // Default: 16.67ms (60Hz) for better CPU efficiency while maintaining smooth visuals
+        let baseInterval: UInt64 = 16_666_666 // 60Hz default (reduced from 120Hz)
         let speedAdjustedInterval = UInt64(Double(baseInterval) / playbackSpeedMultiplier)
-        return max(2_000_000, min(50_000_000, speedAdjustedInterval))
+        // Clamp between 16.67ms (60Hz) and 33.33ms (30Hz) for CPU efficiency
+        return max(16_666_666, min(33_333_333, speedAdjustedInterval))
     }
     
     func stopVisualization() {

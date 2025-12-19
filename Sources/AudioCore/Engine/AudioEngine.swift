@@ -251,8 +251,11 @@ public final class AudioEngine: AudioEngineProtocol {
         self.fileSystem = RealFileSystem()
         self.formatCoordinator = DefaultFormatDecodingCoordinator()
         self.nativeEngine = CAudioEngine()
-        self.visualiser = AudioVisualiser()
-        self.visualiserTap = AudioVisualiserTap(visualiser: self.visualiser)
+        let visualiserInstance = AudioVisualiser()
+        self.visualiser = visualiserInstance
+        // Use processingRate from visualiser config to reduce CPU usage
+        let processingRate = visualiserInstance.currentConfig.processingRate
+        self.visualiserTap = AudioVisualiserTap(visualiser: self.visualiser, processingRate: processingRate)
         self.gainControl = AudioGainControl()
         self.normaliser = AudioNormaliser()
         

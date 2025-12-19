@@ -25,6 +25,9 @@ final class AudioEngineGainControlBDDTests: XCTestCase {
     
     override func setUp() async throws {
         try await super.setUp()
+        // Enable gain control in AppSettings for these tests
+        AppSettings.shared.isGainControlEnabled = true
+        
         mockFileSystem = MockFileSystem()
         mockNativeEngine = MockNativeAudioEngine()
         mockGainControl = MockAudioGainControl()
@@ -44,6 +47,10 @@ final class AudioEngineGainControlBDDTests: XCTestCase {
         mockNativeEngine = nil
         mockGainControl = nil
         mockFormatCoordinator = nil
+        
+        // Reset gain control setting
+        AppSettings.shared.isGainControlEnabled = true // Default value
+        
         try await super.tearDown()
     }
     
@@ -248,26 +255,25 @@ final class AudioEngineGainControlBDDTests: XCTestCase {
     }
     
     /// Scenario: User disables gain control
-    /// Given: Engine without gain control
+    /// Given: Engine with gain control disabled
     /// When: User sets volume
     /// Then: Volume should work normally without gain adjustment
     func testUserDisablesGainControl() async throws {
-        // Given - Engine without gain control
-        let engineWithoutGain = AudioEngine(
-            fileSystem: mockFileSystem,
-            formatCoordinator: mockFormatCoordinator,
-            nativeEngine: mockNativeEngine
-        )
+        // Given - Disable gain control in AppSettings
+        AppSettings.shared.isGainControlEnabled = false
         
         let track = MockFactory.makeTrack(filePath: "/test/track.mp3")
         mockFileSystem.addFile(track.filePath)
         mockNativeEngine.nextLoadDuration = track.duration
         
         // When - User sets volume
-        try await engineWithoutGain.loadTrack(track)
-        engineWithoutGain.volume = 0.7
+        try await engine.loadTrack(track)
+        engine.volume = 0.7
         
         // Then - Volume should work normally without gain adjustment
         XCTAssertEqual(mockNativeEngine.setVolumeCalls.last ?? 0.0, 0.7, accuracy: 0.001)
+        
+        // Restore gain control for other tests
+        AppSettings.shared.isGainControlEnabled = true
     }
 }

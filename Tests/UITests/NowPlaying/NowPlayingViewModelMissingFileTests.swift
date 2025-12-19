@@ -218,7 +218,8 @@ final class NowPlayingViewModelMissingFileTests: XCTestCase {
         AppSettings.shared.lastPlayedTrack = track
         
         // When - Creating a new view model (which restores last played track)
-        let newViewModel = NowPlayingViewModel(audioEngine: mockAudioEngine)
+        // View model creation triggers restoration logic
+        _ = NowPlayingViewModel(audioEngine: mockAudioEngine)
         
         // Wait a bit for async restoration to complete
         try? await Task.sleep(nanoseconds: 100_000_000) // 100ms

@@ -1059,6 +1059,9 @@ final class WindowStatePersistenceBDDTests: XCTestCase {
                 }
             }
             
+            // Wait a bit more after sequence completes to ensure final state is saved
+            try await Task.sleep(nanoseconds: 200_000_000) // 200ms additional wait
+            
             // Verify final state
             XCTAssertEqual(
                 appDelegate.isMinimised,

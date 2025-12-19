@@ -46,6 +46,7 @@ final class NowPlayingViewModelTests: XCTestCase {
     private var viewModel: NowPlayingViewModel!
     private var mockAudioEngine: MockAudioEngine!
     private var cancellables: Set<AnyCancellable>!
+    private var tempDirectory: URL!
     
     // MARK: - Setup & Teardown
     
@@ -54,12 +55,31 @@ final class NowPlayingViewModelTests: XCTestCase {
         cancellables = []
         mockAudioEngine = MockAudioEngine()
         viewModel = NowPlayingViewModel(audioEngine: mockAudioEngine)
+        
+        // Create temporary directory for test files
+        tempDirectory = FileManager.default.temporaryDirectory
+            .appendingPathComponent(UUID().uuidString)
+        try? FileManager.default.createDirectory(
+            at: tempDirectory,
+            withIntermediateDirectories: true
+        )
+        
+        // Clear AppSettings
+        AppSettings.shared.lastPlayedTrack = nil
     }
     
     override func tearDown() {
         cancellables = nil
         viewModel = nil
         mockAudioEngine = nil
+        
+        // Clean up temp directory
+        try? FileManager.default.removeItem(at: tempDirectory)
+        tempDirectory = nil
+        
+        // Clear AppSettings
+        AppSettings.shared.lastPlayedTrack = nil
+        
         super.tearDown()
     }
     
@@ -272,8 +292,13 @@ final class NowPlayingViewModelTests: XCTestCase {
     /// Test rapid play/pause toggling
     func testRapidPlayPauseToggle() async throws {
         // Given - Track is loaded
-        let track = MockFactory.makeTrack()
+        // Create a temporary file for the track so file existence check passes
+        let testFile = tempDirectory.appendingPathComponent("test.mp3")
+        FileManager.default.createFile(atPath: testFile.path, contents: Data())
+        
+        let track = MockFactory.makeTrack(filePath: testFile.path)
         mockAudioEngine.currentTrack = track
+        viewModel.updateState()
         
         // When - Rapidly toggling play/pause
         for _ in 0..<10 {

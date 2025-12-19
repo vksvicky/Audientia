@@ -25,6 +25,9 @@ final class AudioEngineGainControlTests: XCTestCase {
     
     override func setUp() async throws {
         try await super.setUp()
+        // Enable gain control in AppSettings for these tests
+        AppSettings.shared.isGainControlEnabled = true
+        
         mockFileSystem = MockFileSystem()
         mockNativeEngine = MockNativeAudioEngine()
         mockGainControl = MockAudioGainControl()
@@ -44,6 +47,10 @@ final class AudioEngineGainControlTests: XCTestCase {
         mockNativeEngine = nil
         mockGainControl = nil
         mockFormatCoordinator = nil
+        
+        // Reset gain control setting
+        AppSettings.shared.isGainControlEnabled = true // Default value
+        
         try await super.tearDown()
     }
     

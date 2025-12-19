@@ -25,6 +25,18 @@ public final class AudioVisualiserTap {
     private let visualiser: any AudioVisualiserProtocol
     private var isTapped = false
     
+    /// Processing rate: process every Nth buffer (1 = all buffers, 2 = every 2nd, etc.)
+    /// Higher values reduce CPU usage by skipping buffers
+    /// Default: 1 (process all buffers for maximum quality)
+    public var processingRate: Int = 1 {
+        didSet {
+            processingRate = max(1, min(100, processingRate))
+        }
+    }
+    
+    /// Current buffer counter for processing rate limiting
+    private var bufferCounter: Int = 0
+    
     /// Visualization volume (0.0 to 1.0)
     /// Controls the output volume of the visualisation engine
     /// Higher values provide better visualisation data but may be audible
@@ -40,8 +52,9 @@ public final class AudioVisualiserTap {
         }
     }
     
-    public init(visualiser: any AudioVisualiserProtocol) {
+    public init(visualiser: any AudioVisualiserProtocol, processingRate: Int = 1) {
         self.visualiser = visualiser
+        self.processingRate = max(1, min(100, processingRate))
     }
     
     /// Setup audio engine and install tap for visualisation
@@ -109,6 +122,13 @@ public final class AudioVisualiserTap {
     
     /// Process audio buffer and feed to visualiser
     private func processAudioBuffer(_ buffer: AVAudioPCMBuffer, sampleRate: Int, channels: Int) {
+        // Frame rate limiting: skip buffers based on processingRate
+        bufferCounter += 1
+        if bufferCounter % processingRate != 0 {
+            // Skip this buffer to reduce CPU usage
+            return
+        }
+        
         // Extract audio data from buffer
         guard let audioData = extractAudioData(from: buffer, channels: channels) else {
             return
@@ -304,6 +324,7 @@ public final class AudioVisualiserTap {
         audioEngine?.stop()
         playerNode?.stop()
         isTapped = false
+        bufferCounter = 0 // Reset counter on cleanup
         audioEngine = nil
         playerNode = nil
         audioFile = nil

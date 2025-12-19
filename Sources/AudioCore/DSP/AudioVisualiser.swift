@@ -5,10 +5,17 @@ import Foundation
 /// Audio visualiser implementation that produces FFT magnitude data for UI visualisers
 public final class AudioVisualiser: AudioVisualiserProtocol, @unchecked Sendable {
     private let actor: VisualizerActor
+    private let config: AudioVisualiserConfig
+    
+    /// Current configuration (read-only)
+    public var currentConfig: AudioVisualiserConfig {
+        config
+    }
     
     public init(config: AudioVisualiserConfig = AudioVisualiserConfig()) {
         precondition(config.fftSize >= 256, "FFT size must be at least 256")
         precondition(config.fftSize.nonzeroBitCount == 1, "FFT size must be a power of two")
+        self.config = config
         actor = VisualizerActor(config: config)
     }
     

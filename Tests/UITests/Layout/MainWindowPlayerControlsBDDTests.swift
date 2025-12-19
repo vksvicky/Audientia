@@ -49,6 +49,7 @@ final class MainWindowPlayerControlsBDDTests: XCTestCase {
     
     private var mockAudioEngine: MockAudioEngine!
     private var nowPlayingViewModel: NowPlayingViewModel!
+    private var tempDirectory: URL!
     
     // MARK: - Setup & Teardown
     
@@ -56,11 +57,30 @@ final class MainWindowPlayerControlsBDDTests: XCTestCase {
         super.setUp()
         mockAudioEngine = MockAudioEngine()
         nowPlayingViewModel = NowPlayingViewModel(audioEngine: mockAudioEngine)
+        
+        // Create temporary directory for test files
+        tempDirectory = FileManager.default.temporaryDirectory
+            .appendingPathComponent(UUID().uuidString)
+        try? FileManager.default.createDirectory(
+            at: tempDirectory,
+            withIntermediateDirectories: true
+        )
+        
+        // Clear AppSettings
+        AppSettings.shared.lastPlayedTrack = nil
     }
     
     override func tearDown() {
         nowPlayingViewModel = nil
         mockAudioEngine = nil
+        
+        // Clean up temp directory
+        try? FileManager.default.removeItem(at: tempDirectory)
+        tempDirectory = nil
+        
+        // Clear AppSettings
+        AppSettings.shared.lastPlayedTrack = nil
+        
         super.tearDown()
     }
     
@@ -129,7 +149,11 @@ final class MainWindowPlayerControlsBDDTests: XCTestCase {
     /// BDD: As a user, when I click the play button, then the track should start playing
     func testAsAUserIWantToPlayTrack() async throws {
         // Given - A track is loaded but paused
-        let track = MockFactory.makeTrack()
+        // Create a temporary file for the track so file existence check passes
+        let testFile = tempDirectory.appendingPathComponent("test.mp3")
+        FileManager.default.createFile(atPath: testFile.path, contents: Data())
+        
+        let track = MockFactory.makeTrack(filePath: testFile.path)
         mockAudioEngine.currentTrack = track
         mockAudioEngine.state = .paused
         nowPlayingViewModel.updateState()

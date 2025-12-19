@@ -45,18 +45,38 @@ final class MinimisedPlayerViewBDDTests: XCTestCase {
     var mockAudioEngine: MockAudioEngine!
     var nowPlayingViewModel: NowPlayingViewModel!
     var restoreCallbackInvoked: Bool!
+    var tempDirectory: URL!
     
     override func setUp() {
         super.setUp()
         mockAudioEngine = MockAudioEngine()
         nowPlayingViewModel = NowPlayingViewModel(audioEngine: mockAudioEngine)
         restoreCallbackInvoked = false
+        
+        // Create temporary directory for test files
+        tempDirectory = FileManager.default.temporaryDirectory
+            .appendingPathComponent(UUID().uuidString)
+        try? FileManager.default.createDirectory(
+            at: tempDirectory,
+            withIntermediateDirectories: true
+        )
+        
+        // Clear AppSettings
+        AppSettings.shared.lastPlayedTrack = nil
     }
     
     override func tearDown() {
         nowPlayingViewModel = nil
         mockAudioEngine = nil
         restoreCallbackInvoked = nil
+        
+        // Clean up temp directory
+        try? FileManager.default.removeItem(at: tempDirectory)
+        tempDirectory = nil
+        
+        // Clear AppSettings
+        AppSettings.shared.lastPlayedTrack = nil
+        
         super.tearDown()
     }
     
@@ -110,7 +130,11 @@ final class MinimisedPlayerViewBDDTests: XCTestCase {
     /// BDD: As a user, when I control playback from the minimised player, then playback should respond correctly
     func testUserControlsPlaybackFromMinimisedPlayer() async throws {
         // Given - A track is loaded and I am viewing the minimised player
-        let track = MockFactory.makeTrack()
+        // Create a temporary file for the track so file existence check passes
+        let testFile = tempDirectory.appendingPathComponent("test.mp3")
+        FileManager.default.createFile(atPath: testFile.path, contents: Data())
+        
+        let track = MockFactory.makeTrack(filePath: testFile.path)
         mockAudioEngine.currentTrack = track
         mockAudioEngine.state = .paused
         nowPlayingViewModel.updateState()
