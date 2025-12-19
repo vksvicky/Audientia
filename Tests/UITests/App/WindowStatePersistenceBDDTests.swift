@@ -246,7 +246,7 @@ final class WindowStatePersistenceBDDTests: XCTestCase {
         XCTAssertFalse(appDelegate.isMinimised, "App should be in main window mode")
         XCTAssertNil(appDelegate.minimisedPlayerWindow, "Minimized player window should not exist")
         if let mainWindow = appDelegate.mainWindow {
-            let validFrame = appDelegate.ensureFrameOnScreen(savedState.frame)
+            let validFrame = WindowStateManagerHelper.ensureFrameOnScreen(savedState.frame)
             XCTAssertEqual(mainWindow.frame, validFrame, "Main window should be positioned at saved location")
         }
     }
@@ -400,7 +400,7 @@ final class WindowStatePersistenceBDDTests: XCTestCase {
         XCTAssertFalse(newAppDelegate.isMinimised, "App should restore to main window mode after crash")
         XCTAssertNil(newAppDelegate.minimisedPlayerWindow, "Minimized player window should not exist")
         if let mainWindow = newAppDelegate.mainWindow, let savedFrame = savedStateBeforeCrash?.frame {
-            let validFrame = newAppDelegate.ensureFrameOnScreen(savedFrame)
+            let validFrame = WindowStateManagerHelper.ensureFrameOnScreen(savedFrame)
             XCTAssertEqual(mainWindow.frame, validFrame, "Main window should be positioned at saved location")
         }
     }
@@ -439,7 +439,7 @@ final class WindowStatePersistenceBDDTests: XCTestCase {
         XCTAssertTrue(newAppDelegate.isMinimised, "App should restore to minimized mode when reopened from Xcode")
         XCTAssertNotNil(newAppDelegate.minimisedPlayerWindow, "Minimized player window should be restored")
         if let playerWindow = newAppDelegate.minimisedPlayerWindow, let savedFrame = savedState?.frame {
-            let validFrame = newAppDelegate.ensureFrameOnScreen(savedFrame)
+            let validFrame = WindowStateManagerHelper.ensureFrameOnScreen(savedFrame)
             XCTAssertEqual(playerWindow.frame, validFrame, "Player window should be positioned at saved location")
         }
         
@@ -478,7 +478,7 @@ final class WindowStatePersistenceBDDTests: XCTestCase {
         XCTAssertFalse(newAppDelegate.isMinimised, "App should restore to main window mode when reopened from Xcode")
         XCTAssertNil(newAppDelegate.minimisedPlayerWindow, "Minimized player window should not exist")
         if let mainWindow = newAppDelegate.mainWindow, let savedFrame = savedState?.frame {
-            let validFrame = newAppDelegate.ensureFrameOnScreen(savedFrame)
+            let validFrame = WindowStateManagerHelper.ensureFrameOnScreen(savedFrame)
             XCTAssertEqual(mainWindow.frame, validFrame, "Main window should be positioned at saved location")
         }
     }

@@ -72,24 +72,89 @@ public final class AudioEngine: AudioEngineProtocol {
     /// Apply volume with gain control (if available)
     /// - Parameter baseVolume: Base volume (0.0 to 1.0)
     private func applyVolumeWithGain(baseVolume: Float) {
+        // CRITICAL: If muted, always set volume to 0 regardless of base volume or gain
+        if isMuted {
+            Logger.audio.info(
+                "MUTED: Setting native engine volume to 0.0 " +
+                "(isMuted=\(self.isMuted), baseVolume=\(baseVolume))"
+            )
+            nativeEngine.setVolume(0.0)
+            Logger.audio.debug("Volume set to 0.0 (muted)")
+            return
+        }
+        
         // Check if gain control is enabled in settings
         let gainMultiplier = AppSettings.shared.isGainControlEnabled ? currentGainMultiplier : 1.0
+        
+        // Calculate effective volume
+        // Apply gain as a multiplier to the base volume
         let effectiveVolume = baseVolume * gainMultiplier
+        
+        // Clamp to valid range (0.0 to 1.0) to prevent clipping
         let clampedVolume = max(0.0, min(1.0, effectiveVolume))
+        
+        // Warn if gain is being clamped (user won't hear the full gain effect)
+        if AppSettings.shared.isGainControlEnabled && effectiveVolume > 1.0 {
+            let gainDB = gainControl?.linearToGainDB(gainMultiplier) ?? 0.0
+            let gainDBStr = String(format: "%.2f", gainDB)
+            let multiplierStr = String(format: "%.4f", gainMultiplier)
+            let suggestedVolume = String(format: "%.2f", 1.0 / gainMultiplier)
+            let warningMessage = "Gain \(gainDBStr) dB (multiplier \(multiplierStr)) would cause " +
+                "volume to exceed maximum. Clamping to 1.0. Reduce base volume to " +
+                "\(suggestedVolume) to hear full gain effect."
+            Logger.audio.warning("\(warningMessage)")
+        }
+        
+        Logger.audio.info(
+            "Setting native engine volume to \(clampedVolume) " +
+            "(baseVolume=\(baseVolume), gainMultiplier=\(gainMultiplier), isMuted=\(self.isMuted))"
+        )
         nativeEngine.setVolume(clampedVolume)
-        Logger.audio.debug("Volume set to \(baseVolume), effective volume with gain: \(clampedVolume)")
+        
+        if AppSettings.shared.isGainControlEnabled {
+            // Calculate effective gain in dB for logging
+            let effectiveGainDB: Float
+            if let gainControl = gainControl {
+                effectiveGainDB = gainControl.linearToGainDB(gainMultiplier)
+            } else {
+                effectiveGainDB = 0.0
+            }
+            let multiplierStr = String(format: "%.4f", gainMultiplier)
+            let gainDBStr = String(format: "%.2f", effectiveGainDB)
+            let volumeStr = String(format: "%.4f", clampedVolume)
+            Logger.audio.debug(
+                "Volume set to \(baseVolume), gain enabled: multiplier=\(multiplierStr) " +
+                "(\(gainDBStr) dB), effective volume: \(volumeStr)"
+            )
+        } else {
+            let volumeStr = String(format: "%.4f", clampedVolume)
+            Logger.audio.debug("Volume set to \(baseVolume), gain disabled, effective volume: \(volumeStr)")
+        }
     }
     
     /// Update cached gain multiplier when track loads or gain changes
+    /// NOTE: This only updates volume, it does NOT trigger playback or load tracks
     internal func updateGainMultiplier() async {
+        // CRITICAL: This method only updates volume/gain settings
+        // It must NEVER call play(), loadTrack(), or any method that starts playback
         if let gainControl = gainControl, let track = currentTrack, AppSettings.shared.isGainControlEnabled {
             let effectiveGain = await gainControl.getEffectiveGain(for: track)
             currentGainMultiplier = gainControl.gainDBToLinear(effectiveGain)
-            // Reapply volume with new gain
+            let gainStr = String(format: "%.2f", effectiveGain)
+            let multiplierStr = String(format: "%.4f", currentGainMultiplier)
+            Logger.audio.debug(
+                "Gain multiplier updated: effective gain=\(gainStr) dB, multiplier=\(multiplierStr)"
+            )
+            // Reapply volume with new gain (this only updates volume, not playback state)
             applyVolumeWithGain(baseVolume: volume)
         } else {
             currentGainMultiplier = 1.0
-            // Reapply volume without gain
+            if !AppSettings.shared.isGainControlEnabled {
+                Logger.audio.debug("Gain control disabled, using unity gain multiplier (1.0)")
+            } else {
+                Logger.audio.debug("No gain control or track available, using unity gain multiplier (1.0)")
+            }
+            // Reapply volume without gain (this only updates volume, not playback state)
             applyVolumeWithGain(baseVolume: volume)
         }
     }
@@ -99,9 +164,16 @@ public final class AudioEngine: AudioEngineProtocol {
         didSet {
             if self.isMuted {
                 self.previousVolume = self.volume
+                // Set volume to 0 - applyVolumeWithGain will respect isMuted and set native engine to 0
                 self.volume = 0.0
+                // CRITICAL: Also mute the visualiser tap's audio engine
+                // The visualiser tap has its own AVAudioEngine connected to output, so it needs to be muted too
+                visualiserTap?.volume = 0.0
             } else {
+                // Restore previous volume, which will trigger volume didSet and update native engine
                 self.volume = self.previousVolume
+                // Restore visualiser tap volume (use a reasonable default for visualization)
+                visualiserTap?.volume = 1.0
             }
             Logger.audio.debug("Mute state: \(self.isMuted)")
         }
@@ -110,9 +182,19 @@ public final class AudioEngine: AudioEngineProtocol {
     /// Current playback speed
     public var playbackSpeed: PlaybackSpeed = .normal {
         didSet {
+            // Apply rate immediately, even if track is already playing
             let rate = Float(self.playbackSpeed.rawValue)
             nativeEngine.setRate(rate)
             Logger.audio.debug("Playback speed set to \(self.playbackSpeed.displayName) (rate: \(rate))")
+            
+            // Note: AVAudioPlayer supports rates 0.5-2.0 natively
+            // For rates > 2.0 (double, quadruple), the rate will be clamped to 2.0
+            // This is a limitation of AVAudioPlayer - higher rates require time pitch algorithm
+            if self.playbackSpeed.rawValue > 2.0 {
+                Logger.audio.warning(
+                    "Playback speed \(self.playbackSpeed.displayName) exceeds AVAudioPlayer limit, will be clamped"
+                )
+            }
         }
     }
     
@@ -182,6 +264,17 @@ public final class AudioEngine: AudioEngineProtocol {
         self.playbackSpeed = savedSpeed
         
         Logger.audio.debug("AudioEngine initialised with playback speed: \(savedSpeed.displayName)")
+        
+        // Observe gain changes from external sources (e.g., AudioGainControlView)
+        NotificationCenter.default.addObserver(
+            forName: .audioGainChanged,
+            object: nil,
+            queue: .main
+        ) { [weak self] _ in
+            Task { @MainActor [weak self] in
+                await self?.refreshGain()
+            }
+        }
     }
     
     /// Initialise AudioEngine with custom dependencies (mainly for testing)
@@ -301,7 +394,7 @@ public final class AudioEngine: AudioEngineProtocol {
     ) throws {
         if formatDetectionFailed {
             // For invalid files, allow the track to be "loaded" but with errors
-            currentPosition = 0.0
+        currentPosition = 0.0
             currentTrack = track
             state = .error("Format detection and native engine load both failed")
             Logger.audio.warning(

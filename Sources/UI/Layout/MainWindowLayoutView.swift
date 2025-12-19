@@ -207,6 +207,8 @@ public struct MainWindowLayoutView: View {
                 deviceSidebarViewModel: deviceSidebarViewModel,
                 audioVisualiserViewModel: audioVisualiserViewModel
             )
+            .frame(width: ContextualSidebar.width)
+            .fixedSize(horizontal: true, vertical: false)
             .onChange(of: searchText) { _, newValue in
                 if selectedTab == .library {
                     Task {
@@ -222,6 +224,15 @@ public struct MainWindowLayoutView: View {
                     }
                 }
             }
+            .onChange(of: selectedTab) { oldValue, newValue in
+                Logger.userInterface.info(
+                    "MainWindowLayoutView: Tab changed from \(oldValue.rawValue) " +
+                    "to \(newValue.rawValue)"
+                )
+            }
+            .onAppear {
+                Logger.userInterface.info("MainWindowLayoutView: Appeared with selectedTab = \(selectedTab.rawValue)")
+            }
             
             Divider()
             
@@ -236,8 +247,10 @@ public struct MainWindowLayoutView: View {
             )
             .id("tab-\(selectedTab.rawValue)") // Force view recreation when tab changes
             .animation(.default, value: selectedTab) // Animate tab changes
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity)
+            .layoutPriority(1) // Give content area priority for space
         }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
     
     // MARK: - Actions

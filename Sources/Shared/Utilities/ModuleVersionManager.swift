@@ -244,4 +244,5 @@ public class ModuleVersionManager {
 
 extension Notification.Name {
     public static let moduleVersionConflict = Notification.Name("moduleVersionConflict")
+    public static let audioGainChanged = Notification.Name("audioGainChanged")
 }

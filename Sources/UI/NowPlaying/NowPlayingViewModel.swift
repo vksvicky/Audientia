@@ -108,6 +108,7 @@ public final class NowPlayingViewModel: ObservableObject {
         }
         
         setupObservers()
+        restoreLastPlayedTrack()
         Logger.userInterface.info("NowPlayingViewModel initialised")
     }
     
@@ -133,6 +134,40 @@ public final class NowPlayingViewModel: ObservableObject {
         
         // Start position tracking
         startPositionTracking()
+    }
+    
+    /// Restore the last played track from AppSettings (if available and file still exists)
+    private func restoreLastPlayedTrack() {
+        guard let lastTrack = AppSettings.shared.lastPlayedTrack else {
+            Logger.userInterface.debug("No last played track to restore")
+            return
+        }
+        
+        // Verify the file still exists before attempting to load
+        guard FileManager.default.fileExists(atPath: lastTrack.filePath) else {
+            Logger.userInterface.warning(
+                "Last played track file no longer exists: \(lastTrack.filePath, privacy: .public)"
+            )
+            // Clear the saved track since the file is gone
+            AppSettings.shared.lastPlayedTrack = nil
+            return
+        }
+        
+        // Load the track asynchronously (but don't auto-play)
+        Task {
+            do {
+                try await loadTrack(lastTrack)
+                Logger.userInterface.info(
+                    "Restored last played track: \(lastTrack.title, privacy: .public)"
+                )
+            } catch {
+                Logger.userInterface.error(
+                    "Failed to restore last played track: \(error.localizedDescription, privacy: .public)"
+                )
+                // Clear the saved track if loading failed
+                AppSettings.shared.lastPlayedTrack = nil
+            }
+        }
     }
     
     private func startPositionTracking() {

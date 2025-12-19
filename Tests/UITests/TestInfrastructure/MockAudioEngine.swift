@@ -131,6 +131,16 @@ final class MockAudioEngine: AudioEngineProtocol {
         self.volume = max(0.0, min(1.0, volume))
     }
     
+    public func increaseVolume(by step: Float) {
+        let newVolume = min(1.0, volume + step)
+        self.volume = newVolume
+    }
+    
+    public func decreaseVolume(by step: Float) {
+        let newVolume = max(0.0, volume - step)
+        self.volume = newVolume
+    }
+    
     public func setMuted(_ muted: Bool) {
         if muted {
             previousVolume = volume

@@ -73,7 +73,7 @@ struct CollapsiblePlayerBar: View {
         HStack(spacing: 12) {
             // Track Info with Album Art
             trackInfoSection
-                .frame(minWidth: 200, idealWidth: 280, maxWidth: 300, alignment: .leading)
+                .frame(minWidth: 150, idealWidth: 200, maxWidth: 220, alignment: .leading)
                 .layoutPriority(1)
             
             Spacer(minLength: 8)
@@ -122,17 +122,17 @@ struct CollapsiblePlayerBar: View {
                             font: .system(size: 13, weight: .medium),
                             foregroundColor: .primary,
                             scrollSpeed: appSettings.trackInfoScrollSpeed,
-                            frameWidth: 200
+                            frameWidth: 150
                         )
                         ScrollingTextView(
                             text: "\(track.artist) - \(track.album)",
                             font: .system(size: 11),
                             foregroundColor: .secondary,
                             scrollSpeed: appSettings.trackInfoScrollSpeed,
-                            frameWidth: 200
+                            frameWidth: 150
                         )
                     }
-                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .frame(maxWidth: 150, alignment: .leading)
                 }
             } else {
                 HStack(spacing: 12) {

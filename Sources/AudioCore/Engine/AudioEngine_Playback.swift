@@ -15,6 +15,13 @@ extension AudioEngine {
     /// Start playback
     /// - Throws: AudioEngineError if playback cannot start
     public func play() async throws {
+        // CRITICAL: If already playing, don't start duplicate playback
+        // This ensures only one track plays at a time
+        if state == .playing {
+            Logger.audio.debug("Play called but already playing - ignoring to prevent duplicate playback")
+            return
+        }
+        
         // Check if queue has tracks but no current track
         if currentTrack == nil && !queue.isEmpty {
             let nextTrack = queue.removeFirst()
@@ -37,10 +44,23 @@ extension AudioEngine {
         
         Logger.audio.info("Starting playback: \(track.title)")
         
+        // Save last played track for restoration on app restart
+        AppSettings.shared.lastPlayedTrack = track
+        
         // Start main playback engine (actual audio playback)
         guard await nativeEngine.play() else {
             throw AudioEngineError.trackLoadFailed("Native audio engine failed to start playback")
         }
+        
+        // CRITICAL: Reapply playback speed after starting playback
+        // This ensures the saved speed is applied even if the native engine reset it
+        let rate = Float(self.playbackSpeed.rawValue)
+        nativeEngine.setRate(rate)
+        Logger.audio.debug("Reapplied playback speed: \(self.playbackSpeed.displayName) (rate: \(rate))")
+        
+        // CRITICAL: Reapply audio gain after starting playback
+        // This ensures the saved gain settings are applied
+        await updateGainMultiplier()
         
         // Start visualiser tap for real-time audio data (runs in parallel, no audio output)
         // This provides real audio samples for visualisation
@@ -91,6 +111,16 @@ extension AudioEngine {
         guard await nativeEngine.play() else {
             throw AudioEngineError.trackLoadFailed("Native audio engine failed to resume playback")
         }
+        
+        // CRITICAL: Reapply playback speed after resuming playback
+        // This ensures the saved speed is applied
+        let rate = Float(self.playbackSpeed.rawValue)
+        nativeEngine.setRate(rate)
+        Logger.audio.debug("Reapplied playback speed on resume: \(self.playbackSpeed.displayName) (rate: \(rate))")
+        
+        // CRITICAL: Reapply audio gain after resuming playback
+        // This ensures the saved gain settings are applied
+        await updateGainMultiplier()
         
         // Restart visualiser tap for real-time audio data (runs in parallel, no audio output)
         // This ensures visualisation continues after resume

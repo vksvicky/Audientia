@@ -9,6 +9,7 @@
 
 import AudioCore
 import DataLayer
+import os.log
 import SwiftUI
 
 /// Tab content view builder for main window
@@ -21,36 +22,65 @@ struct MainWindowTabContentView: View {
     let audioVisualiserViewModel: AudioVisualiserViewModel
     
     var body: some View {
-        Group {
-            switch selectedTab {
-            case .home:
-                HomeContentView(viewModel: homeViewModel)
-            case .library:
-                LibraryBrowserView(viewModel: libraryBrowserViewModel)
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
-                    .task(id: selectedTab) {
-                        if selectedTab == .library {
-                            await libraryBrowserViewModel.loadLibraryIfNeeded()
-                        }
-                    }
-            case .playlists:
-                PlaylistBrowserView(playlistManager: PlaylistManager(indexer: LibraryIndexer()))
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
-            case .devices:
-                DeviceSyncView()
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
-            case .visualiser:
-                AudioVisualiserView(
-                    nowPlayingViewModel: nowPlayingViewModel,
-                    audioEngine: audioEngine as? AudioEngine,
-                    viewModel: audioVisualiserViewModel
-                )
+        ZStack {
+            // Background to ensure view takes space
+            Color(NSColor.windowBackgroundColor)
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .onAppear {
-                    // Update ViewModel with current nowPlayingViewModel reference
-                    audioVisualiserViewModel.updateNowPlayingViewModel(nowPlayingViewModel)
+            
+            // Tab content
+            Group {
+                switch selectedTab {
+                case .home:
+                    HomeContentView(viewModel: homeViewModel)
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                        .onAppear {
+                            Logger.userInterface.info("MainWindowTabContentView: Home tab appeared")
+                        }
+                case .library:
+                    LibraryBrowserView(viewModel: libraryBrowserViewModel)
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                        .task(id: selectedTab) {
+                            if selectedTab == .library {
+                                await libraryBrowserViewModel.loadLibraryIfNeeded()
+                            }
+                        }
+                        .onAppear {
+                            Logger.userInterface.info("MainWindowTabContentView: Library tab appeared")
+                        }
+                case .playlists:
+                    PlaylistBrowserView(playlistManager: PlaylistManager(indexer: LibraryIndexer()))
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                        .onAppear {
+                            Logger.userInterface.info("MainWindowTabContentView: Playlists tab appeared")
+                        }
+                case .devices:
+                    DeviceSyncView()
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                        .onAppear {
+                            Logger.userInterface.info("MainWindowTabContentView: Devices tab appeared")
+                        }
+                case .visualiser:
+                    AudioVisualiserView(
+                        nowPlayingViewModel: nowPlayingViewModel,
+                        audioEngine: audioEngine as? AudioEngine,
+                        viewModel: audioVisualiserViewModel
+                    )
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .onAppear {
+                        Logger.userInterface.info("MainWindowTabContentView: Visualiser tab appeared")
+                        // Update ViewModel with current nowPlayingViewModel reference
+                        audioVisualiserViewModel.updateNowPlayingViewModel(nowPlayingViewModel)
+                    }
                 }
             }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+        }
+        .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity)
+        .onChange(of: selectedTab) { oldValue, newValue in
+            Logger.userInterface.info(
+                "MainWindowTabContentView: Tab changed from \(oldValue.rawValue) " +
+                "to \(newValue.rawValue)"
+            )
         }
     }
 }

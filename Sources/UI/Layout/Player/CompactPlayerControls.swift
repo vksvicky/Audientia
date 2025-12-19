@@ -26,7 +26,7 @@ struct CompactPlayerControls: View {
         HStack(spacing: 12) {
             // Scrolling track info
             trackInfoView
-                .frame(minWidth: 150, maxWidth: 250)
+                .frame(minWidth: 150, maxWidth: 200)
             
             // Compact seek bar
             compactSeekBar
@@ -58,7 +58,7 @@ struct CompactPlayerControls: View {
                     font: .system(size: 12),
                     foregroundColor: .primary,
                     scrollSpeed: 25.0, // Tuned for smoother, more readable scrolling
-                    frameWidth: 200
+                    frameWidth: 175
                 )
             } else {
                 Text("No track playing")
@@ -437,6 +437,16 @@ private final class CompactPlayerControlsPreviewAudioEngine: AudioEngineProtocol
     // MARK: - Volume / Mute
     func setVolume(_ volume: Float) {
         self.volume = max(0, min(volume, 1))
+    }
+    
+    func increaseVolume(by step: Float) {
+        let newVolume = min(1.0, volume + step)
+        self.volume = newVolume
+    }
+    
+    func decreaseVolume(by step: Float) {
+        let newVolume = max(0.0, volume - step)
+        self.volume = newVolume
     }
     
     func setMuted(_ muted: Bool) {

@@ -173,15 +173,21 @@ private final class AudioGainControlViewModel: ObservableObject {
     func setGlobalGain(_ gain: Float) async {
         await gainControl.setGlobalGain(gain)
         globalGain = await gainControl.getGlobalGain()
+        // Notify that gain has changed so the audio engine can refresh
+        NotificationCenter.default.post(name: .audioGainChanged, object: nil)
     }
     
     func setTrackGain(_ gain: Float, for track: Shared.Track) async {
         await gainControl.setTrackGain(gain, for: track)
         trackGain = await gainControl.getTrackGain(for: track)
+        // Notify that gain has changed so the audio engine can refresh
+        NotificationCenter.default.post(name: .audioGainChanged, object: nil)
     }
     
     func removeTrackGain(for track: Shared.Track) async {
         await gainControl.removeTrackGain(for: track)
         trackGain = await gainControl.getTrackGain(for: track)
+        // Notify that gain has changed so the audio engine can refresh
+        NotificationCenter.default.post(name: .audioGainChanged, object: nil)
     }
 }

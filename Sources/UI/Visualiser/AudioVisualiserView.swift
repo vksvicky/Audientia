@@ -64,10 +64,11 @@ public struct AudioVisualiserView: View {
                 spectrumView(frame: currentFrame)
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
             } else {
-                Text("No audio data available")
-                    .font(.body)
-                    .foregroundColor(.secondary)
+                // Show a static visualization when no audio data is available
+                // This provides visual feedback that the visualiser is working
+                spectrumView(frame: viewModel.createInitialFrame())
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .opacity(0.3) // Dimmed to indicate no active audio
             }
             
             // Controls - Fixed size at bottom

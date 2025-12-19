@@ -23,7 +23,7 @@ extension AudioEngine {
         targetLevel: Float,
         audioData: [Float]? = nil
     ) async -> Float? {
-        guard let normaliser = normaliser, let track = currentTrack else {
+        guard let normaliser = normaliser, currentTrack != nil else {
             return nil
         }
         

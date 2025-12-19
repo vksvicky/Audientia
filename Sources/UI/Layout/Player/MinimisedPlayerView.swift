@@ -52,14 +52,14 @@ public struct MinimisedPlayerView: View {
                                 font: .system(size: 11, weight: .medium),
                                 foregroundColor: .primary,
                                 scrollSpeed: AppSettings.shared.trackInfoScrollSpeed,
-                                frameWidth: 120
+                                frameWidth: 140
                             )
                             ScrollingTextView(
                                 text: track.artist,
                                 font: .system(size: 9),
                                 foregroundColor: .secondary,
                                 scrollSpeed: AppSettings.shared.trackInfoScrollSpeed,
-                                frameWidth: 120
+                                frameWidth: 140
                             )
                         } else {
                             Text("Audientia")
@@ -70,12 +70,12 @@ public struct MinimisedPlayerView: View {
                                 .foregroundColor(.secondary)
                         }
                     }
-                    .frame(width: 120, alignment: .leading)
+                    .frame(width: 140, alignment: .leading)
                     
-                    Spacer(minLength: 4)
+                    Spacer(minLength: 2)
                     
                     // Playback controls
-                    HStack(spacing: 6) {
+                    HStack(spacing: 4) {
                         Button(action: { Task { try? await nowPlayingViewModel.playPrevious() } }, label: {
                             Image(systemName: "backward.fill")
                                 .font(.system(size: 11))
@@ -114,8 +114,38 @@ public struct MinimisedPlayerView: View {
                         .buttonStyle(.plain)
                         .disabled(nowPlayingViewModel.queue.count <= 1)
                         
-                        // Playback Speed Control
-                        PlaybackSpeedControl(playbackSpeed: $nowPlayingViewModel.playbackSpeed)
+                        // Playback Speed Control (compact for minimized view)
+                        Menu {
+                            ForEach(PlaybackSpeed.allCases, id: \.self) { speed in
+                                Button {
+                                    nowPlayingViewModel.playbackSpeed = speed
+                                } label: {
+                                    HStack {
+                                        Text(speed.displayName)
+                                        Spacer()
+                                        if speed == nowPlayingViewModel.playbackSpeed {
+                                            Image(systemName: "checkmark")
+                                                .font(.system(size: 11, weight: .semibold))
+                                        }
+                                    }
+                                }
+                            }
+                        } label: {
+                            HStack(spacing: 3) {
+                                Image(systemName: "speedometer")
+                                    .font(.system(size: 10))
+                                Text(nowPlayingViewModel.playbackSpeed.displayName)
+                                    .font(.system(size: 10, weight: .medium))
+                            }
+                            .padding(.horizontal, 6)
+                            .padding(.vertical, 3)
+                            .background(
+                                RoundedRectangle(cornerRadius: 3)
+                                    .fill(Color.accentColor.opacity(0.1))
+                            )
+                        }
+                        .buttonStyle(.plain)
+                        .accessibilityLabel("Playback speed: \(nowPlayingViewModel.playbackSpeed.displayName)")
                         
                         // Gain Control Button
                         Button(action: {
@@ -145,6 +175,9 @@ public struct MinimisedPlayerView: View {
                         .accessibilityValue(
                             nowPlayingViewModel.isGainControlEnabled ? "Enabled" : "Disabled"
                         )
+                        
+                        // Volume Control Button
+                        volumeControlButton
                     }
                 }
                 
@@ -224,6 +257,28 @@ public struct MinimisedPlayerView: View {
         }
     }
     
+    // MARK: - Volume Control
+    
+    @State private var isVolumePopoverPresented = false
+    
+    private var volumeControlButton: some View {
+        Button(action: {
+            isVolumePopoverPresented.toggle()
+        }, label: {
+            Image(systemName: nowPlayingViewModel.isMuted ? "speaker.slash.fill" : "speaker.wave.2.fill")
+                .font(.system(size: 11))
+                .foregroundColor(nowPlayingViewModel.isMuted ? .red : .primary)
+        })
+        .buttonStyle(.plain)
+        .frame(width: 16, height: 16) // Fixed frame to prevent alignment shifts
+        .popover(isPresented: $isVolumePopoverPresented, attachmentAnchor: .point(.bottom), arrowEdge: .bottom) {
+            MinimisedVolumePopoverView(nowPlayingViewModel: nowPlayingViewModel)
+        }
+        .accessibilityLabel("Volume")
+        .accessibilityHint("Click to adjust volume")
+        .accessibilityValue("\(Int(nowPlayingViewModel.volume * 100)) percent")
+    }
+    
     private func formatTime(_ time: TimeInterval) -> String {
         guard time.isFinite && !time.isNaN else { return "0:00" }
         let minutes = Int(time) / 60
@@ -241,85 +296,11 @@ public struct MinimisedPlayerView: View {
         isLoadingArtwork = true
         
         Task {
-            let image = await extractArtworkImage(for: track)
+            let image = await MinimisedPlayerArtworkHelper.extractArtworkImage(for: track)
             await MainActor.run {
                 artworkImage = image
                 isLoadingArtwork = false
             }
         }
-    }
-
-    /// Extracts artwork for the given track, preferring embedded artwork and falling back to sidecar images.
-    private func extractArtworkImage(for track: Track) async -> NSImage? {
-        let fileURL = URL(fileURLWithPath: track.filePath)
-
-        // 1) Try embedded artwork via AVFoundation
-        if let embeddedData = await extractEmbeddedArtworkData(from: fileURL),
-           let image = NSImage(data: embeddedData) {
-            return image
-        }
-
-        // 2) Fallback to sidecar files next to the track
-        if let sidecarData = try? loadSidecarArtworkData(for: fileURL),
-           let image = NSImage(data: sidecarData) {
-            return image
-        }
-
-        return nil
-    }
-
-    private func extractEmbeddedArtworkData(from fileURL: URL) async -> Data? {
-        let asset = AVURLAsset(url: fileURL)
-        do {
-            let metadata = try await asset.load(.metadata)
-
-            for item in metadata {
-                let commonKey = item.commonKey
-                let identifier = item.identifier
-                
-                // Check for artwork by commonKey (works across all key spaces)
-                if commonKey == .commonKeyArtwork,
-                   let data = try? await item.load(.dataValue) {
-                    return data
-                }
-                
-                // Check for artwork by identifier (for files without commonKey mapping)
-                if let idRaw = identifier?.rawValue {
-                    // iTunes/M4A: identifier contains "covr"
-                    if idRaw.contains("covr"),
-                       let data = try? await item.load(.dataValue) {
-                        return data
-                    }
-                    
-                    // ID3/MP3: identifier is "APIC" or contains "PICTURE"
-                    if idRaw == "APIC" || idRaw.contains("PICTURE"),
-                       let data = try? await item.load(.dataValue) {
-                        return data
-                    }
-                }
-            }
-        } catch {
-            // Silently ignore errors and fall back to sidecar files
-        }
-        return nil
-    }
-
-    private func loadSidecarArtworkData(for fileURL: URL) throws -> Data? {
-        let directoryURL = fileURL.deletingLastPathComponent()
-        let baseName = fileURL.deletingPathExtension().lastPathComponent
-        let candidateNames = [baseName, "cover", "folder", "front", "album"]
-        let supportedExtensions = ["png", "jpg", "jpeg", "gif"]
-
-        for name in candidateNames {
-            for ext in supportedExtensions {
-                let candidate = directoryURL.appendingPathComponent("\(name).\(ext)")
-                if FileManager.default.fileExists(atPath: candidate.path),
-                   let data = try? Data(contentsOf: candidate),
-                   !data.isEmpty {
-                    return data
-                }
-            }
-        }
-        return nil
     }
 }

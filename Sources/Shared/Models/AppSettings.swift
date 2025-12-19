@@ -78,6 +78,30 @@ public class AppSettings: ObservableObject {
         }
     }
 
+    /// Last played track (saved for restoration on app restart)
+    @Published public var lastPlayedTrack: Track? {
+        didSet {
+            if let track = lastPlayedTrack {
+                if let encoded = try? JSONEncoder().encode(track) {
+                    UserDefaults.standard.set(encoded, forKey: "audientia.settings.lastPlayedTrack")
+                }
+            } else {
+                UserDefaults.standard.removeObject(forKey: "audientia.settings.lastPlayedTrack")
+            }
+        }
+    }
+    
+    /// Last visualization mode used (saved for restoration on app restart)
+    @Published public var lastVisualisationMode: String? {
+        didSet {
+            if let mode = lastVisualisationMode {
+                UserDefaults.standard.set(mode, forKey: "audientia.settings.lastVisualisationMode")
+            } else {
+                UserDefaults.standard.removeObject(forKey: "audientia.settings.lastVisualisationMode")
+            }
+        }
+    }
+
     // MARK: - Initialisation
 
     private init() {
@@ -114,6 +138,19 @@ public class AppSettings: ObservableObject {
         // Load gain control enabled state (default: true)
         let gainControlEnabledKey = "audientia.settings.isGainControlEnabled"
         self.isGainControlEnabled = UserDefaults.standard.object(forKey: gainControlEnabledKey) as? Bool ?? true
+        
+        // Load last played track (optional)
+        let lastPlayedTrackKey = "audientia.settings.lastPlayedTrack"
+        if let trackData = UserDefaults.standard.data(forKey: lastPlayedTrackKey),
+           let track = try? JSONDecoder().decode(Track.self, from: trackData) {
+            self.lastPlayedTrack = track
+        } else {
+            self.lastPlayedTrack = nil
+        }
+        
+        // Load last visualization mode (optional)
+        let lastVisualisationModeKey = "audientia.settings.lastVisualisationMode"
+        self.lastVisualisationMode = UserDefaults.standard.string(forKey: lastVisualisationModeKey)
 
         // Listen for module conflict notifications
         NotificationCenter.default.addObserver(

@@ -695,6 +695,7 @@ MainWindowLayoutView
 | `NavigationTabBar.swift` | **Create** | ✅ Complete - Created at `Sources/UI/Layout/Navigation/NavigationTabBar.swift` |
 | `ScrollingTextView.swift` | **Create** | ✅ Complete - Created at `Sources/UI/Components/ScrollingTextView.swift` |
 | `CompactPlayerControls.swift` | **Create** | ✅ Complete - Created at `Sources/UI/Layout/Player/CompactPlayerControls.swift` |
+| `MinimisedPlayerArtworkHelper.swift` | **Create** | ✅ Complete - Created at `Sources/UI/Layout/Player/MinimisedPlayerArtworkHelper.swift` (extracted from MinimisedPlayerView for code organization) |
 
 ### Implementation Steps
 
@@ -709,6 +710,7 @@ MainWindowLayoutView
 9. ✅ **Step 9**: Delete unused files (`MainWindowToolbar.swift`, `MainWindowPlaylistPanel.swift`) - **Complete**: Legacy files removed
 10. ✅ **Step 10**: Add keyboard shortcuts (`⌘T` for toolbar, `⌘P` for player, `⌘1-5` for tabs) - **Complete**: All shortcuts implemented
 11. ✅ **Step 11**: Update all tests to reflect new structure - **Complete**: Comprehensive TDD/BDD/E2E test suite created
+12. ✅ **Step 12**: Code quality improvements and SwiftLint compliance - **Complete**: Fixed all SwiftLint violations including function/file/type body length, long lines, and code organization. Extracted `MinimisedPlayerArtworkHelper.swift` for artwork loading, reduced `MinimisedPlayerView.swift` from 664 to 306 lines, extracted helper methods in `AudioVisualiserTap.swift` and `WindowPositioningHelper.swift`
 
 ### Test Suites
 
@@ -753,6 +755,144 @@ The following test suites have been created to verify the new layout:
 9. **Keyboard Shortcuts** - `⌘T` toggle toolbar, `⌘P` toggle player
 10. **Maximum Content Mode** - Collapse both for +82px vertical space (great for Visualiser)
 11. **Scrolling Track Info** - Marquee text in collapsed player shows full track info
+
+---
+
+## Verification Checklist
+
+This checklist verifies that the implementation matches the documentation and that all components are correctly implemented.
+
+### ✅ Core Component Files
+
+- [x] **TabItem.swift** - `Sources/UI/Layout/Navigation/TabItem.swift` exists
+  - [x] Contains 5 tabs: home, library, playlists, devices, visualiser
+  - [x] Keyboard shortcuts: ⌘1-5 implemented
+  - [x] Icons and display names defined
+
+- [x] **NavigationTabBar.swift** - `Sources/UI/Layout/Navigation/NavigationTabBar.swift` exists
+  - [x] Horizontal tab bar component
+  - [x] Tab selection binding works
+  - [x] Keyboard shortcuts wired up
+
+- [x] **CollapsibleToolbar.swift** - `Sources/UI/Layout/Navigation/CollapsibleToolbar.swift` exists
+  - [x] Expanded height: 44px (matches documentation)
+  - [x] Collapsed height: 20px (matches documentation)
+  - [x] Keyboard shortcut ⌘T implemented
+  - [x] Expand/collapse toggle button present
+
+- [x] **ContextualSidebar.swift** - `Sources/UI/Layout/Navigation/ContextualSidebar.swift` exists
+  - [x] Search field moved from toolbar
+  - [x] Tab-specific content switching
+  - [x] Library stats persistent at bottom
+
+- [x] **CollapsiblePlayerBar.swift** - `Sources/UI/Layout/Player/CollapsiblePlayerBar.swift` exists
+  - [x] Expanded height: 70px (matches documentation)
+  - [x] Collapsed height: 32px (matches documentation)
+  - [x] Keyboard shortcut ⌘P implemented
+  - [x] Album art, track info, seek bar, controls in expanded state
+
+- [x] **CompactPlayerControls.swift** - `Sources/UI/Layout/Player/CompactPlayerControls.swift` exists
+  - [x] Single-line compact player (32px)
+  - [x] Scrolling text (marquee) for long track titles
+  - [x] Compact seek bar and icon controls
+
+- [x] **ScrollingTextView.swift** - `Sources/UI/Components/ScrollingTextView.swift` exists
+  - [x] Marquee text animation
+  - [x] Scroll speed: 25 pixels/second (matches documentation, used in CompactPlayerControls)
+  - [x] Default speed: 30 pixels/second (configurable via AppSettings)
+
+- [x] **MinimisedPlayerView.swift** - `Sources/UI/Layout/Player/MinimisedPlayerView.swift` exists
+  - [x] Floating minimized player window
+
+- [x] **MainWindowLayoutView.swift** - `Sources/UI/Layout/MainWindowLayoutView.swift` exists
+  - [x] Refactored with new architecture
+  - [x] Collapsible toolbar integrated
+  - [x] Contextual sidebar integrated
+  - [x] Collapsible player integrated
+  - [x] Tab-specific content switching
+
+### ✅ Legacy Files Deleted
+
+- [x] **MainWindowToolbar.swift** - Deleted (replaced by CollapsibleToolbar)
+- [x] **MainWindowPlaylistPanel.swift** - Deleted (no right panel needed)
+- [x] **MainWindowNavigationSidebar.swift** - Deleted (replaced by ContextualSidebar)
+- [x] **MainWindowPlayerControls.swift** - Deleted (replaced by CollapsiblePlayerBar)
+- [x] **NavigationItem.swift** - Deleted (replaced by TabItem)
+
+### ✅ Keyboard Shortcuts
+
+- [x] **⌘T** - Toggle toolbar collapse/expand (implemented in CollapsibleToolbar)
+- [x] **⌘P** - Toggle player collapse/expand (implemented in CollapsiblePlayerBar)
+- [x] **⌘1** - Switch to Home tab (implemented in TabItem + NavigationTabBar)
+- [x] **⌘2** - Switch to Library tab (implemented in TabItem + NavigationTabBar)
+- [x] **⌘3** - Switch to Playlists tab (implemented in TabItem + NavigationTabBar)
+- [x] **⌘4** - Switch to Devices tab (implemented in TabItem + NavigationTabBar)
+- [x] **⌘5** - Switch to Visualiser tab (implemented in TabItem + NavigationTabBar)
+
+### ✅ Dimensions & Layout
+
+- [x] **Toolbar heights** - Expanded: 44px, Collapsed: 20px (matches documentation)
+- [x] **Player heights** - Expanded: 70px, Collapsed: 32px (matches documentation)
+- [x] **Space savings** - Total: 82px when both collapsed (44px + 38px, matches documentation)
+- [x] **Sidebar width** - 180px (as documented, defined in ContextualSidebar.width)
+
+### ✅ Tab-Specific Content
+
+- [x] **Home Tab** - HomeContentView with Recently Played, Recently Added, Most Played, Favourites
+- [x] **Library Tab** - LibraryBrowserView with browse modes and genre filtering
+- [x] **Playlists Tab** - PlaylistBrowserView with playlist list and smart playlists
+- [x] **Devices Tab** - DeviceSyncView with connected devices and sync options
+- [x] **Visualiser Tab** - AudioVisualiserView with visualisation styles and settings
+
+### ✅ Test Suites
+
+- [x] **TabSwitchingE2ETests.swift** - `Tests/UITests/Layout/TabSwitchingE2ETests.swift` exists
+- [x] **CollapsibleComponentsE2ETests.swift** - `Tests/UITests/Layout/CollapsibleComponentsE2ETests.swift` exists
+- [x] **SearchFunctionalityE2ETests.swift** - `Tests/UITests/Layout/SearchFunctionalityE2ETests.swift` exists
+- [x] **TabSpecificViewsUIUXTests.swift** - `Tests/UITests/Layout/TabSpecificViewsUIUXTests.swift` exists
+- [x] **LayoutPerformanceTests.swift** - `Tests/UITests/Layout/LayoutPerformanceTests.swift` exists
+- [x] **Component Tests** - All component test files exist:
+  - [x] TabItemTests.swift
+  - [x] NavigationTabBarTests.swift
+  - [x] CollapsibleToolbarTests.swift
+  - [x] ContextualSidebarTests.swift
+  - [x] CollapsiblePlayerBarTests.swift
+  - [x] CompactPlayerControlsTests.swift
+
+### ✅ Features & Functionality
+
+- [x] **Collapsible Toolbar** - Expand/collapse works, state persists
+- [x] **Collapsible Player** - Expand/collapse works, state persists
+- [x] **Contextual Sidebar** - Content changes per tab correctly
+- [x] **Search Integration** - Search works in Library, Playlists, Devices tabs
+- [x] **Tab Switching** - Mouse clicks and keyboard shortcuts work
+- [x] **State Persistence** - Toolbar/player collapse states persist across app restarts
+  - [x] LayoutState model exists (`Sources/Shared/Models/LayoutState.swift`)
+  - [x] LayoutStateManager implemented (actor-based, protocol-based)
+  - [x] State saved on change via `onChange` handlers
+  - [x] State loaded on app launch via `.task` modifier
+- [x] **Accessibility** - VoiceOver labels, hints, keyboard navigation implemented
+- [x] **Animations** - Smooth transitions with .move(edge:) and .opacity effects
+  - [x] Animation duration: 0.25s (matches documentation)
+  - [x] .clipped() modifier prevents content overflow during transitions
+- [x] **Code Quality & SwiftLint Compliance** - All SwiftLint violations fixed
+  - [x] Function body length: Extracted helper methods in `AudioVisualiserTap.swift` and `WindowPositioningHelper.swift`
+  - [x] File/type body length: Reduced `MinimisedPlayerView.swift` from 664 to 306 lines by extracting artwork helper and removing duplicate components
+  - [x] Long lines: Fixed all long line warnings by splitting log messages across multiple files
+  - [x] Code organization: Created `MinimisedPlayerArtworkHelper.swift` for artwork extraction logic
+
+### ✅ Documentation
+
+- [x] **Design Document** - This file (`16-ui-layout-redesign.md`) exists and is up to date
+- [x] **User Guide** - `Documentation/18-user-guide-ui-layout.md` exists
+- [x] **Developer Guide** - `Documentation/19-developer-guide-extending-tabs.md` exists
+- [x] **Keyboard Shortcuts Reference** - `Documentation/17-keyboard-shortcuts-reference.md` exists
+- [x] **Roadmap Updated** - `Documentation/05-roadmap-and-testing-strategy.md` reflects completion
+
+### ⚠️ Optional Items (Not Required)
+
+- [ ] **Screenshots** - Actual screenshots could be added (currently have annotations only)
+- [ ] **Video Demo** - Video walkthrough of the new layout (optional enhancement)
 
 ---
 

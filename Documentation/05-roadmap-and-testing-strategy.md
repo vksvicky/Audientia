@@ -76,6 +76,18 @@
   - **Code Organization**: Refactored large AppDelegate class into modular helper files and extensions to reduce file/class length and improve maintainability
   - **Window State Persistence**: Fixed window state persistence bugs ensuring minimized/maximized state and window position restore correctly on app relaunch
   - **Git Integration**: All changes committed and pushed to GitHub with comprehensive commit messages
+- **✅ SwiftLint Compliance & Code Refactoring (Dec 2025)**: Completed comprehensive SwiftLint fixes and code quality improvements:
+  - **Function Body Length Violations**: Extracted `processAudioBuffer` in `AudioVisualiserTap.swift` into helper methods (`extractAudioData`, `logBufferInfo`, `logZeroBufferWarning`, `processAudioDataAsync`) to reduce function body from 53 to under 50 lines
+  - **File Length Violations**: Reduced `MinimisedPlayerView.swift` from 664 lines to 306 lines by extracting artwork loading functions to `MinimisedPlayerArtworkHelper.swift` and removing duplicate volume control components
+  - **Type Body Length Violations**: Fixed struct body length in `MinimisedPlayerView.swift` by extracting helper functions and removing duplicate components
+  - **Long Line Violations**: Fixed all long line warnings across multiple files by splitting log messages and function calls:
+    - `AudioEngine.swift` (4 lines): Split long log messages across multiple lines
+    - `AudioVisualiserTap.swift` (5 lines): Split long log messages
+    - `CAudioEngine.mm` (1 line): Split NSLog call
+    - `MainWindowLayoutView.swift` (1 line): Split log message
+    - `MainWindowTabContentView.swift` (1 line): Split log message
+    - `WindowPositioningHelper.swift` (2 lines): Split log messages and extracted centering logic to `centerWindow` helper method
+  - **Code Organization**: Created `MinimisedPlayerArtworkHelper.swift` for artwork extraction logic, improving separation of concerns and maintainability
 
 ### UI Layout Redesign Details
 - **Design Document**: `Documentation/16-ui-layout-redesign.md`
@@ -1030,6 +1042,7 @@ See [`Scripts/build_guide.md`](../Scripts/build_guide.md) for detailed build ins
 - [ ] Dark mode optimization - **⏳ PENDING**: Theme system exists but may need refinement
 - [x] Window management - **✅ Window state persistence implemented (position, minimized/maximized state)**
 - [ ] Performance profiling and optimization - **⏳ PENDING**: Basic performance tests exist, may need deeper profiling
+- [x] Code quality and SwiftLint compliance - **✅ All SwiftLint violations fixed: function body length (extracted helper methods), file/type body length (refactored MinimisedPlayerView), long lines (split across multiple lines), code organization (extracted artwork helper). All critical SwiftLint errors resolved.**
 
 #### 7.2 Integration & Ecosystem
 - [ ] Apple Music library import - **⏳ PENDING**

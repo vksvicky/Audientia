@@ -15,7 +15,32 @@ extension AudioEngine {
     /// Set volume level
     /// - Parameter volume: Volume level (0.0 to 1.0)
     public func setVolume(_ volume: Float) {
+        // CRITICAL: If muted, don't allow volume changes (except to 0.0)
+        if isMuted && volume > 0.0 {
+            Logger.audio.debug("Volume change ignored - muted (attempted to set volume to \(volume))")
+            return
+        }
         self.volume = volume
+    }
+    
+    /// Increase volume by a specified step
+    /// - Parameter step: Step size (default: 0.01 = 1%)
+    /// Volume increments are in percentage (0.0 to 1.0), not in dB like gain control
+    /// If step is negative, volume will decrease instead
+    public func increaseVolume(by step: Float = 0.01) {
+        let newVolume = min(1.0, volume + step)
+        self.volume = newVolume
+        Logger.audio.debug("Volume increased by \(step * 100)% to \(newVolume * 100)%")
+    }
+    
+    /// Decrease volume by a specified step
+    /// - Parameter step: Step size (default: 0.01 = 1%)
+    /// Volume decrements are in percentage (0.0 to 1.0), not in dB like gain control
+    /// If step is negative, volume will increase instead
+    public func decreaseVolume(by step: Float = 0.01) {
+        let newVolume = max(0.0, volume - step)
+        self.volume = newVolume
+        Logger.audio.debug("Volume decreased by \(step * 100)% to \(newVolume * 100)%")
     }
     
     /// Set muted state

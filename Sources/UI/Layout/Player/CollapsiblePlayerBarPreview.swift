@@ -102,6 +102,16 @@ final class CollapsiblePlayerBarPreviewAudioEngine: AudioEngineProtocol {
         self.volume = max(0, min(volume, 1))
     }
     
+    func increaseVolume(by step: Float) {
+        let newVolume = min(1.0, volume + step)
+        self.volume = newVolume
+    }
+    
+    func decreaseVolume(by step: Float) {
+        let newVolume = max(0.0, volume - step)
+        self.volume = newVolume
+    }
+    
     func setMuted(_ muted: Bool) {
         isMuted = muted
     }

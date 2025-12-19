@@ -75,6 +75,16 @@ public protocol AudioEngineProtocol {
     /// - Parameter volume: Volume level (0.0 to 1.0)
     func setVolume(_ volume: Float)
     
+    /// Increase volume by a specified step
+    /// - Parameter step: Step size (typically 0.01 = 1% for fine control, 0.05 = 5% for larger steps)
+    /// Volume increments are in percentage (0.0 to 1.0), not in dB like gain control
+    func increaseVolume(by step: Float)
+    
+    /// Decrease volume by a specified step
+    /// - Parameter step: Step size (typically 0.01 = 1% for fine control, 0.05 = 5% for larger steps)
+    /// Volume decrements are in percentage (0.0 to 1.0), not in dB like gain control
+    func decreaseVolume(by step: Float)
+    
     /// Set muted state
     /// - Parameter muted: Whether to mute
     func setMuted(_ muted: Bool)

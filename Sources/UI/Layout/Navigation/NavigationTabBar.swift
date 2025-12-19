@@ -7,6 +7,8 @@
 //  Copyright © 2025 CycleRunCode Club. All rights reserved.
 //
 
+import os.log
+import Shared
 import SwiftUI
 
 /// Horizontal tab bar for main window navigation
@@ -19,7 +21,11 @@ struct NavigationTabBar: View {
                 TabButton(
                     tab: tab,
                     isSelected: selectedTab == tab,
-                    action: { selectedTab = tab }
+                    action: {
+                        Logger.userInterface.info("NavigationTabBar: Tab button clicked - \(tab.rawValue)")
+                        selectedTab = tab
+                        Logger.userInterface.info("NavigationTabBar: selectedTab set to - \(selectedTab.rawValue)")
+                    }
                 )
             }
             
@@ -41,8 +47,7 @@ private struct TabButton: View {
     @State private var isPressed = false
     
     var body: some View {
-        Button(action: action) {
-            HStack(spacing: 6) {
+        let buttonContent = HStack(spacing: 6) {
                 Image(systemName: tab.iconName)
                     .font(.system(size: 14, weight: isSelected ? .semibold : .regular))
                 
@@ -60,12 +65,13 @@ private struct TabButton: View {
             .onHover { hovering in
                 isHovered = hovering
             }
-            .pressEvents(onPress: {
-                isPressed = true
-            }, onRelease: {
-                isPressed = false
-            })
-        }
+        
+        return Button(action: {
+            Logger.userInterface.info("TabButton: Button action triggered for tab - \(tab.rawValue)")
+            action()
+        }, label: {
+            buttonContent
+        })
         .buttonStyle(.plain)
         .keyboardShortcut(tab.keyEquivalent, modifiers: .command)
         .help("\(tab.displayName) (⌘\(tab.keyboardShortcutNumber))")

@@ -116,6 +116,13 @@
     _volume = MAX(0.0f, MIN(1.0f, volume));
     if (self.player) {
         self.player.volume = _volume;
+        NSLog(
+            @"[CAudioEngine] setVolume called: %f, player.volume set to: %f",
+            volume,
+            self.player.volume
+        );
+    } else {
+        NSLog(@"[CAudioEngine] setVolume called: %f, but player is nil", volume);
     }
 }
 

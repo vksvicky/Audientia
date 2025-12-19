@@ -9,6 +9,7 @@
 
 import AudioCore
 import Foundation
+import Shared
 import SwiftUI
 
 /// ViewModel for Audio Visualizer
@@ -16,7 +17,15 @@ import SwiftUI
 final class AudioVisualiserViewModel: ObservableObject {
     @Published var currentFrame: AudioVisualiserFrame?
     @Published var fftSize: Int = 1024
-    @Published var visualisationMode: VisualisationMode = .discreteFrequencies
+    @Published var visualisationMode: VisualisationMode = .discreteFrequencies {
+        didSet {
+            // Save visualization mode for restoration on app restart
+            // Defer to avoid publishing changes during view updates
+            Task { @MainActor in
+                AppSettings.shared.lastVisualisationMode = visualisationMode.rawValue
+            }
+        }
+    }
     @Published var visualisationVolume: Float = 1.0 {
         didSet {
             updateVisualisationVolume()
@@ -56,6 +65,12 @@ final class AudioVisualiserViewModel: ObservableObject {
         if let engine = audioEngine {
             visualisationVolume = engine.getVisualizationVolume()
         }
+        
+        // Restore last visualization mode from AppSettings
+        if let savedMode = AppSettings.shared.lastVisualisationMode,
+           let mode = VisualisationMode(rawValue: savedMode) {
+            self.visualisationMode = mode
+        }
     }
     
     /// Update the nowPlayingViewModel reference
@@ -91,6 +106,13 @@ final class AudioVisualiserViewModel: ObservableObject {
     func startVisualization() async {
         let visualiser = self.visualiser
         let nowPlayingViewModel = self.nowPlayingViewModel
+        
+        // Create an initial frame immediately so the visualiser shows something
+        await MainActor.run {
+            if currentFrame == nil {
+                currentFrame = createInitialFrame()
+            }
+        }
         
         visualisationTask = Task {
             var lastFrameTimestamp: Date?
@@ -177,6 +199,13 @@ final class AudioVisualiserViewModel: ObservableObject {
             await MainActor.run {
                 if self.currentFrame == nil {
                     self.createStaticFrame()
+                }
+            }
+        } else {
+            // No track loaded - show initial frame to indicate visualiser is ready
+            await MainActor.run {
+                if self.currentFrame == nil {
+                    self.currentFrame = self.createInitialFrame()
                 }
             }
         }
@@ -268,6 +297,29 @@ final class AudioVisualiserViewModel: ObservableObject {
         
         let sampleRate = 44100 // Default sample rate
         currentFrame = AudioVisualiserFrame(
+            magnitudes: magnitudes,
+            timestamp: Date(),
+            sampleRate: sampleRate,
+            fftSize: fftSize
+        )
+    }
+    
+    // Create an initial frame for display when no audio data is available
+    // This ensures the visualiser always shows something
+    func createInitialFrame() -> AudioVisualiserFrame {
+        let magnitudeCount = fftSize / 2
+        var magnitudes = [Float](repeating: 0.0, count: magnitudeCount)
+        
+        // Create a subtle static pattern to show the visualiser is ready
+        for i in 0..<magnitudeCount {
+            let frequency = Float(i) / Float(magnitudeCount)
+            // Create a gentle static pattern
+            let staticWave = sin(Float(i) * 0.1) * (1.0 - frequency * 0.5)
+            magnitudes[i] = max(0.0, staticWave * 10.0 + 3.0) // Very low amplitude for initial state
+        }
+        
+        let sampleRate = 44100 // Default sample rate
+        return AudioVisualiserFrame(
             magnitudes: magnitudes,
             timestamp: Date(),
             sampleRate: sampleRate,

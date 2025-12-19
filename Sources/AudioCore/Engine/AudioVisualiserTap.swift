@@ -109,29 +109,8 @@ public final class AudioVisualiserTap {
     
     /// Process audio buffer and feed to visualiser
     private func processAudioBuffer(_ buffer: AVAudioPCMBuffer, sampleRate: Int, channels: Int) {
-        // Convert audio buffer to Float array
-        let frameLength = Int(buffer.frameLength)
-        var audioData: [Float] = []
-        
-        // Extract audio samples from buffer
-        guard let channelData = buffer.floatChannelData else {
-            Logger.audio.debug("AudioVisualiserTap: No channel data in buffer")
-            return
-        }
-        
-        // Convert stereo to mono by averaging channels, or use mono directly
-        if channels == 1 {
-            audioData = Array(UnsafeBufferPointer(start: channelData[0], count: frameLength))
-        } else if channels >= 2 {
-            // For stereo, mix down to mono by averaging left and right channels
-            // This provides better visualisation than just using one channel
-            let leftChannel = UnsafeBufferPointer(start: channelData[0], count: frameLength)
-            let rightChannel = UnsafeBufferPointer(start: channelData[1], count: frameLength)
-            audioData = (0..<frameLength).map { index in
-                (leftChannel[index] + rightChannel[index]) / 2.0
-            }
-        } else {
-            Logger.audio.warning("AudioVisualiserTap: Unexpected channel count: \(channels)")
+        // Extract audio data from buffer
+        guard let audioData = extractAudioData(from: buffer, channels: channels) else {
             return
         }
         
@@ -144,25 +123,106 @@ public final class AudioVisualiserTap {
         
         // Check if we're getting actual audio data (non-zero samples)
         let maxSample = audioData.map { abs($0) }.max() ?? 0.0
-        let minSample = audioData.map { abs($0) }.min() ?? 0.0
+        let hasAudioData = maxSample > 0.0
         
-        if BufferCounter.count <= 3 || BufferCounter.count % 100 == 0 {
-            if BufferCounter.count <= 3 {
-                Logger.audio.debug("AudioVisualiserTap: Buffer #\(BufferCounter.count) - frames: \(frameLength), max: \(maxSample), min: \(minSample), first 5 samples: \(Array(audioData.prefix(5)))")
+        // Log buffer info appropriately
+        logBufferInfo(
+            count: BufferCounter.count,
+            frameLength: Int(buffer.frameLength),
+            maxSample: maxSample,
+            audioData: audioData,
+            hasAudioData: hasAudioData
+        )
+        
+        // Warn if we're getting all zeros when audio should be playing
+        logZeroBufferWarning(
+            count: BufferCounter.count,
+            hasAudioData: hasAudioData
+        )
+        
+        // Process audio data through visualiser asynchronously
+        processAudioDataAsync(
+            audioData: audioData,
+            sampleRate: sampleRate,
+            bufferCount: BufferCounter.count,
+            hasAudioData: hasAudioData
+        )
+    }
+    
+    /// Extract audio data from buffer, converting to mono if needed
+    private func extractAudioData(from buffer: AVAudioPCMBuffer, channels: Int) -> [Float]? {
+        let frameLength = Int(buffer.frameLength)
+        guard let channelData = buffer.floatChannelData else {
+            Logger.audio.debug("AudioVisualiserTap: No channel data in buffer")
+            return nil
+        }
+        
+        // Convert stereo to mono by averaging channels, or use mono directly
+        if channels == 1 {
+            return Array(UnsafeBufferPointer(start: channelData[0], count: frameLength))
+        } else if channels >= 2 {
+            // For stereo, mix down to mono by averaging left and right channels
+            let leftChannel = UnsafeBufferPointer(start: channelData[0], count: frameLength)
+            let rightChannel = UnsafeBufferPointer(start: channelData[1], count: frameLength)
+            return (0..<frameLength).map { index in
+                (leftChannel[index] + rightChannel[index]) / 2.0
+            }
+        } else {
+            Logger.audio.warning("AudioVisualiserTap: Unexpected channel count: \(channels)")
+            return nil
+        }
+    }
+    
+    /// Log buffer information at appropriate intervals
+    private func logBufferInfo(
+        count: Int,
+        frameLength: Int,
+        maxSample: Float,
+        audioData: [Float],
+        hasAudioData: Bool
+    ) {
+        if count <= 3 {
+            let samplesPreview = Array(audioData.prefix(5))
+            Logger.audio.debug(
+                "AudioVisualiserTap: Buffer #\(count) - frames: \(frameLength), " +
+                "max: \(maxSample), min: \(audioData.map { abs($0) }.min() ?? 0.0), " +
+                "first 5 samples: \(samplesPreview)"
+            )
+        } else if hasAudioData && count % 500 == 0 {
+            Logger.audio.debug(
+                "AudioVisualiserTap: Buffer #\(count) - frames: \(frameLength), " +
+                "max: \(maxSample), min: \(audioData.map { abs($0) }.min() ?? 0.0)"
+            )
+        }
+    }
+    
+    /// Log warnings for zero buffers when audio should be playing
+    private func logZeroBufferWarning(count: Int, hasAudioData: Bool) {
+        if !hasAudioData && count > 10 && count % 500 == 0 {
+            // Only warn if playerNode is actually playing (audio should be flowing)
+            if let playerNode = playerNode, playerNode.isPlaying {
+                Logger.audio.warning(
+                    "AudioVisualiserTap: Receiving all-zero buffers while playing - " +
+                    "audio may not be flowing. Check engine setup. (Buffer #\(count))"
+                )
             } else {
-                Logger.audio.debug("AudioVisualiserTap: Buffer #\(BufferCounter.count) - frames: \(frameLength), max: \(maxSample), min: \(minSample)")
+                // If not playing, this is expected - use debug level instead
+                Logger.audio.debug(
+                    "AudioVisualiserTap: Receiving all-zero buffers " +
+                    "(no audio playing, expected). (Buffer #\(count))"
+                )
             }
         }
-        
-        // Warn if we're getting all zeros (audio not flowing)
-        // Only log warning occasionally to avoid spam (every 50 buffers with zeros)
-        if maxSample == 0.0 && BufferCounter.count > 10 && BufferCounter.count % 50 == 0 {
-            Logger.audio.warning("AudioVisualiserTap: Receiving all-zero buffers - audio may not be flowing. Check engine setup and playerNode state. (Buffer #\(BufferCounter.count))")
-        }
-        
-        // Process audio data through visualiser
+    }
+    
+    /// Process audio data through visualiser asynchronously
+    private func processAudioDataAsync(
+        audioData: [Float],
+        sampleRate: Int,
+        bufferCount: Int,
+        hasAudioData: Bool
+    ) {
         // Use Task.detached to avoid blocking the audio thread
-        // This ensures frames are created asynchronously without blocking audio processing
         Task.detached(priority: .userInitiated) { [weak self] in
             guard let self = self else { return }
             do {
@@ -171,12 +231,20 @@ public final class AudioVisualiserTap {
                     sampleRate: sampleRate,
                     channels: 1 // Process as mono
                 )
-                // Log occasionally to confirm processing (every 50th buffer)
-                if BufferCounter.count % 50 == 0 {
-                    Logger.audio.debug("AudioVisualiserTap: Processed frame #\(BufferCounter.count) - max: \(String(format: "%.2f", frame.maxMagnitude)), freq: \(String(format: "%.1f", frame.dominantFrequency)) Hz")
+                // Only log processed frames when there's actual audio data (not zeros)
+                // Log every 500th buffer to reduce spam
+                if hasAudioData && bufferCount % 500 == 0 {
+                    let maxStr = String(format: "%.2f", frame.maxMagnitude)
+                    let freqStr = String(format: "%.1f", frame.dominantFrequency)
+                    Logger.audio.debug(
+                        "AudioVisualiserTap: Processed frame #\(bufferCount) - " +
+                        "max: \(maxStr), freq: \(freqStr) Hz"
+                    )
                 }
             } catch {
-                Logger.audio.error("AudioVisualiserTap: Processing error: \(error.localizedDescription)")
+                Logger.audio.error(
+                    "AudioVisualiserTap: Processing error: \(error.localizedDescription)"
+                )
             }
         }
     }

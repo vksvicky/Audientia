@@ -88,9 +88,12 @@ final class AdvancedPlaybackTests: XCTestCase {
     func testMuteSetsVolumeToZero() async throws {
         // Given
         let track = MockFactory.makeTrack()
-        let engine = try await AudioEngineTestHelpers.createEngineWithTrack(track)
+        let (engine, nativeEngine) = try await AudioEngineTestHelpers.createEngineWithTrackAndNativeEngine(track)
         try await engine.play()
         engine.setVolume(0.5) // Set some volume
+        
+        // Clear any previous volume calls
+        nativeEngine.volumeValues.removeAll()
         
         // When
         engine.setMuted(true)
@@ -98,16 +101,26 @@ final class AdvancedPlaybackTests: XCTestCase {
         // Then
         XCTAssertTrue(engine.isMuted, "Should be muted")
         XCTAssertEqual(engine.volume, 0.0, "Volume should be 0 when muted")
+        // CRITICAL: Verify native engine volume was actually set to 0
+        XCTAssertFalse(nativeEngine.volumeValues.isEmpty, "Native engine setVolume should have been called")
+        if let lastVolume = nativeEngine.volumeValues.last {
+            XCTAssertEqual(lastVolume, 0.0, accuracy: 0.001, "Native engine volume should be 0 when muted")
+        } else {
+            XCTFail("Native engine setVolume was never called")
+        }
     }
     
     /// BDD: Given a muted track, when I unmute, then volume should restore
     func testUnmuteRestoresVolume() async throws {
         // Given
         let track = MockFactory.makeTrack()
-        let engine = try await AudioEngineTestHelpers.createEngineWithTrack(track)
+        let (engine, nativeEngine) = try await AudioEngineTestHelpers.createEngineWithTrackAndNativeEngine(track)
         try await engine.play()
         engine.setVolume(0.7)
         engine.setMuted(true) // Mute
+        
+        // Clear volume calls before unmute
+        nativeEngine.volumeValues.removeAll()
         
         // When
         engine.setMuted(false)
@@ -115,16 +128,26 @@ final class AdvancedPlaybackTests: XCTestCase {
         // Then
         XCTAssertFalse(engine.isMuted, "Should not be muted")
         XCTAssertEqual(engine.volume, 0.7, "Volume should be restored to previous value")
+        // CRITICAL: Verify native engine volume was restored
+        XCTAssertFalse(nativeEngine.volumeValues.isEmpty, "Native engine setVolume should have been called")
+        if let lastVolume = nativeEngine.volumeValues.last {
+            XCTAssertEqual(lastVolume, 0.7, accuracy: 0.001, "Native engine volume should be restored when unmuted")
+        } else {
+            XCTFail("Native engine setVolume was never called")
+        }
     }
     
     /// BDD: Given a muted track, when I toggle mute, then it should unmute
     func testToggleMute() async throws {
         // Given
         let track = MockFactory.makeTrack()
-        let engine = try await AudioEngineTestHelpers.createEngineWithTrack(track)
+        let (engine, nativeEngine) = try await AudioEngineTestHelpers.createEngineWithTrackAndNativeEngine(track)
         try await engine.play()
         engine.setVolume(0.5)
         engine.setMuted(true)
+        
+        // Clear volume calls before toggle
+        nativeEngine.volumeValues.removeAll()
         
         // When
         engine.toggleMute()
@@ -132,6 +155,13 @@ final class AdvancedPlaybackTests: XCTestCase {
         // Then
         XCTAssertFalse(engine.isMuted, "Should be unmuted after toggle")
         XCTAssertEqual(engine.volume, 0.5, "Volume should be restored")
+        // CRITICAL: Verify native engine volume was restored
+        XCTAssertFalse(nativeEngine.volumeValues.isEmpty, "Native engine setVolume should have been called")
+        if let lastVolume = nativeEngine.volumeValues.last {
+            XCTAssertEqual(lastVolume, 0.5, accuracy: 0.001, "Native engine volume should be restored when unmuted")
+        } else {
+            XCTFail("Native engine setVolume was never called")
+        }
     }
     
     // MARK: - Replay Functionality Tests
