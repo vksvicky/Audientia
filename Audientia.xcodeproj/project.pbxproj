@@ -832,6 +832,8 @@
 		E2B0565B2EF6088E00F69A0D /* NowPlayingViewModel_QueueManagement.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2B056592EF6088E00F69A0D /* NowPlayingViewModel_QueueManagement.swift */; };
 		E2B0565D2EF608E600F69A0D /* NowPlayingViewModel_PlaybackControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2B0565C2EF608E600F69A0D /* NowPlayingViewModel_PlaybackControl.swift */; };
 		E2B0565E2EF608E600F69A0D /* NowPlayingViewModel_PlaybackControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2B0565C2EF608E600F69A0D /* NowPlayingViewModel_PlaybackControl.swift */; };
+		E2B056612EF60B9B00F69A0D /* M4APlaybackBDDTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2B0565F2EF60B9B00F69A0D /* M4APlaybackBDDTests.swift */; };
+		E2B056622EF60B9B00F69A0D /* M4APlaybackTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2B056602EF60B9B00F69A0D /* M4APlaybackTests.swift */; };
 		E2C789C32EE18A8600D7C220 /* SmartPlaylistViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E29A00342EDA7000000000034 /* SmartPlaylistViewModel.swift */; };
 		E2C789C42EE18A8600D7C220 /* DeviceSidebarViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E29A00382EDA7000000000038 /* DeviceSidebarViewModel.swift */; };
 		E2C789C52EE18A8600D7C220 /* PlaylistSidebarViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E29A00302EDA7000000000030 /* PlaylistSidebarViewModel.swift */; };
@@ -1891,6 +1893,8 @@
 		E2B056562EF6052000F69A0D /* NowPlayingViewModelMissingFileTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NowPlayingViewModelMissingFileTests.swift; sourceTree = "<group>"; };
 		E2B056592EF6088E00F69A0D /* NowPlayingViewModel_QueueManagement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NowPlayingViewModel_QueueManagement.swift; sourceTree = "<group>"; };
 		E2B0565C2EF608E600F69A0D /* NowPlayingViewModel_PlaybackControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NowPlayingViewModel_PlaybackControl.swift; sourceTree = "<group>"; };
+		E2B0565F2EF60B9B00F69A0D /* M4APlaybackBDDTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = M4APlaybackBDDTests.swift; sourceTree = "<group>"; };
+		E2B056602EF60B9B00F69A0D /* M4APlaybackTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = M4APlaybackTests.swift; sourceTree = "<group>"; };
 		E2E6F1D02F3467C600B9D1C3 /* TrackArtwork.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackArtwork.swift; sourceTree = "<group>"; };
 		E2E6F1D12F3467C600B9D1C3 /* ArtworkExtractorProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArtworkExtractorProtocol.swift; sourceTree = "<group>"; };
 		E2E6F1D22F3467C600B9D1C3 /* HeuristicArtworkExtractor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeuristicArtworkExtractor.swift; sourceTree = "<group>"; };
@@ -3287,6 +3291,8 @@
 		CCED6318AEED82A54CE9A9EA /* Engine */ = {
 			isa = PBXGroup;
 			children = (
+				E2B0565F2EF60B9B00F69A0D /* M4APlaybackBDDTests.swift */,
+				E2B056602EF60B9B00F69A0D /* M4APlaybackTests.swift */,
 				E2B0564A2EF5E6E100F69A0D /* SingleTrackPlaybackTests.swift */,
 				E21F896A2EF5D94300CE4FB2 /* AudioEngineVolumeControlBDDTests.swift */,
 				E21F896B2EF5D94300CE4FB2 /* AudioEngineVolumeControlTests.swift */,
@@ -4563,6 +4569,8 @@
 				A7094EBA78D4E0B53AC2791E /* FormatDecoderCoordinatorTests.swift in Sources */,
 				90283312E9BC5831C421EC68 /* InvalidFileBDDScenarios.swift in Sources */,
 				0B0F40372B33932FAAF98117 /* MockFactories.swift in Sources */,
+				E2B056612EF60B9B00F69A0D /* M4APlaybackBDDTests.swift in Sources */,
+				E2B056622EF60B9B00F69A0D /* M4APlaybackTests.swift in Sources */,
 				4362A31256441D4DBFE2BC6B /* PlaybackAdvancedEdgeCaseTests.swift in Sources */,
 				7CB2C714EC60C6E44833F797 /* PlaybackEdgeCaseTests.swift in Sources */,
 				220E9AA7777BA983A91D143D /* PlaybackProgressBDDTests.swift in Sources */,

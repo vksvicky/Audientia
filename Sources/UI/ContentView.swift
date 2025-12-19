@@ -14,7 +14,7 @@ import SwiftUI
 @MainActor
 struct ContentView: View {
     @EnvironmentObject var settings: AppSettings
-    @State private var sharedAudioEngine = AudioEngine()
+    @State private var sharedAudioEngine: AudioEngine
     @StateObject private var importCoordinator: TrackImportCoordinator
     @State private var importError: Error?
     @State private var showImportError = false

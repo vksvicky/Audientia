@@ -47,7 +47,7 @@ public final class NowPlayingViewModel: ObservableObject {
     }
     
     /// Last error that occurred
-    @Published public private(set) var lastError: Error?
+    @Published public internal(set) var lastError: Error?
     
     // MARK: - Computed Properties
     
@@ -89,7 +89,7 @@ public final class NowPlayingViewModel: ObservableObject {
     
     // MARK: - Private Properties
     
-    private let audioEngine: AudioEngineProtocol
+    internal let audioEngine: AudioEngineProtocol
     private var cancellables = Set<AnyCancellable>()
     private var positionUpdateTask: Task<Void, Never>?
     
@@ -335,7 +335,7 @@ public final class NowPlayingViewModel: ObservableObject {
     public func toggleMute() {
         audioEngine.toggleMute()
         updateState()
-        Logger.userInterface.info("Mute toggled: \(self.audioEngine.isMuted, privacy: .public)")
+        // Note: AudioEngine.isMuted didSet already logs "Mute state:", so we don't need to log here
     }
     
     /// Toggle loop mode

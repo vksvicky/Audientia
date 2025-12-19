@@ -890,6 +890,10 @@ This checklist verifies that the implementation matches the documentation and th
   - [x] Automatic cleanup of invalid track references when files are missing
   - [x] Comprehensive TDD tests (`NowPlayingViewModelMissingFileTests.swift`)
   - [x] Comprehensive BDD tests (`NowPlayingViewModelMissingFileBDDTests.swift`)
+- [x] **AudioEngine Instance Management & Logging** - Fixed duplicate instance creation and redundant logging
+  - [x] Fixed duplicate `AudioEngine` creation in `ContentView.swift` (removed initializer from `@State` property)
+  - [x] Removed duplicate "Mute toggled" log from `NowPlayingViewModel.toggleMute()` (AudioEngine already logs mute state)
+  - [x] Fixed M4A playback tests to check `lastFormatDetectionError` instead of engine state for corrupted file handling
 
 ### ✅ Documentation
 

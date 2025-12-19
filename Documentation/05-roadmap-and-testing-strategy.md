@@ -88,6 +88,10 @@
     - `MainWindowTabContentView.swift` (1 line): Split log message
     - `WindowPositioningHelper.swift` (2 lines): Split log messages and extracted centering logic to `centerWindow` helper method
   - **Code Organization**: Created `MinimisedPlayerArtworkHelper.swift` for artwork extraction logic, improving separation of concerns and maintainability
+- **✅ AudioEngine Instance Management & Logging Improvements (Dec 2025)**: Fixed duplicate instance creation and redundant logging:
+  - **Duplicate AudioEngine Creation**: Fixed `ContentView.swift` creating two `AudioEngine` instances (one from `@State` property initializer, one in `init()`). Removed initializer from `@State` property to prevent duplicate instance creation and deallocation, eliminating duplicate "AudioEngine initialised" and "AudioEngine deinitialised" logs
+  - **Redundant Logging**: Removed duplicate "Mute toggled" log from `NowPlayingViewModel.toggleMute()` since `AudioEngine.isMuted` `didSet` already logs the mute state, eliminating duplicate log messages
+  - **M4A Playback Test Fixes**: Updated `M4APlaybackTests.swift` and `M4APlaybackBDDTests.swift` to check `lastFormatDetectionError` instead of engine state when both format detection and native engine load fail, as the engine state is reset to `.stopped` after `handleNativeLoadFailure` completes
 
 ### UI Layout Redesign Details
 - **Design Document**: `Documentation/16-ui-layout-redesign.md`
@@ -576,7 +580,7 @@ See [`Scripts/build_guide.md`](../Scripts/build_guide.md) for detailed build ins
 
 **Backend (AudioCore):**
 - [x] C++ playback engine with CoreAudio integration - **✅ CAudioEngine (C++) with AVFoundation bridge implemented, Swift wrapper complete with async/await (loadFile, play, seek) for non-blocking I/O. Code organization: Extracted AudioEngine functionality into separate extension files (AudioEngine_QueueManagement, AudioEngine_GainControl, AudioEngine_Normalization, AudioEngine_QueueNavigation, AudioEngine_PlaybackControl, AudioEngine_PositionTracking, AudioEngine_Playback) to reduce file/class length. Changed private to internal for extension-accessible properties (updateGainMultiplier, gainControl, normaliser, positionUpdateTask, positionUpdateInterval). Fixed string interpolation for NormalizationMode. Renamed all extension files from + to _ format.**
-- [x] Format decoder abstraction (FFmpeg wrapper) - **✅ FormatDecodingCoordinator with AVFoundation primary decoder (async/await, modern APIs) and FFmpeg-backed FLAC decoder with proper STREAMINFO parsing, unit + integration tests in place**
+- [x] Format decoder abstraction (FFmpeg wrapper) - **✅ FormatDecodingCoordinator with AVFoundation primary decoder (async/await, modern APIs) and FFmpeg-backed FLAC decoder with proper STREAMINFO parsing, unit + integration tests in place. M4A playback support added with AVFoundationFormatDecoder integration, comprehensive TDD tests (M4APlaybackTests) and BDD scenarios (M4APlaybackBDDTests) following Right-BICEP principles. Tests verify format detection, decoding, playback, seeking, error handling, and corrupted file scenarios.**
 - [x] Playback queue management - **✅ Implemented with add/remove/clear/reorder operations. Extracted to AudioEngine_QueueManagement.swift extension.**
 - [x] Seek and position tracking - **✅ Implemented with position updates and seek operations. Extracted to AudioEngine_PositionTracking.swift extension.**
 - [x] Volume control and mute - **✅ Volume control implemented (setVolume/getVolume), mute functionality with toggleMute() and volume preservation. Extracted to AudioEngine_PlaybackControl.swift extension.**
