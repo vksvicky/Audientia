@@ -7,6 +7,7 @@
 //  Copyright © 2025 CycleRunCode Club. All rights reserved.
 //
 
+import AppKit
 import Foundation
 import SwiftUI
 
@@ -100,7 +101,8 @@ final class MinimisedPlayerViewBDDTests: XCTestCase {
         )
         
         // Then - I should see the track information
-        _ = view.body
+        let hostingController = NSHostingController(rootView: view)
+        XCTAssertNotNil(hostingController.view)
         XCTAssertEqual(nowPlayingViewModel.currentTrack?.title, "Bohemian Rhapsody")
         XCTAssertEqual(nowPlayingViewModel.currentTrack?.artist, "Queen")
         XCTAssertTrue(nowPlayingViewModel.isPlaying)
@@ -143,7 +145,8 @@ final class MinimisedPlayerViewBDDTests: XCTestCase {
             nowPlayingViewModel: nowPlayingViewModel,
             onRestore: { self.restoreCallbackInvoked = true }
         )
-        _ = view.body
+        let hostingController = NSHostingController(rootView: view)
+        XCTAssertNotNil(hostingController.view)
         
         // When - I click the play button
         try await nowPlayingViewModel.play()
@@ -171,7 +174,8 @@ final class MinimisedPlayerViewBDDTests: XCTestCase {
             nowPlayingViewModel: nowPlayingViewModel,
             onRestore: { self.restoreCallbackInvoked = true }
         )
-        _ = view.body
+        let hostingController = NSHostingController(rootView: view)
+        XCTAssertNotNil(hostingController.view)
         
         // When - I click the next button
         try await nowPlayingViewModel.playNext()
@@ -196,7 +200,8 @@ final class MinimisedPlayerViewBDDTests: XCTestCase {
         )
         
         // Then - I should see the player in a stopped state
-        _ = view.body
+        let hostingController = NSHostingController(rootView: view)
+        XCTAssertNotNil(hostingController.view)
         XCTAssertNil(nowPlayingViewModel.currentTrack)
         XCTAssertTrue(nowPlayingViewModel.isStopped)
     }
@@ -216,7 +221,8 @@ final class MinimisedPlayerViewBDDTests: XCTestCase {
             nowPlayingViewModel: nowPlayingViewModel,
             onRestore: { self.restoreCallbackInvoked = true }
         )
-        _ = view.body
+        let hostingController = NSHostingController(rootView: view)
+        XCTAssertNotNil(hostingController.view)
         
         // Then - Artwork should be loaded
         XCTAssertEqual(nowPlayingViewModel.currentTrack?.title, "Beautiful Song")
@@ -239,7 +245,8 @@ final class MinimisedPlayerViewBDDTests: XCTestCase {
         )
         
         // Then - Placeholder should be shown (music.note icon)
-        _ = view.body
+        let hostingController = NSHostingController(rootView: view)
+        XCTAssertNotNil(hostingController.view)
         XCTAssertNotNil(nowPlayingViewModel.currentTrack)
     }
     
@@ -255,7 +262,8 @@ final class MinimisedPlayerViewBDDTests: XCTestCase {
             nowPlayingViewModel: nowPlayingViewModel,
             onRestore: { self.restoreCallbackInvoked = true }
         )
-        _ = view.body
+        let hostingController = NSHostingController(rootView: view)
+        XCTAssertNotNil(hostingController.view)
         
         // Give time for initial artwork
         try? await Task.sleep(nanoseconds: 100_000_000)
@@ -295,7 +303,8 @@ final class MinimisedPlayerViewBDDTests: XCTestCase {
             )
             
             // Then - Artwork should be attempted to load
-            _ = view.body
+            let hostingController = NSHostingController(rootView: view)
+            XCTAssertNotNil(hostingController.view)
             XCTAssertNotNil(nowPlayingViewModel.currentTrack, "Failed for: \(description)")
         }
     }

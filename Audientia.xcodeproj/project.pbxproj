@@ -743,6 +743,7 @@
 		E2407FB82ED70C960054F668 /* TrackSelectionStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2407FB72ED70C960054F668 /* TrackSelectionStore.swift */; };
 		E263B8B42EE18BDC007C9EF5 /* LayoutState.swift in Sources */ = {isa = PBXBuildFile; fileRef = E263B8B32EE18BDC007C9EF5 /* LayoutState.swift */; };
 		E27718B02EF612FD00A17158 /* MockAudioVisualiser.swift in Sources */ = {isa = PBXBuildFile; fileRef = E27718AF2EF612FD00A17158 /* MockAudioVisualiser.swift */; };
+		E27718B22EF6174900A17158 /* AudioVisualiserViewModelModePersistenceBDDTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E27718B12EF6174900A17158 /* AudioVisualiserViewModelModePersistenceBDDTests.swift */; };
 		E2840D332EDA632900AB8F12 /* AudientiaAppTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2840D2F2EDA632900AB8F12 /* AudientiaAppTests.swift */; };
 		E2840D342EDA632900AB8F12 /* MinimisePlayerBDDTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2840D302EDA632900AB8F12 /* MinimisePlayerBDDTests.swift */; };
 		E2840D352EDA632900AB8F12 /* AudientiaAppBDDTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2840D2E2EDA632900AB8F12 /* AudientiaAppBDDTests.swift */; };
@@ -1835,6 +1836,7 @@
 		E2407FB72ED70C960054F668 /* TrackSelectionStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackSelectionStore.swift; sourceTree = "<group>"; };
 		E263B8B32EE18BDC007C9EF5 /* LayoutState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LayoutState.swift; sourceTree = "<group>"; };
 		E27718AF2EF612FD00A17158 /* MockAudioVisualiser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockAudioVisualiser.swift; sourceTree = "<group>"; };
+		E27718B12EF6174900A17158 /* AudioVisualiserViewModelModePersistenceBDDTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioVisualiserViewModelModePersistenceBDDTests.swift; sourceTree = "<group>"; };
 		E2793A538A7C71C62390DFB4 /* valid_192k.alac */ = {isa = PBXFileReference; lastKnownFileType = file; path = valid_192k.alac; sourceTree = "<group>"; };
 		E2840D2C2EDA62AC00AB8F12 /* MinimisedPlayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MinimisedPlayerView.swift; sourceTree = "<group>"; };
 		E2840D2E2EDA632900AB8F12 /* AudientiaAppBDDTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudientiaAppBDDTests.swift; sourceTree = "<group>"; };
@@ -3422,6 +3424,7 @@
 		E23DB8942EDE26C4007AC259 /* Visualiser */ = {
 			isa = PBXGroup;
 			children = (
+				E27718B12EF6174900A17158 /* AudioVisualiserViewModelModePersistenceBDDTests.swift */,
 				E23DB88F2EDE26C4007AC259 /* AudioVisualiserModesBDDTests.swift */,
 				E23DB8902EDE26C4007AC259 /* AudioVisualiserModesTests.swift */,
 				E23DB8912EDE26C4007AC259 /* AudioVisualiserViewBDDTests.swift */,
@@ -4970,6 +4973,7 @@
 				E2A033A92ED45DED0061ED5A /* SettingsView.swift in Sources */,
 				E2A033AA2ED45DED0061ED5A /* ThemeSelectorViewModel.swift in Sources */,
 				E2A033AB2ED45DED0061ED5A /* ThemeSelectorView.swift in Sources */,
+				E27718B22EF6174900A17158 /* AudioVisualiserViewModelModePersistenceBDDTests.swift in Sources */,
 				E971B0BF6A901CAE52C8FE10 /* AudioVisualiserView.swift in Sources */,
 				0B6CFB0449F7D9104319D925 /* AutoTaggingProgressView.swift in Sources */,
 				89A317A9FA5178EC5BC1B714 /* AutoTaggingProgressViewModel.swift in Sources */,

@@ -7,6 +7,7 @@
 //  Copyright © 2025 CycleRunCode Club. All rights reserved.
 //
 
+import AppKit
 import Foundation
 import SwiftUI
 
@@ -71,7 +72,8 @@ final class MinimisedPlayerViewTests: XCTestCase {
         )
         
         // Then: View should be created
-        _ = view.body // Access body to verify compilation
+        let hostingController = NSHostingController(rootView: view)
+        XCTAssertNotNil(hostingController.view)
     }
     
     func testViewDisplaysTrackInformation() {
@@ -90,7 +92,8 @@ final class MinimisedPlayerViewTests: XCTestCase {
         )
         
         // Then: View should display track information
-        _ = view.body // Verify compilation
+        let hostingController = NSHostingController(rootView: view)
+        XCTAssertNotNil(hostingController.view)
         XCTAssertEqual(nowPlayingViewModel.currentTrack?.title, "Test Track")
         XCTAssertEqual(nowPlayingViewModel.currentTrack?.artist, "Test Artist")
     }
@@ -107,7 +110,8 @@ final class MinimisedPlayerViewTests: XCTestCase {
         )
         
         // Then: View should handle no track state
-        _ = view.body // Verify compilation
+        let hostingController = NSHostingController(rootView: view)
+        XCTAssertNotNil(hostingController.view)
         XCTAssertNil(nowPlayingViewModel.currentTrack)
     }
     
@@ -127,7 +131,8 @@ final class MinimisedPlayerViewTests: XCTestCase {
         )
         
         // Then: Previous/Next buttons should be disabled
-        _ = view.body
+        let hostingController = NSHostingController(rootView: view)
+        XCTAssertNotNil(hostingController.view)
         XCTAssertEqual(nowPlayingViewModel.queue.count, 0)
     }
     
@@ -145,7 +150,8 @@ final class MinimisedPlayerViewTests: XCTestCase {
         )
         
         // Then: Previous/Next buttons should be disabled
-        _ = view.body
+        let hostingController = NSHostingController(rootView: view)
+        XCTAssertNotNil(hostingController.view)
         XCTAssertEqual(nowPlayingViewModel.queue.count, 1)
     }
     
@@ -163,7 +169,8 @@ final class MinimisedPlayerViewTests: XCTestCase {
         )
         
         // Then: View should handle long title gracefully
-        _ = view.body
+        let hostingController = NSHostingController(rootView: view)
+        XCTAssertNotNil(hostingController.view)
         XCTAssertEqual(nowPlayingViewModel.currentTrack?.title, longTitle)
     }
     
@@ -186,7 +193,8 @@ final class MinimisedPlayerViewTests: XCTestCase {
         nowPlayingViewModel.updateState()
         
         // Then: View should reflect changes
-        _ = view.body
+        let hostingController = NSHostingController(rootView: view)
+        XCTAssertNotNil(hostingController.view)
         XCTAssertEqual(nowPlayingViewModel.currentTrack?.title, "Track 2")
     }
     
@@ -209,7 +217,8 @@ final class MinimisedPlayerViewTests: XCTestCase {
         // When: Restore is called (simulating button tap)
         // Note: In actual UI test, we would tap the button
         // For unit test, we verify the callback exists
-        _ = view.body
+        let hostingController = NSHostingController(rootView: view)
+        XCTAssertNotNil(hostingController.view)
         
         // Then: Callback should be available
         XCTAssertNotNil(view.onRestore)
@@ -229,7 +238,8 @@ final class MinimisedPlayerViewTests: XCTestCase {
         )
         
         // Then: View should show playing state
-        _ = view.body
+        let hostingController = NSHostingController(rootView: view)
+        XCTAssertNotNil(hostingController.view)
         XCTAssertTrue(nowPlayingViewModel.isPlaying)
     }
     
@@ -245,7 +255,8 @@ final class MinimisedPlayerViewTests: XCTestCase {
             nowPlayingViewModel: nowPlayingViewModel,
             onRestore: { self.restoreCalled = true }
         )
-        _ = view.body
+        let hostingController = NSHostingController(rootView: view)
+        XCTAssertNotNil(hostingController.view)
         
         // Give time for initial artwork loading
         try? await Task.sleep(nanoseconds: 100_000_000)
@@ -274,7 +285,8 @@ final class MinimisedPlayerViewTests: XCTestCase {
         )
         
         // Then: Should not crash
-        _ = view.body
+        let hostingController = NSHostingController(rootView: view)
+        XCTAssertNotNil(hostingController.view)
         XCTAssertNil(nowPlayingViewModel.currentTrack)
     }
     
@@ -294,7 +306,8 @@ final class MinimisedPlayerViewTests: XCTestCase {
             )
             
             // Then: Should not crash
-            _ = view.body
+            let hostingController = NSHostingController(rootView: view)
+            XCTAssertNotNil(hostingController.view)
             XCTAssertNotNil(nowPlayingViewModel.currentTrack, "Failed for format: \(format)")
         }
     }
@@ -311,7 +324,8 @@ final class MinimisedPlayerViewTests: XCTestCase {
                 nowPlayingViewModel: nowPlayingViewModel,
                 onRestore: { self.restoreCalled = true }
             )
-            _ = view.body
+            let hostingController = NSHostingController(rootView: view)
+            _ = hostingController.view
         }
     }
     
@@ -323,7 +337,8 @@ final class MinimisedPlayerViewTests: XCTestCase {
             nowPlayingViewModel: nowPlayingViewModel,
             onRestore: { self.restoreCalled = true }
         )
-        _ = view.body
+        let hostingController = NSHostingController(rootView: view)
+        XCTAssertNotNil(hostingController.view)
         
         // When: Rapidly changing tracks
         for track in tracks {
