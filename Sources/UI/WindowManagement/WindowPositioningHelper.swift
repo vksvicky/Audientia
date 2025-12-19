@@ -84,11 +84,10 @@ enum WindowPositioningHelper {
                     let mainMidY = mainWindowFrame.midY
                     centerX = mainMidX - windowWidth / 2
                     centerY = mainMidY - windowHeight / 2
-                    Logger.userInterface.debug(
-                        "Centering relative to main window: " +
+                    let centeringMessage = "Centering relative to main window: " +
                         "mainFrame=\(NSStringFromRect(mainWindowFrame)), " +
                         "midY=\(mainMidY), calculated centerY=\(centerY)"
-                    )
+                    Logger.userInterface.debug("\(centeringMessage)")
                 } else {
                     // Center on screen
                     centerX = screenRect.midX - windowWidth / 2
@@ -97,10 +96,9 @@ enum WindowPositioningHelper {
                 
                 window.setFrameOrigin(NSPoint(x: centerX, y: centerY))
                 window.makeKeyAndOrderFront(nil)
-                Logger.userInterface.debug(
-                    "Centered minimized player window at: (\(centerX), \(centerY)), " +
+                let centeredMessage = "Centered minimized player window at: (\(centerX), \(centerY)), " +
                     "actual frame: \(NSStringFromRect(window.frame))"
-                )
+                Logger.userInterface.debug("\(centeredMessage)")
             }
         }
     }

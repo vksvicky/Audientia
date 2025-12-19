@@ -74,10 +74,9 @@ public final class AudioEngine: AudioEngineProtocol {
     private func applyVolumeWithGain(baseVolume: Float) {
         // CRITICAL: If muted, always set volume to 0 regardless of base volume or gain
         if isMuted {
-            Logger.audio.info(
-                "MUTED: Setting native engine volume to 0.0 " +
+            let mutedMessage = "MUTED: Setting native engine volume to 0.0 " +
                 "(isMuted=\(self.isMuted), baseVolume=\(baseVolume))"
-            )
+            Logger.audio.info("\(mutedMessage)")
             nativeEngine.setVolume(0.0)
             Logger.audio.debug("Volume set to 0.0 (muted)")
             return
@@ -105,10 +104,9 @@ public final class AudioEngine: AudioEngineProtocol {
             Logger.audio.warning("\(warningMessage)")
         }
         
-        Logger.audio.info(
-            "Setting native engine volume to \(clampedVolume) " +
+        let volumeInfoMessage = "Setting native engine volume to \(clampedVolume) " +
             "(baseVolume=\(baseVolume), gainMultiplier=\(gainMultiplier), isMuted=\(self.isMuted))"
-        )
+        Logger.audio.info("\(volumeInfoMessage)")
         nativeEngine.setVolume(clampedVolume)
         
         if AppSettings.shared.isGainControlEnabled {
@@ -122,10 +120,9 @@ public final class AudioEngine: AudioEngineProtocol {
             let multiplierStr = String(format: "%.4f", gainMultiplier)
             let gainDBStr = String(format: "%.2f", effectiveGainDB)
             let volumeStr = String(format: "%.4f", clampedVolume)
-            Logger.audio.debug(
-                "Volume set to \(baseVolume), gain enabled: multiplier=\(multiplierStr) " +
+            let volumeDebugMessage = "Volume set to \(baseVolume), gain enabled: multiplier=\(multiplierStr) " +
                 "(\(gainDBStr) dB), effective volume: \(volumeStr)"
-            )
+            Logger.audio.debug("\(volumeDebugMessage)")
         } else {
             let volumeStr = String(format: "%.4f", clampedVolume)
             Logger.audio.debug("Volume set to \(baseVolume), gain disabled, effective volume: \(volumeStr)")

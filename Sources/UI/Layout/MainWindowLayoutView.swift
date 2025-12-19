@@ -225,10 +225,9 @@ public struct MainWindowLayoutView: View {
                 }
             }
             .onChange(of: selectedTab) { oldValue, newValue in
-                Logger.userInterface.info(
-                    "MainWindowLayoutView: Tab changed from \(oldValue.rawValue) " +
+                let tabChangeMessage = "MainWindowLayoutView: Tab changed from \(oldValue.rawValue) " +
                     "to \(newValue.rawValue)"
-                )
+                Logger.userInterface.info("\(tabChangeMessage)")
             }
             .onAppear {
                 Logger.userInterface.info("MainWindowLayoutView: Appeared with selectedTab = \(selectedTab.rawValue)")

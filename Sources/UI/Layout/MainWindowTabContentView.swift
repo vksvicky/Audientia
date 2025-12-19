@@ -77,10 +77,9 @@ struct MainWindowTabContentView: View {
         }
         .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity)
         .onChange(of: selectedTab) { oldValue, newValue in
-            Logger.userInterface.info(
-                "MainWindowTabContentView: Tab changed from \(oldValue.rawValue) " +
+            let tabChangeMessage = "MainWindowTabContentView: Tab changed from \(oldValue.rawValue) " +
                 "to \(newValue.rawValue)"
-            )
+            Logger.userInterface.info("\(tabChangeMessage)")
         }
     }
 }

@@ -183,16 +183,16 @@ public final class AudioVisualiserTap {
     ) {
         if count <= 3 {
             let samplesPreview = Array(audioData.prefix(5))
-            Logger.audio.debug(
-                "AudioVisualiserTap: Buffer #\(count) - frames: \(frameLength), " +
-                "max: \(maxSample), min: \(audioData.map { abs($0) }.min() ?? 0.0), " +
+            let minSample = audioData.map { abs($0) }.min() ?? 0.0
+            let bufferDebugMessage = "AudioVisualiserTap: Buffer #\(count) - frames: \(frameLength), " +
+                "max: \(maxSample), min: \(minSample), " +
                 "first 5 samples: \(samplesPreview)"
-            )
+            Logger.audio.debug("\(bufferDebugMessage)")
         } else if hasAudioData && count % 500 == 0 {
-            Logger.audio.debug(
-                "AudioVisualiserTap: Buffer #\(count) - frames: \(frameLength), " +
-                "max: \(maxSample), min: \(audioData.map { abs($0) }.min() ?? 0.0)"
-            )
+            let minSample = audioData.map { abs($0) }.min() ?? 0.0
+            let bufferInfoMessage = "AudioVisualiserTap: Buffer #\(count) - frames: \(frameLength), " +
+                "max: \(maxSample), min: \(minSample)"
+            Logger.audio.debug("\(bufferInfoMessage)")
         }
     }
     
@@ -201,16 +201,14 @@ public final class AudioVisualiserTap {
         if !hasAudioData && count > 10 && count % 500 == 0 {
             // Only warn if playerNode is actually playing (audio should be flowing)
             if let playerNode = playerNode, playerNode.isPlaying {
-                Logger.audio.warning(
-                    "AudioVisualiserTap: Receiving all-zero buffers while playing - " +
+                let zeroBufferWarning = "AudioVisualiserTap: Receiving all-zero buffers while playing - " +
                     "audio may not be flowing. Check engine setup. (Buffer #\(count))"
-                )
+                Logger.audio.warning("\(zeroBufferWarning)")
             } else {
                 // If not playing, this is expected - use debug level instead
-                Logger.audio.debug(
-                    "AudioVisualiserTap: Receiving all-zero buffers " +
+                let zeroBufferDebug = "AudioVisualiserTap: Receiving all-zero buffers " +
                     "(no audio playing, expected). (Buffer #\(count))"
-                )
+                Logger.audio.debug("\(zeroBufferDebug)")
             }
         }
     }
@@ -236,10 +234,9 @@ public final class AudioVisualiserTap {
                 if hasAudioData && bufferCount % 500 == 0 {
                     let maxStr = String(format: "%.2f", frame.maxMagnitude)
                     let freqStr = String(format: "%.1f", frame.dominantFrequency)
-                    Logger.audio.debug(
-                        "AudioVisualiserTap: Processed frame #\(bufferCount) - " +
+                    let processedFrameMessage = "AudioVisualiserTap: Processed frame #\(bufferCount) - " +
                         "max: \(maxStr), freq: \(freqStr) Hz"
-                    )
+                    Logger.audio.debug("\(processedFrameMessage)")
                 }
             } catch {
                 Logger.audio.error(

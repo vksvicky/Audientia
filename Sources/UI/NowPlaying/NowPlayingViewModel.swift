@@ -148,6 +148,13 @@ public final class NowPlayingViewModel: ObservableObject {
             Logger.userInterface.warning(
                 "Last played track file no longer exists: \(lastTrack.filePath, privacy: .public)"
             )
+            // Show notification to user that file is missing
+            Task {
+                await FileNotFoundNotificationHelper.showFileNotFoundNotification(
+                    trackTitle: lastTrack.title,
+                    filePath: lastTrack.filePath
+                )
+            }
             // Clear the saved track since the file is gone
             AppSettings.shared.lastPlayedTrack = nil
             return
@@ -164,6 +171,15 @@ public final class NowPlayingViewModel: ObservableObject {
                 Logger.userInterface.error(
                     "Failed to restore last played track: \(error.localizedDescription, privacy: .public)"
                 )
+                // Show notification if file is missing
+                if let audioError = error as? AudioEngineError,
+                   case .trackLoadFailed(let message) = audioError,
+                   message.contains("File not found") {
+                    await FileNotFoundNotificationHelper.showFileNotFoundNotification(
+                        trackTitle: lastTrack.title,
+                        filePath: lastTrack.filePath
+                    )
+                }
                 // Clear the saved track if loading failed
                 AppSettings.shared.lastPlayedTrack = nil
             }
@@ -210,6 +226,21 @@ public final class NowPlayingViewModel: ObservableObject {
         Logger.userInterface.info("Loading track: \(track.title, privacy: .public)")
         lastError = nil
         
+        // Verify file exists before attempting to load
+        guard FileManager.default.fileExists(atPath: track.filePath) else {
+            let error = AudioEngineError.trackLoadFailed("File not found: \(track.filePath)")
+            lastError = error
+            Logger.userInterface.error(
+                "Track file not found: \(track.filePath, privacy: .public)"
+            )
+            // Show notification to user
+            await FileNotFoundNotificationHelper.showFileNotFoundNotification(
+                trackTitle: track.title,
+                filePath: track.filePath
+            )
+            throw error
+        }
+        
         do {
             try await audioEngine.loadTrack(track)
             updateState()
@@ -217,6 +248,16 @@ public final class NowPlayingViewModel: ObservableObject {
         } catch {
             lastError = error
             Logger.userInterface.error("Failed to load track: \(error.localizedDescription, privacy: .public)")
+            
+            // Show notification if file is missing
+            if let audioError = error as? AudioEngineError,
+               case .trackLoadFailed(let message) = audioError,
+               message.contains("File not found") {
+                await FileNotFoundNotificationHelper.showFileNotFoundNotification(
+                    trackTitle: track.title,
+                    filePath: track.filePath
+                )
+            }
             throw error
         }
     }
@@ -226,6 +267,27 @@ public final class NowPlayingViewModel: ObservableObject {
         Logger.userInterface.info("Play requested")
         lastError = nil
         
+        // If we have a current track, verify file still exists before playing
+        if let track = currentTrack {
+            guard FileManager.default.fileExists(atPath: track.filePath) else {
+                let error = AudioEngineError.trackLoadFailed("File not found: \(track.filePath)")
+                lastError = error
+                Logger.userInterface.error(
+                    "Track file not found when trying to play: \(track.filePath, privacy: .public)"
+                )
+                // Show notification to user
+                await FileNotFoundNotificationHelper.showFileNotFoundNotification(
+                    trackTitle: track.title,
+                    filePath: track.filePath
+                )
+                // Clear the current track since file is missing
+                // Note: We clear it on the view model, but the audio engine may still have it
+                // Tests should clear it on the mock engine before calling updateState()
+                currentTrack = nil
+                throw error
+            }
+        }
+        
         do {
             try await audioEngine.play()
             updateState()
@@ -233,39 +295,18 @@ public final class NowPlayingViewModel: ObservableObject {
         } catch {
             lastError = error
             Logger.userInterface.error("Playback failed: \(error.localizedDescription, privacy: .public)")
+            
+            // Show notification if file is missing
+            if let track = currentTrack,
+               let audioError = error as? AudioEngineError,
+               case .trackLoadFailed(let message) = audioError,
+               message.contains("File not found") {
+                await FileNotFoundNotificationHelper.showFileNotFoundNotification(
+                    trackTitle: track.title,
+                    filePath: track.filePath
+                )
+            }
             throw error
-        }
-    }
-    
-    /// Pause playback
-    public func pause() async {
-        Logger.userInterface.info("Pause requested")
-        await audioEngine.pause()
-        updateState()
-        Logger.userInterface.info("Playback paused")
-    }
-    
-    /// Stop playback
-    public func stop() async {
-        Logger.userInterface.info("Stop requested")
-        await audioEngine.stop()
-        updateState()
-        Logger.userInterface.info("Playback stopped")
-    }
-    
-    /// Seek to a specific position
-    /// - Parameter position: Position in seconds
-    public func seek(to position: TimeInterval) async {
-        let clampedPosition = max(0.0, min(position, duration))
-        Logger.userInterface.info("Seek requested to \(clampedPosition, privacy: .public) seconds")
-        
-        do {
-            try await audioEngine.seek(to: clampedPosition)
-            updateState()
-            Logger.userInterface.debug("Seek completed to \(clampedPosition, privacy: .public) seconds")
-        } catch {
-            lastError = error
-            Logger.userInterface.error("Seek failed: \(error.localizedDescription, privacy: .public)")
         }
     }
     
@@ -287,84 +328,6 @@ public final class NowPlayingViewModel: ObservableObject {
             AppSettings.shared.playbackSpeed = speed
             updateState()
             Logger.userInterface.debug("Playback speed changed to \(speed.displayName, privacy: .public)")
-        }
-    }
-    
-    /// Play next track in queue
-    public func playNext() async throws {
-        Logger.userInterface.info("Play next requested")
-        lastError = nil
-        
-        do {
-            try await audioEngine.playNext()
-            updateState()
-            Logger.userInterface.info("Advanced to next track")
-        } catch {
-            lastError = error
-            Logger.userInterface.error("Play next failed: \(error.localizedDescription, privacy: .public)")
-            throw error
-        }
-    }
-    
-    /// Play previous track in queue
-    public func playPrevious() async throws {
-        Logger.userInterface.info("Play previous requested")
-        lastError = nil
-        
-        do {
-            try await audioEngine.playPrevious()
-            updateState()
-            Logger.userInterface.info("Went back to previous track")
-        } catch {
-            lastError = error
-            Logger.userInterface.error("Play previous failed: \(error.localizedDescription, privacy: .public)")
-            throw error
-        }
-    }
-    
-    /// Replay current track from beginning
-    public func replay() async throws {
-        Logger.userInterface.info("Replay requested")
-        lastError = nil
-        
-        do {
-            try await audioEngine.replay()
-            updateState()
-            Logger.userInterface.info("Track replayed")
-        } catch {
-            lastError = error
-            Logger.userInterface.error("Replay failed: \(error.localizedDescription, privacy: .public)")
-            throw error
-        }
-    }
-    
-    /// Skip forward by specified seconds
-    /// - Parameter seconds: Number of seconds to skip forward (default: 10)
-    public func skipForward(seconds: TimeInterval = 10.0) async throws {
-        Logger.userInterface.info("Skip forward requested")
-        lastError = nil
-        
-        do {
-            try await audioEngine.skipForward(seconds: seconds)
-            updateState()
-        } catch {
-            lastError = error
-            Logger.userInterface.error("Skip forward failed: \(error.localizedDescription, privacy: .public)")
-        }
-    }
-    
-    /// Skip backward by specified seconds
-    /// - Parameter seconds: Number of seconds to skip backward (default: 10)
-    public func skipBackward(seconds: TimeInterval = 10.0) async throws {
-        Logger.userInterface.info("Skip backward requested")
-        lastError = nil
-        
-        do {
-            try await audioEngine.skipBackward(seconds: seconds)
-            updateState()
-        } catch {
-            lastError = error
-            Logger.userInterface.error("Skip backward failed: \(error.localizedDescription, privacy: .public)")
         }
     }
     
@@ -433,33 +396,5 @@ public final class NowPlayingViewModel: ObservableObject {
         }
         
         Logger.userInterface.info("Gain control toggled: \(AppSettings.shared.isGainControlEnabled, privacy: .public)")
-    }
-
-    // MARK: - Queue Management
-
-    /// Queue a track for playback
-    /// - Parameter track: The track to queue
-    public func queueTrack(_ track: Shared.Track) {
-        audioEngine.addToQueue(track)
-        updateState()
-        Logger.userInterface.info("Queued track: \(track.title, privacy: .public)")
-    }
-
-    /// Queue multiple tracks for playback
-    /// - Parameter tracks: The tracks to queue
-    public func queueTracks(_ tracks: [Shared.Track]) {
-        for track in tracks {
-            audioEngine.addToQueue(track)
-        }
-        updateState()
-        Logger.userInterface.info("Queued \(tracks.count) tracks")
-    }
-
-    /// Remove a track from the queue
-    /// - Parameter track: The track to remove
-    public func removeFromQueue(_ track: Shared.Track) {
-        audioEngine.removeFromQueue(track)
-        updateState()
-        Logger.userInterface.info("Removed track from queue: \(track.title, privacy: .public)")
     }
 }

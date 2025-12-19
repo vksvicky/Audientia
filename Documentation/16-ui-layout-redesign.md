@@ -696,6 +696,7 @@ MainWindowLayoutView
 | `ScrollingTextView.swift` | **Create** | ✅ Complete - Created at `Sources/UI/Components/ScrollingTextView.swift` |
 | `CompactPlayerControls.swift` | **Create** | ✅ Complete - Created at `Sources/UI/Layout/Player/CompactPlayerControls.swift` |
 | `MinimisedPlayerArtworkHelper.swift` | **Create** | ✅ Complete - Created at `Sources/UI/Layout/Player/MinimisedPlayerArtworkHelper.swift` (extracted from MinimisedPlayerView for code organization) |
+| `FileNotFoundNotificationHelper.swift` | **Create** | ✅ Complete - Created at `Sources/UI/Notifications/FileNotFoundNotificationHelper.swift` (handles user notifications for missing audio files) |
 
 ### Implementation Steps
 
@@ -711,6 +712,7 @@ MainWindowLayoutView
 10. ✅ **Step 10**: Add keyboard shortcuts (`⌘T` for toolbar, `⌘P` for player, `⌘1-5` for tabs) - **Complete**: All shortcuts implemented
 11. ✅ **Step 11**: Update all tests to reflect new structure - **Complete**: Comprehensive TDD/BDD/E2E test suite created
 12. ✅ **Step 12**: Code quality improvements and SwiftLint compliance - **Complete**: Fixed all SwiftLint violations including function/file/type body length, long lines, and code organization. Extracted `MinimisedPlayerArtworkHelper.swift` for artwork loading, reduced `MinimisedPlayerView.swift` from 664 to 306 lines, extracted helper methods in `AudioVisualiserTap.swift` and `WindowPositioningHelper.swift`
+13. ✅ **Step 13**: Missing file handling with user notifications - **Complete**: Implemented `FileNotFoundNotificationHelper` for system notifications with alert fallback, added file existence checks in `NowPlayingViewModel.loadTrack()` and `play()` methods, created comprehensive TDD (`NowPlayingViewModelMissingFileTests.swift`) and BDD (`NowPlayingViewModelMissingFileBDDTests.swift`) tests for missing file scenarios
 
 ### Test Suites
 
@@ -880,6 +882,14 @@ This checklist verifies that the implementation matches the documentation and th
   - [x] File/type body length: Reduced `MinimisedPlayerView.swift` from 664 to 306 lines by extracting artwork helper and removing duplicate components
   - [x] Long lines: Fixed all long line warnings by splitting log messages across multiple files
   - [x] Code organization: Created `MinimisedPlayerArtworkHelper.swift` for artwork extraction logic
+- [x] **Missing File Handling** - User notifications for missing audio files
+  - [x] `FileNotFoundNotificationHelper.swift` - Created notification helper for missing files
+  - [x] System notifications with fallback to alert dialogs
+  - [x] Test environment detection to prevent crashes in tests
+  - [x] File existence checks in `NowPlayingViewModel.loadTrack()` and `play()` methods
+  - [x] Automatic cleanup of invalid track references when files are missing
+  - [x] Comprehensive TDD tests (`NowPlayingViewModelMissingFileTests.swift`)
+  - [x] Comprehensive BDD tests (`NowPlayingViewModelMissingFileBDDTests.swift`)
 
 ### ✅ Documentation
 
