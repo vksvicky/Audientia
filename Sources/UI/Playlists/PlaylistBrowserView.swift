@@ -20,6 +20,7 @@ public struct PlaylistBrowserView: View {
     // MARK: - Properties
     
     @StateObject private var viewModel: PlaylistViewModel
+    @StateObject private var listNavigationManager = ListNavigationManager<Shared.Playlist>()
     @State private var showingCreateDialog = false
     @State private var newPlaylistName = ""
     @State private var selectedPlaylist: Shared.Playlist?
@@ -67,6 +68,35 @@ public struct PlaylistBrowserView: View {
         }
         .onDisappear {
             Logger.userInterface.debug("PlaylistBrowserView disappeared")
+        }
+        .onChange(of: viewModel.playlists) { _, newValue in
+            // Update list navigation manager when playlists change
+            listNavigationManager.updateItems(newValue)
+        }
+        .onKeyPress(.upArrow) {
+            // Handle Up arrow key
+            handleArrowKeyNavigation(direction: .up)
+            return .handled
+        }
+        .onKeyPress(.downArrow) {
+            // Handle Down arrow key
+            handleArrowKeyNavigation(direction: .down)
+            return .handled
+        }
+        .onChange(of: listNavigationManager.selectedIndex) { _, newValue in
+            // Update selected playlist when navigation manager selection changes
+            if let index = newValue,
+               index >= 0,
+               index < viewModel.playlists.count {
+                selectedPlaylist = viewModel.playlists[index]
+            }
+        }
+        .onChange(of: selectedPlaylist) { _, newValue in
+            // Sync navigation manager when selection changes from outside (e.g., mouse click)
+            if let playlist = newValue,
+               let index = viewModel.playlists.firstIndex(where: { $0.id == playlist.id }) {
+                listNavigationManager.selectIndex(index)
+            }
         }
         .sheet(isPresented: $showingCreateDialog) {
             createPlaylistDialog
@@ -255,6 +285,25 @@ public struct PlaylistBrowserView: View {
             } catch {
                 Logger.userInterface.error("Failed to create playlist: \(error.localizedDescription)")
             }
+        }
+    }
+    
+    // MARK: - Keyboard Navigation
+    
+    /// Arrow key navigation directions
+    private enum ArrowDirection {
+        case up
+        case down
+    }
+    
+    /// Handle arrow key navigation
+    /// - Parameter direction: The arrow key direction
+    private func handleArrowKeyNavigation(direction: ArrowDirection) {
+        switch direction {
+        case .up:
+            _ = listNavigationManager.moveUp()
+        case .down:
+            _ = listNavigationManager.moveDown()
         }
     }
 }

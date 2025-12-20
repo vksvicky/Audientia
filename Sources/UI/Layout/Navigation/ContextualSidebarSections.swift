@@ -144,6 +144,8 @@ struct SmartPlaylistSection: View {
 
 struct DeviceListSection: View {
     @ObservedObject var viewModel: DeviceSidebarViewModel
+    @StateObject private var listNavigationManager = ListNavigationManager<Device>()
+    @State private var selectedDevice: Device?
     
     var body: some View {
         Group {
@@ -162,6 +164,7 @@ struct DeviceListSection: View {
                         icon: deviceIcon(for: device.type),
                         title: device.name,
                         action: {
+                            selectedDevice = device
                             // NOTE: Navigate to device detail view when implemented
                         }
                     )
@@ -170,6 +173,54 @@ struct DeviceListSection: View {
         }
         .task {
             await viewModel.loadDevices()
+        }
+        .onChange(of: viewModel.devices) { _, newValue in
+            // Update list navigation manager when devices change
+            listNavigationManager.updateItems(newValue)
+        }
+        .onKeyPress(.upArrow) {
+            // Handle Up arrow key
+            handleArrowKeyNavigation(direction: .up)
+            return .handled
+        }
+        .onKeyPress(.downArrow) {
+            // Handle Down arrow key
+            handleArrowKeyNavigation(direction: .down)
+            return .handled
+        }
+        .onChange(of: listNavigationManager.selectedIndex) { _, newValue in
+            // Update selected device when navigation manager selection changes
+            if let index = newValue,
+               index >= 0,
+               index < viewModel.devices.count {
+                selectedDevice = viewModel.devices[index]
+            }
+        }
+        .onChange(of: selectedDevice) { _, newValue in
+            // Sync navigation manager when selection changes from outside (e.g., mouse click)
+            if let device = newValue,
+               let index = viewModel.devices.firstIndex(where: { $0.id == device.id }) {
+                listNavigationManager.selectIndex(index)
+            }
+        }
+    }
+    
+    // MARK: - Keyboard Navigation
+    
+    /// Arrow key navigation directions
+    private enum ArrowDirection {
+        case up
+        case down
+    }
+    
+    /// Handle arrow key navigation
+    /// - Parameter direction: The arrow key direction
+    private func handleArrowKeyNavigation(direction: ArrowDirection) {
+        switch direction {
+        case .up:
+            _ = listNavigationManager.moveUp()
+        case .down:
+            _ = listNavigationManager.moveDown()
         }
     }
     

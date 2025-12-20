@@ -239,7 +239,7 @@ final class M4APlaybackBDDTests: XCTestCase {
         mockNativeEngine.playResult = true
         mockNativeEngine.nextLoadDuration = 180.0
         
-        let engine = AudioEngineTestHelpers.createMockEngine(
+        _ = AudioEngineTestHelpers.createMockEngine(
             withTracks: testCases.map { $0.track },
             nativeEngine: mockNativeEngine
         )

@@ -21,6 +21,7 @@ import SwiftUI
 /// - Tab-specific content in the center
 /// - Collapsible player controls at bottom
 @MainActor
+// swiftlint:disable:next type_body_length
 public struct MainWindowLayoutView: View {
     // MARK: - View Models
     
@@ -35,6 +36,7 @@ public struct MainWindowLayoutView: View {
     @StateObject private var smartPlaylistViewModel: SmartPlaylistViewModel
     @StateObject private var deviceSidebarViewModel: DeviceSidebarViewModel
     @StateObject private var audioVisualiserViewModel: AudioVisualiserViewModel
+    @StateObject private var keyboardNavigationManager = KeyboardNavigationManager()
     
     // MARK: - State
     
@@ -47,6 +49,7 @@ public struct MainWindowLayoutView: View {
     @State private var newPlaylistName: String = ""
     @State private var playlistCreationError: Error?
     @State private var showingCreateSmartPlaylistDialog: Bool = false
+    @State private var isShiftPressed: Bool = false
     @State private var newSmartPlaylistName: String = ""
     @State private var smartPlaylistCreationError: Error?
     @StateObject private var smartPlaylistRuleBuilderViewModel = SmartPlaylistRuleBuilderViewModel()
@@ -122,6 +125,29 @@ public struct MainWindowLayoutView: View {
             )
         }
         .frame(minWidth: 900, minHeight: 500)
+        .onKeyPress(.tab) {
+            // Handle Tab key navigation
+            // Check if Shift modifier is currently pressed using NSEvent
+            let isShiftPressed = NSEvent.modifierFlags.contains(.shift)
+            if isShiftPressed {
+                // Shift+Tab: Move focus backward
+                _ = keyboardNavigationManager.moveFocusBackward()
+            } else {
+                // Tab: Move focus forward
+                _ = keyboardNavigationManager.moveFocusForward()
+            }
+            return .handled
+        }
+        .onKeyPress(.return) {
+            // Handle Enter key activation
+            handleEnterKeyActivation()
+            return .handled
+        }
+        .onKeyPress(.space) {
+            // Handle Space key activation (play/pause when player is focused)
+            handleSpaceKeyActivation()
+            return .handled
+        }
         .task {
             await loadLayoutState()
         }
@@ -335,6 +361,68 @@ public struct MainWindowLayoutView: View {
             }
         }
 
+    // MARK: - Keyboard Navigation Handlers
+    
+    /// Handle Enter key activation based on current focus
+    private func handleEnterKeyActivation() {
+        guard let currentFocus = keyboardNavigationManager.currentFocus else {
+            return
+        }
+        
+        switch currentFocus {
+        case .toolbarTab(let tab):
+            selectedTab = tab
+        case .sidebarAction(let action):
+            switch action {
+            case "importFiles":
+                handleImportFiles()
+            case "settings":
+                handleOpenSettings()
+            case "createPlaylist":
+                handleCreatePlaylist()
+            default:
+                break
+            }
+        case .playerPlayPause:
+            Task {
+                if nowPlayingViewModel.isPlaying {
+                    await nowPlayingViewModel.pause()
+                } else {
+                    try? await nowPlayingViewModel.play()
+                }
+            }
+        default:
+            // For other elements, Enter key behavior is handled by SwiftUI
+            break
+        }
+    }
+    
+    /// Handle Space key activation (primarily for play/pause)
+    private func handleSpaceKeyActivation() {
+        guard let currentFocus = keyboardNavigationManager.currentFocus else {
+            // If no specific focus, toggle play/pause
+            Task {
+                if nowPlayingViewModel.isPlaying {
+                    await nowPlayingViewModel.pause()
+                } else {
+                    try? await nowPlayingViewModel.play()
+                }
+            }
+            return
+        }
+        
+        // Space key activates play/pause when player controls are focused
+        if case .playerPlayPause = currentFocus {
+            Task {
+                if nowPlayingViewModel.isPlaying {
+                    await nowPlayingViewModel.pause()
+                } else {
+                    try? await nowPlayingViewModel.play()
+                }
+            }
+        }
+    }
+    
     // MARK: - Layout State Persistence
     
     private func loadLayoutState() async {

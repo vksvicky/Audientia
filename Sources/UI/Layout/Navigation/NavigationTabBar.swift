@@ -45,6 +45,7 @@ private struct TabButton: View {
     
     @State private var isHovered = false
     @State private var isPressed = false
+    @FocusState private var isFocused: Bool
     
     var body: some View {
         let buttonContent = HStack(spacing: 6) {
@@ -73,6 +74,15 @@ private struct TabButton: View {
             buttonContent
         })
         .buttonStyle(.plain)
+        .focused($isFocused)
+        .overlay(
+            RoundedRectangle(cornerRadius: 6)
+                .stroke(
+                    isFocused ? Color.accentColor : Color.clear,
+                    lineWidth: isFocused ? 2 : 0
+                )
+                .padding(-2)
+        )
         .keyboardShortcut(tab.keyEquivalent, modifiers: .command)
         .help("\(tab.displayName) (⌘\(tab.keyboardShortcutNumber))")
         .accessibilityLabel(tab.displayName)

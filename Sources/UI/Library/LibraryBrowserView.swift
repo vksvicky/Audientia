@@ -16,6 +16,7 @@ public struct LibraryBrowserView: View {
     @ObservedObject var viewModel: LibraryBrowserViewModel
     @EnvironmentObject private var trackSelection: TrackSelectionStore
     @EnvironmentObject private var playbackCoordinator: PlaybackCoordinator
+    @StateObject private var listNavigationManager = ListNavigationManager<Track>()
     
     private let gridColumns = [
         GridItem(.adaptive(minimum: 180), spacing: 16, alignment: .top)
@@ -35,6 +36,51 @@ public struct LibraryBrowserView: View {
         .background(Color(NSColor.controlBackgroundColor))
         .task {
             await viewModel.loadLibraryIfNeeded()
+        }
+        .onChange(of: viewModel.filteredTracks) { _, newValue in
+            // Update list navigation manager when tracks change
+            listNavigationManager.updateItems(newValue)
+        }
+        .onKeyPress(.upArrow) {
+            // Handle Up arrow key
+            handleArrowKeyNavigation(direction: .up)
+            return .handled
+        }
+        .onKeyPress(.downArrow) {
+            // Handle Down arrow key
+            handleArrowKeyNavigation(direction: .down)
+            return .handled
+        }
+        .onKeyPress(.leftArrow) {
+            // Handle Left arrow key (for grid view)
+            if viewModel.viewMode == .grid {
+                handleArrowKeyNavigation(direction: .left)
+                return .handled
+            }
+            return .ignored
+        }
+        .onKeyPress(.rightArrow) {
+            // Handle Right arrow key (for grid view)
+            if viewModel.viewMode == .grid {
+                handleArrowKeyNavigation(direction: .right)
+                return .handled
+            }
+            return .ignored
+        }
+        .onChange(of: listNavigationManager.selectedIndex) { _, newValue in
+            // Update track selection when navigation manager selection changes
+            if let index = newValue,
+               index >= 0,
+               index < viewModel.filteredTracks.count {
+                trackSelection.select(viewModel.filteredTracks[index])
+            }
+        }
+        .onChange(of: trackSelection.selectedTrack) { _, newValue in
+            // Sync navigation manager when selection changes from outside (e.g., mouse click)
+            if let track = newValue,
+               let index = viewModel.filteredTracks.firstIndex(of: track) {
+                listNavigationManager.selectIndex(index)
+            }
         }
         .alert("Error", isPresented: .constant(viewModel.lastError != nil)) {
             Button("OK") {
@@ -258,6 +304,36 @@ public struct LibraryBrowserView: View {
         let minutes = Int(duration) / 60
         let seconds = Int(duration) % 60
         return String(format: "%d:%02d", minutes, seconds)
+    }
+    
+    // MARK: - Keyboard Navigation
+    
+    /// Arrow key navigation directions
+    private enum ArrowDirection {
+        case up
+        case down
+        case left
+        case right
+    }
+    
+    /// Handle arrow key navigation
+    /// - Parameter direction: The arrow key direction
+    private func handleArrowKeyNavigation(direction: ArrowDirection) {
+        switch direction {
+        case .up:
+            _ = listNavigationManager.moveUp()
+        case .down:
+            _ = listNavigationManager.moveDown()
+        case .left:
+            // Calculate columns per row for grid (approximate based on view width)
+            // For now, use a default of 3 columns for grid navigation
+            let columnsPerRow = viewModel.viewMode == .grid ? 3 : 1
+            _ = listNavigationManager.moveLeft(columnsPerRow: columnsPerRow)
+        case .right:
+            // Calculate columns per row for grid
+            let columnsPerRow = viewModel.viewMode == .grid ? 3 : 1
+            _ = listNavigationManager.moveRight(columnsPerRow: columnsPerRow)
+        }
     }
 }
 

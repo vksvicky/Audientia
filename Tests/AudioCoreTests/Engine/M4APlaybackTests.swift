@@ -23,7 +23,7 @@ final class M4APlaybackTests: XCTestCase {
     /// Test that AVFoundation decoder recognizes M4A files
     func testAVFoundationDecoderRecognizesM4AFiles() {
         // Given - M4A file path and AVFoundation supported extensions
-        let m4aPath = "/tmp/test.m4a"
+        _ = "/tmp/test.m4a"
         let supportedExtensions = AudioFormats.avFoundationSupportedExtensions
         
         // When - Check if M4A is in AVFoundation supported extensions

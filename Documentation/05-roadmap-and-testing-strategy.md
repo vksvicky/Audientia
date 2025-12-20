@@ -1043,6 +1043,55 @@ See [`Scripts/build_guide.md`](../Scripts/build_guide.md) for detailed build ins
 
 #### 7.1 UI/UX Refinement
 - [x] Accessibility (VoiceOver, keyboard navigation) - **✅ Comprehensive accessibility implementation complete with VoiceOver labels, hints, traits, keyboard navigation, and announcements. AccessibilityTests.swift created with Right-BICEP coverage.**
+- [ ] **Enhanced Keyboard Navigation** - **🔄 IN PROGRESS**: Systematic keyboard navigation implementation
+  - [ ] **KeyboardNavigationManager** - Centralized keyboard navigation state management
+    - [ ] Focus order management (toolbar → sidebar → content → player)
+    - [ ] Focus state tracking and restoration
+    - [ ] Keyboard shortcut conflict resolution
+    - [ ] TDD tests with Right-BICEP coverage
+    - [ ] BDD tests for keyboard navigation scenarios
+  - [ ] **Tab Key Navigation** - Sequential focus through all interactive elements
+    - [ ] Toolbar tabs (Home, Library, Playlists, Devices, Visualiser)
+    - [ ] Sidebar elements (search, navigation items, action buttons)
+    - [ ] Main content area (tracks, playlists, devices, visualisation)
+    - [ ] Player controls (transport, shuffle, loop, volume)
+    - [ ] Focus indicators and visual feedback
+    - [ ] TDD tests for focus order and navigation
+    - [ ] BDD tests for keyboard-only user workflows
+  - [ ] **Arrow Key Navigation** - List and grid navigation
+    - [ ] Library browser (Up/Down for tracks, Left/Right for grid)
+    - [ ] Playlist browser (Up/Down for playlists, Left/Right for tracks)
+    - [ ] Device list (Up/Down for devices)
+    - [ ] Visualisation style selector (Up/Down for options)
+    - [ ] Selection state management
+    - [ ] TDD tests for arrow key navigation
+    - [ ] BDD tests for list navigation scenarios
+  - [ ] **Enter/Space Activation** - Activate focused elements
+    - [ ] Enter key for primary actions (play, select, submit)
+    - [ ] Space key for toggle actions (play/pause, expand/collapse)
+    - [ ] Dialog activation (Enter to submit, Esc to cancel)
+    - [ ] TDD tests for activation behavior
+    - [ ] BDD tests for activation scenarios
+  - [ ] **Settings UI Keyboard Navigation** - Full keyboard support in Settings
+    - [ ] Settings window navigation (Tab through sections)
+    - [ ] Settings panel navigation (Tab through controls)
+    - [ ] Form navigation (Tab through fields, Enter to submit)
+    - [ ] TDD tests for settings navigation
+    - [ ] BDD tests for settings workflows
+  - [ ] **Dialog and Modal Navigation** - Keyboard support for all dialogs
+    - [ ] Create Playlist dialog (Tab through fields, Enter/Esc)
+    - [ ] Create Smart Playlist dialog (Tab through fields, Enter/Esc)
+    - [ ] Conflict Resolution dialog (Tab through conflicts, Enter to resolve)
+    - [ ] Device Configuration dialog (Tab through options, Enter/Esc)
+    - [ ] TDD tests for dialog navigation
+    - [ ] BDD tests for dialog workflows
+  - [ ] **Focus Management** - Advanced focus handling
+    - [ ] Focus restoration after modal dismissal
+    - [ ] Focus trapping in modals
+    - [ ] Focus indicators (visual highlight for focused elements)
+    - [ ] Focus announcements for VoiceOver users
+    - [ ] TDD tests for focus management
+    - [ ] BDD tests for focus scenarios
 - [ ] Dark mode optimization - **⏳ PENDING**: Theme system exists but may need refinement
 - [x] Window management - **✅ Window state persistence implemented (position, minimized/maximized state)**
 - [ ] Performance profiling and optimization - **⏳ PENDING**: Basic performance tests exist, may need deeper profiling

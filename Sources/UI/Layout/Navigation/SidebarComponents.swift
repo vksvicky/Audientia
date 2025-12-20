@@ -36,6 +36,7 @@ struct SidebarNavItem: View {
     
     @State private var isHovered = false
     @State private var isPressed = false
+    @FocusState private var isFocused: Bool
     
     init(icon: String, title: String, count: Int? = nil, action: (() -> Void)? = nil) {
         self.icon = icon
@@ -76,6 +77,15 @@ struct SidebarNavItem: View {
             }
         )
         .buttonStyle(.plain)
+        .focused($isFocused)
+        .overlay(
+            RoundedRectangle(cornerRadius: 4)
+                .stroke(
+                    isFocused ? Color.accentColor : Color.clear,
+                    lineWidth: isFocused ? 2 : 0
+                )
+                .padding(-2)
+        )
         .onHover { hovering in
             isHovered = hovering
         }
@@ -106,6 +116,7 @@ struct SidebarActionButton: View {
     
     @State private var isHovered = false
     @State private var isPressed = false
+    @FocusState private var isFocused: Bool
     
     var body: some View {
         Button(action: action) {
@@ -125,6 +136,15 @@ struct SidebarActionButton: View {
             )
         }
         .buttonStyle(.plain)
+        .focused($isFocused)
+        .overlay(
+            RoundedRectangle(cornerRadius: 4)
+                .stroke(
+                    isFocused ? Color.accentColor : Color.clear,
+                    lineWidth: isFocused ? 2 : 0
+                )
+                .padding(-2)
+        )
         .onHover { hovering in
             isHovered = hovering
         }
